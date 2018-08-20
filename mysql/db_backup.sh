@@ -13,6 +13,9 @@ ymdhm=`date '+%Y%m%d%H%M'`
 
 bak_dir="/data/db_user00/daysbackup/"
 db_pair_list=`cat full_list | grep -v "^#"`
+#full_list
+# 10.0.0.2|3306|root|root_password|10.0.0.1|3306
+
 
 backup_per_instance()
 {
