@@ -5,14 +5,14 @@ shellpath=$(cd "$(dirname "$0")";pwd)
 cd ${shellpath}
 
 #build db pair config
-#/bin/sh get_slave.sh 
 
 ymd=`date '+%Y%m%d'`
 ymdhm=`date '+%Y%m%d%H%M'`
 
 bak_dir="/data/db_user00/daysbackup/"
 db_pair_list=`cat full_list | grep -v "^#"`
-#full_list
+
+# full_list
 # 10.0.0.2|3306|root|root_password|10.0.0.1|3306
 
 backup_per_instance()
@@ -60,8 +60,7 @@ compress_file()
 	gzip ${bak_files}
 }
 
-
-##########################backup#########################
+###################backup#########################
 echo "#### DB BACKUP REPORT IN ${ymdhm} ####"
 
 #thread control
@@ -89,9 +88,9 @@ done
 wait
 exec 6>&-
 exec 6<&-
-########################backup###########################
+##################backup###########################
 
-##################compress###############################
+##################compress#########################
 c_thread=2
 c_fifofile="/tmp/$$.fifo"
 mkfifo -m 700 ${c_fifofile}
