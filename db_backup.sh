@@ -1,5 +1,4 @@
 #!/bin/bash
-# UCloud backup
 # update by dba@wdg in 20170713
 
 
@@ -7,7 +6,7 @@ shellpath=$(cd "$(dirname "$0")";pwd)
 cd ${shellpath}
 
 #build db pair config
-#/bin/sh udb_slave.sh 
+#/bin/sh get_slave.sh 
 
 ymd=`date '+%Y%m%d'`
 ymdhm=`date '+%Y%m%d%H%M'`
