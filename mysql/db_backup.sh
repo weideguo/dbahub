@@ -1,7 +1,6 @@
 #!/bin/bash
 # update by dba@wdg in 20170713
 
-
 shellpath=$(cd "$(dirname "$0")";pwd)
 cd ${shellpath}
 
@@ -15,7 +14,6 @@ bak_dir="/data/db_user00/daysbackup/"
 db_pair_list=`cat full_list | grep -v "^#"`
 #full_list
 # 10.0.0.2|3306|root|root_password|10.0.0.1|3306
-
 
 backup_per_instance()
 {
@@ -61,7 +59,6 @@ compress_file()
 	bak_files="${bak_dir}/${dbmip}-${dbmport}/${ymd}/*"
 
 	gzip ${bak_files}
-
 }
 
 
@@ -93,11 +90,9 @@ done
 wait
 exec 6>&-
 exec 6<&-
-
 ########################backup###########################
 
 ##################compress###############################
-
 c_thread=2
 c_fifofile="/tmp/$$.fifo"
 mkfifo -m 700 ${c_fifofile}
@@ -107,7 +102,6 @@ rm -rf ${c_fifofile}
 for ((k=1;k<=${c_thread};k++));do
         echo >&7
 done
-
 
 for db_pair in ${db_pair_list}
 do
@@ -122,11 +116,8 @@ wait
 exec 7>&-
 exec 7<&-
 
-
 ###############compress#################################
-echo "#### ENDING ####" 
 
 ###delete old backup file
 #find ${bak_dir}/*/* -ctime +14 -type d -exec rm -rf {} \;
 find -L /data/db_user00/daysbackup/*/* -maxdepth 0 -ctime +35 -type d -exec rm -rf {} \;
-
