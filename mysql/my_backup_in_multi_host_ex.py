@@ -18,7 +18,7 @@ from multiprocessing import Pool
 db_list_file='/data/db_list'
 
 db_ip="db_ip"
-db_port=3306
+db_port="db_port"
 db_user="db_user"
 db_passwd="db_password"
 
@@ -81,7 +81,6 @@ def backup_remote(remote_backp_path,backup_user,backup_passwd,slave_ip,slave_por
             dump_cmd="mysqldump -u%s -p%s -h%s -P%s --routines --triggers --single-transaction --max_allowed_packet=251658240 --default-character-set=utf8 %s | gzip > %s"\
                          %(backup_user,backup_passwd,slave_ip,slave_port,database_name,backup_file_name)
             #cmd="sleep 3;echo 'hello' > %s" % backup_file_name
-
             
             exec_remote(host_passwd,host_user,host_name,dump_cmd)
             logging.info("Dump completed + %s_%s_%s"%(master_ip,str(master_port),str(database_name)))
