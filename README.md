@@ -1,4 +1,4 @@
-# my_python_demo
-## this is a python demo hub.
+# dba scripts
+## this is a dba scripts hub.
 
 I will update this repository continuously.
