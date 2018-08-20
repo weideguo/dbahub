@@ -17,7 +17,6 @@ db_pair_list=`cat full_list | grep -v "^#"`
 
 backup_per_instance()
 {
-
 	db_pair=$1	
 	dbip=`echo ${db_pair}|awk -F'|' '{print $1}'`
 	dbport=`echo ${db_pair}|awk -F'|' '{print $2}'`
@@ -117,6 +116,7 @@ exec 7>&-
 exec 7<&-
 
 ###############compress#################################
+echo "Complete"
 
 ###delete old backup file
 #find ${bak_dir}/*/* -ctime +14 -type d -exec rm -rf {} \;
