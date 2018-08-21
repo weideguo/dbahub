@@ -15,10 +15,6 @@
 
 
 
-
-
-
-
 增量备份(只对innodb有效，其他类型的全备)
 #需要连接到数据库实例
 #需要预先存在全量热备的文件夹/u03/xb_backup_dir/2017-01-16_14-54-07
@@ -49,10 +45,6 @@
 ./innobackupex --defaults-file=/u05/mysql5634/my.cnf --copy-back /u03/xb_backup_dir/2017-01-16_14-54-07
 
 
-
-
-
-
 单表备份
 #仅适用innodb表
 ./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf --export /u03/xb_backup_dir
@@ -65,9 +57,6 @@ alter table recovery_table_demo discard tablespace;
 #复制备份的表空间文件到表所在的目录  ##任意完整备份的文件也可以？
 #导入表空间
 alter table recovery_table_demo import tablespace;
-
-
-
 
 
 
@@ -86,14 +75,9 @@ alter table recovery_table_demo import tablespace;
 --safe-slave-backup		##备份时关闭sql_thread，备份结束后自动启动sql_thread
 
 
-
-
-
 原理
 基于innodb crash-recovery机制
 对于非事务类型的表，在备份innodb表后，使用lock tables for backup(percona特有，oracle版应该使用flush tables with read lock)，然后备份
-
-
 
 
 percona-toolkit
