@@ -3,17 +3,15 @@
 
 
 def decorator1(func):
-	def my_wrapper():
-		
-		print "bDFGER"
-        	func()
+    def my_wrapper():		
+        print "bDFGER"
+        func()
     return my_wrapper	
 
 
 def decorator2():
     def _decorator2(func):
-        def my_wrapper():
-            
+        def my_wrapper():           
             print "bDFGER"
             func()
         return my_wrapper
