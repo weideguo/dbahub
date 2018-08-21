@@ -1,0 +1,28 @@
+限制
+只能恢复delete语句的数据
+只能恢复innodb表
+表中存在主键
+表的Row_format为REDUNDANT(-4) or COMPACT (-5).
+使用独立表空间
+
+
+
+使用程序
+percona-data-recovery-tool-for-innodb
+
+
+##假设使用mytest_db.mytest表
+
+##step1 从数据文件中提取数据
+./page_parser -5 -f  data/mytest.idb
+
+##step2 获取表结构
+./create_defs.pl --host 127.0.0.1 --port 3306 --user root --password weideguo --db mytest_db --table mytest > include/table_defs.h
+
+##step3
+make 重新编译程序
+
+##step4 抽取数据删除的数据放入文件data/mytest.recovery  123为主键的id
+./constraints_parser -5 -D -f pages-xxxxx/FIL_PAGE_INDEX/0-123  > data/mytest.recovery
+
+##step 5 使用 load infile 命令导入分割符文件
