@@ -8,8 +8,7 @@ from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 class TestHTTPHandler(BaseHTTPRequestHandler):
     #GET  
-    def do_GET(self):
-        
+    def do_GET(self):        
         print 'URL=',self.path
         
         templateStr = '''
@@ -27,9 +26,10 @@ class TestHTTPHandler(BaseHTTPRequestHandler):
         self.send_response(200) 				 
         self.send_header("Welcome", "Contect")  
         self.end_headers()
-        self.wfile.write(templateStr)   		
+        self.wfile.write(templateStr)   
+    #POST	
     def do_POST(self):
-        self.wfile.write("<p>this is get</p>")   #必须为html格式
+        self.wfile.write("<p>this is post</p>")   #必须为html格式
 		
 		
 def start_server(port):
