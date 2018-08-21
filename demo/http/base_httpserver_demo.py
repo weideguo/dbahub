@@ -29,7 +29,7 @@ class TestHTTPHandler(BaseHTTPRequestHandler):
         self.wfile.write(templateStr)   
     #POST	
     def do_POST(self):
-        self.wfile.write("<p>this is post</p>")   #必须为html格式
+        self.wfile.write("<p>this is post</p>")   #must in html format
 		
 		
 def start_server(port):
