@@ -26,10 +26,11 @@ from email.MIMEAudio import MIMEAudio
 from email.MIMEImage import MIMEImage  
 from email.Encoders import encode_base64  
 
+# you should change here
 mailFrom = 'mail_address'
 mailPassword = 'mail_pwd'
-smtp_host='smtp_host'
-smtp_port=25
+smtp_host= 'smtp_host'
+smtp_port= 25
   
 def sendMail(mailTo,subject,text, *attachmentFilePaths):  	
     msg = MIMEMultipart()  
