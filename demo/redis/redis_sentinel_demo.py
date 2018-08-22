@@ -13,7 +13,7 @@ slave.get('foo')
 
 ##################
 master_addr=sentinel.discover_master('mymaster')
-master=redis.Redis(host=master_addr[0],port=master_addr[1],password='hjlr^Y1_')
+master=redis.Redis(host=master_addr[0],port=master_addr[1],password='redis_password')
 
 slave_addr=sentinel.discover_slaves('mymaster')
-slave=redis.Redis(host=slave_addr[0][0],port=slave_addr[0][1],password='hjlr^Y1_')
+slave=redis.Redis(host=slave_addr[0][0],port=slave_addr[0][1],password='redis_password')
