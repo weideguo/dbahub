@@ -23,18 +23,18 @@ def func(queue):
 
 
 def main_func():
-    queue =  Queue.Queue()
-	
-	thread_num_concurrent=3
+    queue =  Queue.Queue()	
+    thread_num_concurrent=3
 	
     for i in range(thread_num_concurrent):
         t = threading.Thread(target=func, args=(queue,))
         t.setDaemon(True)
         t.start()
 
-	thread_num=20
+    thread_num=20
     for l in range(thread_num): 
         queue.put(l)
+
     #block until all item in queue have been gotten
     queue.join()
 
