@@ -16,7 +16,7 @@ def aes_encrypt(data,key):
 def aes_decrypt(en_data,key):
     unpad = lambda s : s[0:-ord(s[-1])]
     cipher = AES.new(key)
-    result2 = base64.b64decode(data)
+    result2 = base64.b64decode(en_data)
     decrypted = unpad(cipher.decrypt(result2))
     return  decrypted
 
