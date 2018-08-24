@@ -1457,6 +1457,8 @@ Multi-Primary Mode    --可以对多个实例进行些操作
 	
 	
 count(*)/count(1)  --没有where子句时，使用最小的索引进行查询；带有where子句，使用能优化where的索引。	
+count(*)           --所有行都计算
+count(colume)      --字段的值为空时不计算
 
 
 
@@ -1611,7 +1613,4 @@ set global slave_parallel_workers=30
 元数据锁
 
 
-
-
-
-	
+ 
