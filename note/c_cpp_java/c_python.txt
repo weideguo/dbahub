@@ -1,0 +1,45 @@
+Python调用C动态链接库
+Python调用C库很简单,不经过任何封装打包成so,再使用python的ctypes调用即可。
+<test.cpp 生成动态库的源文件>
+#include <stdio.h>   
+extern "C" {  
+        void display() {  
+                printf("This is Display Function\n");   
+        }  
+}  
+g++ test.cpp -fPIC -shared -o libtest.so  
+<call.py 调用动态库的源文件>
+import ctypes  
+so = ctypes.CDLL("./libtest.so")  
+so.display()  
+这里需要注意的是:使用g++编译生成动态库的代码中的函数 或者 方法时, 需要 使用extern "C"来进行编译
+
+Python调用C++(含类,重载)动态链接库
+但是调用C++的so就有点麻烦了,网上找了下，大部分都是需要extern "C" 来辅助，也就是说还是只能调用C函数 不能直接调用方法 但是能解析C++方法。
+<test.cpp 生成动态库的源文件>
+#include <Akita/Akita.h>   
+class TestLib{  
+		public:  
+                void display();  
+                void display(int a);  
+  
+  
+};  
+void TestLib::display() {  
+        cout<<"First display"<<endl;  
+}  
+  
+  
+void TestLib::display(int a) {  
+        cout<<"Second display"<<endl;  
+}  
+extern "C" {  
+        TestLib obj;  
+        void display() {  
+               obj.display();   
+        }  
+        void display_int() {  
+               obj.display(2);   
+        }  
+}  
+g++ test.cpp -fPIC -shared -o libtest.so
