@@ -1,0 +1,152 @@
+RMI
+remote method invocation
+
+基础设施
+DTO  Data Tranfer Object  
+Service
+
+J2EE
+	EJB
+		session bean
+		entity bean
+		messageDriver bean
+	jsp
+	servlet
+
+J2SE 
+	SSH
+		Struts
+		Spring
+		Hibernate
+
+	
+前端		jsp+js（jQuery、Ext）
+后端		servlet
+			业务逻辑层  
+				CRUD（create、retrieve、update、delete）
+			orm
+			DB			
+
+命令行编译和使用
+javac命令 
+如果依赖多项java文件，一起放入即可
+-d 输出文件的根位置 不必加入package之后的路径
+javac -d x:\root\bin -cp x:\root\lib x:\root\src\com\carnation\wdg\HelloEx.java x:\root\src\com\carnation\wdg\Function.java
+
+java命令
+java -Djava.ext.dirs=x:\root\lib -cp x:\root\bin\ com.carnation.wdg.HelloEx
+
+
+运行jar中的类
+java -cp App.jar com.amar.Main
+
+
+直接运行jar
+java -jar path_name/file_name.jar
+java -jar path_name/file_name.jar
+
+
+
+jar命令
+----创建jar包
+----使用java编译好的class文件
+jar命令格式：
+jar {c t x u f }[ v m e 0 M i ][-C 目录] 文件名
+ 
+{ctxu}这四个参数必须选选其一。[v f m e 0 M i ]是可选参数，文件名也是必须的
+-c 创建一个jar包
+-t 显示jar中的内容列表
+-x 解压jar包
+-u 添加文件到jar包中
+-f 指定jar包的文件名
+-v 生成详细的报造，并输出至标准设备
+-m 指定manifest.mf文件
+-0 产生jar包时不对其中的内容进行压缩处理
+-M 不产生所有文件的清单文件(Manifest.mf)。这个参数与忽略掉-m参数的设置
+-i 为指定的jar文件创建索引文件
+-C 表示转到相应的目录下执行jar命令，相当于cd到那个目录，然后执行jar命令
+
+mainfest.mf
+冒号后要有空格，最后一行为空
+指定java运行jar包时的主类及其他
+
+jar cvfm test1.jar ./META-INF/MANIFEST.MF test1.class
+
+
+代码中
+import可以调用不同目录层次的class文件，以及调用jar包的类
+引入的路径与class文件的路径相关
+
+
+
+ANT
+使用xml文件设置操作步凑
+用于调用javac,jar等命令编译与打包jave文件
+类似于make
+
+ant -buildfile build.xml build   ///build对应xml文件中target节点的name
+
+
+
+
+REST/RESTful
+REpresentation State Transfer
+将web服务视为资源，可由URL唯一标识
+依赖于http协议
+
+
+SOAP
+Simple Object Access Protocol
+简单对象访问协议
+交换数据的一种协议规范，基于XML
+
+JMS
+Java Message Service
+
+
+
+堆 heap
+堆中父节点的值总是不大于或小于子节点
+堆是一棵完整树
+根节点最大称为最大堆或大根堆
+
+
+JVM参数
+整个JVM内存大小=年轻代大小 + 年老代大小 + 持久代大小
+
+-Xms1024m     //jvm初始内存
+-Xmx1024m     //jvm最大内存
+-Xss1M	  	  //每个线程的堆栈大小
+-Xmn512m      //年轻代大小 (1.4 or lator)  
+-XX:NewSize=512m		 //年轻代初始大小(for 1.3/1.4)
+-XX:MaxNewSize=512m      //年轻代最大值(for 1.3/1.4)
+-XX:PermSize=512M		 //持久代初始参数
+-XX:MaxPermSize=512m     //设置持久代大小
+-XX:NewRatio=4			///设置年轻代（包括Eden和两个Survivor区）与年老代的比值（除去持久代）。设置为4，则年轻代与年老代所占比值为1：4，年轻代占整个堆栈的1/5
+
+
+
+
+字节码 Byte Code
+
+指令码 Instruction Code
+硬件处理器平台可以直接执行
+
+java字节码(编译后的class文件)由即时编译器(JIT complier, just in time complier )转换成处理器的指令
+
+
+动态类型语言(Dynamically Typed Language)
+在运行期间检查数据的类型
+不会给变量指定类型，而是在赋值时得到数据类型。
+
+静态类型语言(Statically Typed Language)
+
+
+
+
+
+
+
+
+
+
