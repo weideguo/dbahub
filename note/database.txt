@@ -1,0 +1,38 @@
+CAP 
+一个数据库不可能同时满足
+一致性（Consistency）				执行了一次成功的写操作之后，未来的读操作一定可以读到这个写入的值
+可用性（Availability）				系统总是可读可写的
+分区容错性（Partition-Tolerance）
+
+
+OLTP (Online Transaction Processing) 联机事务处理
+OLAP (Online Analytical Processing)  联机分析处理
+
+事务四特性 ACID
+原子性 atomicity
+一致性 consistency
+隔离性 isolation
+持久性 durability
+
+CRUD  create/retrieve/update/delete
+
+2PC 两阶段提交
+two phase commit
+
+
+
+
+
+
+
+NOSQL
+BASE模型
+basically available		基本可用
+soft state				软状态	状态可以有一段时间不同步
+eventually consistent	最终一致
+
+
+
+
+
+
