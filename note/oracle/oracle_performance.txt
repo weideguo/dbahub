@@ -1,0 +1,642 @@
+AWR (Automatic Workload Repository)
+
+v$sseion和v$session_wait保留当前会话，会话断开，信息会被删除。
+v$session_wait_history保留每个会话最近10次等待时间。
+v$active_session_history保留处于等待状态的活动的session，每秒从v$session_wait中采集一次，保存在内存中。为即为ASH。
+引入AWR，固定频率采取ASH，统计信息。
+
+
+快照 snapshot
+dba_hist_wr_control   ---快照手机间隔及保留时间查询
+dba_hist_snapshot     ---查询历史快照
+
+exec dbms_workload_repository.create_snapshot;  ----手工创建快照，默认会定期自动生成快照，可用【dba_hist_wr_control】查看自动生成的设置信息
+@?/rdbms/admin/awrrpt   ---创建awr报告，运行【$ORACLE_HOME/rdbms/admin/awrrpt.sql】  创建在当前目录
+
+AWR报告中
+db time/elapsed与CPUs*Cores的比超过1，即为数据库CPU使用率超过100%。
+sql orderd by ....  	中查看sql语句的消耗
+Advisory Statistics     给出内存分配建议，由此确定数据库需要的内存
+
+AWR BASELINES(AWR基线)
+DBMS_WORKLOAD_REPOSITORY ---快照、基线管理依赖包
+exec dbms_workload_repository.create_baseline(start_snap_id,en_snap_id,baseline_name);  ----创建基线  也可以使用两个时间
+Select baseline_id,baseline_name From dba_hist_baseline;   ----查看baseline信息
+Select baseline_name,metric_name,num_interval,interval_size
+From Table((Select dbms_workload_repository.select_baseline_metric(l_baseline_name => 'HIS_SLOWLY') From dual ));    -----查看两次快照的的统计差异  l_baseline_id指定也可以
+
+
+dbms_advisor----sql tuning advisor依赖的包
+
+STS(sql tuning set)
+--a group of statements along with their execution context. 
+创建STS【dbms_sqltune.create_sqlset()】
+加载负载报告(workload repository)、其他STS、共享SQL区(shared SQL area)进入STS【dbms_sqltune.load_sqlset】
+
+sql plan baseline(SQL执行计划基线)   
+
+1、稳定给定SQL语句的执行计划，防止执行环境或对象统计信息等等因子的改变对SQL语句的执行计划产生影响！
+2、减少数据库中出现SQL语句性能退化的概率，理论上不允许一条语句切换到一个比已经执行过的执行计划慢很多的新的执行计划上！
+---(1)automatic capture of plan history and SQL plan baselines
+---(2)manually load plans as SQL plan baselines
+
+
+SQL tuning advisor
+SQL performance analyzer(SPA)
+1 使用SPA的前提条件
+由于数据库的复杂性，如果想使用SPA来度量生产库变更对性能影响的话，测试环境的软硬件配置需要与生产环境是一致的，同样DB的初始化参数等也要求与产品库是一致的，可以用RMAN，DATA PUMP等工具创建测试环境。
+2 导入负载到测试环境
+把生产库上需要测试的SQL装载到SQL Tuning Set(STS)，然后导出STS到测试环境。
+3 创建SPA TASK
+declare
+VAR t_name VARCHAR2(100);
+begin
+:t_name := DBMS_SQLPA.CREATE_ANALYSIS_TASK(
+sqlset_name => 'my_sts', 
+task_name => 'my_spa_task');
+end;
+4 变更前执行SPA TASK
+EXEC DBMS_SQLPA.EXECUTE_ANALYSIS_TASK(
+task_name => 'my_spa_task', 
+execution_type => 'TEST EXECUTE', 
+execution_name => 'my_exec_BEFORE_change');
+5 执行变更
+比如修改优化参数&添加或删除索引&收集表与索引的统计信息等
+6 变更后执行SPA TASK
+EXEC DBMS_SQLPA.EXECUTE_ANALYSIS_TASK(
+task_name => 'my_spa_task', 
+execution_type => 'TEST EXECUTE', 
+execution_name => 'my_exec_AFTER_change');
+7 比较SQL性能
+EXEC DBMS_SQLPA.EXECUTE_ANALYSIS_TASK(
+task_name => 'my_spa_task', 
+execution_type => 'COMPARE PERFORMANCE', 
+execution_name => 'my_exec_compare', 
+execution_params => dbms_advisor.arglist('comparison_metric', 'buffer_gets'));
+8 报告SPA分析结果
+VAR rep CLOB;
+EXEC :rep := DBMS_SQLPA.REPORT_ANALYSIS_TASK('my_spa_task','text', 'typical', 'summary');
+SET LONG 100000 LONGCHUNKSIZE 100000 LINESIZE 130
+PRINT :rep
+
+
+
+ADDM(Automatic Database Diagnostic Monitor) 自动数据库性能监视器
+基于AWR技术的，原理就是比较两个AWR快照
+@?/rdbms/admin/addmrpt
+dbms_addm   ----addm相关程序包
+
+
+Database Resource Management
+【dbms_resource_manager_privs】
+【dbms_resource_manager】
+1、 Resource Consumer Groups
+--是一个用户session的集合，其根据session需要的进程进行归类，当一个session创建之后，它就自动根据用户指定的规则映射到对应的consumer group。
+select username,initial_rsrc_consumer_group from dba_users;   ----查看用户的consumer group
+2、 Resource plans
+dba_rsrc_plans  ---数据字典
+当resource plan是激活时，它的每个子resource plan控制每个资源分配到不同的consumer group。
+每个plan必须 包含一个指令，其分配资源到OTHER_GROUPS的consumer group。OTHER_GROUPS适用于所有的session，即使不是当前激活的plan。
+Resource Plan和Resource Plan Directive是父子关系，每个Resource Plan Directive只对应一个consumer group
+
+
+SQL tuning Set(STS)
+---使用的包DBMS_SQLTUNE
+--a group of statements along with their execution context. 
+创建STS【dbms_sqltune.create_sqlset()】
+加载负载报告(workload repository)、其他STS、共享SQL区(shared SQL area)进入STS【dbms_sqltune.load_sqlset】
+
+SQL plan baselines(SQL执行计划基线)
+一、自动捕获基线。通过将optimizer_cature_sql_plan_baselines设置为true
+二、手动捕获。通过使用包dbms_spm
+1. Loading Plans from SQL Tuning Sets and AWR Snapshots 
+----AWR snapshots needs to be loaded to STS at first
+DBMS_SPM.LOAD_PLANS_FROM_SQLSET( sqlset_name => 'tset1');
+2.Loading Plans from the Shared SQL Area
+DBMS_SPM.LOAD_PLANS_FROM_CURSOR_CACHE( sql_id => '99twu5t2dn5xd');  ---sql_id使用v$sql查询？
+
+-----升级前将STS捕获，在升级后导入sql plan baselines，防止因执行计划改变导致性能下降
+-----optimizer使用sql plan baselines
+
+----作用
+1、稳定给定SQL语句的执行计划，防止执行环境或对象统计信息等等因子的改变对SQL语句的执行计划产生影响！
+2、减少数据库中出现SQL语句性能退化的概率，理论上不允许一条语句切换到一个比已经执行过的执行计划慢很多的新的执行计划上！
+
+数据字典
+dba_sql_plan_baselines
+
+
+SQL Compiler(SQL 编译器)
+Parser			 解析器
+Query Optimizer  查询优化器
+Row Source Generator  行源生成器
+
+SQL Execution Engine(SQL执行引擎)
+
+SQL performance analyzer
+
+SQL access advisor
+---SQL Access Advisor helps you achieve your performance goals by recommending the proper set of materialized views, materialized view logs, partitions, and indexes for a given workload. 
+SQL profile
+--- SQL tunng advisor 建立 
+---实现改变执行计划
+SQL Tuning Advisor   --依赖包【dbms_advisor】
+
+
+----生成优化建议
+declare
+  l_task_name VARCHAR2(255);
+  l_sql_stmt  VARCHAR2(4000);
+begin
+  l_sql_stmt  := 'select /*+ full(t) */ * from scott.tb_test t where t.id = :1';
+  l_task_name := 'MY_FULL_ACCESS_TEST';
+  DBMS_ADVISOR.QUICK_TUNE(DBMS_ADVISOR.SQLACCESS_ADVISOR,l_task_name,l_sql_stmt);
+  exception when others then dbms_output.put_line(sqlerrm);                     
+end;
+
+----查看优化建议
+begin
+   show_recm('MY_FULL_ACCESS_TEST');
+end;
+
+---生成调优建议
+DECLARE 
+  my_task_name VARCHAR2(30); 
+  my_sqltext CLOB; 
+BEGIN 
+  my_sqltext := 'select a.id,a.name,b.id,b.name from bigtable a,smalltable b where a.id=b.id and a.id=40000'; 
+
+  my_task_name := DBMS_SQLTUNE.CREATE_TUNING_TASK( 
+                          sql_text => my_sqltext, 
+                          user_name => 'SCOTT', 
+                          scope => 'COMPREHENSIVE', 
+                          time_limit => 60, 
+                          task_name => 'test_sql_tuning_task1', 
+                          description => 'Task to tune a query'); 
+  DBMS_SQLTUNE.EXECUTE_TUNING_TASK(task_name => 'test_sql_tuning_task1');
+END; 
+
+select task_name,ADVISOR_NAME,STATUS from user_advisor_tasks;   ---查看调优执行结果
+select dbms_sqltune.report_tuning_task('test_sql_tuning_task1') from dual;   ----查看调优执行结果
+
+
+-----创建调优任务
+variable tuning_task varchar2(20);
+begin 
+	:tuning_task:=dbms_sqltune.create_tuning_task(sql_id=>'wertyu');   ----sql_id使用v$sql查询
+	dbms_sqltune.execute_tuning_task(:tuning_task);
+end;
+----分析调优结果
+select dbms_sqltune.report_tuning_task(:tuning_task) from dual;
+----接受调优建议   接受后可以在dba_sql_profile中查询
+declare    
+	my_sqlprofile_name varchar2(30);
+begin 
+	my_sqlprofile_name :=dbms_sqltune.accept_sql_profile(
+	task_name=>'TASK_23',
+	name=>'my_sql_profile',
+	category=>'test', ----不设置则为default   设置后要 alter session set sqltune_category=test
+	description=>'describe sql profile',
+	force_match=>TRUE
+	);
+end;
+----删除sql profile
+begin
+	dbms_sqltune.drop_sql_profile(name=>'my_sql_profile');
+end;
+---导入sql profile
+declare
+	v_hints sys.sqlprof_attr;
+	v_sql_fulltext clob;
+begin
+	select sql_fulltext into v_sql_fulltext from v$sqlarea where sql_id='qwertyu';
+	v_hints:=sys.sqlprof_attr(
+	'INDEX(@"SEL$1"SEL$1"("SCOTT","EMP"))','OUTLINE_LEAF(@"SEL$1")','ALL_ROWS','IGNORE_OPTIM_EMBEDDED_HINTS');   -----什么意思？
+	dbms_sqltune.import_sql_profile(
+	name=>'import_sql_profile',
+	sql_text=>v_sql_fulltext,
+	profile=>v_hints,
+	description=>'describe',
+	force_match=>true
+	)
+end;
+	
+
+
+
+
+对于一条执行SQL语句
+1. Uses a cost-based search method to build a best-cost 
+2. Tries to find a matching plan in the SQL plan baseline
+3. found,optimizer proceeds using the matched plan;
+   not found,the optimizer evaluates the cost of each accepted plan in the SQL plan baseline and selects the plan with the lowest cost
+
+SQL management base(SMB)
+--- part of the data dictionary that resides in the SYSAUX tablespace,stores statement logs, plan histories, SQL plan baselines, and SQL profiles.
+
+包含关系
+SQL Management Base >> SQL Plan History >> SQL Plan baseline
+SMB同时包含 SQL Profile、statement log
+
+
+
+
+
+基线 baseline   ---【DBMS_WORKLOAD_REPOSITORY】包
+固定基线 fixed baselines
+---被指定的过去的一个固定的、连续的时间范围
+移动窗口基线 moving windows baselines
+---当于AWR保留期间内存在的所有AWR数据
+基线模板 baseline template
+---创建一个基线，作为未来一个时间连续的时间段可以使用的基线模板
+自适应阈值 adaptive threshold
+---在移动窗口基线中捕获到的度量值得到的统计信息中，为系统度量自动设置告警和关键报警(warning and alert)的阈值。
+
+
+数据库重演(database replay)
+---生产系统上的负荷进行采集后还原到测试系统上进行重放
+生产数据库服务器：用于workload_capture，即负载捕获
+测试数据库服务器：用于workload_ preprocess和replay，即负载预处理和负载重放
+
+使用的包
+dbms_workload_captures
+数据字典
+dba_workload_filters
+
+SELECT id, name FROM dba_workload_replays;    ----查看replay进行相关信息
+
+replay client 
+-----模拟客户端连接到test database发起压力测试  用于发起workload的客户端进程wrc
+---replay client的主机至少安装oracle client  
+
+----在生产库中   最好先clean shutdown
+----创建filter  不是必须
+---INSTANCE_NUMBER、USER、MODULE、ACTION、PROGRAM、SERVICE
+exec dbms_workload_capture.ADD_FILTER(fname =>'FILTER_SCOTT',fattribute => 'USER',fvalue => 'SCOTT');
+----开始capture 
+BEGIN
+DBMS_WORKLOAD_CAPTURE.start_capture (name      => 'test_capture_1',
+                                      dir      => 'DB_REPLAY_CAPTURE_DIR',     ----目录需要预先创建 目录下应该没有文件
+                                      duration => NULL);
+END;
+----中间的操作即为捕捉的工作量
+----停止capture
+BEGIN
+DBMS_WORKLOAD_CAPTURE.finish_capture;
+END;
+----生成报告  以下两者选一，生成文件在先前的目录中
+DECLARE
+l_report  CLOB;
+BEGIN
+l_report := DBMS_WORKLOAD_CAPTURE.report(capture_id  => 1,    ----SELECT id, name FROM dba_workload_replays; ---查询
+                                          format     =>DBMS_WORKLOAD_CAPTURE.TYPE_HTML);
+END;
+BEGIN
+DBMS_WORKLOAD_CAPTURE.export_awr(capture_id => 1);
+END;
+
+-----测试库中
+-----创建目录并复制生产库capture目录下的文件
+-----处理工作量
+BEGIN
+DBMS_WORKLOAD_REPLAY.process_capture('DB_REPLAY_CAPTURE_DIR');    ---测试库下的目录，保存从生产库复制过来的工作量
+END;
+----使用wrc工具校验 
+wrc mode=calibrate replaydir=/u01/app/oracle/db_replay_capture   ----直接在操作系统中执行
+----开始replay
+EXEC DBMS_WORKLOAD_REPLAY.initialize_replay (replay_name => 'test_capture_1',                                         	  replay_dir  => 'DB_REPLAY_CAPTURE_DIR');
+exec DBMS_WORKLOAD_REPLAY.prepare_replay (synchronization => TRUE);
+wrc system/oracle mode=replay replaydir=/u01/app/oracle/db_replay_capture
+exec DBMS_WORKLOAD_REPLAY.START_REPLAY ();    ----执行上面的操作后执行这个操作
+
+select name,status from  dba_workload_replays;   ----查询replay状态
+
+sql tuning advisor
+---分析单条SQL语句并给出执行计划以提高性能
+--SQL profile 由 sql tuning advisor 运行后产生
+sql profile  ----SQL tuning advisor生成的SQL语句执行概要
+dbms_sqltune ---sql profile可以由此包手动使用
+oracle中SQL的执行步骤：
+1. 用户传送要执行的SQL语句给SQL引擎
+2. SQL引擎要求查询优化器提供执行计划
+3. 查询优化取得系统统计信息、SQL语句引用对象的对象统计信息、SQL概要和构成执行环境的初始化参数
+4. 查询优化器分析SQL语句并产生执行计划
+5. 将执行计划传递给SQL引擎
+6. SQL引擎执行SQL语句
+
+
+explain plan for select column_name0 from table_name where column_name1='column_value1';
+select * from table (dbms_xplan.display());   ----查看单条语句的执行计划
+
+set autotrace on explain statistic;   ----设置自动显示执行计划
+set autotrace traceonly;
+
+
+hint
+Hints are comments in a SQL statement that pass instructions to the Oracle Database optimizer
+语法
+{DELETE|INSERT|SELECT|UPDATE} /*+ hint [text] [hint[text]]... */ 
+ 
+SELECT /*+ALL_ROWS*/ EMP_NO,EMP_NAM,DAT_IN FROM BSEMPMS WHERE EMP_NO='SCOTT'; 
+insert /*+append*/ into ...  数据会直接加到表的最后面，而不会在表的空闲块中插入数据，增加高水位线。使用append会增加数据插入的速度。
+/*+result_cache*/    ----如查询中启用缓存
+
+oracle advisory framework
+
+sql access advisor     ---gather global recommendation for a workload
+
+
+审计功能
+1.【audit_trail】 默认为【false】,为不进行审计；为【OS】时，对数据库进行审计的信息记录到操作系统中；为【DB】时记录入sys.aud$中。
+2.【AUDIT_SYS_OPERATIONS】 对sys用户进行审计。默认值为false，为不进行审计。为true，所有的信息将记录入操作系统中而不记录入SYS.AUD$。
+SYS.AUD$
+DBA_AUDIT_TRAIL
+DBA_AUDIT_EXISTS
+DBA_AUDIT_OBJECT
+DBA_AUDIT_SESSION
+audit create table by user_name  ---对user_name的create table动作进行审计
+1. by session与by access  ---当设置为by session时,对每个session下每条审计记录只出现一次,by access对每次操作都进行记录,by access将会带来大量的记录.
+2. by user   ---如果在命令后面添加by user则只对user的操作进行审计,如果省去by 用户,则对系统中所有的用户进行审计(不包含sys用户).
+
+
+statistics_level 监控参数
+all   ---收集全部统计信息
+typical     --自动收集统计信息。如inserts，updates，deletes 等，这些改变的信息会记录到 user_tab_modifications 视图
+basic   	---不启用统计
+
+在监控参数设置为basic模式手动启用监控
+BEGIN
+  DBMS_SCHEDULER.DISABLE('GATHER_STATS_JOB');
+END;
+
+dbms_stats.gather_table_stats 收集表、列和索引的统计信息 
+dbms_stats.gather_schema_stats 收集SCHEMA下所有对象的统计信息 
+dbms_stats.gather_index_stats 收集索引的统计信息
+dbms_stats.gather_system_stats 收集系统统计信息 
+dbms_stats.GATHER_DICTIONARY_STATS 所有字典对象的统计 
+DBMS_STATS.GATHER_DICTIONARY_STATS 其收集所有系统模式的统计 
+dbms_stats.delete_table_stats 删除表的统计信息 
+dbms_stats.delete_index_stats 删除索引的统计信息 
+dbms_stats.export_table_stats 输出表的统计信息 
+dbms_stats.create_state_table 
+dbms_stats.set_table_stats 设置表的统计 
+dbms_stats.auto_sample_size
+
+
+统计信息可以选择立即发布，或使得收集的统计信息处于pending状态。
+
+SELECTDBMS_STATS.GET_PREFS('PUBLISH') PUBLISH FROM DUAL;  ---查看统计信息的收集状态
+dbms_stats.set_table_prefs('scott','emp','publish','false'); ----设置表的统计信息为pending；也可由这个PL/SQL设置global、schemas级别的统计信息状态
+dbms_stats.set_table_prefs('scott','emp','publish','false'); ----设置表的统计信息为pending
+alter session set optimizer_pending_statistics = TRUE;   ----由此可以查看相关user_*_pending_stats
+dbms_stats.publish_pending_stats('scott','emp');   -----发布pending统计信息 
+dbms_stats.delete_pending_stats('scott','emp');    -----删除pending统计信息
+--立即生效的统计信息可以通过以下字典可以查看
+user_tab_stats
+user_ind_stats
+--pending状态的统计信息可以通过以下字典可以查看
+user_tab_pending_stats
+user_ind_pending_stats
+
+DBMS_STATS.lock_table_stats('scott','emp');     ----关闭特定对象的统计信息
+DBMS_STATS.unlock_table_stats('scott','emp');   -----开启统计信息
+
+analyze table table_name compute statistics;   ---收集统计信息
+
+维护窗口 maintenance window
+
+维护窗口是一个连续的时间间隔，用于管理自动维护任务（Automated Maintenance Task）
+11g三种预定义的自动维护任务
+automatic optimizer statistic collection
+automatic segment advisor
+Automatic SQL Tuning advisor
+
+dbms_auto_admin   -----自动维护任务管理
+dbms_scheduler    -----维护窗口管理
+dbms_scheduler.create_window(...)   ---创建维护窗口
+
+
+oracle任务调度(job)
+而一个基本的job由两方面组成program和schedule
+基于时间的JOB和基于事件的JOB
+【DBMS_SCHEDULER】
+
+----program
+-----PLSQL_BLOCK:表示该程序为可执行的PL\SQL匿名块
+-----STORED_PORCEDURE:表示程序为存储过程、函数或程序包
+-----EXECUTABLE：表示程序为位于操作系统上的可执行脚本或程序
+-----chain
+
+dba_job					----all/dba/user
+dba_scheduler_schedules
+
+BEGIN
+DBMS_SCHEDULER.CREATE_PROGRAM(
+	program_name=>'HR.INSERT_SYSDATE',
+	program_action=>'begin
+        insert into hr.job_test values(sysdate);
+        commit;
+		end',
+	program_type=>'PLSQL_BLOCK',
+	number_of_arguments=>0,
+	comments=>'insert sysdate into table',
+	enabled=>TRUE);
+END;
+
+----schedule
+--------FREQ：YEARLY, MONTHLY, WEEKLY, DAILY, HOURLY, MINUTELY,SECONDLY
+--------INTERVAL 
+BEGIN
+dbms_scheduler.create_schedule(
+	repeat_interval => 'FREQ=MINUTELY;INTERVAL=5',
+	start_date => systimestamp at time zone '+8:00',
+	comments => 'Start Every 5 minutes',
+	schedule_name => '"HR"."INSERT_SCHE"');
+END;
+
+----job
+------lightweight job creates less metadata for the jobs
+------job_style:regular/lightweight
+------创建轻量级作业必须使用模板 template
+BEGIN
+dbms_scheduler.create_job(
+	job_name => '"HR"."INSERT_JOB"',
+	program_name => 'HR.INSERT_SYSDATE',
+	schedule_name => 'HR.INSERT_SCHE',
+	job_class => 'DEFAULT_JOB_CLASS',
+	comments => 'insert sysdate into table',
+	auto_drop => FALSE,
+	enabled => FALSE);
+dbms_scheduler.set_attribute( name => '"HR"."INSERT_JOB"', attribute => 'schedule_limit', value => numtodsinterval(1, 'minute'));
+dbms_scheduler.set_attribute( name => '"HR"."INSERT_JOB"', attribute => 'job_priority', value => 2);
+dbms_scheduler.set_attribute( name => '"HR"."INSERT_JOB"', attribute => 'max_runs', value => 10);
+dbms_scheduler.set_attribute( name => '"HR"."INSERT_JOB"', attribute => 'max_failures', value => 3);
+dbms_scheduler.set_attribute( name => '"HR"."INSERT_JOB"', attribute => 'job_weight', value => 4);
+dbms_scheduler.set_attribute( name => '"HR"."INSERT_JOB"', attribute => 'instance_stickiness', value => TRUE);
+END;
+
+DBMS_SCHEDULER.DROP_SCHEDULE('"HR"."INSERT_SCHE"')   ---删除schedule
+
+oracle chain  		----将一些列program组合在一起
+dba_scheduler_chains
+dba_scheduler_chain_steps
+dba_scheduler_chain_rules
+dba_scheduler_job_run_details
+
+1、创建程序
+BEGIN
+  DBMS_SCHEDULER.create_program (
+    program_name   => 'test_proc_1',
+    program_type   => 'PLSQL_BLOCK',  
+    program_action => 'BEGIN
+                         INSERT INTO tb_schduler (id, descr, cr_date)
+                         VALUES (tb_schduler_seq.NEXTVAL, ''test_proc_1'', SYSDATE);
+                         COMMIT;
+                       END;',
+    enabled        => TRUE,
+    comments       => 'Program for first link in the chain.');
+
+  DBMS_SCHEDULER.create_program (
+    program_name   => 'test_proc_2',
+    program_type   => 'PLSQL_BLOCK',
+    program_action => 'BEGIN
+                         INSERT INTO tb_schduler (id, descr, cr_date)
+                         VALUES (tb_schduler_seq.NEXTVAL, ''test_proc_2'', SYSDATE);
+                         COMMIT;
+                       END;',
+    enabled        => TRUE,
+    comments       => 'Program for second link in the chain.');
+
+  DBMS_SCHEDULER.create_program (
+    program_name   => 'test_proc_3',
+    program_type   => 'PLSQL_BLOCK',
+    program_action => 'BEGIN
+                         INSERT INTO tb_schduler (id, descr, cr_date)
+                         VALUES (tb_schduler_seq.NEXTVAL, ''test_proc_3'', SYSDATE);
+                         COMMIT;
+                       END;',
+    enabled        => TRUE,
+    comments       => 'Program for last link in the chain.');
+END;
+
+2、创建chain
+--通常只需要定义一个chain名字即可，主要是用于关联后续定义rule及step
+BEGIN
+  DBMS_SCHEDULER.create_chain (
+    chain_name          => 'test_chain_1',   -->定义chain的名字
+    rule_set_name       => NULL,             -->可以指定规则集的名字
+    evaluation_interval => NULL,
+    comments            => 'A test chain.');
+END;
+
+3、定义chain步骤
+--下面定义chain的每一个步骤以及其对应的program_name，也就是每一步需要做什么
+BEGIN
+  DBMS_SCHEDULER.define_chain_step (
+    chain_name   => 'test_chain_1',   --->chain的名字
+    step_name    => 'chain_step_1',   --->步骤名字
+    program_name => 'test_proc_1');   --->步骤，program,还可以是其他的chain
+
+  DBMS_SCHEDULER.define_chain_step (
+    chain_name   => 'test_chain_1',
+    step_name    => 'chain_step_2',
+    program_name => 'test_proc_2');
+
+  DBMS_SCHEDULER.define_chain_step (
+    chain_name   => 'test_chain_1',
+    step_name    => 'chain_step_3',
+    program_name => 'test_proc_3');
+END;
+
+4、定义chain规则
+--用于定义chain根据执行结果应该如何跳转的问题，每个CHAIN 规则都拥有condition和action 属性，
+--当满足condition 时则执行action中指定的step。
+BEGIN
+  DBMS_SCHEDULER.define_chain_rule (
+    chain_name => 'test_chain_1',
+    condition  => 'TRUE',
+    action     => 'START "CHAIN_STEP_1"',
+    rule_name  => 'chain_rule_1',
+    comments   => 'First link in the chain.');
+
+  DBMS_SCHEDULER.define_chain_rule (
+    chain_name => 'test_chain_1',
+    condition  => '"CHAIN_STEP_1" COMPLETED',
+    action     => 'START "CHAIN_STEP_2"',
+    rule_name  => 'chain_rule_2',
+    comments   => 'Second link in the chain.');
+
+  DBMS_SCHEDULER.define_chain_rule (
+    chain_name => 'test_chain_1',
+    condition  => '"CHAIN_STEP_2" COMPLETED',
+    action     => 'START "CHAIN_STEP_3"',
+    rule_name  => 'chain_rule_3',
+    comments   => 'Third link in the chain.');
+
+  DBMS_SCHEDULER.define_chain_rule (
+    chain_name => 'test_chain_1',
+    condition  => '"CHAIN_STEP_3" COMPLETED',
+    action     => 'END',
+    rule_name  => 'chain_rule_4',
+    comments   => 'End of the chain.');
+END;
+
+
+5、激活chain
+BEGIN
+  DBMS_SCHEDULER.enable ('test_chain_1');
+END;
+
+
+6.1、将chain添加到job
+BEGIN
+  DBMS_SCHEDULER.CREATE_JOB (
+    job_name        => 'test_chain_1_job',
+    job_type        => 'CHAIN',
+    job_action      => 'test_chain_1',
+    repeat_interval => 'freq=minutely; interval=2',
+    start_date      => SYSTIMESTAMP,
+    end_date        => SYSTIMESTAMP + (1/48),
+    enabled         => FALSE);   --->值为TRUE用于激活JOB 
+END;
+--激活job   
+dbms_scheduler.enable('test_chain_1_job');
+
+6.2、手动执行chain
+BEGIN
+  DBMS_SCHEDULER.run_chain (
+    chain_name    =>  'test_chain_1',
+    job_name      =>  'test_chain_1_run_job',
+    start_steps   =>  'chain_step_1,chain_step_3');  -->可以指定单步或多步以及所有步骤
+END;
+
+oracle window    
+----控制job执行时支配(使用)的资源
+----只能一个windows在运行
+DBMS_SCHEDULER.CREATE_WINDOW
+
+begin
+  dbms_scheduler.create_window(window_name     => "my_first_wd1",
+                               resource_plan   => null,     ----使员工默认资源计划，可以直接指定名称
+                               start_date      => sysdate,
+                               repeat_interval => "FREQ=DAILY; INTERVAL=5",
+                               duration        => interval "1" hour);
+end;
+*_SCHEDULER_WINDOWS视图(DBA和ALL)
+*_SCHEDULER_WINDOW_DETAILS ---显示WINDOW的详细信息；
+*_SCHEDULER_WINDOW_LOG ---显示WINDOW的日志，比如打开和关闭；
+
+dbms_scheduler.open_window(window_name IN VARCHAR2,duration IN INTERVAL DAY TO SECOND,force IN BOOLEAN DEFAULT FALSE)
+dbms_scheduler.close_window(window_name IN VARCHAR2)
+
+WINDOW GROUP能包含多个WINDOW
+
+创建JOB时，指定schedule_name参数为WINDOW GROUP/WINDOW名称，将job与window联系在一起
+
+RESOURCE PLAN    
+----资源计划
+BEGIN
+DBMS_RESOURCE_MANAGER.CREATE_SIMPLE_PLAN(SIMPLE_PLAN => 'simple_plan1',
+   CONSUMER_GROUP1 => 'mygroup1', GROUP1_CPU => 80,
+   CONSUMER_GROUP2 => 'mygroup2', GROUP2_CPU => 20);
+END;
