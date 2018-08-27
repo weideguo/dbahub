@@ -1,0 +1,60 @@
+byte=8bite
+00-FF
+
+字符集(charset)
+unicode 0-(2^16-1) 将所有字符映射到一个16位数字 
+
+universal coded character set
+ucs-2
+ucs-4
+
+utf8
+Unicode(or Universal Coded Character set) Transformation Format-8bit
+
+
+编码(encoding)
+utf8   	变长，中文三字节，英文一字节 1-4字节
+latin1  定长，单字节，iso-8859-1编码，扩展ASCII+
+GBK		变长，中文双字节，英文一字节
+utf16	定长，二字节表示所有字符
+
+
+utf8mb4  mysql专用？最大可以存储4字节，mysql的utf8编码最大只能存储3字节（标准的utf8最大可以存储4字节）
+most bytes 4
+
+
+utf8
+
+中文编码
+1110XXXX 10XXXXXX 10XXXXXX
+ 
+ASCII
+0XXXXXXX
+
+
+
+
+BOM
+byte order mark
+文件开头多
+EFBBBF   utf8编码时
+FEFF     utf6编码时
+
+
+
+#输入
+终端输入    二进制字符串1				  终端编码转换
+终端到mysql 二进制字符串1-二进制字符串2   使用 连接字符编码-表字符编码 转换
+
+查询
+mysql到终端 二进制字符串2-二进制字符串1   使用 表字符编码-连接字符编码 转换
+终端显示    二进制字符串1转换显示         使用终端编码显示                  
+
+
+
+
+
+
+
+
+
