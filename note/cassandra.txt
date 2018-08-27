@@ -1,0 +1,44 @@
+配置文件
+conf/cassandra.yaml
+
+操作语言为CQL
+
+
+启动
+bin/cassandra
+
+
+命令行
+bin/csqlsh
+
+
+
+desc keyspaces;
+desc tables;  
+desc type;
+
+desc table table_name;
+
+
+#简单策略
+#复制因子为1个副本
+CREATE KEYSPACE tutorialspoint
+WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
+
+
+use myspace;
+
+##table与cloumnfamily相同
+create table abc ( id int primary key, name varchar, age int );
+
+insert into abc values(...);
+
+select * from abc; 
+
+
+
+create type student( name varchar, age int);
+create table classmate(id int primary key,s frozen<student>);   #使用自定义类型
+insert into classmate(id,s) values(123,{name: 'weideguo', age: 18});  
+
+
