@@ -1,0 +1,150 @@
+设置命令行大小
+mode concols=x lines=y
+
+
+服务管理
+net start "service_name"    ###service_name由服务中查看
+sc delete "service_name"    ###删除服务
+sc create fuckBAT binPath= "C:\Program Files\TTPlayer\TTPlayer.exe" start= auto    ####将可执行文件注册成服务并开启自动启动
+
+netstat   ###查看端口
+netstat -lnp | find "port_number"  查看端口号是否启动
+netstat -ano     ###查看端口的占用情况
+
+
+
+开机启动
+注册表中
+
+load键，位于： 
+HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\load 
+
+Userinit键，位于 
+HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit 
+右面板中有个userinit.exe键值，其数值为多个应用程序，使用逗号隔开。 
+
+Explorer\Run键，位于 
+HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run 
+HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run  
+
+RunServicesOnce键，位于： 
+HKLM\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce 
+HKCU\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce 
+这两个键负责在用户登录之前及其他注册表自启动键加载各自的程序千加载自启动服务。 
+
+RunServices键，位于： 
+HKLM\Software\Microsoft\Windows\CurrentVersion\RunServices 
+HKCU\Software\Microsoft\Windows\CurrentVersion\RunServices 
+这两个键的作用与RunServicesOnce键相似。 
+
+RunOnce\Setup键，位于： 
+HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce\Setup 
+HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\Setup 
+这两个键的默认值为确认用户登录后加载的程序。 
+
+RunOnce键，位于： 
+HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce 
+HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce 
+前一个键在用户登录后及其他注册标的Run键值加载程序前加载相关联的程序；
+后一个键在操作系统处理完其他注册表Run键及自启动文件夹内的程序后再加载。
+注意在xp系统中，RunOnce作为子键位于HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnceEx键下。 
+
+Run键，位于： 
+HKLM\Software\Microsoft\Windows\CurrentVersion\Run 
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+###前一个 系统启动项
+###后一个 用户启动项
+两个键都在"启动"文件加之前加载，其中HKCU下的Run键紧跟着HKLM下的Run键之
+
+
+通过设置注册表中
+hkey  	为HKLM/HKCU
+key   	为上述的注册表的键值，除了HKLM/HKCU等字段
+command 为可执行程序
+
+
+
+任务计划 taskschd.msc
+设置定时启动可执行程序
+
+
+远程桌面 mstsc.exe
+远程协助 msra.exe
+
+
+
+
+
+taskkill /f /pid $PID    #强制杀死进程
+
+
+
+chcp 936    #更改编码
+
+
+437          美国 
+708          阿拉伯文(ASMO 708)
+720          阿拉伯文(DOS)
+850          多语言(拉丁文 I) 
+852          中欧(DOS) - 斯拉夫语(拉丁文 II) 
+855          西里尔文(俄语) 
+857          土耳其语 
+860          葡萄牙语 
+861          冰岛语 
+862          希伯来文(DOS)
+863          加拿大 - 法语 
+865          日耳曼语 
+866          俄语 - 西里尔文(DOS) 
+869          现代希腊语
+874          泰文(Windows)
+932          日文(Shift-JIS)
+936          中国 - 简体中文(GB2312)
+949          韩文
+950          繁体中文(Big5)
+1200         Unicode        
+1201         Unicode (Big-Endian)
+1250         中欧(Windows)
+1251         西里尔文(Windows)
+1252         西欧(Windows)
+1253         希腊文(Windows)
+1254         土耳其文(Windows)
+1255         希伯来文(Windows)
+1256         阿拉伯文(Windows)
+1257         波罗的海文(Windows)
+1258         越南文(Windows)
+20866        西里尔文(KOI8-R)
+21866        西里尔文(KOI8-U)
+28592        中欧(ISO)
+28593        拉丁文 3 (ISO)
+28594        波罗的海文(ISO)
+28595        西里尔文(ISO)
+28596        阿拉伯文(ISO)
+28597        希腊文(ISO)
+28598        希伯来文(ISO-Visual)
+38598        希伯来文(ISO-Logical)
+50000        用户定义的
+50001        自动选择
+50220        日文(JIS)
+50221        日文(JIS-允许一个字节的片假名)
+50222        日文(JIS-允许一个字节的片假名 - SO/SI)
+50225        韩文(ISO)
+50932        日文(自动选择)
+50949        韩文(自动选择)
+51932        日文(EUC)
+51949        韩文(EUC)
+52936        简体中文(HZ)
+65000        Unicode (UTF-7)
+65001        Unicode (UTF-8)
+
+
+
+
+
+
+
+
+
+
+
+
+
