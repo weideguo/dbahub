@@ -1,0 +1,129 @@
+编译安装
+cd $memcached_source
+./configure --prefix=/u02/memcached
+make
+make install
+
+##编译libevent包
+./configure --prefix=/data/db_user00/libevent
+make && make install
+
+###编译时指定libevent包
+./configure --prefix=/data/db_user00/memcached --with-libevent=/data/db_user00/libevent
+make && make install
+
+
+memcached -d -c 10240 -m 1024 -u root   ##启动
+-d 选项是启动一个守护进程
+-m 是分配给Memcache使用的内存数量，单位是MB，这里是1024MB，默认是64MB
+-u 是运行Memcache的用户
+-l 是监听的服务器IP地址，默认应该是本机
+-p 是设置Memcache监听的端口，默认是11211，最好是1024以上的端口
+-c 选项是最大运行的并发连接数，默认是1024
+-P 是设置保存Memcache的pid文件位置
+-h 打印帮助信息
+-v 输出警告和错误信息
+-vv 打印客户端的请求和返回信息
+-t 处理请求的线程数
+
+
+连接
+telnet 127.0.0.1 11211
+
+可以启动多个守护进程，但是端口不能重复
+
+
+###大部分命令的操作格式
+<command> <key> <flags> <expiration time> <bytes>
+<value>
+
+<command>	set/add/replace
+<key>	查找关键字
+<flags>	客户机使用它存储关于键值对的额外信息
+<expiration time>	该数据的存活时间，0表示永远
+<bytes>	存储字节数
+<value>	存储的数据块
+
+###添加新的键值，如果存在则替换
+set username 0 0 10      ###严格存储10个字节
+1234567890
+
+###添加新键，已经存在则不添加
+add
+
+##替换已经存在的键
+replace 
+
+##读取
+get <key>
+
+###获取信息比get多
+gets <key>
+
+###删除
+delete <key>
+
+###(check and set)只有当最后一个参数和gets所获取的参数匹配时才能存储，否则返回"EXISTS"
+###用于修改数据
+###处理多个进程同时修改同一值的问题
+cas
+
+cas <key> <expiration time> <bytes> <unique_cas_token>
+<value>
+
+
+<unique_cas_token>由gets <key>获取
+
+###增加/减数值
+incr/decr <key> <decrement_value>
+
+
+###转储所连接的 memcached 实例的当前统计数据
+stats 
+stats items  
+stats cachedump n m   	####查看所有的key 
+stats sizes 			####查看所有items的大小及个数	
+stats slabs 			####显示各个slabs的信息
+###n为使用【stats item】列出的item后的数字
+###m为显示的行数，0全部显示
+
+
+
+###########################################
+stats items
+	STAT items:1:number 1
+	...
+	END
+stats cachedump 1 0
+	ITEM CLEAR_PMFSERVER [0 b; 1499597200 s]
+	END
+get CLEAR_PMFSERVER
+	VALUE CLEAR_PMFSERVER 0 0
+#############################################
+
+
+
+###清理缓存中的所有名称/值对
+flush_all
+
+##在现有缓存后添加数据
+append 
+
+
+##在现有缓存前添加数据
+prepend 
+
+
+
+通信协议
+文本协议
+redis、http、memcached
+
+
+二进制协议
+memcached、mysql
+
+
+
+
+
