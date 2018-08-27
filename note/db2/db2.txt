@@ -1,0 +1,54 @@
+--虚表
+sysibm.sysdummy1;
+	select 123 from sysibm.sysdummy1;
+values
+	select * from (values 123);
+	Select * from (values ('wdg',1),('lxx',2) ) as a(name,id);
+--查看所有表的信息	
+select * from  syscat.tables;
+--DB2中，共有四种隔离级：RR,RS,CS,UR
+--RR：Repeatable Read 在此隔离级别下，DB2会锁住所有相关的记录。在一个事务中进行查询时，不允许任何对这个查询表的数据修改。
+--RS：Read Stability 此隔离级别下会锁定所有符合条件的记录。 在一个事务中进行查询时，不允许读取其他事务update结果集中的数据，允许读取到其他事务提交的新增数据。
+--CS：Cursor Stability 仅锁住当前处理的记录。默认的隔离级别是CS
+--UR：Uncommitted Read 未提交读，允许脏读，不会出现任何的行级锁，作用是在select的时候，不需要对update的数据进行等待。
+select * from abc  WITH UR
+
+命令行工具
+CLP  Command Line Processor  ---使用【db2】命令进入
+connect to db_name user user_name using user_password  --连接到数据库
+	
+CLPPLUS   --使用clpplus进入
+connect user_name@sample  ---由提示符进入
+connect user_name/user_password@host:port/sample
+    
+
+db2diag.log	
+	
+
+	
+一个数据库服务器可以创建多个实例
+
+dbicrt instance_name 	----新建数据库实例
+dbilist  	---显示所有实例
+db2stop  	---停止当前实例，可使用参数force
+db2start 	----启动当前实例
+db2drop     ----删除一个实例
+
+由db2 进入CLP
+connect to databse_name  --隐式启动数据库，连接数据库
+set db2instanct=instance_name   ---设置数据库实例，每一个实例的端口号必须是唯一的
+get instance   --显示当前运行的实例
+get db cfg for database_name  ---显示配置参数 
+create database database_name   ---创建数据库
+list db directory   ---显示已经创建的数据库
+list active database  ---显示活动的数据库
+activate database database_name   ---启动数据库，数据库名为database_name
+deactivate database   ---关闭数据库
+	
+	
+实例也称为数据库管理器(Database Management Application)，是数据库管理器在内存中的映像。	
+每个实例可以管理若干个数据库，一个数据库只属于一个实例。	
+	
+	
+
+	
