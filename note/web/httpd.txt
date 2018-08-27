@@ -1,0 +1,79 @@
+httpd -k start
+httpd -k stop
+
+
+mod_proxy
+mod_jk
+mod_proxy_blancer
+   修改配置文件conf/httpd.conf
+   1)轮询均衡策略的配置
+   ProxyPass / balancer://proxy/			    #设置代理 【balancer://proxy/】可以直接指定具体url；依赖模块mod_proxy；
+   ProxyPassReverse / balancer://proxy/	        #设置反向代理 用户处理重定向操作    依赖模块mod_proxy_blancer?
+   <Proxy balancer://proxy>                     #由代理节点设置负载均衡
+		BalancerMember http://127.0.0.1:8080/   #依赖mod_proxy_http;也可以使用ajp协议【ajp://127.0.0.1:8009】,tomcat中查看ajp协议对应的端口
+		BalancerMember http://127.0.0.1:8081/   #
+   </Proxy>                                     #
+   2)按权重分配均衡策略的配置
+   ProxyPass / balancer://proxy/
+   <Proxy balancer://proxy>   
+		BalancerMember http://127.0.0.1:8080/ loadfactor=3
+		BalancerMember http://127.0.0.1:8081/ loadfactor=1
+   </Proxy>
+   3)权重请求响应负载均衡策略的配置
+   ProxyPass / balancer://proxy/ lbmethod=bytraffic
+   <Proxy balancer://proxy>   
+		BalancerMember http://127.0.0.1:8080/ loadfactor=3
+		BalancerMember http://127.0.0.1:8081/ loadfactor=1
+   </Proxy>
+   4)热备份
+   ProxyPass / balancer://proxy/
+   <Proxy balancer://mycluster> 
+		BalancerMember http://localhost:8080 
+		BalancerMember http://localhost:8085 status=+H 
+   </Proxy> 
+
+
+ProxyRequests off    ##当使用ProxyPass指令时，通常需要这样设置
+ProxyPass [path] !|url [key=value key=value ...]] 
+ 
+###"!"不对某个子目录进行反向代理
+	假设本地服务器地址是：http://example.com/ 
+		ProxyPass /mirror/foo/ http://backend.example.com/
+	将会导致对http://example.com/mirror/foo/bar的本地请求将会在内部转换为一个代理请求：http://backend.example.com/bar 。 
+   
+反向代理
+	代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
+	客户端能访问外部的web,但是不能访问目标web,目标web所在的网络内一台机器充当目标web的代理,客户端直接访问代理就像访问目标web一样。
+正向代理
+	客户端无法直接访问外部的web,需要在客户端所在的网络内架设一台代理服务器,客户端通过代理服务器访问外部的web
+
+apache虚拟主机
+	一台主机上有多个IP，配置conf/extra/httpd-vhosts.conf将多个IP映射到一个httpd
+	修改<VirtualHost>的配置信息
+
+session共享
+	1、session共享，多个服务器session拷贝保存，一台宕机不会影响用户的登录状态；
+	2、请求精确集中定位，即当前用户的请求都集中定位到一台服务器中，这样单台服务器保存了用户的session登录信息，如果宕机，则等同于单点部署，会丢失；
+	
+apache中针对上述两个方法提供了不同的配置项：
+  session replication：会话复制，即上述的方法一；
+		
+  session sticky：会话不复制，即上述的方法二；
+		ProxyPass / balancer://tomcatcluster/ lbmethod=byrequests stickysession=JSESSIONID nofailover=Off timeout=5 maxattempts=3
+	
+	
+linux下编译
+###进入源代码文件夹
+./configure --prefix=$PREFIX     #设置编译输出路径 default【/usr/local/apache2】 【./configure --enable-so --enable-mods-shared=all】使用设个才编译so文件
+make                            #编译
+make install                    #安装
+vi $PREFIX/conf/httpd.conf       #设置httpd
+$PREFIX/bin/apachectl -k start   #启动httpd
+
+
+linux自带httpd
+	配置文件 /etc/httpd/conf/httpd.conf
+
+
+
+
