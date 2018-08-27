@@ -1,0 +1,474 @@
+incarnation
+---A separate version of a database. 
+---The incarnation of the database changes when you open it with the RESETLOGS option, but you can recover backups from a prior incarnation so long as the necessary redo is available.
+alter database open resetlogs;    ----打开数据库时会新增一个incarnation
+list incarnation;
+reset database to incarnation inc_num;  ----rman中设置使用特定incarnaiton(实体？) inc_num为数字
+
+
+冷备份
+关闭数据库时进行备份，复制数据库的物理文件
+  控制文件 
+  数据文件 
+  联机日志文件 
+  [归档日志 密码文件(PWDorcl.ora) 初始化参数文件(init.ora/SPFILEORCL.ORA)]
+
+  
+热备份  
+
+----数据库启动时的备份为非一致性备份(inconsistent backup)
+
+非归档模式
+
+恢复控制文件
+-----只能在关闭数据库时进行备份
+	
+备份控制文件  --控制文件为镜像，所有控制文件内容都一致，如果不是丢失所有，复制更改名字即可
+	alter database backup controlfile to 'path/name.ctl';  
+	
+恢复
+	startup force
+	---还原控制文件，复制缺失的控制文件到指定位置
+	alter database mount;
+	recover database using backup controlfile;
+	alter database open resetlogs;
+
+	---修改数据库结构后丢失控制文件的恢复  --新添加了表空间
+	alter database create datafile 'datafile1' as 'datafile2';  
+	--datafile1由select name from v$datafile 查看
+	--datafile2为新添加的数据文件名
+
+	
+归档模式
+
+恢复系统表空间
+----手工热备份
+alter tablespace system begin backup;    ----scn被冻结，修改将记录在undo表空间
+host cp path_name1/system01.dbf path_name2/system01_bak.dbf   ---在sqlplus中使用系统命令复制数据文件
+alter tablespace system end backup;
+
+--对表空间进行修改后表空间的数据文件丢失
+
+---手工恢复
+startup force
+host cp path_name1/system01_bak.dbf path_name2/system01.dbf  --将旧的系统表空间复制回来
+recover datafile n; --n为 【startup force】 中提示的datafile号
+alter database open;
+
+
+恢复非系统表空间
+---手动热备份
+alter tablespace users read only;    --设置为read only模式可以不影响读操作
+host cp path_name1/user01.dbf path_name2/user01_bak.dbf 
+alter tablespace users read write;
+
+---对用户非系统表空间进行修改后丢失非系统表空间
+
+---手工恢复与系统表空间相同
+
+
+RMAN  
+---recovery management
+---使用与操作系统的copy命令备份相同，rman能在复制的同时验证数据的有效性
+---非归档需要在mount模式备份；归档模式可以在开启时备份。
+---控制文件记录rman的备份信息
+---host "command" 在rman中执行系统命令。如 host "clear"
+
+v$archived_log
+v$backup_corruption
+
+
+连接
+---不使用恢复目录则oracle使用控制文件存储rman的备份信息（备份时的元数据）
+rman target /  ;   ----本地  
+rman target sys/sys_password@connect_identifier;  --连接远程数据库  --connect_identifier由$oracle_home/network/admin/tnsnames.ora设置
+
+sql 'sql_command';  ---执行sql
+show all ---显示默认设置
+
+指令执行方式
+	单个执行
+	批处理  run{command1;...}
+	运行脚本
+	操作系统脚本
+	
+备份集（backupset）  --一次备份所有备份片的集合
+备份片（backuppiece） ---一个由rman产生的备份文件
+
+备份等级
+全量备份与0级增量备份都是全备，全量备份不能作为1级增量备份的基础，全备包含使用和未使用的块，0级增量包含使用过的全部块
+
+full backup    					   ----只备份数据文件中使用的块
+whole database backup    		   ----备份所有数据文件
+differential incremental backup    ----同等级(1)或更低等级(0)备份之后更改块的备份   
+cumulative level 1 backup      	   ----0级备份之后更改的数据块的备份
+
+--全量备份
+backup incremental level 0 database;    
+--差异增量备份
+backup incremental level 1 database;		
+----默认为deffential increment backup;  备份最近0/1级备份之后更改的块
+--累积增量备份
+backup incremental level 1 cumulative database;    
+----备份最新0级之后的更新
+
+
+备份  --在命令之后使用format设置备份文件的路径、格式，格式可以使用变量替代设置文件名
+--全备
+backup [full] database format 'path_name/%u' ;  ---全量备份,不要full也可以 
+backup database plus archivelog delete input;  --同时备份归档日志，然后删除归档日志
+backup database format 'path_name1/format1' plus archivelog format 'path_name2/format2'; 
+backup database include current  controlfile;
+backup database filesperset 1;  --一个备份片包含文件个数由filesperset指定
+backup tablespace tablespace_name;  --备份表空间
+backup datafile n;  --备份指定数据文件 n可由【select file_name,file_id,tablespace_name from dba_data_file】查看
+
+config controlfile autobackup on;   --启动自动备份控制文件，使用rman进行备份操作时同时备份控制文件
+---自动备份时，spfile同control file一同备份
+backup current controlfile;   --不设置自动备份，手动备份
+
+backup spfile;  ----备份spfile
+
+backup archivelog all;    --备份归档日志
+backup database plus archivelog;   
+
+backup [as compressed backupset] ...;  ---备份时压缩
+CONFIGURE DEVICE TYPE DISK BACKUP TYPE TO COMPRESSED BACKUPSET;  --设置每次备份都压缩
+
+
+backup [as backupset | as copy] ...    ---默认使用【as backupset】
+
+--增量备份使用同组标记的数据文件
+recover copy of database with tag 'tag_name'      
+backup incremental level 1 for recover of copy whith tag 'tag_name'; 
+
+
+backup as copy database;    ---与使用操作系统的copy命令类似，RMAN同时验证文件的有效性 -----镜像文件备份只能使用于disk
+BACKUP AS COPY DURATION 2:00  PARTIAL MINIMIZE LOAD DATABASE;     ----在持续时间内使最小IO？【minimize time】设置使用最小时间
+
+recover copy of datafile 'path_name/file_name';		-----把增量备份用到copy出来的文件上
+
+---设置加密   使用wallet
+configure encryption for database on;    -----RMAN中设置
+
+---使用镜像文件恢复
+---需要先将文件置于offline状态
+------数据文件路径改变为镜像文件的路径
+switch datafile datafile_num to copy ['path_name/file_name'];   
+
+
+---更改数据文件位置
+SET NEWNAME FOR DATAFILE and SET NEWNAME FOR TEMPFILE   
+----set newname for datafile 'file_name1' to 'file_name2';
+SET NEWNAME FOR TABLESPACE
+SET NEWNAME FOR DATABASE
+---使用镜像文件恢复
+switch datafile datafile_num to copy 'path_name/file_name';   ------需要先将文件置于offline状态
+
+删除备份
+delete backupset n; --由备份集号删除备份，备份集号可以使用【list back of database】查看
+
+delete all input; ---备份后删除已经备份的归档日志
+
+DELETE ARCHIVELOG ALL COMPLETED BEFORE 'SYSDATE-7';   ---删除系统时间7天之前的归档日志
+
+crosscheck backup;
+crosscheck archivelog all;       ----检查RMAN 的目录以及物理文件，如果物理文件不存在于介质上，将标记为Expired。如果物理文件存在，将维持Available。
+delete expired archivelog all;   ----在rman删除已经标记为expired的文件(在控制文件及catalog删除备份的元数据))
+
+list expired backup;    -----crosscheck backup命令也可以实现
+delete expired backup;  ---删除已经失效的备份，即备份片已经被删除，只是从controlfile或者catalog中将备份相关的元数据删除（即记录内容）
+
+delete obsolete;  ---删除保留策略(retention policy)过期的备份
+
+查看
+list backup of database;
+list backup of datafile;
+list backup of controlfile;
+list backup of tablespace tablespace_name;
+list backup of datafile n;
+list backup of archivelog list;
+
+
+保存策略
+configure retention policy to none;  ---不采用备份保留策略
+delete obsolete; --删除被判定为废弃的文件 使用【report obsolete】查看处于废弃状态的备份文件
+
+1.基于时间的备份保留策略
+configure retention policy to recovery window of n Days;  ---n为正整数，rman所保留的备份保证可以恢复到以前的时间点
+2.基于冗余数的备份保留策略
+configure retention policy to redundancy n;  ---保留的文件数量（某个数据文件存在的备份数量），废弃最旧的备份 
+
+备份优化   ---在备份过程中如果满足特定条件，某些文件将不包含在备份集中
+configure backup optimization on; 
+
+还原文件并恢复--在rman中  启动到mount模式
+restore   ---从备份文件中还原介质
+recover   ---使用日志还原数据库到指定位置
+
+restore/recover database;  --还原介质
+restore/recover tablespace tablespace_name;
+
+整库恢复
+--需要在mount模式
+
+
+表空间的恢复  ---可以不用关闭数据库
+run{
+sql 'alter tablespace tablespace_name offline [immediate]';
+restore tablespace tablespace_name;
+recover tablespace tablespace_name;
+sql 'alter tablespace tablespace_name online';
+}
+
+归档日志的还原                      
+restore archivelog all;    
+
+控制文件还原
+restore controlfile from 'backup_piece_name'   ---由备份片名还原控制文件  
+
+set dbid=dbid_value;   ----select dbid from v$database;     
+resore controlfile from autobackup;    ---由设置的dbid自动还原备份文件
+
+recover database using backup controlfile;   ---使用备份控制文件恢复数据库，并在交互中指定使用当前的重做日志
+alter database open resetlogs;
+
+数据文件还原
+allocate channel c1 type disk;
+set newname for datafile 5 to 'c:\temp\test.dbf';    ----更改文件名
+restore datafile 5;
+switch datafile 5;   ---update control file
+recover datafile 5;
+sql 'alter database datafile 5 online';
+release channel c1;
+
+
+控制备份片大小
+allocate channel c1 type disk;
+allocate channel c2 type disk;
+set limit channel c1 kbytes 1024;
+set limit channel c2 kbytes 1024;
+...
+release channel c1;
+release channel c2;
+
+控制备份片的文件数
+allocate channel ch1 type disk;    ----allocate channel ch1 type disk MAXOPENFILES 4;  ----可以同时打开的文件数？
+allocate channel ch2 type disk;
+backup datafile 3,4,5,6 filesperset 3;
+release channel ch1;
+release channel ch2;
+
+
+不完全恢复
+
+restore database until {SCN 1000 | time to_date()};    ---从与目标时间/SCN 最近的备份集还原文件
+recover database until {SCN 1000 | time to_date()};    ---利用归档日志还原数据库
+
+TSPITR(tablespace point in time recover)   
+-----将一个或多个表空间恢复到以前某个时间，不会影响其他表空间
+----相关的datafile应该处于offline模式
+ts_pitr_objects_to_be_dropped	---查看执行pitr时被删除的对象
+ts_pitr_check   				---查看表空间是否self-contain(即其他表空间不包含当前表空间对象相关联的数据对象)
+exec DBMS_TTS.TRANSPORT_SET_CHECK('TBS1',TRUE);   ---执行后查看【TRANSPORT_SET_VIOLATIONS】视图，检查表空间是否自包含(self-contain)
+
+recover tablespace tablespace_name until {time time_string | scn scn_number | sequence seq_num};    ----sequence为【archive log list】中的sequence 
+recover tablespace tbs1 until time "to_date('2014-06-24 14:08:18','yyyy-mm-dd hh24:mi:ss')" auxiliary destination '/home/oracle/prod';   ---需要创建存放辅助库文件
+
+TS_PITR_CHECK  ----有此view查看表空间是否是self-contained
+
+self-contained是指本表空间的东西不指向其它表空间的东西
+检查方法:
+execute dbms_tts.transport_set_check('USERS',TRUE);
+select * from transport_set_violations;
+
+point in time recovery
+时间参数
+until SCN scn_number;      ----scn 如:[select current_scn from v$database;]
+until time time_sting;     ----时间格式如'09/30/2008:18:00:00'
+until sequence  seq_number;    ----[archive  log list]中的sequence
+
+
+
+VALIDATE DATABASE;  ---检查数据库健康状况，如果遇到故障，则记录到ADR中
+
+DRA(database recovery advise)  
+---数据修复顾问
+---使用em或rman查看故障
+{list|advise|repair|change} failure
+---列出数据库故障
+list failure 
+[fail_num | all | critical | high | low | closed | exclude failture | detail];	  
+---rman中给出数据库故障修复建议
+advise failure 
+[all | critical | high | low | fail_num1[,fail_num2,...] ] 
+[excluded failure fail_num11[,fail_num21,...]];   
+--执行修复
+repaire failture 
+[preview] [noprompt];   
+--分类/关闭 故障
+CHANGE FAILURE
+{ ALL | CRITICAL | HIGH | LOW |fail_num1[,fail_num2,…] }
+[ EXCLUDE FAILURE fail_num1[,fail_num2,…] ]
+{ PRIORITY {CRITICAL | HIGH | LOW} | CLOSE }
+[ NOPROMPT ] 
+
+
+
+recovery catelog           ---存储RMAN的库数据（RMAN元数据、RMAN脚本）  信息存储于表空间中
+virtual private catelog    ----虚拟用户目录  通过虚拟用户目录将不同用户的权限分开
+
+---A base recovery catalog is a database schema that contains RMAN metadata for a set of target databases.
+---A virtual private catalog is a set of synonyms and views that enable user access to a subset of a base recovery catalog.
+
+恢复目录  recover catalog    ---存储RMAN库的元数据、运行脚本
+rman中
+create tablespace tbs_rman;   --创建恢复目录使用的表空间
+grant connect,resource,recovery_catalog_owner to rman;   ---将恢复目录赋给用户rman，用户必须先创建
+rman target sys/redhat@orcl catalog rman/rman@catadb   --连接到目标数据库和恢复目录
+create catalog;
+register database [connect_identifier];  ---恢复目录注册数据库，为target的数据库  注销为ungister database
+	
+设置备份来源路径                    
+catalog start with 'path_name';    --rman中设置	
+RESYNC CATALOG							  ---连接到catalog后同步RMAN的元数据到catalog
+
+	
+虚拟恢复目录  virtual private catalog  ---提供权限控制
+connect catalog rman/rman@catadb;         -----由上面建立基础恢复目录(base catalog)
+grant catalog for database orcl to vpc1;    ----vpc1至少有create session权限
+
+connect catalog vpc1@catdb;    
+create virtual catalog;	      ---创建虚拟恢复目录 
+register database orcl;
+DROP CATALOG;              ---删除虚拟目
+
+
+设置备份来源路径                    
+catalog start with 'path_name';    --rman中设置
+
+恢复目录数据迁移
+connect catalog rman_t@db_t;
+import catalog rman_s@db_s dbid=db_id_number[,db_id_number];    ----将db_s数据库中rman_s用户的dbid对应的恢复目录的信息导入db_t数据中的rman_t用户
+
+
+
+联机重做日志损坏
+
+非当前日志组的文件丢失，修改日志组的文件，rename即可
+当前日志组文件丢失 
+alter system set "_allow_resetlogs_corruption"=true scope=spfile;   ---修改后重启到mount
+--- 参数的含义是,允许在破坏一致性的情况下强制重置日志,打开数据库.
+--- 使用所有数据文件中最旧的scn打开数据库,所以通常需要保证system表空间拥有最旧的scn.
+recover database until cancel;    ---交互中选cancel
+alter database open resetlogs;    ---如果失败，则重启再次recover？
+alter database rename file 'xxx/xxx/xxx' to 'yyyy/yyyy/yyy';    -----重新制定redo log的位置
+alter database open resetlogs    ---需要resetlogs的情况
+---1. Imcomplete Recovery
+---2. Change of control file
+
+
+隐藏参数 (hidden parameters) 
+---由oracle内部使用，以 '_' 开头。
+
+restore database;
+recover database noredo;   ----不使用联机重做日志还原数据库(非归档模式，在联机重做日志全部丢失时可以这样操作)
+
+用户模式备份
+alter tablespace tablespace_name [begin backup | end backup];   ----备份表空间，必须要先将表空间置于备份模式
+alter datafile datafile_num [offline | online];     			----备份数据文件需要将文件置于脱机模式
+
+spfile恢复   ---spfile与controlfile一同备份？
+restore spfile to pfile 'path_name/file_name';    ---由备份的服务器参数文件恢复成初始化参数文件
+restore spfile from 'spfile_backup_piece';    	  ---
+restore spfile from autoback;
+
+
+
+
+恢复数据文件
+alter database datafile n offline;     ----n 使用dba_data_file查询
+restore datafile n;   ---rman
+recover datafile n;   ---rman
+alter database datafile n online;  
+
+
+
+
+block change tracking
+--change tracking writer（CTWR）后台进程，在change tracking file文件中，记录所有数据库中变化的物理位置，1级增量备份RMAN使用change tracking data决定哪些需要读取。通过消除对整个数据文件的读取，提高了性能。
+--设置了【DB_CREATE_FILE_DEST】，即使用OMF
+alter database {enable|disable} block change tracking;   
+--未设置
+alter database {enable|disable} block change tracking using file 'path_name';   
+
+
+v$database_block_corruption   --块内损坏
+ADR记录各种类型的损坏(块内[intrablock]、块间[interblock])
+块内损坏 只能是逻辑损坏
+块间损坏 逻辑或者物理损坏
+
+
+file media recovery  ---即为默认恢复
+--文件offline
+--restore恢复文件
+--recovery修复文件
+
+BMR (block media recovery)
+块介质恢复  
+---在rmna中执行，文件在online中执行恢复
+
+---数据库处于mount或者open状态
+---数据库必须在归档模式
+---启用闪回特性
+---存在整库备份或0级备份
+blockrecover corruption list;  							---修复所有列出损坏块
+blockrecover datafile datafile_num block block_num;    	---修复特定文件的指定块
+
+--获取块顺序
+standby database -> flashback log -> blocks in full or level 0 incremental backups
+
+
+
+DUPLICATE    ---复制数据库 
+
+目标数据库：包含要恢复的表空间
+控制文件：向RMAN 提供备份信息
+备份集：来自目标数据库，用作重建表空间的来源
+归档重做日志：来自目标数据库，用作重建表空间的来源
+辅助实例：在恢复过程中用来执行恢复的Oracle DB 实例  
+
+
+---两种复制类型
+active         
+backup-based
+
+--active   	 
+---库需要在归档模式，库启动，密码文件相同(旧、新库的sysdba角色的密码相同)
+---auxiliary处于nomount状态
+---在auxiliary服务器上安装oracle软件（不建立数据库），建立pfile和密码文件(使用orapwd)，配置listener.ora/tnsnames.ora/sqlnet.ora文件
+  
+connect target sys/carnation@prodorcl
+connect auxility sys/carnation@auxorcl   ---rman target=sys/carnation@prodorcl auxname=sys/carnatin@auxorcl;  可以以代替
+duplicate target database to auxorcl from active database 
+[password file] [spfile] [nofilenamecheck]
+[set control file 'path_name1/file_name1','path_name2/file_name2']  ---指定控制文件文件路径及名称
+[set db_file_name_convert 'source_path_name1','target_path_name2']  ---转换数据文件的路径
+[set log_file_name_convert 'source_path_name1','target_path_name2'] ---转换联机重做日志的路径
+----如果不进行路径转换，则会覆盖目标数据库的文件
+
+DUPLICATE TARGET DATABASE TO dupdb FROM ACTIVE DATABASE 
+DB_FILE_NAME_CONVERT '/oracle/oradata/prod/', '/scratch/oracle/oradata/dupdb/' 
+SPILE PARAMETER_VALUE_CONVERT '/oracle/oradata/prod/', '/scratch/oracle/oradata/dupdb/' 
+SET SGA_MAX_SIZE = '300M' SET SGA_TARGET = '250M' 
+SET LOG_FILE_NAME_CONVERT '/oracle/oradata/prod/redo/', '/scratch/oracle/oradata/dupdb/redo/'; 
+
+
+
+--backup-based   
+---使用预先存在的backups和copies
+----backup-based 备库连接到catalog 使用restore/recover命令恢复？  如果不使用catalog，则复制备份文件及controlfile到相同目录，再使用restore/recover恢复？
+---备份target数据库，并与archive log一起放到auxiliary服务器上的相同目录 
+
+
+
