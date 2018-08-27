@@ -1,0 +1,198 @@
+Optimal Flexible Architecture (OFA) ----Oracle软件和数据库文件及文件夹的命名约定和存储位置规则。OFA其实就是一种Oracle的一种规范。
+ORACLE_BASE目录通常是/pm/h/u。pm为mount的点；h是字符常量，通常是app；u是目录所有者，通常是oracle。
+RACLE_HOME目录通常是/pm/h/u/product/V。其中V是版本号。
+
+useradd -g oinstall -G dba oracle   ---安装的用户oracle所属的组为oinstall/dba
+
+环境变量
+ORACLE_SID  --- orcl
+ORACLE_BASE --- /u01/app/oracle
+ORACLE_HOME --- $ORACLE_BASE/product/11.2.0/dbhome_1
+
+
+安装
+使用图形界面安装
+使用静默安装
+	静默安装dbms（数据库管理系统）
+	./runInstaller -silent -ignoreSysPrereqs -showProgress -responseFile /home/oracle/db_install.rsp    ----需要预先创建rsp相应文件
+	静默建库
+	dbca -silent -cloneTemplate -gdbName orcl -sid orcl -datafileDestination /u01/oradata -responseFile /mnt/hgfs/software/oracle/database/response/dbca.rsp    ----需要预先创建rsp相应文件
+	dbca -silent -createDatabase -templateName $ORACLE_HOME/assistants/dbca/templates/General_Purpose.dbc -gdbName orcl -sid orcl -responseFile NO_VALUE -characterSet ZHS16GBK   ---使用默认的模板安装
+
+
+
+ASM (Automatic Storage Management)
+使用ASM必须先安装GI(grid infrastructure)
+
+启动关闭
+----使用grid目录下的命令
+srvctl status asm   --查看asm的状态
+sqlplus / as sysasm  --只有这个角色才有关闭、开启的权限
+startup   ---启动ASM，有nomount/mount/open三种状态，mount和open没有区别
+shutdown  ---关闭ASM
+---NORMAL：ASM 在卸载所有磁盘组并关闭ASM 实例之前，将等待任何正在进行的SQL 完成执行。在关闭实例之前，ASM 将等待所有当前连接的用户从该实例断开。如果任何数据库实例与ASM 实例连接，则 SHUTDOWN命令将返回错误并保持ASM 实例继续运行。NORMAL是默认关闭模式。
+---IMMEDIATE或 TRANSACTIONAL：ASM 在卸载所有磁盘组并关闭ASM 实例之前，将等待任何正在进行的SQL 完成执行。ASM 不等待当前与实例连接的用户断开连接。如果任何数据库实例与ASM 实例连接，则 SHUTDOWN命令将返回错误并保持ASM 实例继续运行。
+---ABORT：ASM 实例立即关闭，而不按顺序卸载磁盘组。这将导致下次启动ASM 时进行恢复操作。如果有任何数据库实例与ASM 实例连接，则该数据库实例也将中止
+
+
+启动时无法连接到CSS(Cluster Synchronization Service)
+crsctl check css  ---查看CSS状态,或者使用【 ps -ef | grep cssd 】查看 
+crsctl check has  ---查看HAS(High Availablility Service)状态【ps -ef | grep d.bin】
+---$ORACLE_HOME/bin/ohasd.bin 
+---ora.cssd和ora.diskmon依赖于HAS维护，两者有依赖关系，启动任意一个会都启动
+crsctl start resource ora.cssd  --启动ora.cssd资源
+crs_stat -t  --查看启用的资源
+crs_stat -p ora.cssd   --查看ora.cssd属性
+crs_stat -p ora.diskmon  ---查看ora.diskmon属性
+
+使用asm时必须先启动asm实例再启动oracle实例
+
+管理asm磁盘组
+
+
+---ASM磁盘  生成failgroup? 
+/etc/init.d/oracleasm configure  --配置ASM磁盘，安装相应包后系统自动生成这个命令
+/etc/init.d/oracleasm createdisk VOL1 /dev/sdb1  ---建立ASM磁盘 对应的磁盘应该是分区后的空闲磁盘 /dev目录下
+/dev/oracleasm/disks  --创建ASM磁盘组后，使用磁盘的目录
+
+asmca   ----使用图形化界面管理，图形化管理asm磁盘组
+asmcmd	----命令行管理
+
+进入asm实例
+---创建磁盘组 
+---可以使用Raw disk partition、Logical unit numbers (LUNs)、Raw logical volumes (LVM)、NFS files
+CREATE DISKGROUP dgroup1 NORMAL REDUNDANCY
+FAILGROUP dgroup1 DISK '/dev/sda1' [name disk_name], '/devices/sdb1' [name disk_name1] 
+FAILGROUP dgroup2 DISK '/dev/sdc1', '/dev/sdd1' ; 
+
+alter diskgroup dgroup1 mount;   ---将磁盘组挂载后才能被数据库实例使用。启动ASM实例时可用通过初始化参数【ASM_DISKGROUPS】指定挂载磁盘组。
+
+alter diskgroup diskgroup_name add failgroup VOL3 disk '/dev/oracleasm/disks/VLO3';  ---将asm磁盘加入磁盘组，diskgroup_nam为磁盘组，VOL3为失败组   可以使用磁盘分区
+alter diskgroup diskgroup_name drop disk DATA_name;  --删除一个ASM磁盘，DATA_name可以由视图v$asm_disk查看，或者在创建时指定的名称
+alter diskgroup diskgroup_name undrop disks;  -----撤销处于pending的删除
+v$asm_operation   ---不存在记录，则不能进行undrop操作
+
+alter diskgroup dgroup1 online disk {'/dev/sda1' | dname1}; 
+【asm_diskstring】指定磁盘（磁盘分区或者ASM磁盘）。可以使用通配符。
+
+alter diskgroup dgroup1 power {0-11};   ---0,停止重平衡操作；11，以最快速度进行重平衡。由数值确定重平衡的速度。
+【asm_power_limit】默认由此确定重平衡速度
+
+---相关视图
+v$asm_disk
+v$asm_diskgroup
+
+在asm上创建表空间
+create tablespace tablespace_name datafile '+DATA' size 100m;  ---DATA为asm磁盘组名。使用了OMF就不必指定文件名；否则后面需要指定文件名。
+---  +代表asm磁盘的根目录；DATA对应为diskgroup
+
+在归档模式下进入rman
+convert datafile '+data/ocpasm/datafile/SYSTEM.256.908392953' db_file_name_convert '+data/ocpasm/datafile','/home/oracle';  ---从asm磁盘组中复制文件到系统磁盘
+
+ASM冗余(redundancy)
+external(none)  --外部冗余，不使用冗余
+normal    		--常规冗余，使用2份镜像存储，最少需要两块磁盘（两个failure group）；有效磁盘空间是所有磁盘设备大小之和的1/2
+high			--高冗余，使用3份镜像存储，以提高性能和数据的安全，最少需要三块磁盘（三个failure group）；有效磁盘空间是所有磁盘设备 大小之和的1/3
+
+ASM兼容
+CREATE DISKGROUP data DISK '/dev/raw/raw8' ATTRIBUTE 'compatible.rdbms' = '10.1', 'compatible.asm' = '11.1', 'compatible.advm' ='11.2';   ---创建磁盘组时设置兼容参数
+--- compatible.rdbms  使用磁盘组的数据库实例设置能设置的最小兼容参数 
+--- compatible.asm    能使用磁盘组的最小ASM版本，约束ASM能使用的特性
+
+数据库实例兼容参数
+【compatibility】   ---约束实例所能使用的特性
+
+ASM失败维护
+ALTER DISKGROUP disk_group_1 SET ATTRIBUTE 'disk_repair_time' = '4.5h';   ---设置磁盘组离线删除时间。磁盘在删除前能保持离线的时间。
+
+当磁盘不可用，11g中磁盘会被offline，达到disk_repair_time指定时间后drop掉；如果在达到时间前被修复，状态变回online(自动或手动)。
+drop会进行重平衡
+
+ASM维护
+【asm_power_limit】，取值0-11，控制 ASM 后台进程 ARBx 的数量。ARBx 进程用来进行 ASM 磁盘数据重新分布打散。值越大，重平衡速度越快，但性能消耗越大。
+
+---由非ASM转成使用ASM
+STARTUP NOMOUNT; 
+RESTORE CONTROLFILE FROM 'controlfile_location';      ----restore controlfile会同时restore spfile
+ALTER DATABASE MOUNT;
+BACKUP AS COPY DATABASE FORMAT '+dgrp4';
+SWITCH DATABASE TO COPY; 
+SQL "ALTER DATABASE RENAME 'logfile1' path TO '+dgrp4'";  
+ALTER DATABASE OPEN RESETLOGS; 
+
+
+
+
+
+HA(high availability)
+高可用
+
+一种是oracle提供的被用方法,Standby (9i DataGuard)
+一种是AR (高级复制Advanced Replication，在以前版本叫快照snapshot)
+一种是oracle 并行服务器8i的OPS (9i RAC,Real Application Cluster)
+一种是第三方HA解决方案 （如Rose HA，故障切换时间是几分钟)
+
+
+DATAGUARD
+primary/standy
+
+Standby数据库通常分两类：逻辑standby和物理standby。
+1. 逻辑standby 
+a. 逻辑standby是通过接收primary数据库的redo log并转换成sql语句，然后在standby数据库上执行SQL语句实现同步；
+b. 与主库共享同样的模式定义；
+c. 通过应用SQL(sql apply)与主库保持一致；
+d. 当从主库接受到日志后，逻辑备用数据库是通过logmnr将日志转换成sql，在逻辑备库的表中，表可以同时用于恢复，报表查询功能；
+2. 物理standby
+a. 物理standby是通过接收并应用primary数据库的redo log以介质恢复的方式实现同步，不仅文件的物理结构相同，连块在磁盘上的存储位置都是一模一样的；
+b. 基于数据块级别和主数据库一致；
+c. 通过应用日志(redo apply)与主库保持同步；
+d. 在mount standby阶段进行应用日志恢复，而同时也可以open read only提供报表查询；
+
+
+---模式查询
+select database_role,protection_level,protection_mode from v$database;
+
+---归档日志状态查询
+select dest_name,status from v$archive_dest_status;
+
+最大性能  maximum performance
+
+
+
+最大高可用 maximum availability
+主库
+startup mount;
+alter database set standby database to maximize availability;
+alter system set log_archive_dest_1='service=db_db01 LGWR SYNC valid_for=(online_logfiles,primary_roles) db_unique_name=db01' scope=spfile;
+
+备库
+startup nomount
+alter database mount standby database;
+
+
+
+最大保护 maximum protection
+主库
+alter database set standby database to maximize protection;
+
+备库
+startup nomount; 
+alter database mount standby database;
+
+
+
+RAC
+Real application cluster
+
+1.必须有域名解析服务器用于解析域下的节点，并进行相关解析设置。各个节点设置host文件。
+2.rac节点的用户、路径等环境变量的设置一致
+3.rac节点共享磁盘，分区后在一个节点创建asm磁盘组，其他节点扫描即可。
+4.在一个节点运行grid安装程序，选择使用ssh节点间互联，同步安装grid。
+5.在一个节点安装oracle，选择使用ssh节点间互联，先安装软件。再安装数据库，安装时选择asm磁盘组。
+
+先部署 Oracle Clusterware集群(负责管理集群环境中的硬件资源、并为上层的Database集群提供基础服务)
+再部署Database，由此自动部署Database集群
+
+
+
+
