@@ -1,0 +1,72 @@
+
+#mgmd节点
+bin/ndb_mgmd --initial -f config.ini
+#cat config.ini
+#--------------------------------------------------------
+[NDBD DEFAULT]
+#
+NoOfReplicas=1         
+[TCP DEFAULT]
+portnumber=1186
+#设置管理节点服务器
+[NDB_MGMD]
+hostname=192.168.65.138
+#MGM上保存日志的目录
+datadir=/u02/mysql-cluster_mgmd/data
+#设置存储节点服务器(NDB节点)
+[NDBD]
+hostname=192.168.65.139
+datadir=/u02/mysql-cluster_ndbd1/data
+#第二个NDB节点
+[NDBD]
+hostname=192.168.65.140
+datadir=/u02/mysql-cluster_ndbd1/data
+#设置SQL节点服务器
+[MYSQLD]
+hostname=192.168.65.139
+#第二个SQL节点
+[MYSQLD]
+hostname=192.168.65.140
+
+#--------------------------------------------------------
+
+#####mgmd的管理端
+bin/ndb_mgm
+	show  #查看mgmd的状态
+
+#####ndbd节点
+bin/ndbd --initial-start --ndb-connectstring=192.168.65.138
+
+#--ndb-nodeid由mgm中查看，可以不指定
+#--initial-start初次启动加入，再次启动不用
+#
+
+mysql节点
+bin/mysqld_safe --defaults-file=my.cnf
+#cat my.cnf
+#--------------------------------------------------------
+[mysqld]
+basedir         = /u02/mysql-cluster_mysqld1
+datadir         = /u02/mysql-cluster_mysqld1/data
+user            = weideguo
+port            = 3306
+socket          = /tmp/mysql.sock
+ndbcluster							#启用ndbcluster存储引擎
+ndb-connectstring=192.168.65.138    #指向mgm
+
+[mysql_cluster]
+ndb-connectstring=192.168.65.138
+#-----------------------------------------------------------
+
+
+
+#############
+mysql节点的数据形成集群，创建ndbcluster的表所有节点能转移
+create table ... engine=ndbcluster;
+
+
+
+
+
+
+
