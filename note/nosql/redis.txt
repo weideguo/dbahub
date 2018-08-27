@@ -1,0 +1,335 @@
+
+make   									####编译
+make  PREFIX=$prefix_path install     	####安装，如不使用PREFIX参数，默认安装在/usr/local/bin下
+
+参数文件的设置
+requirepass my_poassword	##使用密码
+dir data_path				##设置数据文件的路径，只指定目录	
+
+
+redis-server redis.conf    	###启动服务端
+redis-cli  shutdown   		###关闭
+redis-cli  					###进入命令行界面
+
+可以可以直接使用telnet命令进入
+
+
+AUTH password  	###使用密码登录，如果参数文件启用requirepass参数，则必须使用密码登陆
+ECHO "message"  
+PING 			###向Redis服务器发送一个 PING，连接则返回PONG
+SELECT 1		###打开id为1的数据库，默认数据库id为0
+QUIT 			###退出客户端
+
+使用  命令不分大小写
+
+字符串 string
+SET key value   ###设置key和value
+GET key    		###由key的值获取value
+KEYS pattern	###匹配符合的key   【keys *】显示所有key
+DEL key  		###删除key
+dbsize			###key的数量
+EXISTS key		###查看key是否存在
+MOVE key db		###将当前数据库中指定的键Key移动到参数中指定的数据库中。
+RENAME key		###为key更名
+RENAMEENX key	###
+PERSIST key   	###持久化key
+EXPIRE	key seconds		###该命令为参数中指定的Key设定超时的秒数，在超过该时间后，Key被自动的删除
+EXPIREAT key timestamp  ###使用绝对时间设置超时
+TTL key			###获取该键所剩的超时描述 -1为没有超时或不存在
+RANDOMKEY  		###随机获取key
+TYPE key		###获取key的数据类型
+SORT key  		###返回排序后的原始列表。
+INCR key   		###将 key 中储存的数字值增一
+monitor         ###实时打印出redis服务接收到的命令
+sync			###用于同步主从
+client pause <millisecond>    ##在指定时间内阻塞客户端的命令
+
+
+
+哈希 hash  ###键值对的集合  字符串字段和字符串值之间的映射，所以它们用来表示对象
+HSET key field1 value1
+HMSET key field1 value1 field2 value2 field3 "value3_1 value3_2"  ###设置hash
+HGETALL key      ###获取hash
+HSET key field4 value4  ###添加hash的值
+HGET key field 	 ###获取key中对应field的值
+HGET key field1 field2
+HDEL key field 
+HKEYS key
+HLEN key
+HEXIST key field  ##查看是否存在 
+
+
+
+列表 list
+LPUSH key value1 ###将一个或多个值 插入到列表头部
+RPUSH key value  ###插入列表尾部
+LRANGE key 0 5   ###查询0到5的元素 		 
+LLEN key  		 ###查询长度
+LPOP key		 ###弹出头元素，即移除并显示头元素
+RPOP key     	 ###弹出尾元素
+LSET key 0 value ###设置已经存在的对应下标元素的值 
+
+
+集合 set    值不能重复
+SADD key value1  ####往集合添加元素
+SREM key member  ####移除集合中的元素
+SMEMBERS key
+SCARD key		###返回集合中元素的数量
+SDIFF key1 key2 ###差集
+SINTER key1 key2 ###交集
+SUNION key1 key2 ###并集
+
+
+有序集合 zset(SortedSet)    带有权值
+ZADD key 0 value1 
+ZADD key 1 value2
+ZRANGE key 0 100 		  ###开始下标，显示数目
+ZRANGEBYSCORE key 0 100   ###开始权值，结束权值
+ZCARD key  ###查看集合的元素个数
+ZREM key member ###移除元素
+
+
+
+SCAN  ##迭代当前数据库中的数据库键
+SSCAN ##迭代集合键中的元素
+HSCAN ##迭代哈希键中的键值对
+ZSCAN ##迭代有序集合中的元素（包括元素成员和元素分值）
+
+
+EVAL ##lua执行脚本
+
+##交互模式中执行
+EVAL "return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}" 2 key1 key2 first second
+eval "return redis.call('set','foo','bar')" 0
+eval "return redis.call('set',keys[1],argv[1])" 1 name weideguo
+
+redis.call()
+redis.pcall()
+
+
+-eval filename  #命令行中执行
+
+
+
+
+
+
+
+
+
+redis支持事务
+MULTI   ###开启事务
+EXEC	###提交事务
+DISCARD ###用来取消一个事务
+WATCH key   	###在事务中监视key
+UNWATCH key     ###取消对key的监视
+
+
+SAVE  	##备份
+BGSAVE  ##在后台备份 父进程继续处理客户端请求，fork出子进程，负责将数据保存到磁盘
+
+
+参数在线更改
+CONFIG GET dir 	###获取配置文件中dir的设置  将数据文件放入指定位置即可完成数据恢复
+config get *    ###获取所有设置参数
+CONFIG set requirepass password  ###设置配置中requirepass的值，这里为设置登录密码
+CONFIG REWRITE  ###同时修改配置文件
+SHUTDOWN		###关闭正在连接的服务端
+FLUSHDB			###清空当前数据库
+FLUASHALL		###清空所有数据库
+
+配置文件中设置，更改
+rename flushall ""    					###禁用flushall命令
+rename <old-command> <new-command>  
+
+
+
+INFO  ###查看服务器状态 
+client list  ###查看连接的客户端
+dbsize       ###当前数据库的kyes的数量
+
+
+
+
+
+客户端通信
+客户端1，接收
+SUBSCRIBE redisChat  ##可以订阅多个channel ; subscribe channel1 [channel2 ]
+客户端2，发送
+PUBLISH redisChat "weideguo is a greate guy"
+
+UNSUBSCRIBE  channel1  ###退订channel1
+
+
+
+检查本地数据文件 修复出问题的rdb文件
+redis-check-rdb dump.rdb  
+
+更新日志检查 用于修复出问题的AOF文件
+redis-check-aof 
+
+性能测试工具
+redis-benchmark	-n 100000   ###使用100000请求查询redis
+-h			设置检测主机 IP 地址，默认为 127.0.0.1
+-p			设置检测主机的端口号，默认为 6379
+-s<socket>	服务器套接字 
+-c			并发连接数
+-n			请求数
+-d			测试使用的数据集的大小 / 字节的值 ( 默认 3 字节 )
+-k			1 ：表示保持连接 ( 默认值 )0 ：重新连接
+-r			SET/GET/INCR 方法使用随机数插入数值，设置 10 则插入值为 rand:000000000000 - rand:000000000009
+-P			默认为 1( 无管道 ) ，当网络延迟过长时，使用管道方式通信 ( 请求和响应打包发送接收 )
+-q			简约信息模式，只显示查询和秒值等基本信息。
+--csv		以 CSV 格式输出信息
+-l			无线循环插入测试数据， ctrl+c 停止
+-t<tests>	只运行 <tests> 测试逗号分隔的列表命令，如： -t ping,set,get
+-I 			空闲模式。立即打开 50 个空闲连接和等待 
+
+
+1）RDB持久化：
+该机制是指在指定的时间间隔内将内存中的数据集快照写入磁盘。    
+配置文件中设置
+#save <seconds> <changes>
+save 900 1         #900秒内有一个修改就保存
+save 300 10
+save 60 1000
+appendonly on      #不启用aof持久化
+
+2)AOF持久化: 配置文件中appendonly yes
+该机制将以日志的形式记录服务器所处理的每一个写操作，在Redis服务器启动之初会读取该文件来重新构建数据库，以保证启动后数据库中的数据是完整的。
+
+3)无持久化：
+通过配置的方式禁用Redis服务器的持久化功能，可以将Redis视为一个功能加强版的memcached了。
+配置文件中注释save
+
+4)同时应用AOF和RDB。
+
+
+
+
+管道技术(pipeline)
+客户端将多个命令以pipelie方式发出，redis服务处理完毕多个命令后将结果一同返回客户端
+ 
+
+CAS(check and set) 
+
+
+
+MASTER-SLAVE  主从
+配置
+master:
+常规的redis配置
+slave:
+slaveof 127.0.0.1 6379		###配置slave的master
+masterauth master_password	###如果master启用requirepass参数，则添加这个参数
+
+
+
+SLAVEOF NO ONE              ##提升为主
+
+
+启动
+master：
+常规的redis启动
+redis-server $config_file			###使用master的配置文件启动
+slave:
+redis-server $slave_config_file		###使用slave的配置文件启动
+
+全量同步 slave初始化阶段，使用主库的rdb文件
+增量同步 稳定运行时
+
+
+
+redis-sentinel
+###用于实现master/slave自动切换，由runid判定下一个master。
+###每个master或sentinel启动一个sentinel
+关键配置参数
+port 26379												##sentinel的端口
+dir ../sentinel_master
+sentinel monitor mymaster 192.168.200.129 6379 2		##ip及port为master的信息
+
+
+redis-cli -h 127.0.0.1 -p 6379 info Replication		###查看从状态
+
+###sentinel信息查看
+redis-cli -h 127.0.0.1 -p 26379 		###使用sentinel的ip及port
+###进入命令行后的命令
+info Sentinel							###查看sentinel状态
+sentinel slaves mymaster				###查看slaves的状态 mymaster为sentinel配置文件的参数
+
+sentinel get-master-addr-by-name <master-name>   ##获取主节点的ip以及端口
+
+
+
+
+
+
+
+codis
+twemproxy
+redis cluster
+
+
+
+
+集群 cluster
+
+每个节点最少选项配置
+port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf   ###节点配置文件 无需人为修改
+cluster-node-timeout 5000
+appendonly yes
+
+正常启动单个节点后再创建集群
+
+创建集群，命令在源代码文件的src目录下
+/redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
+
+--replicas 1 表示为集群中的每个主节点创建一个从节点。
+
+集群中的每个节点都有 1 个至 N 个复制品（replica）， 其中一个复制品为主节点（master）， 而其余的 N-1 个复制品为从节点（slave）。
+
+redis-cli -c -p 7000   ###连接单个节点验证集群,客户端会自动切换连接点
+
+
+
+
+
+
+
+第三方工具
+redis-dump   #将redis的key数据导出到本地，保存格式为json
+redis-load   #将redis导出的json文件导入至redis数据库中
+redis-report #生成导出数据库的大小
+
+
+
+
+
+慢查询
+slowlog len		#获取慢查询日志长度
+slowlog get 2	#获取慢查询语句，获取两个
+SLOWLOG RESET  	#重置
+
+
+##配置设置
+slowlog-slower-than		#慢查询时间
+slowlog-max-len			#慢查询日志长度
+
+
+
+eval "return #redis.call('keys','n*')" 0  #计算配备key的数量
+
+
+
+
+
+
+
+
+twemproxy
+客户端实现的分片，节点可以动态加入，但配置文件要预先配置好，配置文件不能动态加载
+
+
+
