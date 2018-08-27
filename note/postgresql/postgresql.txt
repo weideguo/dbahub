@@ -23,3 +23,137 @@ domains
 
 
 
+
+
+
+
+ 编译安装
+ cd $postgresql_home
+ ./configure --prefix=/03/postgresql
+ make
+ make install
+ 
+初始化(数据库及配置文件)
+initdb -D  /u03/postgresql/data/
+
+默认端口5432 
+ 
+ 
+启动(选择其一)
+postgres -D /u03/postgresql/data/				 	####可以设置环境变量export PGDATA=/u03/postgresql/data  
+pg_ctl -D /u03/postgresql/data -l logfile start 
+
+psql 	####pg命令行工具
+
+-d postgres
+-h, --host=HOSTNAME    
+-p, --port=PORT        
+-U, --username=USERNAME
+-w, --no-password      
+-W, --password         
+
+
+
+
+关闭
+bin/pg_ctl -D ./data stop
+ 
+bin/pg_ctl -D ./data stop -o SIGTERM  
+
+SIGTERM   
+不再允许新的连接，但是允许所有活跃的会话正常完成他们的工作，只有在所有会话都结束任务后才关闭。这是智能关闭。  
+  
+SIGINT   
+不再允许新的连接，向所有活跃服务器发送 SIGTERM(让它们立刻退出)，然后等待所有子进程退出并关闭数据库。这是快速关闭。  
+  
+SIGQUIT   
+令 postgres 向所有子进程发送 SIGQUIT 并且立即退出(所有子进程也会立即退出)，而不会妥善地关闭数据库系统。这是立即关闭。这样做会导致下次启动时的恢复(通过重放 WAL 日志)。推荐只在紧急的时候使用这个方法。  
+  
+SIGKILL   
+此选项尽量不要使用，这样会阻止服务器清理共享内存和信号灯资源，那样的话你只能在启动服务器之前自己手工做这件事。另外，SIGKILL 直接把 postgres 杀掉，而不会等它把信号中继给它的子进程，因此我们还需要手工杀掉每个独立子进程。 
+ 
+ 
+$postgresql/data
+pg_hba.conf 		认证文件
+postgresql.conf		配置文件
+ 
+ 
+ 
+ 
+ 
+psql中的命令
+\?			###\开始的命令查看
+\h			###sql语句查看
+\! clear 	###执行系统的命令
+\q			###退出命令行 
+\db			###列出所有的tablespace	
+\l			###列出所有database
+\c db_name  ###切换数据库
+\dt			###查看数据库下的表
+\d tb_name	###查看表的字段 
+\dv			###查看视图
+\du			###查看用户    安装时默认以当前用户名创建一个用户，没有密码
+
+系统表
+pg_user
+pg_roles
+pg_tablespace
+pg_database
+pg_tables
+
+
+表结构
+\d table_name
+
+
+#角色
+CREATE ROLE role_name;
+DROP ROLE role_name;
+
+#用户
+create user "weieguo" with password 'weideugo' login in role "TestRole1" 
+ALTER USER postgres WITH PASSWORD 'postgres';
+
+##进行存储设置？
+create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###表空间的文件在数据目录下
+
+##进行命令空间限制？
+create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
+grant usage on schema01 to weideguo;
+
+一个database下有多个schema
+不能同时方位不同database下的对象
+
+select * from schema_name.table_name;
+
+show search_path;			###查看创建表时使用的schema
+set search_path=schema_name	###设置创建表时使用的schema
+
+
+
+show XXX;      ##查看参数
+set XXX=yyyy;  ##设置参数
+
+
+##进行资源限制？
+create database demodb		###创建数据库 一个连接只能来连接一个数据库
+template template0
+encoding 'UTF8'
+tablespace ts_demo01
+connection limit 200;
+
+alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
+
+create table table_name(...) tablespace ts_demo; 
+
+
+SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT LIKE 'sql_%' ORDER BY tablename;   ###查询数据库的非系统表
+ 
+select pg_relation_filepath('tab100');   ###查看表的位置 
+ 
+ 
+pg是多进程模式
+pg一个连接建立一个进程
+ 
+ 
+
