@@ -1,0 +1,850 @@
+//服务端
+mongod --dbpath=$path   				//启动，并指定数据库目录，不指定默认使用/data/db 
+mongod --dbpath=/data/db --rest   		//启动，并启用web界面 http://localhost:28017
+ 
+--port	 							// 指定端口
+--fork   							// fork server process	  可以使用可执行文件执行多次
+--auth   							// run with security
+--maxConns							// 最大连接数，默认最大连接数为819
+-f									// 指定使用的配置文件
+--config config_filename    		// 使用配置文件 或者使用-f
+
+
+字符编码
+mongodb的字符编码都是utf8？
+
+
+//管理shell
+mongo
+
+//连接 在管理shell中
+mongodb://fred:foobar@localhost/baz   //使用用户名fred，密码foobar登录localhost的baz数据库。
+mongodb://admin:123456@localhost/
+
+//设置提示符
+var host = db.serverStatus().host;  
+var prompt = function() { return db+"@"+host+"> "; }  
+
+prompt   //输出变量
+
+
+//监控
+db.stats()          //对某一个库的状态
+db.serverStatus()
+
+rs.status()
+
+
+
+//概念
+SQL				mongodb
+database		database	数据库
+table			collection	数据库表/集合
+row				document	数据记录行/文档
+column			field		数据字段/域
+index			index		索引
+table joins	 				表连接,MongoDB不支持
+primary key		primary key	主键,MongoDB自动将_id字段设置为主键
+
+view            view 		视图
+
+
+
+
+//关闭服务端
+db.shutdownServer()    			//在管理shell中
+mongod  --shutdown  --dbpath 
+kill mongod_pid
+
+
+Tab		    //自动补全
+ctrl+L      //清屏
+cls			//清屏
+show dbs    //显示数据库
+db   	    //显示当前的数据库
+quit()      //退出管理shell
+
+
+//查询帮助
+help   		
+db.help()
+db.abc.help()   
+
+
+
+
+db.stats()  					//显示当前数据库状态
+db.collection_name.stats()		//显示当前集合的状态
+db.version()                    //版本
+
+
+
+
+权限
+用户管理 
+createUser
+createRole
+
+  
+use admin;   		//在那个库下加账号，就得在那个库下进行认证
+db.createUser(
+ {
+	user: "dba",
+	pwd: "dba",
+	roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+}
+)	
+
+
+//对admin拥有clusterAdmin、readAnyDatabase角色
+//对product拥有readWrite
+db.getSiblingDB("products").runCommand( { createUser: "accountAdmin01",
+                                          pwd: "cleartext password",
+                                          customData: { employeeId: 12345 },
+                                          roles: [
+                                                   { role: "clusterAdmin", db: "admin" },
+                                                   { role: "readAnyDatabase", db: "admin" },
+                                                   "readWrite"
+                                                 ],
+                                          writeConcern: { w: "majority" , wtimeout: 5000 }
+                                       } )
+
+//授权给存在的用户
+grantRolesToRole
+grantRolesToUser
+grantPrivilegesToRole
+
+db.grantPrivilegesToRole(rolename, privileges, writeConcern)  //更细粒度的授权
+db.grantPrivilegesToRole(
+    "< rolename >",
+    [
+        { resource: { <resource> }, actions: [ "<action>", ... ] },
+        ...
+    ],
+    { < writeConcern > }
+)
+权限( "insert", "remove","update","find"...)
+
+use products
+db.runCommand( { grantRolesToUser: "accountUser01",
+                 roles: [
+                    { role: "read", db: "stock"},
+                    "readWrite"
+                 ],
+                 writeConcern: { w: "majority" , wtimeout: 2000 }
+             } )
+			 
+			 
+			 
+//撤销用户、角色的权限		 
+revokePrivilegesFromRole 
+revokeRolesFromRole      
+revokeRolesFromUser
+
+//更改用户、角色
+updateUser
+updateRole
+
+//修改密码
+db.changeUserPassword()
+
+//删除用户、角色
+db.dropRole()
+db.dropUser()
+db.dropAllUsersFromDatabase()
+
+
+查看用户信息
+db.runCommand( { usersInfo:1 })     //查看所有用户的信息
+db.runCommand( { usersInfo: [ { user: "Kari", db: "home" }, { user: "Li", db: "myApp" } ],
+                 showPrivileges: true,
+				 showCredentials: true
+             } )
+
+db.system.users.find().pretty()   	//查看用户 
+show roles   						//查看当前数据库角色
+show users   						//查看当前数据库的用户
+
+db.auth('dba','dba')     //命令行中进行认证
+
+
+1.数据库用户角色：read、readWrite;
+2.数据库管理角色：dbAdmin、dbOwner、userAdmin；
+3.集群管理角色：clusterAdmin、clusterManager、clusterMonitor、hostManager；
+4.备份恢复角色：backup、restore；
+5.所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase
+6.超级用户角色：root  //这里还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）
+7.内部角色：_system
+
+
+
+
+
+
+
+增加
+use db_name   								//切换数据库，如果不存在则创建
+db.createCollection("collection_name")    	//创建集合
+
+db.collection_name.insert({column_name:"column_value"[,...]})   //插入，集合不存在则创建
+db.collection_name.insert({title: 'MongoDB 教程', 
+    description: 'MongoDB 是一个 Nosql 数据库',
+    by: '菜鸟教程',
+    url: 'http://www.runoob.com',
+    tags: ['mongodb', 'database', 'NoSQL'],
+    likes: 100
+})
+
+document=({column_name:"column_value"[,...]});
+db.collection_name.insert(document)               //通过定义变量执行插入  
+
+
+视图
+db.createView(view_name,collection_name,)
+
+
+
+
+
+删除
+db.collection_name.remove({'title':'MongoDB 教程'})     //删除文档
+db.collection_name.drop()    		 					//删除集合
+db.dropDatabase()   									//删除数据库，先切换到指定数据库
+db.runcommand()
+
+	{drop:"collection_name"}    //删除collection
+	{"dropIndexes":"collection_name","index":"index_name"}
+	{ping:1}
+	{collStats:"collection_name"}
+	{buildInfo:1}
+	{getLastError:1}
+	{listCommand:1}			//显示可以执行的命令
+	
+	{setParameter:1,<option>:<value>}
+	
+	db.runCommand({getParameter:1,logLevel:1})    //查询参数 logLevel
+	db.runCommand({getParameter:"*"})
+
+	
+	--setParamster <option>=<value>				  //启动时设置参数
+	
+	
+	
+	
+	
+	
+修改
+//更新文档
+db.collection_name.update({"title":"MongoDB 教程"},{$set:{"title":"MongoDB"}})   
+db.collection_name.update({"title":"MongoDB 教程"},{$set:{"title":"MongoDB"}},{multi:true})   //修改多条
+db.counters.findAndModify({query:{_id: sequenceName},update:{$inc:{sequence_value:1}}})
+db.counters.update({_id: sequenceName},{$inc:{sequence_value:1}})
+db.counters.update({...},1})   //upset操作，不存在则插入
+
+mongodb不支持事务
+//update操作
+{ $set : { field : value } }   						//更新键值
+{ $unset : { field : 1} }      						//删除键值
+{ $inc : { field : value } 	   						//数字键值自增减
+{ $push : { field : value } }  						//把value添加到field中  field必须为数组
+{ $pushAll : { field : [value1,vlue2...] } }  		//添加多个value
+{ $pull : { field : value } }  						//从数组field内删除一个等于value值
+{ $ddToSet:{field : value }}   						//增加一个值到数组 不存在才添加
+{ $pop : { field : 1 } }       						//删除数组的第一个或最后一个元素
+{ $rename : { old_field_name : new_field_name } }   //修改字段名称
+{ $bit : { field : {and : 5}}}   					//位操作
+
+
+
+//通过传入更新文档
+db.col.save({
+	"_id" : ObjectId("58049b78703abc953641af3c"),
+    "title" : "MongoDB",
+    "description" : "MongoDB 是一个 Nosql 数据库",
+    "by" : "Runoob",
+    "url" : "http://www.runoob.com",
+    "tags" : [
+            "mongodb",
+            "NoSQL"
+    ],
+    "likes" : 110
+})
+
+
+查询
+show dbs
+show databases									//显示所有数据库
+show collections									
+db.getCollectionNames()							//显示所有文档
+
+db.collection_name.find()  
+db.collection_name.find().pretty()  			//易读的格式显示 
+db.collection_name.findOne() 					//只返回一个文档。
+db.collection_name.find().count()				//select count(*) from ...
+db.test.find({},{name:1,n1:1})                  //select name,n1 from ...
+
+db.t.find({},{})                                //第一个{}为查询条件 第二个{}为选择的字段
+//条件查询 
+db.collection_name.find({title:"mongo"[,...]})  
+db.col.find({$or:[{key1: value1}, {key2: value2}]})   			//or条件查询
+db.col.find({"likes" : {$gt : 100}})                    		//
+db.col.find({"likes" : {$lt :200, $gt : 100}})          		//
+db.col.find({"title" : {$type : 2}})      						//指定获取的数据类型  1 double 2 string 
+db.collection_name.find().limit(NUMBER)   						//指定获取document数量
+db.collection_name.find().limit(NUMBER).skip(NUMBER)   			//skip跳过指定数量的document
+db.pay_3.find({},{ftime:1,server_id:1,_id:0})					//selct ftime,server_id from pay_3
+//使用正则表达式
+db.collection_name.find({"title":{$regex:"^mongo.*$"}})     	//也可直接写入字符串查询包含字符串的document  
+db.collection_name.find({"title":/^mongo.*$/})
+db.collection_name.find({"title":{$regex:"^mongo.*$",$options:"$i"}})   //[$options:"$i"] 不区分大小写，默认区分大小写
+
+db.collection_name.find().sort({"like":1})    					//1升序 -1降序  select ... order by like 
+
+//索引
+db.collection_name.ensureIndex({"title":1})   				//建立索引	3.0.0后不推荐使用
+db.collection_name.createIndex({"title":1})					//使用这个代替ensureIndex
+db.collection_name.ensureIndex({"field1":1,"field2":1})     //复合索引
+db.collection_name.getIndexes()
+db.collection_name.dropIndexes()							//删除所有索引
+db.w2.dropIndex("index_name")								//删除索引
+db.collection_name.ensureIndex({"title":1},"unique":true)	//唯一索引
+db.colletiion_name.explain().find()							//查看执行计划
+db.colletiion_name.find().explain()
+
+db.collection_name.ensureIndex({"title":1},{"background":true})   //在后台创建索引，创建时不会阻塞其他的操作
+db.collection_name.ensureIndex({"title":1},{"name":"index_name"})
+
+db.abc.reIndex()		//重建索引
+db.imei_1.find({"account" : "1320210189"}).explain({"all":true})
+db.collection_name.explain().find({"field_name":"value1"})		//查看是否使用索引
+db.collection_name.totalIndexSize()  //索引大小
+
+db.pay_3.totalSize()                 //表的大小
+
+db.abc.getIndexes()					//查看表的索引
+db.abc.totalIndexSize()				//查看索引大小
+db.system.indexes.find()                                    //查看当前库的索引
+
+db.abc.dataSize()                   //查看数据的大小
+db.abc.storageSize() 				includes free space allocated to this collection
+db.abc.totalSize() 					storage allocated for all data and indexes
+
+db.collection_name.aggregate(AGGREGATE_OPERATION)
+//聚合
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$sum:1}}}])   		//select by_user,count(*) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$sum:"$likes"}}}])  	//select by_user,sum(likes) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$avg:"$likes"}}}])	//select by_user,avg(likes) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$min:"$likes"}}}])	//select by_user,min(likes) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$max:"$likes"}}}])	//select by_user,max(likes) from mycol group by by_user 	
+db.mycol.aggregate([{$group:{_id:"$by_user",url:{$push:"$url"}}}])				//分组，组内结果以数组的形式展示 url[v1,v2]
+db.mycol.aggregate([{$group:{_id:"$by_user",url:{$addToSet:"$url"}}}])  		//与push类似
+db.mycol.aggregate([{$group:{_id:"$by_user",first_url:{$first:"$url"}}}])		//分组，取每个组的第一个值
+db.mycol.aggregate([{$group:{_id:"$by_user",last_url:{$last:"$url"}}}])			//分组，取每个组的最后一个值
+
+
+# select server_id,sum(day_income) from table1 where xxx group by server_id
+
+db.table1.aggregate([
+{$match:{"date":{$gt:ISODate("2018-05-01T00:00:00Z"),$lte:ISODate("2018-05-01T23:00:00Z")}}},
+{$group:{_id:"$server_id",num_tutorial:{$sum:"$day_income"}}}
+])
+
+
+# select sum(day_income) from table1 where xxx 
+db.table1.aggregate([
+{$match:{"date":{$gt:ISODate("2018-05-01T00:00:00Z"),$lte:ISODate("2018-05-01T23:00:00Z")}}},
+{$group:{_id:"",num_tutorial:{$sum:"$day_income"}}}
+])
+
+
+
+
+//管道
+//将MongoDB文档在一个管道处理完毕后将结果传递给下一个管道处理
+db.mycol.aggregate([{$match:{score:{$gt:70,$lte:90}}},{$group:{ _id:null,count:{$sum: 1}}}])    //$match用于获取分数大于70小于或等于90记录，然后将符合条件的记录送到下一阶段$group管道操作符进行处理
+db.mycol.aggregate({$skip:2})  																	//过滤前2个文档   
+
+
+$project	修改输入文档的结构。可以用来重命名、增加或删除域，也可以用于创建计算结果以及嵌套文档。
+$match		用于过滤数据，只输出符合条件的文档。$match使用MongoDB的标准查询操作。
+$limit		用来限制MongoDB聚合管道返回的文档数。
+$skip		在聚合管道中跳过指定数量的文档，并返回余下的文档。
+$unwind		将文档中的某一个数组类型字段拆分成多条，每条包含数组中的一个值。
+$group		将集合中的文档分组，可用于统计结果。
+$sort		将输入文档排序后输出。
+$geoNear	输出接近某一地理位置的有序文档。
+
+//mapReduce
+db.collection.mapReduce(                           
+   function() {emit(key,value);},  					//map 函数
+   function(key,values) {return reduceFunction;},   //reduce 函数
+   {
+      out: collection,
+      query: document,
+      sort: document,
+      limit: number
+   }
+)
+
+db.posts.mapReduce( 
+	function() { emit(this.user_name,1); }, 			  
+	function(key, values) {return Array.sum(values);},     
+	{  
+		query:{status:"active"},      //摘选条件
+        out:"post_total"              //返回结果插入到collection中
+    }
+)
+
+db.posts.mapReduce(...).find()    //使用MapReduce并显示结果
+
+
+
+var map=function(){...}
+var reduce=function(){...}
+
+db.collection_name.mapReduce(map,reduce,{out:"output_document"})
+
+
+//demo1
+//求每个班级的平均分
+var map_1=function(){emit(this.Class,this.Score);}
+var reduce_1=function(key,value){return Array.avg(value)}
+db.students.mapReduce(map_1,reduce_1,{out:"new_students"})
+//
+
+
+
+使用 MapReduce 要实现两个函数 Map 函数和 Reduce 函数,
+Map 函数调用 emit(key, value), 遍历 collection 中所有的记录, 将key 与 value 传递给 Reduce 函数进行处理。
+Map 函数必须调用 emit(key, value) 返回键值对
+map 	映射函数 (生成键值对序列,作为 reduce 函数参数)。
+reduce 	统计函数，reduce函数的任务就是将key-values变成key-value，也就是把values数组变成一个单一的值value。
+
+out 	统计结果存放集合 (不指定则使用临时集合,在客户端断开后自动删除)。
+query 	筛选条件，只有满足条件的文档才会调用map函数。（query，limit，sort可以随意组合）
+sort 	和limit结合的sort排序参数（也是在发往map函数前给文档排序），可以优化分组机制
+limit 	发往map函数的文档数量的上限（要是没有limit，单独使用sort的用处不大）
+
+db.posts.mapReduce(...)
+result		储存结果的collection的名字,这是个临时集合，MapReduce的连接关闭后自动就被删除了。
+timeMillis	执行花费的时间，毫秒为单位
+input		满足条件被发送到map函数的文档个数
+emit		在map函数中emit被调用的次数，也就是所有集合中的数据总量
+ouput		结果集合中的文档个数（count对调试非常有帮助）
+ok			是否成功，成功为1
+
+
+大于		$gt
+小于		$lt
+大于等于	$gte
+小于等于	$lte
+
+游标
+var c=db.collection_name.find()
+while(c.hasNext()) printjson(c.next())
+
+
+printjson(c[1])
+
+
+
+for(i=0;i<100;i++){db.collection_name...}
+
+
+
+
+//导出与恢复
+mongodump  -u weideguo -p weideguo -d test -o ../backup_dir   							//将数据库备份，备份成文件格式
+./mongodump -h 127.0.0.1 --port 27017 -d mongodb_gs_sklr -o /data/db_user00/mongo_bak
+		
+		-u, --username=<username>
+		-p, --password=<password>	
+		--authenticationDatabase=admin
+
+
+mongorestore
+mongorestore <options> <directory or file to restore>
+
+
+mongoexport -u weideguo -p weideguo -d test -c col -o ../collection_name  //将表导出成标准的json文件
+mongoimport -u weideguo -p weideguo -d test -c col --file=../col.json	  //导入，可以选择使用json, csv, tsv
+
+//监控
+mongostat
+mongotop
+
+bsondump   //查看使用mongodump导出生成的.bson文件
+
+//操纵大文件
+mongofiles -d put gridfs file_name     //插入大文件
+mongofiles -d delete gridfs file_name  //删除
+
+
+mongooplog  //Poll operations from the replication oplog of one server, and apply them to another.
+mongoperf   //a performance testing tool
+
+mongos     //用于集群
+
+//上限集合
+Capped Collection，一种固定大小的集合，当集合的大小达到指定大小时，新数据覆盖老数据。
+db.createCollection("cappedLogCollection",{capped:true,size:10000,max:300})  //创建capped collection   size:字节限制 max:文档数量限制
+
+
+
+
+//递增序列
+//初始化counters
+db.createCollection("counters")
+db.counters.insert({_id:"productId",sequence_value:0})
+//创建函数
+function getNextSequenceValue(sequenceName){
+   var sequenceDocument = db.counters.findAndModify(
+      {
+         query:{_id: sequenceName },
+         update:{$inc:{sequence_value:1}},
+         new:true
+      });
+   return sequenceDocument.sequence_value;
+}
+db.collection_name.insert({_id:getNextSequenceValue("productId")})   //使用递增序列
+
+
+
+ObjectId 是一个12字节 BSON 类型数据：
+前4个字节表示时间戳
+接下来的3个字节是机器标识码
+紧接的两个字节由进程id组成（PID）
+最后三个字节是随机数。
+
+
+管理
+
+db.serverStatus().connections		//查看连接数
+
+db.serverStatus()                   //查看状态信息
+
+	connections  //连接的信息
+
+db.currentOp()        				//查看当前连接信息,只列出有操作的
+db.currentOp({"$all":true})			//查看所有连接信息
+db.currentOp({"opid" : 1808430482}) //
+db.killOp({op:opid})			    //杀死操作
+
+
+
+
+日志
+错误日志
+日志翻转
+--logRotate rename      		//在启动时设置，也可以设置reopen
+
+use admin
+db.runCommand({logRotate:1})    //在启动后设置
+
+db.getSiblingDB("admin").runCommand({logRotate:1})
+
+
+日志输出
+--quiet             //--verbose
+
+db.runCommand({setParameter:1,quiet:1})
+
+db.currentOp()                 //查看当前负载
+db.killOp("opid_value")		   //opid对应值
+
+
+
+--storageEngine       //启动时指定存储引擎
+存储引擎    
+in-memory     //完全使用内存，没有持久化
+WiredTiger    //3.2默认
+mmapv1        //3.2之前默认
+
+
+--wiredTigerCacheSizeGB    设置存储引擎cache的最大值，默认1/2RAM
+
+
+wiredTiger  同时使用存储引擎内存缓存以及文件系统的缓存
+
+
+
+内存映射 使用操作系统的虚拟内存管理器管理自动映射
+use admin;
+db.runCommand(closeALLDatabases:1);    //释放mongodb数据库占用的内存
+
+sysctl -w vm.drop_caches=1     //通过调整内核参数释放内存
+
+db.serverStatus().mem
+
+resident 物理内存占用
+virtual  虚拟内存占用
+mapped   映射到内存的数据大小
+
+mongostat 查看内存映射情况
+
+
+
+
+
+//类似于mysql的binlog？
+//Replication是通过一个日志来存储写操作的，这个日志就叫做oplog。oplog是Capped Collection类型。
+//operation log
+
+oplog的操作
+i  	insert
+u  	update
+d  	delete
+c  	db cmd
+db 	
+n  	no op
+
+
+
+--oplogSize     //启动时设置oplog的大小
+
+--master        //明确设置为主节点才启用oplog
+
+主节点oplog
+use local;
+db.oplog.$main.find()  
+
+
+#查看指定时间段的操作
+db.oplog.$main.find({ts:{$gt:Timestamp(1499877345, 1),$lt:Timestamp(1499877395, 1)}}) 
+
+##导出特定时间的oplog
+mongodump --host 127.0.0.1:27017 -d local -c 'oplog.$main' -q '{ts:{$gt:Timestamp(1499877345, 1),$lt:Timestamp(1499877395, 1)}}' -o path_op
+
+
+
+
+
+在副本集时oplog
+use local;
+db.oplog.rs.find()
+
+
+PITR
+
+mongodump --oplog     #有oplog才能实现定点恢复
+	--gzip #compress archive our collection output with Gzip
+	--oplog does not dump the oplog collection
+			主要目的是确保导出时不受更改的影响，用于实现定点恢复。
+	
+mongodump -d local -c oplog.rs -o backup_op
+#将oplog备份得到的oplog.rs.bson替换【mongodump --oplog】备份目录backup_path中的oplog.bson，即可使用backup_path进行PITR
+	
+mongorestore --oplogReplay --oplogLimit=<seconds> backup_path  ##恢复到指定时间
+
+	--gzip #decompress gzipped input
+
+
+
+全备+dump出oplog.rs，使用oplogReplay可以定点恢复
+
+
+rs.printReplicationInfo()     //查看oplog的时间窗口
+
+
+oplog具有幂等性(idempotent)，多次操作结果也一样。
+
+
+replicate PITR
+
+
+
+
+
+分片(sharding)PITR
+在每个(replicate set)以及(config server replicate set)
+
+
+
+journal
+--journal    //启用，默认
+--nojournal  //不启用
+类似于redo日志
+
+启动时date file映射到shared view（不是加载），mongodb需要时再加载数据
+shared view映射到private view，读写操作使用private view
+private view变脏后根据journalCommitInterval将操作写往journal file，称为group commit
+
+journal file记录原生的操作（raw operation）
+journal file记录的操作应用在shared view上，shared view刷新输出到data file
+
+
+GridFS
+GridFS是MongoDB规范用于存储和检索大文件，文档最大16MB限制，而GridFS存储文件不受限制。(默认一个记录不能大于16M)
+GridFS的划分一个文件分成块存储数据，每个块在一个单独的文件，每个最大尺寸255K。
+GridFS默认使用两个集合 fs.files 和 fs.chunks 存储该文件的元数据和块。
+
+
+
+文件
+memory-mapped files
+
+
+mongod.lock		进程锁定文件
+test.ns 		存储集合和索引的命令空间，即集合和索引的名称
+test.0			集合和索引的数据文件
+storage.bson	存储引擎的信息
+
+
+锁
+全局锁，可以查数据，不能写数据，可以复制数据目录备份
+#加锁
+db.fsyncLock()    
+db.runcommand({'fsync':1,'lock':1})  
+
+#解锁
+db.fsyncUnlock()  
+
+可以同时存在多个锁，解锁时逐个解锁，按加锁的顺序解锁
+    
+	
+修复
+
+db.runCommand({"repairDatabase":1})
+    
+bin/mongod  --repair   #启动是修复数据库
+    
+主从
+主
+master=yes
+
+从
+slave=yes
+source=<master ip>:<master port>
+
+
+集群安全，通过设置keyFile设置节点建的认证
+--keyFile arg      //private key for cluster authentication
+
+
+openssl rand -base64 756 > <path-to-keyfile>
+chmod 400 <path-to-keyfile>
+
+
+
+集群
+replica set (副本集)
+副本集在主节点宕机后，副本接管主节点
+
+默认是主节点写数据，副本节点不允许连接。设置副本节点可以连接，在每个副本集中设置 db.getMongo().setSlaveOk()
+
+
+mongod --port 27071 --dbpath "../data" --replSet "mongo_repl"
+
+在命令行中
+rs.initiate()    			//启动一个新的副本集		//只在主节点启动
+rs.conf()		 			//查看副本集配置
+rs.status()		 			//查看配置
+rs.add("hostname:port")  	//添加副本集成员
+rs.addArb()					//添加仲裁节点
+rs.remove("hostname:port")	//移除副本节点
+db.isMaster()				//查看当前节点是否为主节点
+rs.isMaster()
+rs.stepDown()				//将主库降为从库
+
+
+##reconfig重新修改副本集节点
+cfg=rs.conf()
+cfg.members[1].priority=2;
+rs.reconfig(cfg);
+
+
+
+##使用配置变量设置
+config={_id:"mongo_repl",members:[
+	{_id:0,host:"hostname0:port0"},
+	{_id:1,host:"hostname1:port1"},
+	{_id:2,host:"hostname2:port2"},
+	...
+]	
+}
+rs.inititate(config)				//在任意一个节点操作即可
+
+
+config={_id:"mongo_repl",members:[
+	{_id:0,host:"hostname0:port0"},
+	{_id:1,host:"hostname1:port1"},
+	{_id:2,host:"hostname2:port2",arbiterOnly:true},			
+	...
+]	
+}
+
+##仲裁节点为可选
+##仲裁节点只能参与投票，不能升级为主节点
+
+
+
+
+sharding
+
+以下角色都可以多个
+Shard:
+用于存储实际的数据块，实际生产环境中一个shard server角色可由几台机器组个一个relica set承担，防止主机单点故障
+Config Server:
+mongod实例，存储了整个 ClusterMetadata，其中包括 chunk信息。
+Router:
+前端路由，客户端由此接入，且让整个集群看上去像单一数据库，前端应用可以透明使用。
+
+
+
+db.runCommand({removeshard:"shard_name/host_ip:host_port[,...]"})  移除shard
+
+
+###将draining状态的shard启用，draining不能用于存数据
+use config
+db.shards.update({},{$unset:{draining:true}},false,true)
+
+
+
+
+
+
+
+
+
+##慢查询分析
+db.setProfilingLevel(1,500)
+
+#0 不收集慢查询 
+#1 只收集慢查询
+#2 所有操作都收集
+#500 慢查询时间下限，毫秒
+
+
+db.getProfilingStatus()     #对当前库生效
+
+db.system.profile.find()	#查看慢查询语句
+
+db.system.profile.find().limit(10).sort({ts:1}).pretty()
+
+#配置文件中设置
+profile=1
+slowms=500
+
+
+
+db.setProfilingLevel(2)
+
+
+外部执行
+echo 'db.currentOp({$all:true})' | bin/mongo --quiet | more
+
+
+
+
+
+
+
+
+
+mmap
+memory mapped storage engine
+
+
+
+
+
