@@ -1,0 +1,34 @@
+windows下
+启动 start nginx.exe 
+关闭 nginx.exe -s stop
+
+linux下
+nginx   启动
+ps -ef | grep nginx  杀进程号关闭
+编译安装
+./configure --prefix=/usr
+make && make install
+
+
+
+在配置文件con/nginx.conf的http段中
+	upstream mytomcats {         ###设置集群
+		ip_hash;				 ###
+		server 127.0.0.1:8080;
+		server 127.0.0.1:8085;   ###【weight=10】权值、【fail_timeout=3s】
+	}
+	
+    server {
+        listen       80;
+        server_name  localhost;      
+
+        location / {						###可以有多个location，【/】也可以使用【~ (\.jsp)|(\.do)$】指定特定页面的代理
+            root   html;
+            index  index.html index.htm;
+			proxy_pass http://mytomcats;    ###指向代理集群，可以直接使用url
+        }
+	}
+
+
+
+
