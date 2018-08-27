@@ -1,0 +1,259 @@
+LSA：链路状态广播包
+距离矢量路由协议
+链路状态路由协议
+
+
+RIP 路由信息协议
+RIP配置
+ 在全局模式
+  router rip
+  network 网络号（端口的网路号）
+
+
+单区域 OSPF［开放式最短路径优先］
+OSPF配置
+ 在全局模式
+   router opsf process-id(在1-65535之间，用来区分路由器进程)
+   network address(可以是网络、子网、接口的地址) wildcast-mask（0匹配，1不匹配） area area-id（opsf地址所属区域）
+
+
+IGRP 内部网关路由协议（Interior Gateway Routing Protocol）
+EIGRP 增强型内部网关路由协议（Enhanced Interior Gateway Routing Protocol）
+EIGRP数据包类型：Hello、确认、更新、查询、应答。
+DUAL扩展更新算法
+EIGRP配置
+ 在全局模式
+  router eigrp 100（100指自治系统[AS]号）
+  network 网络号（与之关联的网络号，为端口的网络号）
+如果需要手动汇总，使用端口汇总
+ 在全局模式
+  router eigrp 2446
+  no auto-summary
+  exit
+  interface fa0/0
+  ip summary-address eigrp 2446 2.1.0.0 255.255.0.0
+
+show ip eigrp neighbors 显示EIGRP发现的邻居
+show ip eigrp topology  显示EIGRP的拓扑表
+show ip route eigrp     显示路由表中的EIGRP路由条目
+show ip protocols       显示目前使用路由协议进程的参数
+show ip eigrp traffic   显示EIGRP收到和发出的包的数量
+
+RIP协议排错
+ 特权模式下
+  debug ip rip
+
+EIGRP协议排错
+ 特权模式下
+  debug ip eigrp
+  debug eigrp fsm 显示DUAL可行后继路由器的度量值信息
+
+OSPF协议排错
+ 特权模式下
+  debug ip ospf events
+  debug ip ospf packet
+
+交换机基于MAC地址转发包
+帧交换方式
+  二层交换：基于MAC地址
+  三层交换：基于网络层地址（IP地址）决定输出端口
+
+Ethernet/802.3 
+ 
+接入层：连接最终用户到局域网
+分布层：提供基于策略的最终用户局域网之间的连接
+核心层：提供分布层之间最快速的连接
+
+交换机配置
+ 恢复交换机到默认配置
+  特权模式
+    switch delete vlan.dat5
+    erase starting-config
+    reload
+ 配置主机名和控制端密码
+  全局模式
+   hostname 更改成的主机名
+   line console 0
+   password 密码
+   login
+   line vty 0 15
+   password 密码
+   login
+ 配置交换机的管理部分
+  全局模式
+   interface VLAN1
+   ip address ip地址 子网掩码
+   no shutdown
+使用no ip address接口配置命令来移除VLAN1端口的ip地址或禁用ip进程
+
+查看交换机学习到的地址 show mac-address-table
+清除学到的动态ip地址   clear mac-address-table dynamic
+ 
+配置静态MAC地址 mac address-table static mac地址 vlan vlan号 interface 接口号
+接口命令[进入接口后]switchport port-security 配置一个安全MAC地址
+
+复制配置文件 copy ststem:running-config tftp: 文件路径/文件名
+            copy nvram:startup-config tftp:文件路径/文件名
+忘记密码可执行密码恢复程序，在cisco官网下载
+
+VLAN的实现融合了第二层交换和第三层路由技术来限制冲突域和广播域。
+接入层：使得工作组中的用户能够访问网络。
+分布层：提供基于策略的连接。
+核心层：提供站点之间最佳的传送路径。
+
+
+
+
+spanning tree protocol 生成树协议-用来解决由交换拓扑中的物理冗余产生的问题
+IEEE802.1d   IEEE802.1w  
+冗余设计问题
+广播风暴
+重复帧传送
+MAC地址表不稳定
+
+生成树的路径花费
+10Gbit/s  2；
+1Gbit/s 4；
+100Mbit/s  19；
+10Mbit/s  100.
+
+STP步骤
+选择一个根桥［roor bridge］
+在非根桥上选取根端口
+在每个网段中选择指定端口
+
+STP中端口的状态：阻塞，监听，学习，转发，禁用。
+阻塞：在指定时间没接收到新的BPDU，转为监听状态。可以发送和接收BPDU来确定运行拓扑。
+监听：所有网桥选举根桥，并在每一网段中选举指定端口。
+
+快速生成树协议［RSTP］
+减少网络拓扑的重新收敛时间
+RSTP端口状态：丢弃，学习，转发
+RSTP端口角色：根，指定，替代，备份，不可达
+
+BPDU网桥协议数单元 交换机和网桥使用多播帧方式交换这些信息。运行生成树算法的交换机和网桥与其他交换机和网桥在规定时间间隔内交换配置信息。
+
+根桥：根桥上所有端口都是指定端口
+根端口：从非根桥到根桥的最低花费的路径的非根网桥选取
+指定端口：到根桥最低花费路径的网桥上选举
+
+全局模式模式：
+  指定交换机为根网桥：spanning-tree vlan vlan-id root primary 
+  指定交换机为副网桥：spanning-tree vlan vlan-id root secondary
+  配置桥优先级：spanning-tree vlan vlan-id priority priority-value(priority-value为0-65536之间，增量为4096，越低优先级越高)
+接口模式：
+  启用PortFast：spanning-tree portfast(端口直接从阻塞状态转换到转发状态，可以在终端设备的接入端口上使用PostFast，不必等待生成树收敛)
+
+RSTP边缘端口：不会连接到其他交换设备的交换机端口。设置为PortFast端口。
+
+网络直径：路径间交换设配个数
+
+STP变体
+PVST（每个VLAN生成树协议）
+PVST+（增强型每个VLAN生成树协议）
+RSTP（快速生成树协议）
+MSTP（多重生成树协议）
+
+冗余交换拓扑
+广播风暴：
+重负帧传送：
+MAC地址表不稳定：交换机端口因所接收帧的mac重复而导致的mac表频繁变更
+
+  
+
+
+
+为使VLAN可以跨越多个交换机，需要使用一条干线（Trunk）连接两个交换机
+VLAN配置
+全局模式
+	vlan vlan-id
+	name vlan-name
+    interface vlan-name
+    ip address ip地址 子网掩码
+
+桥接协议数据单元(Bridge Protocol   Data   Unit)  BPDU
+
+
+
+IEEE 802.1Q
+干线技术（VTP）
+路由器提供VLAN间路由
+干线两端的交换表是转发数据的依据，交换表是通过帧的目的的MAC地址建立的。
+每个帧用标签来查看所属的VLAN，常见的标签的方案：ISL（思科私有）、IEEE 802.1Q
+MST：单生成树
+PVST+：增强型单VLAN生成树
+循环冗余检测（CRC），通过散列
+
+trunk配置：
+  vlan vlan-id 添加vlan
+  name ****    命名vlan	
+  swithchport access vlan vlan-id 为端口配置vlan，在端口模式配置
+  switchport  mode trunk 为端口配置trunk，在端口模式配置
+  switchport trunk allowed vlan vlan-id 配置端口允许通过的vlan-id，在端口模式配置（可以选择使用与否）
+
+switchport  mode  ｛access|dynamic｛auto|desirable｝|trunk｝（IEEE802.1Q标准）
+trunk 配置某个端口永久地进入802.1Q干线模式并且与直连的设备进行协商，而使对方端口也进入干线模式。
+access 关闭trunk模式并且与直连的端口协商并将其改变成非trunk模式
+
+
+ISL干线的配置
+switchport trunk encapasulation 配置一个既支持ISL又支持801.1Q的catalyst交换机
+switchport mode trunk 把一个端口配置为trunk模式
+
+VTP是一个二层协议
+模式：
+  服务器模式
+  透明模式
+  客户端模式
+如果不依赖VTP，所有交换机应该置于透明模式
+交换机之间设置trunk之后，客户端模式继承服务端模式的设置，而透明模式则不；
+设置透明模式依然传递服务器模式的配置；
+客户端模式域名（domain）不会继承，但为空的话会继承
+
+
+
+vtp配置：
+  于全局模式：
+     vtp domain domain-name  配置vtp域名
+     vtp mode {client|server|transparent} 三选一，配置交换机在vtp域中的模式
+     vtp password mima  配置交换机vtp密码
+     vtp pruning 使用修剪（默认已经使用？）
+VTP域：路由器或第三层交换机定义了每个域的边界
+
+
+
+
+vlan之间的通信必须要使用第三层设备
+单臂路由
+
+配置vlan间路由（配置完后应启动物理端口，在端口模式：no shutdown）
+ interface fa0/0.1   进入子接口
+ descapsulation dot1q vlan-id   [native] 配置关联的vlan,配置本征vlan必须使用native
+ ip address ip sub-mask   配置ip地址
+802.1Q中继端口会将无标记流量发送到本征VLAN
+注意事项：
+各个vlan的ip必须在不同网段下；
+交换机与交换机、交换机与路由器的端口都必须配置trunk；
+必须配置网关；
+
+ISL利用封装的方式为数据帧打标签
+IEEE 802.1Q 利用插入的方式为数据帧打标签
+
+管理VLAN
+ 接口模式
+  no switchport access vlan    删除端口分配的VLAN
+  no vlan vlan-id     删除vlan
+
+VLAN类型
+  数据VLAN：传送用户产生的数据，又称用户VLAN
+  默认VLAN：复位为出厂默认设置后，交换机上所有端口为默认VLAN成员
+  黑洞VLAN：与黑洞VLAN相关的所有流量不允许在中继链路上传送
+  本征VLAN：本征VLAN分配给802.1Q中继端口，支持来自多个VLAN的流量
+  管理VLAN
+  语音VLAN
+交换机中连接到其他交换机的端口称为中继端口  
+
+
+do write 写入配置
+
+
