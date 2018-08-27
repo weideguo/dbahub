@@ -1,0 +1,96 @@
+docker
+
+启动docker服务
+service docker start	###启动dockerd-current
+
+docker需要操作系统镜像
+
+docker images    		###显示已经存在的镜像
+docker pull image_tag   ###添加镜像 image_tag如centos:6  hub.docker.com/explore中查看
+docker pull private-registry.com/user-name/ubuntu:latest
+docker push 192.168.0.100:5000/ubuntu   # 推送镜像库到私有源，也可以推送到官方
+
+/etc/sysconfig/docker    	###配置文件
+/var/lib/docker				###数据路径
+/var/lib/docker/devicemapper/mnt/$no_idea_dir/rootfs/   	###容器的文件对应在主机中的位置，在此目录下的文件容器可以直接使用
+
+
+docker info		###
+docker rmi		###删除一个或多个镜像
+docker ps -a  	###查看容器
+
+###container_name也可以使用container_id
+
+docker create --name wdg_container ubuntu      						###使用镜像创建容器，--name指定容器名，可以自动生成 
+docker run -i ubuntu /bin/bash   									###创建容器，运行，进入交互模式
+docker run -v $host_dir:$docker_dir $container_name   				###-v挂载主机文件夹到容器
+docker run -p $host_ip:$host_Port:$container_port $container_name   ####容器与主机端口映射
+docker cp $contrain_id_or_name:$docker_file $host_file      		####拷贝容器中文件到主机
+docker cp $host_file $contrain_id_or_name:$docker_file    			####拷贝主机中文件到容器
+docker inspect -f '{{.Id}}' $container_name   						###查看容器的id
+docker start $container_name  										##启动一个容器
+
+stop    	##停止
+kill        ##杀死
+restart     ##重启
+pause       ##暂停
+unpause     ##取消暂停
+commit      ##提交,由容器创建镜像
+logs        ##输出指定容器的日志
+inspect     ##查看容器或者镜像的详细信息
+rm			##移除容器
+attach		##登陆容器
+exec		##在后台运行容器
+
+
+docker commit $container_id $image_name          ###容器转成镜像
+docker export $container_id >> /home/export.tar  ###容器转成文件
+docker save $image_name >> /home/save.tar     	 ###镜像转成文件
+###一般情况下，save.tar比export.tar大一点点而已，export比较小，因为它丢失了历史和元数据metadata
+
+cat /home/export.tar | docker import - $image_name:$version  	###容器导出的文件转成镜像
+docker load < /home/save.tar    								###镜像导出的文件转成镜像
+
+
+容器(container)
+镜像(image)
+容器使用镜像启动生成，镜像可以由容器创建
+
+容器可以使用ssh连接(不建议)
+
+
+
+docker网络模式
+host模式
+Docker使用了Linux的Namespaces技术来进行资源隔离，如PID Namespace隔离进程，Mount Namespace隔离文件系统，Network Namespace隔离网络等。一个Network Namespace提供了一份独立的网络环境，包括网卡、路由、Iptable规则等都与其他的Network Namespace隔离。一个Docker容器一般会分配一个独立的Network Namespace。但如果启动容器的时候使用host模式，那么这个容器将不会获得一个独立的Network Namespace，而是和宿主机共用一个Network Namespace。容器将不会虚拟出自己的网卡，配置自己的IP等，而是使用宿主机的IP和端口。
+
+例如，我们在10.10.101.105/24的机器上用host模式启动一个含有web应用的Docker容器，监听tcp80端口。当我们在容器中执行任何类似ifconfig命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用10.10.101.105:80即可，不用任何NAT转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。
+
+container模式
+这个模式指定新创建的容器和已经存在的一个容器共享一个Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过lo网卡设备通信。
+
+none模式
+这个模式和前两个不同。在这种模式下，Docker容器拥有自己的Network Namespace，但是并不为Docker容器进行任何网络配置。这个Docker容器没有网卡、IP、路由等信息。需要我们自己为Docker容器添加网卡、配置IP等。
+
+bridge模式
+bridge模式是Docker默认的网络设置，此模式会为每一个容器分配Network Namespace、设置IP等，并将一个主机上的Docker容器连接到一个虚拟网桥上。
+
+
+
+
+
+##容器私有仓库启动
+##不设置TLS时只能在本地使用
+docker run -d -p 5000:5000 --restart=always --name registry registry-1.docker.io/distribution/registry
+
+
+##上传到仓库要先tag？
+docker tag apline:3.4 localhost:5000/my-alpine
+docker push localhost:5000/my-alpine
+
+
+
+
+
+
+
