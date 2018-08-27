@@ -1,0 +1,35 @@
+ARP（Address Resolutiong Protocol）
+直连路由
+静态路由
+动态路由
+
+动态IP路由协议
+RIP（信息路由协议）
+IGRP（内部网关路由协议）
+EIGRP（增强型内部网关路由协议）
+OSPF（开放最短路径优先）
+IS-IS（中间系统到中间系统）
+BGP（边界网关协议）
+
+非对称路由
+数据包沿着网络中一条路径传送，通过另一条路径返回。
+
+帧校验系列（FCS）[Frame Check Sequence]：用于循环冗余校验以确保数据帧以确保数据帧未受破坏
+带宽：链路每秒能传输的数据比特流量
+
+DCE：数据通信设备（Data Communications Equipment）
+DTE：数据终端设备（Data Terminal Equipment）
+
+接口
+快速以太网接口：FastEthernet
+串行接口：Serial 
+使用串行端口应配置时钟信号
+	接口模式
+	clock rate 64000[可以选择其他]
+
+CSD/DSU 信道服务单元/数据服务单元	
+	
+CDP思科发现协议 
+
+ 
+ 
