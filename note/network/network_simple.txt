@@ -1,0 +1,132 @@
+OSI模型：
+物理层 Physical Layer
+数据链路层 data link
+网络层 network
+传输层 transport
+会话层 session
+表示层 presentation
+应用层 application
+
+TCP/IP模型：
+网络接入层  link
+网际互联层	internet
+传输层		transport
+应用层		application
+
+
+应用层协议：HTTP、SMTP、FTP、DNS、DHCP、SMB、P2P、Telnet
+传输层协议：TCP、UDP
+
+TCP面向连接
+	连接建立 三次握手 
+		1.源端发起连接请求
+		2.目的端回请请求
+		3.源端确认目的端的回应
+	断开连接 四次挥手
+		1.源端发出断开信息
+		2.目的端确认断开信息
+		3.目的端发出断开信息
+		4.源端确认断开信息
+UDP是无连接协议，通信之前不会建立会话，开销低
+
+TCP/IP协议是一个协议簇，包含多个协议
+TCP/IP协议中的端口，端口号的范围从0到65535
+
+静态路由、动态路由、默认路由
+ICMP（Internet control message protocol）
+PDU协议数据单元
+CSMA/CD载波侦听多路访问/冲突检测
+CSMA/AD载波侦听多路访问/
+数据链路层
+ 逻辑链路控制 
+ MAC（介质访问控制）
+100Mbit/s以太网称为快速以太网
+以太网仅实现数据链路层的下半层（MAC层）和物理层，标准是802.3
+以太网最小帧64字节，最大1522字节
+以太帧
+ 前导码（7） 帧首定界符（1） 目的地址（6） 源地址（6） 长度/类型（2） 802.2报头和数据（46到1500） 帧校检序列[FCS,包含CRC的结果]（4）
+MAC 组织唯一标识符（OUI）+厂商分配的   48位，用16进制表示
+比特时间 将比特发送到介质并在介质上侦听到它所需的时间
+以太网交换机选择性地将个别帧从接收端口转发到连接目的节点的端口
+交换机维护一个MAC表
+以太网LAN交换机采用5种操作实现用途：
+ 学习 MAC表中MAC地址对应的端口
+ 过期 MAC表友具体时间戳，过期删除
+ 泛洪 将帧转发到除帧进入的接口外所有接口
+ 选择性转发 具有安全设置
+ 过滤 具有安全设置
+地址解析协议（ARP）
+ 将IPv4地址解析为MAC地址
+ 维护映射的缓存
+ARP表 IP地址和MAC地址
+帧不能穿过路由器到另外的网络
+直通线
+ 交换机到路由器 计算机到交换机 
+交叉线
+ 交换机到交换机 路由器到路由器 计算机到计算机 计算机到路由器
+ICMP Internet消息控制协议
+
+IOS基础
+访问CLI环境方法
+ 控制台
+ Telnet或SSH
+ 辅助端口
+特权模式和用户模式间转换：disable和enable
+保存配置文件： copy running-config startup-config 
+在特权模式下进入全局模式： config terminal 
+退出特权模式：exit
+修改名称： hostname 名称
+消除命令的作用:no 命令
+查看接口：show interfaces
+显示接口重要消息摘要：show ip interface brief
+口令
+ 控制台口令:在全局模式下：（1）line console 0；（2）password 密码；（3）login。
+ 使能口令：在全局模式下：enable secret 密码
+ 使能加密口令 
+ VTY口令：[通过telnet访问，默认有5条线路，编号0到4]在全局模式下：（1）line vty 0 4；（2）password 密码；（3）login。
+密码加密：service password-encryption
+标语信息：banner motd #标语#
+恢复原始配置：在特权模式下：reload
+存储配置文件到简单文件传输协议服务器：copy running-config[或startup-config] tftp
+删除所用配置：erase startup-config
+配置路由器以太网接口：
+ 进入全局模式
+ 进入接口配置模式
+   interface fastethernet 0/0
+ 指定接口IP地址和子网掩码
+   ip address ip地址 子网掩码
+ 启用该接口
+   no shutdown
+配置路由器串行接口：[用于通过广域网连接到远程站点或ISP路由器]
+ 进入全局模式
+ 进入接口配置模式
+   interface serial 0/0/0
+ 指定接口ip地址和子网掩码
+   ip address ip地址 子网掩码
+ 设置时钟频率[连接DCE电缆，DTE则不用]
+   clock rate 数值
+ 启用该接口
+   no shutdown
+接口描述：
+ （1）configure terminal；（2）interface fa0/0；（3）description 描述语句。
+验证网络联通性
+ 验证协议族
+   使用ping命令
+   测试环回[ping 127.0.0.1]
+ 测试接口
+   验证路由器接口[show ip interface brief]
+   测试路由器联通性[ping 本地主机IP地址]
+   验证交换机接口
+   测试交换机联通性
+ 测试本地网络
+ 测试网关和远端的联通性
+   测试路由下一跳
+     show ip route:输出路由表
+   测试远程主机
+   检查路由器的远程联通性
+
+静态路由配置
+  在路由器全局模式 ip route 目标网络地址 子网掩码 下一跳地址
+主机应配置网关地址，即与之连接的路由器端口的地址
+
+
