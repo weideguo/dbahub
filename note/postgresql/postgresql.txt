@@ -1,0 +1,25 @@
+bin/initdb -D ./data/     				  #初始化数据库
+bin/pg_ctl -D ./data/ -l logfile start    #启动实例
+bin/postgres -D ./data    				  #实际服务运行的文件
+
+bin/psql postgres            #使用初始化创建的数据库postgres
+
+bin/psql postgres user_name  #默认创建的用户名与启动pg服务的系统用户名一致
+
+psql [OPTION]... [DBNAME [USERNAME]]
+  -h, --host=HOSTNAME     
+  -p, --port=PORT         
+  -U, --username=USERNAME 
+  -w, --no-password       
+  -W, --password          
+
+
+schema            #表的全型   schema_name.table_name
+tablespace
+domains
+
+
+创建表默认在pubic schema下
+
+
+
