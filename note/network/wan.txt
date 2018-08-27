@@ -1,0 +1,367 @@
+SOHO：Small Office Home Office
+DSL：数字用户线
+ADSL：非对称DSL，更适用中小企业应用。下行带宽比上行带宽高。
+SDSL：对称DSL。上行带宽与下行带宽一样。
+VPN：虚拟专用网络（Virtual Private Network）
+虚拟：通过公共网络在私有网络中传输信息
+专用：对数据进行加密以确保机密性
+站点到站点VPN：让站点通过公共基础设施访问内联网或外联网。
+远程接入VPN：让远程用户能够通过公共设施访问内联网或外联网。
+站点到站点VPN中，主机通过VPN网关收发TCP/IP数据流，该网关可以是路由器、PIX防火墙设备或自适应安全设备（ASA）。
+VPN组件：
+	包含服务器和工作站的现有企业网络
+	Internet连接
+	VPN网关。如路由器、防火墙、VPN集中器、ASA。
+	用于创建和管理VPN隧道的软件。
+大部分VPN既能封装数据又能加密数据：
+	封装又称隧道化，封装通过公有网络基础设施以透明方式在网络之间传输数据。
+	加密使用秘钥将数据编码成另一种格式
+隧道使用协议：
+	承载协议：信息传输时使用的协议。（帧中继、ATM、MPLS）
+	封装协议: 封装原始数据的协议。（GRE、IPSec、L2F、PPTP、L2TP）
+	乘客协议：传输原始数据时使用的协议。（IPX、AppleTalk、IPv4、IPv6）
+VPN加密算法：
+	数据加密标准（DES）算法
+	三重DES（3DES）算法
+	高级别加密标准（AES）
+	RSA
+加密过程使用3个基本组件：
+	密钥
+	加密函数（加密算法）
+	要求加密或解密的消息
+对称加密：使用共享密钥执行加密盒解密
+非对称加密：在加密和解密时使用不同的密钥。
+散列：确保未经授权的不能篡改传输的消息。又称信息摘要，根据字符串生成一个数字，但比文本短。
+VPN使用散列信息验证码（HMAC）
+常见的HMAC有
+	摘要信息5（MD5）
+	安全散列算法1（SHA-1）
+	
+接入WAN
+电信行业协会 TIA
+电子工业联盟 EIA
+
+WAN设备
+调制解调器
+CSU/DSU ［信道服务单元/数据服务单元］ 数字线路需要将这两个合并到一台设备中
+接入服务器 集中处理拨入和拨出用户通信
+WAN交换机
+路由器
+核心路由器
+
+FCS帧校验序列，使用循环冗余校验（CRC）机制创建的一个字段，长2或4字节
+
+电路交换
+电路交换网路是指在用户通信前必须在节点和终端之间建立专用电路
+分组交换
+将数据流分成组，再通过共享网络进行传输
+虚电路
+分组交换网路可能通过交换机建立实现特定端到端连接的路由
+
+WAN数据链路协议
+HDLC
+点到点协议（PPP）
+帧中继
+ATM
+
+私有WAN接入方式
+        专用通信链路（租用线）
+        交换通信链路（电路交换、分组交换）
+公共WAN接入方式
+        使用Internet基础设施（宽带、VPN）
+
+电路交换连接方式
+模拟拨号PSTN
+    使用调制解调器和模拟拨号电话线路，可提供低带宽的专用交换连接
+综合业务数字网络ISDN
+    让PSTN本地环路能够传输数字信号，从而实现更高容量的交换连接
+分组交换连接方式
+    X.25
+    帧中继
+    ATM 异步传输模式
+Internet模式
+    DSL（数字用户线digital subscriber line ，ADSL为非对称DSL）
+    有线电视调制解调器
+    无线宽带
+    VPN
+    城域以太网
+
+
+
+宽带指可以在Internet和其他网络上高速地传输数据的先进通信系统，实现技术包括DSL、光缆、同轴电线、无线技术以及卫星。上行或下行速度大于200kbit/s。
+
+小型用户连接到WAN
+    拨号接入
+        使用电话线和调制解调器，最大速度为56kbit/s
+    DSL
+        使用电话线和调制解调器，速度不低于200kbit/s，多使用非对称DSL（ADSL）
+    有线电视调制解调器
+        使用同轴电缆和调制解调器，速度不低于200kbit/s
+    卫星
+        速度为128kbit/s~512kbit/s
+
+有线电视是串联的，DSL是并联的。
+
+ADSL使用的频段为20KHz~1MHz，语音级电话服务占用的频段POTS区域为0~4KHz
+
+DSL分为ADSL和SDSL
+DSLAM位于运营商中心局，将来自多用户的DSL连接合并成一条连接到ISP的高容量链路
+
+使用微型虑波器或分离器可以将DSL和和语音分离
+
+WiMAX微波接入全球互操作性
+
+802.11b  11Mbit/s
+802.11g  54Mbit/s
+802.11n  超过54Mbit/s
+
+虚拟私人网络（Virtual Private Network）
+
+站点到站点VPN
+远程接入VPN
+
+客户主机要安装VPN客户端软件，将数据封装和加密。服务端VPN网关将内容解密，可以是路由器、PIX防火设备、自适应安全设备（ASA）、VPN集中器。
+
+VPN加密算法
+数据加密标准算法（DES）
+三重DES算法（3DES）
+高级加密标准（AES）
+RSA
+
+加密组件
+密钥
+加密函数（加密算法）
+加密或解密的消息
+
+加密密钥和解密密钥相同，为对称加密，否则为非对称加密。
+
+散列（信息摘要）
+
+VPN使用散列消息验证码（HMAC）确保消息的完整性和真实性
+  消息摘要5（MD5）
+  安全散列算法1（SHA-1）
+
+身份验证
+    预共享密钥（PSK）
+    RSA签名
+
+IPsec是一个保护IP通信的协议簇，提供了加密、完整性和身份验证功能。
+
+
+
+DHCP动态主机配置协议
+内部主机从DHCP服务器获得IP地址、子网掩码、默认网关IP地址、DNS服务器IP地址和其他信息
+
+NAT让内部主机能够借用合法的Internet IP地址来访问Internet资源。
+
+ARP（Address Resolution Protocol）地址解析协议
+
+RFC（Request For Comments）请求注解
+
+BOOTP让无盘工作站能够获得IP地址和启动配置
+无盘工作站，没有硬盘和操作系统
+
+DHCP使用用户数据报协议（UDP）作为传输协议。客户端将信息发送到服务器的端口67，服务器到客户端68。
+
+将Cisco路由器配置成DHCP服务器
+在全局模式
+    ip dhcp excluded-address 192.168.10.1 192.186.10.9    排除地址段
+    ip dhcp pool pool-name［任意取一个地址池名字］进入DHCP配置模式
+    在DHCP配置模式
+        network 192.168.10.0 255.255.255.0［网路号 子网掩码］  定义地址池
+        default-router 192.168.10.1 配置默认网关
+        dns-server addrress［dns的ip，可填多个］指定DNS服务器
+        domain-name domain［填所在域，如span.com］指定域名
+        lease ｛day｝指定DHCP租期
+
+    no service dhcp 禁用DHCP
+    service dhcp 重启DHCP服务进程
+    show ip dhcp binding 查看DHCP配置
+    show ip dhcp server statistics 查看路由器接收或发送的信息
+    show ip dhcp pool查看地址池
+
+自动私有IP编址（APIPA），如果DHCP服务器不可用，计算机将自动给自己分配一个位于范围169.254.x.x的地址
+
+DHCP中继（有专门的DHCP服务器，路由器只作中继）
+端口模式［路由器］
+    ip helper-address 192.186.11.5［为DHCP服务器的地址］  配置DHCP中继代理
+
+排除DHCP配置故障
+show ip dhcp conflict 显示DHCP服务器记录的所有地址冲突
+show interface核实用作用户默认网关路由器的接口是否正常，如果是up，使用no shutdown启用
+debug ip packet detail 100 核实DHCP服务器是否从DHCP客户端接收到数据
+debug ip dhcp server packet 检查路由器是否收到并转发DHCP请求
+
+RIR 地区性Internet地址注册机构
+
+NAT 网络地址转换
+动态NAT：使用公有地址池，并以先到先得的原则分配这些地址。
+静态NAT：使用本地地址与全局地址的一对一映射，这些映射保持不变。
+NAT重载，将多个地址映射到一个或多个地址。
+
+端口号是16位的编码，理论上最多可以将65536个地址转换为一个外部地址，NAT路由器将源地址分配一个端口号。
+
+NAT通常以一对一的方式将私有IP地址转换为公有IP地址，而NAT重载同时修改发送方的私有IP地址和端口号。
+
+配置静态NAT
+全局模式
+    ip nat inside source local-ip［内部ip地址］ global-ip［外部ip地址］
+    进入接口模式
+        ip nat inside 将当前接口标记为连接到内部
+        ip nat outside 将当前接口标记为连接到外部
+
+配置动态NAT
+全局模式
+    ip nat pool name［地址池名字］ start-ip［开始ip］ end-ip［结束ip］ netmask 255.255.255.0［子网掩码］定义一个用于分配地址的全局地址池
+    no ip nat pool 删除全局地址池
+    access-list access-list-number［访问表号］ permit source［允许转换的地址］定义一个标准访问列表，允许转换的地址
+    ip nat inside source list access-list-number［访问表号］ pool name［地址池明］建立动态转换并指定前一步定义的访问列表
+    接口模式
+        ip nat inside 将接口标记为连接到内部网络
+        ip nat outside 将接口标记为连接到外部网络
+
+配置使用单个公有IP地址的重载
+全局模式
+    access-list access-list-number permit source 192.168.0.0  0.0.255.255定义一个标准访问列表，他只允许要转换的地址
+    ip nat inside source list access-list-number interface interface［指定接口］ overload 建立动态转换并指定前一步定义的访问列表
+     在接口模式指定内部接口和外部接口
+
+配置使用公有IP地址池的NAT重载
+    ip nat pool name start-ip end-ip netmask 255.255.255.0定义一个用于分配重载的全局地址吃
+access-list access-list-number permit source［如192.168.0.0 0.0.255.255］定义一个标准访问表，允许要转换的地址
+    ip nat inside source list access-list-number pool name［地址池］ overload 建立重载转换
+    接口模式指定内部接口接口和外部接口
+
+查看NAT和NAT重载
+show ip nat translations
+show ip nat translations verbose
+show ip nat statistics
+
+clear ip nat translation清除NAT转换条目
+
+排除NAT和NAT重载配置故障
+debug ip nat
+
+
+IPv6
+IPv6是128位的二进制，表示为32位16进制
+
+IPv6迁移技术
+双栈协议［尽量使用］
+6to4协议
+NAT-PT、ISATAP隧道与Teredo隧道
+
+IPv6地址管理
+收工配置接口ID
+    接口模式
+        ipv6 address ipv6-ad［ipv6地址］配置ipv6地址
+
+在Cisco路由器使用ipv6
+ipv6 unicast-routing 在全局模式使用以启用ipv6数据的转发
+
+RIPng下一代路由选择信息协议
+配置用于IPv6的RIPng
+全局模式
+    ipv6 router rip name［进程名］创建RIP进程
+接口模式
+    ipv6 rip name enable 在接口上配置RIP
+
+查看RIPng
+show ipv6 interface
+
+
+
+网络安全
+攻击分类
+    侦查
+    访问攻击
+    拒绝服务
+    恶意代码
+
+中间人攻击（MITM）
+拒绝服务（DoS）
+分布式DoS（DDoS）使用非法数据淹没网络链路
+
+SSH
+VTY
+使用SSH保护VTY线路，实现远程控制路由器。
+SSH分为客户端和服务端，客户端必须使用SSH客户端应用程序，如PuTTY或Tera Team
+
+rip、eigrp、ospf身份验证
+
+Cisco SDM（Security Device Manager）基于web的设备管理工具，用在基于Cisco IOS软件的路由器中配置LAN、WAN和安全功能。
+
+特权模式
+    show file system 列出文件系统
+
+备份IOS软件映像
+特权模式
+    copy flash： tftp：  将当前系统映像文件从路由器复制到TFTP服务器
+    copy tftp： flash： 从TFTP服务器下载新的映像
+
+show flash： 查看映像文件
+
+如果删除路由器闪存中的IOS，重启是路由器进入rommon模式，需要配置路由器的IP、子网掩码、网关、tftp服务器地址、IOS在tftp服务器的文件名，才可下载IOS文件
+当无法使用路由器的以太网端口，使用xmodem命令。
+
+show、debug
+
+在rommon模式使用confreg命令可让路由器跳过启动配置。
+
+
+
+
+ACL 访问控制表，是一序列permit或deny语句组成得顺序列表。
+3P原则，针对每种协议（per protocol）、每个方向（per direction）、每个接口（per interface）配置一个ACL
+ACL对路由器本身生成的分组不起作用
+
+标准ACL只根据IP地址过滤分组
+扩展ACL根据多种属性过滤IP分组
+     编号1-99、1300-1999是标准ACL
+     编号100-199、2000-2699是扩展ACL
+被跳过的编号是因为其他协议使用
+
+ACL末尾包含一条隐式deny语句，如果ACL只包含一条deny语句，将会拒绝所有数据流。
+
+配置标准ACL
+特权模式
+    access-list access-list-number［1-99、 1300-1999］ deny（拒绝）［或者permit（允许）、remask（注释）］ source［如ip网路号和通佩符掩码］
+    show access-list 显示访问列表
+    no access-list 删除访问列表
+
+通佩符掩码，指定匹配地址考虑IP地址的部分。二进制为0表示必须匹配，为1表示可以忽略。
+可用host代替通佩符掩码0.0.0.0，any代替255.255.255.255.
+
+要让访问列表生效，必须将其应用于接口
+接口模式
+    ip access-group access-list-number in［或者out］将ACL关联到接口
+    no ip access-group 将ACL删除
+
+show running-config | include access-list 显示ACL
+
+创建标准命名ACL
+全局模式
+    ip access-list standard［或extended］ name［创建ACL的名］
+    sequence-number［序列号］ permit［或deny、remask］ source
+    进入接口模式
+    ip access-group name in［或out］
+命名ACL可以包含多条编号ACL
+
+
+配置扩展ACL
+扩展ACL可使用逻辑运算符号，等于［eq］、不等于［neq］、大于［gt］、小于［lt］
+特权模式
+    如access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80 允许192.168.10.0网段80端口数据通过
+创建命名ACL
+全局模式
+    ip access-list extended name［任意取一个］
+扩展ACL同样关联到接口才起作用
+
+复杂ACL
+动态ACL：仅当用户使用Telnet连接路由器并通过身份验证后，数据流才能通过
+自反ACL：允许数据流离开，但只允许响应路由器内部发起的会话的数据流进入
+基于时间ACL
+支持根据一周或一天中的时间来控制访问
+
+
+
