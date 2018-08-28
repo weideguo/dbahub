@@ -7,6 +7,12 @@ import traceback
 import time
 import os
 
+"""
+vim mongodb_list
+mongodb://127.0.0.1:27017
+"""
+
+
 mongodb_list='/data/mongodb_list'
 mongodb_log_dir='/data/mongodb_log'
 
