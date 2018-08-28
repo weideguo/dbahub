@@ -1514,3 +1514,16 @@ split -b 2000M -d -a 1 ABCD.tar.gz ABCD.tar.gz.
 cat ABC.tar.gz.* | tar -zxv
 
 
+expect -c {
+set timeout 300
+spawn $CMD
+expect{
+$CASE1 {send $WORD1} 
+$CASE2 {send $WORD2} 
+}
+expect ...
+
+}
+
+
+
