@@ -1,1 +1,1 @@
-kernel virtual machine
+kernel-base virtual machine
