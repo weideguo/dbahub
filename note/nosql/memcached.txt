@@ -1,5 +1,6 @@
 编译安装
 cd $memcached_source
+./autogen.sh     #新版本
 ./configure --prefix=/u02/memcached
 make
 make install
