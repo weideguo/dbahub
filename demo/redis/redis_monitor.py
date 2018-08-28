@@ -6,6 +6,11 @@ import redis
 import os
 import traceback
 
+"""
+vim redis_list
+127.0.0.1|6379|r_password
+"""
+
 redis_list="/data/redis_list"
 redis_log_dir="/data/redis/redis_log"
 
