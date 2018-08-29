@@ -1,3 +1,6 @@
+#!/bin.env python
+#coding:utf8
+#实现异步的消息队列
 import os,time,random
 
 def write(q):
