@@ -2,7 +2,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-
+/*
+* 进程使用管道进行通信
+*/
 
 int main()
 {
