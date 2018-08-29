@@ -1,7 +1,6 @@
 import os,time,random
 
 def write(q):
-
     for value in ['A','B','C']:
         print('write put: %s...'%value)
         q.put(value)
@@ -9,7 +8,6 @@ def write(q):
         time.sleep(sleep_time)
         #print('write put: %s...'%value)
         #q.put(value)
-
 
 def read(q):
     while True:
@@ -19,7 +17,6 @@ def read(q):
             break
         else:
             print('read get: %s...'%value)
-
 
 if __name__ == '__main__':
     print('start...')
