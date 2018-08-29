@@ -1,12 +1,12 @@
 #--encoding=utf-8
 import memcache
 
-client=memcache.Client(['192.168.200.141:11211'],debug=0)
+client=memcache.Client(['192.168.1.1:11211'],debug=0)
 
-client.set("name","weideguo")
+client.set("name","wwwww")
 
 value=client.get("name")
-client.replace("name","weideguo")
+client.replace("name","wwwww")
 client.delete("name")
 
 
