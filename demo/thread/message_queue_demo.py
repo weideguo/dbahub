@@ -1,6 +1,6 @@
 #!/bin.env python
 #coding:utf8
-#实现异步的消息队列
+#实现异步的生产消费模式
 import os,time,random
 
 def write(q):
