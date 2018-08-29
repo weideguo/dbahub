@@ -1,3 +1,4 @@
+#!/bin/env python
 # -*- coding: utf-8 -*-
 import socket
 import threading
@@ -21,15 +22,12 @@ s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #SOCK_DGRAM  UDP
 #SOCK_RAW
 
-
-
 s.bind(('127.0.0.1',9911))
 s.listen(5)
 print 'Waiting for connection...'
 
 threads=[]
-while True:
-   
+while True:   
    	sock,addr=s.accept() 
    	t=threading.Thread(target=tcplink,args=(sock,addr))
 	t.start()
