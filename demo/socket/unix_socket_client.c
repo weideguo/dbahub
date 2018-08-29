@@ -9,7 +9,9 @@
 /* Create a client endpoint and connect to a server.   Returns fd if all OK, <0 on error. */  
 int unix_socket_conn(const char *servername)  
 {   
-    int fd;   
+    int fd;
+    //SOCK_DGRAM UDP
+    //SOCK_STREAM TCP
     if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)    /* create a UNIX domain stream socket */   
     {  
         return(-1);  
