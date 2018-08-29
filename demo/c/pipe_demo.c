@@ -14,7 +14,7 @@ int main()
         return 1;
     }
     pid_t id = fork();
-    if (id == 0)
+    if (id == 0)  //child
     {
         close(fd[0]);
         char *child = "I am  child!";
@@ -26,7 +26,7 @@ int main()
             i++;
         }
     }
-    else if (id>0)
+    else if (id>0)  //father
     {
         close(fd[1]);
         char msg[100];
