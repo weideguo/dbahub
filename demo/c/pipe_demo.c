@@ -7,7 +7,7 @@
 int main()
 {
     int fd[2];
-    int ret = pipe(fd);  // fd参数返回两个文件描述符,fd[0]指向管道的读端,fd[1]指向管道的写端。fd[1]的输出是fd[0]的输入。
+    int ret = pipe(fd);  // fd为两个文件描述符,fd[0]指向管道的读端,fd[1]指向管道的写端。fd[1]的输出是fd[0]的输入。
     if (ret == -1)
     {
         perror("pipe error\n");
