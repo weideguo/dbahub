@@ -1,0 +1,2 @@
+pip freeze > requirement.txt     #导出当前python环境所需要包的清单
+pip install -r requirement.txt   #由清单安装
