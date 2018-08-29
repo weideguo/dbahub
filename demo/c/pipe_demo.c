@@ -39,7 +39,6 @@ int main()
             {
                 msg[s - 1] = "\0";
             }
-            //printf("output:");
             printf("%s\n", msg);
             j++;
         }
