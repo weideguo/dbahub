@@ -7,18 +7,19 @@ def tcplink(sock,addr,to_host,to_port):
     print 'Accept new connection from %s:%s' % addr
         while True:
             data=sock.recv(4096)
-        print data
+            print data
             if data=='exit' or not data:
-                    break
-        ##remap to new ip:port
-        sock_remap=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        sock_remap.connect((to_host,to_port))
-        sock_remap.send(data)
+                break
+            ##remap to new ip:port
+            sock_remap=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            sock_remap.connect((to_host,to_port))
+            sock_remap.send(data)
     
-        response=sock_remap.recv(4096)
-        sock.send(response)
-        print str(data)
-        print response
+            response=sock_remap.recv(4096)
+            sock.send(response)
+            print str(data)
+            print response
+            
         sock.close()
         print 'Connection from %s:%s closed.'%addr
 
