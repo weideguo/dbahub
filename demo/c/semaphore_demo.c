@@ -9,6 +9,9 @@
 
 /*
 * 使用信号量控制进程并发
+* 测试：
+* gcc semaphore_demo.c -o semaphore_demo
+* ./semaphore_demo 1 1 & semaphore_demo
 */
 
 
