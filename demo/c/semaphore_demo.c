@@ -44,8 +44,7 @@ int main(int argc, char *argv[])
     }
 
     for(i = 0; i < 10; ++i)
-    {
-        
+    {       
         if(!semaphore_p())          /* 进入临界区 */
         {
             exit(EXIT_FAILURE);
@@ -63,14 +62,11 @@ int main(int argc, char *argv[])
         {
             exit(EXIT_FAILURE);
         }
-        sleep(rand() % 2);
     }
-    sleep(2);
-    printf("\n%d - finished\n", getpid());
- 
+
+    printf("\n%d - finished\n", getpid()); 
     if(argc > 1)
     {        
-        sleep(3);
         del_semvalue();  
     }
     exit(EXIT_SUCCESS);
