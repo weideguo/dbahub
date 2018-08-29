@@ -25,7 +25,7 @@ is_primary
 
 '''
 #使用SCRAM-SHA-1认证时
-client=pymongo.MongoClient('mongodb://m_user:m_password@127.0.0.1:27020/admin')
+client=pymongo.MongoClient('mongodb://m_user:m_password@127.0.0.1:27017/admin')
 client.admin.command('ismaster')
 '''
 '''
