@@ -1,0 +1,31 @@
+WSGI
+web server gateway interface
+
+CGI
+common gateway interface
+
+
+#基于当前目录创建web服务
+python -m CGIHTTPServer 
+
+
+
+from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
+BaseHTTPServer ##http服务模块
+
+SimpleHTTPServer
+
+
+
+
+#django
+django-admin --help
+django-admin startproject project_name
+python manage.py runserver 0.0.0.0:80
+
+
+
+
+
+
+
