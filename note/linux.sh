@@ -1527,3 +1527,5 @@ $CASE2 {send $WORD2}
 expect ...
 
 }
+
+shc  将shell脚本编译成二进制二进制文件
