@@ -1380,7 +1380,7 @@ ctrl+b 后翻一页
 %所有行
 !xxd  外部程序调用
 
-hexdump
+hexdump -C file_name   #输出规范的十六进制和ASCII码
 xxd
 
 
