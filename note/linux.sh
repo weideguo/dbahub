@@ -1531,3 +1531,5 @@ expect ...
 shc  将shell脚本编译成二进制二进制文件
 
 file -i file_name  查看文件的编码，但是否为utf8-bom查看不出
+
+echo -en "\b\b\b\b""e";echo -en "\b\b\b\b""e"   #\b 删除之前的字符
