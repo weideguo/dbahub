@@ -1274,6 +1274,7 @@ fuser -m /dev/cdrom   	##查看那个进程正在使用挂载设备
 lsof /dev/cdrom			##查看挂载点与正在使用的进程
 
 LVM (Logical Volume Manager)  ##lv可以按磁盘分区的形式使用，安装文件系统后挂载
+##可以在raid基础上再使用lvm
 
 pv(physical volume,物理卷)  由分区构成
 vg(volume group,卷组)		若干个pv组成
