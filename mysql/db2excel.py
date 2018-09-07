@@ -68,9 +68,9 @@ def to_excel():
             sheet.write(i,j,value)
         i=i+1
     wb.save(file_home+filename)
-    reset_sql='update '+tb_name+' set flag=0'
-    cursor.execute(reset_sql)
-    conn.commit()
+    #reset_sql='update '+tb_name+' set flag=0'
+    #cursor.execute(reset_sql)
+    #conn.commit()
     conn.close()
 	
 	
