@@ -1305,6 +1305,8 @@ vgmove vg_name	   ##删除vg
 lvmove /dev/vg_name/lv_name   ###删除lv
 
 RAID(redundant array of independent disks)
+
+软件raid
 RAID信息保存在/proc/mdstat 文件中
 mdadm -C /dev/md0 -a yes -l 0 -n 2 /dev/sdb1 /dev/sdc1   ###使用磁盘分区创建RAID
 mdadm -D --scan > /etc/mdadm.conf    	####创建好RAID后，创建新的配置文件
@@ -1316,6 +1318,12 @@ mdadm -R /dev/md0  ###重新启用RAID
 mdadm /dev/md0 -f /dev/sdb   ###模拟一个磁盘故障：
 mdadm /dev/md0 -r /dev/sdb1  ###从一个RAID中移出一个磁盘
 mdadm /dev/md0 -a /dev/sdc1  ###向一个RAID中添加一个磁盘
+
+
+硬件raid
+查看磁盘的信息，由获取的raid卡型号查询使用方式
+cat /proc/scsi/scsi 
+
 
 磁盘引导头 
 MBR（master boot record）只支持不超过2T硬盘  
