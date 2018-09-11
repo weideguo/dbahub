@@ -72,12 +72,16 @@ SIGQUIT
 SIGKILL   
 此选项尽量不要使用，这样会阻止服务器清理共享内存和信号灯资源，那样的话你只能在启动服务器之前自己手工做这件事。另外，SIGKILL 直接把 postgres 杀掉，而不会等它把信号中继给它的子进程，因此我们还需要手工杀掉每个独立子进程。 
  
- 
+
+#配置文件
 $postgresql/data
-pg_hba.conf 		  认证文件
+pg_hba.conf 		  认证文件，用户登录限制
 postgresql.conf		配置文件
- 
- 
+pg_ident.conf     配置操作系统用户映射为数据库用户 
+
+#配置文件重新加载（二选一）
+pg_ctl reload
+SELECT pg_reload_conf();
  
  
  
