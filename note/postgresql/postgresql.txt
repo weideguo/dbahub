@@ -74,7 +74,7 @@ SIGKILL
  
  
 $postgresql/data
-pg_hba.conf 		认证文件
+pg_hba.conf 		  认证文件
 postgresql.conf		配置文件
  
  
