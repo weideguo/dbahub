@@ -89,7 +89,36 @@ host    all             all             192.168.0.0/16          ident map=omicro
 # bryanh can also connect as guest1
 omicron         bryanh                  guest1
 
-
+auth-method
+    
+    trust
+    
+    reject
+    
+    scram-sha-256
+    
+    md5
+    
+    password
+    
+    gss
+    
+    sspi
+    
+    ident
+    
+    peer
+    
+    ldap
+    
+    radius
+    
+    cert
+    
+    pam
+    
+    bsd
+       
 
 
 #配置文件重新加载（二选一）
