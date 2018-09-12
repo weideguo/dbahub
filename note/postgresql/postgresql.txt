@@ -75,7 +75,7 @@ SIGKILL
 
 #配置文件
 $postgresql/data
-pg_hba.conf 		  认证文件，用户登录限制
+pg_hba.conf 		  认证文件，用户登录限制   host-based authentication
 postgresql.conf		配置文件
 pg_ident.conf     配置操作系统用户映射为数据库用户 
 
