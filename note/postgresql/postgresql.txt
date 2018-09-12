@@ -202,3 +202,14 @@ pg一个连接建立一个进程
 VACUUM
 VACUUM — garbage-collect and optionally analyze a database
 
+
+
+pg_dump dbname > dumpfile  #备份成sql文件
+psql dbname < dumpfile     #恢复
+
+pg_dumpall > dumpfile
+psql -f dumpfile postgres
+
+pg_dump -Fc dbname > filename
+pg_restore -d dbname filename
+
