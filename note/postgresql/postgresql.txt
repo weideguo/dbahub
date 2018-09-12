@@ -132,7 +132,7 @@ select * from schema_name.table_name;
 
 show search_path;			###查看创建表时使用的schema
 set search_path=schema_name	###设置创建表时使用的schema
-
+show all;             ##查看所有参数
 
 
 show XXX;      ##查看参数
