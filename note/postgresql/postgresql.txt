@@ -199,4 +199,6 @@ pg是多进程模式
 pg一个连接建立一个进程
  
  
+VACUUM
+VACUUM — garbage-collect and optionally analyze a database
 
