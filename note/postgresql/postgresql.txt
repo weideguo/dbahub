@@ -21,9 +21,7 @@ domains
 
 创建表默认在pubic schema下
 
-
-
-
+select * from pg_tables;   #查看表信息 如 schema tablespace
 
 
 
