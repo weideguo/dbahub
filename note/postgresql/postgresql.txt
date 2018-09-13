@@ -213,3 +213,20 @@ psql -f dumpfile postgres
 pg_dump -Fc dbname > filename
 pg_restore -d dbname filename
 
+
+归档WAL write ahead log
+wal_level         replica or higher, 
+archive_mode      on off aways
+archive_command   shell command
+
+archive_command = 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'  # Unix
+archive_command = 'copy "%p" "C:\\server\\archivedir\\%f"'  # Windows
+
+%p is replaced by the path name of the file to archive
+%f is replaced by only the file name
+
+PITR
+
+
+
+
