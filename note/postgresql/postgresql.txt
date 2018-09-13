@@ -233,6 +233,19 @@ SELECT pg_start_backup('label_name', false, false);   #The third parameter being
 直接复制data目录进行备份
 SELECT * FROM pg_stop_backup(false, true);
 
+复制的时候可选不复制以下
+pg_wal
+pg_replslot
+postmaster.pid
+postmaster.opts
+以下目录下的文件也可以不复制，但目录需要存在
+pg_dynshmem 
+pg_notify 
+pg_serial 
+pg_snapshots 
+pg_stat_tmp  
+pg_subtrans
+
 
 
 
