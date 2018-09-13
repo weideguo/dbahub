@@ -249,4 +249,9 @@ pg_stat_tmp
 pg_subtrans
 pgsql_tmp开头的目录可以不复制
 
-
+#恢复
+复制物理备份的文件到对应目录
+清空pg_wal，将最新示例的pg_wal下的文件放入，以便恢复到示例down的最后时刻
+修改文件recovery.conf
+     restore_command = 'cp /mnt/server/archivedir/%f %p'   #设置从备份的归档wal进行恢复
+启动实例
