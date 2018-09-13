@@ -227,11 +227,13 @@ archive_command = 'copy "%p" "C:\\server\\archivedir\\%f"'  # Windows
 
 PITR
 #物理备份(二选一)
-./pg_basebackup -D /data/pg_backup_test -l 2018_09_13_backup
+pg_basebackup -D /data/pg_backup_test -l 2018_09_13_backup
+pg_basebackup -D backup/data -T /opt/ts=$(pwd)/backup/ts    #如果使用表空间使用其他目录，需要指定映射关系
 
 SELECT pg_start_backup('label_name', false, false);   #The third parameter being false  initiate a non-exclusive base backup.
 直接复制data目录进行备份
 SELECT * FROM pg_stop_backup(false, true);
+
 
 复制的时候可选不复制以下
 pg_wal
