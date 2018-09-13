@@ -245,7 +245,6 @@ pg_serial
 pg_snapshots 
 pg_stat_tmp  
 pg_subtrans
-
-
+pgsql_tmp开头的目录可以不复制
 
 
