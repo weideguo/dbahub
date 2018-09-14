@@ -1,0 +1,238 @@
+####以下的基于codis release3.1
+
+
+安装go
+###下载二进制文件，解压并复制到$go_home
+###新建go源代码存放的目录$go_src
+###修改当前linux账号的环境变量，添加$go_src到GOPATH变量中，添加$go_home到GOROOT变量中
+
+
+安装jdk
+yum install java*
+
+
+安装zookeeper
+###下载二进制文件，解压并复制到$zookeeper_home
+
+
+zookeeper
+####配置文件$zookeeper_home/conf/zoo.cfg
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=../data/zookeeper
+clientPort=28181
+
+##启动zookeeper
+$zookeeper_home/bin/zkServer.sh start
+
+
+
+编译安装codis
+###解压并复制到/$go_src/github.com/CodisLabs/codis
+cd /$go_src/github.com/CodisLabs/codis
+make
+
+###将/$go_src/github.com/CodisLabs/codis/bin 复制得到codis
+
+
+将codis复制成四份，在单机上模拟集群
+codis-dashboard		绝对路径为$codis-dashboard_home
+codis-proxy			绝对路径为$codis-proxy_home
+codis-server1       绝对路径为$codis-server1_home
+codis-server1       绝对路径为$codis-server2_home
+codis-others        绝对路径为$codis-others_home
+
+
+codis-dashboard
+###配置文件$codis-dashboard_home/dashboard.toml 
+coordinator_name = "zookeeper"		###使用zookeeper为外部存储
+coordinator_addr="127.0.0.1:28181"	###zookeeper地址
+admin_addr="0.0.0.0:18080"			###restful api
+product_name="codis_demo"			###集群名
+
+
+##启动codis-dashboard
+cd $codis-dashboard_home/bin
+./codis-dashboard --config=../dashboard.toml --log=../dashboard.log --log-level=WARN &
+
+codis-proxy
+###配置文件$codis-proxy_home/proxy.toml最小修改
+product_name="codis_demo"		###与codis-dashboard的配置一致
+admin_addr="0.0.0.0:18081"		###restful api
+proxy_addr="0.0.0.0:19000"		###redis端口，外部客户端连接使用
+jodis_name="zookeeper"
+jodis_addr="127.0.0.1:28181"	###jodis注册zookeeper地址
+proxy_datacenter = "../data"
+
+###启动codis-proxy
+cd $codis-proxy_home/bin
+./codis-proxy --config=../proxy.toml --log=../proxy.log --log-level=WARN &
+
+
+codis-server1
+###使用redis的配置文件
+###配置文件$codis-server1_home/codis-server.conf最小修改
+pidfile /var/run/codis-server1.pid
+port 26379
+loglevel notice
+logfile "../codis-server1.log"
+dbfilename dump.rdb
+dir "../data"							
+
+##启动codis-server1
+cd $codis-server1_home/bin
+./codis-server ../codis-server.conf &
+
+
+codis-server2
+###配置文件$codis-server2_home/codis-server.conf最小修改
+pidfile /var/run/codis-server2.pid
+port 26380
+loglevel notice
+logfile "../codis-server2.log"
+dbfilename dump.rdb
+dir ../data
+
+##启动codis-server2
+cd $codis-server2_home/bin
+./codis-server ../codis-server.conf &
+
+
+
+codis-admin
+###codis-admin下的操作也可以在codis-fe的web页面进行
+###添加proxy到dashboard 
+cd $codis-others_home/bin
+./codis-admin --dashboard=127.0.0.1:18080 --create-proxy -x 127.0.0.1:18081
+###添加group
+###需要设置slot的到group映射才能使用，可以在codis-admin或者codis-fe的web页面中设置
+./codis-admin --dashboard=127.0.0.1:18080 --create-group --gid=1
+./codis-admin --dashboard=127.0.0.1:18080 --create-group --gid=2
+###一个group可以添加多个codis-server单实例，但只有一个实例被使用
+###也可以添加codis-server的master-slave集群
+./codis-admin --dashboard=127.0.0.1:18080 --group-add --gid=1 --addr=127.0.0.1:26379	
+./codis-admin --dashboard=127.0.0.1:18080 --group-add --gid=2 --addr=127.0.0.1:26380
+
+
+
+codis-fe
+###配置文件$codis-others_home/codis.json   
+###可以使用命令获取   ./codis-admin --dashboard-list --zookeeper=127.0.0.1:28181 | tee ../codis.json 
+[
+	{
+		"name":"codis_demo",
+		"dashboard":"127.0.0.1:18080"
+	}
+]
+##启动codis-fe
+cd $codis-others_home/bin
+./codis-fe --log=../fe.log --log-level=WARN --dashboard-list=../codis.json --listen=127.0.0.1:8080 &
+
+
+
+###客户端使用codis-proxy的ip及端口连接
+##如redis-cli的连接
+cd  $codis-others_home/bin
+./redis-cli -p 19000
+
+
+
+
+codis的master-slave
+
+将codis复制成三份
+codis-master  	绝对路径为$codis-master_home
+codis-slave1	绝对路径为$codis-slave1_home
+codis-slave2	绝对路径为$codis-slave2_home
+codis-ha		绝对路径为$codis-ha_home
+
+
+####以下配置文件使用redis的配置文件进行修改
+
+master
+###配置文件$codis-master_home/codis-server.conf最小修改的配置
+port 26381
+
+##启动master
+cd $codis-master_home/bin
+./codis-server ../codis-server.conf &
+
+
+slave1
+###配置文件$codis-slave1_home/codis-slave1.conf最小修改的配置
+port 26383
+slaveof 127.0.0.1 28081
+
+###启动slave1
+cd $codis-slave1_home/bin
+./codis-server ../codis-slave1.conf &
+
+
+slaver2
+###配置文件$codis-slave2_home/codis-slave2.conf最小修改的配置
+port 26383
+slaveof 127.0.0.1 28081
+
+
+###启动slave2
+cd $codis-slave2_home/bin
+./codis-server ../codis-slave2.conf &
+
+
+###在web页面将master-slave加入新group，并添加slot到group
+
+
+codis-ha
+##启动
+cd $codis-ha_home/bin
+./codis-ha --log=../ha.log --log-level=WARN --dashboard=127.0.0.1:18080 &
+
+
+测试结果
+###关闭master时，没有master-slaver没有进行主从切换，两个slave变成单独实例，其中一个实例被group使用
+
+
+
+
+codis 2.1
+
+zookeeper
+port
+2181
+2800 2810
+2900 2910
+
+2182
+
+
+./codis-config -c ../config.ini -L ../log/dashboard.log dashboard --http-log=../log/requests.log &
+
+./codis-server ../redis_6301.conf &
+./codis-server ../redis_6302.conf &
+./codis-server ../redis_6303.conf &
+
+./codis-config -c ../config.ini server add 1 192.168.200.140:6301 master
+./codis-config -c ../config.ini server add 1 192.168.200.140:6302 slave
+
+./codis-config -c ../config.ini slot init
+./codis-config -c ../config.ini slot range-set 0 1023 1 online   ###slot由0到1023
+
+
+./codis-proxy -c ../config.ini -L ../proxy.log --addr=0.0.0.0:19000 --http-addr=192.168.200.140:11000 &
+
+./codis-ha --codis-config=192.168.200.140:18087 --productName=codis2_test &
+
+
+###web页面为dashboard的ip、端口
+
+###dashboad的信息存放在zookeeper上
+
+
+
+管理节点可以在不更改集群组件时处于不启动状态
+管理节点强制退出时要手动清除zookeeper下的dashboard
+
+
+
+
