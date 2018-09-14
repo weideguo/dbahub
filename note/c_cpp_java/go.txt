@@ -1,0 +1,5 @@
+编译
+go build my_go_program.go
+
+编译并运行
+go run my_go_program.go
