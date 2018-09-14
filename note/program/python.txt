@@ -1,0 +1,9 @@
+pip freeze > requirement.txt     #导出当前python环境所需要包的清单
+pip install -r requirement.txt   #由清单安装
+
+
+内建函数 built-in function(BIF)
+
+
+help("modules")    ###python查看已经安装的模块
+
