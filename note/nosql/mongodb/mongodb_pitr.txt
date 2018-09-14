@@ -1,0 +1,37 @@
+PIRT(point-in-time-recovery，基于时间点的恢复，即恢复到指定时间点)
+全备
+整个实例全备，在备份时加--oplog参数，参数并不是指导出oplog，而是确保当前的备份不受实例的操作影响(即备份时实例有写操作)，当前的备份能反映当前实例的状态，因此才可以用于PITR。
+
+全备示例
+bin/mongodump --host 127.0.0.1:27017--oplog -o full_backup_dir
+
+备份oplog
+oplog是记录mongodb的操作，类似于mysql的binlog，可用于数据的时间点恢复。oplog是固定大小，默认为磁盘的5%。可以通过设置参数--oplogSize调整。
+以mongod –master启动时，oplog为local库下的oplog.$main。
+对于副本集，oplog为local库下oplog.rs。
+
+
+备份oplog示例
+bin/mongodump --host 127.0.0.1:27017 -d local -c 'oplog.$main' -o oplog_backup_dir
+或者
+bin/mongodump --host 127.0.0.1:27017 -d local -c 'oplog.rs' -o oplog_backup_dir
+
+
+恢复
+将备份oplog所得的oplog.$main.bson文件替换全备目录下的oplog.bson，然后使用mongorestore恢复。
+
+PITR恢复示例
+bin/mongorestore --host=127.0.0.1:27017 --oplogReplay --oplogLimit=1504721747 full_backup_dir
+
+#oplogLimit的值为时间戳，即为要将整个实例恢复到的时间点。
+
+
+
+分片(sharding)
+单个分片分别备份与恢复，方式为单实例、副本集其中的一种。
+
+
+注：
+在mongodb服务的根目录执行以上操作。
+暂时只能实现但个实例的PITR，单库、单表的PIRT通过整个实例PITR实现。
+
