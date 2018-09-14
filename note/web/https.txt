@@ -1,0 +1,66 @@
+# 1、首先，进入你想创建证书和私钥的目录，例如：
+cd /etc/nginx/
+
+# 2、创建服务器私钥，命令会让你输入一个口令：
+openssl genrsa -des3 -out server.key 1024
+
+# 3、创建签名请求的证书（CSR）：
+openssl req -new -key server.key -out server.csr
+
+# 4、在加载SSL支持的Nginx并使用上述私钥时除去必须的口令：
+cp server.key server.key.org
+openssl rsa -in server.key.org -out server.key
+
+
+# 5、最后标记证书使用上述私钥和CSR：
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+
+
+
+
+
+cd /etc/nginx
+vim nginx.conf
+#
+# HTTPS server configuration
+#
+server {
+    listen       443;
+    server_name  本机的IP地址;
+
+    ssl                  on;
+    ssl_certificate      /etc/nginx/server.crt;
+    ssl_certificate_key  /etc/nginx/server.key;
+
+    ssl_session_timeout  5m;
+
+#    ssl_protocols  SSLv2 SSLv3 TLSv1;
+#    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+#    ssl_prefer_server_ciphers   on;
+
+    location / {
+        #root   html;
+        #index  testssl.html index.html index.htm;
+     proxy_redirect off;
+     proxy_set_header Host $host;
+     proxy_set_header X-Real-IP $remote_addr;
+     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+     proxy_pass http://IP地址/ssl/;
+    }
+}
+
+
+
+
+
+proxy_pass http://server_cluster; #后端服务器，具体配置upstream部分即可  
+
+
+
+
+
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-file-aio --with-http_realip_module
+
+
+
