@@ -352,8 +352,9 @@ myisam-recover-options    #启动时恢复myisam表
 	
 	
 使用密码文件登录
+#mysql5.6后支持
 mysql_config_editor set --help		
-mysql_config_editor set --login-path=fastlogin --user=root --host=localhost --password --socket=/u02/mysql/data/my.sock	       ---- 在当前路径下生成一个隐藏加密文件.mylogin.cnf  
+mysql_config_editor set --login-path=fastlogin --user=root --host=localhost --password --socket=/u02/mysql/data/my.sock	       ---- 在当前账号的家目录下生成一个隐藏加密文件.mylogin.cnf  
 mysql_config_editor print --all     ----查询创建的加密文件
 
 mysql --login-path=fastlogin   		----使用创建的密码文件登录		
