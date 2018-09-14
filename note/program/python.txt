@@ -7,3 +7,23 @@ pip install -r requirement.txt   #由清单安装
 
 help("modules")    ###python查看已经安装的模块
 
+
+
+与C/C++交互的技术
+
+SWIG
+
+
+
+
+Pyrex
+
+
+
+
+
+
+
+Psyco
+
+
