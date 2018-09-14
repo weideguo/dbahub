@@ -1356,15 +1356,15 @@ mysql --ssl-ca=ca.pem \
        --ssl-cert=client-cert.pem \
        --ssl-key=client-key.pem
 
-
-       
+5.7以及以下 如果不启动ssl，则连接后的传输以明文传输
+8.0 默认都以ssl加密传输
+ 
+ 
 create user ... require ssl;
-
 
 延时复制
 slave节点中
 change master to master_delay=n;   ----n为延时的秒
-
 
 
 多源复制 mulit source replication
