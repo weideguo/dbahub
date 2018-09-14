@@ -1,0 +1,175 @@
+MHA架构
+mysql master--192.168.200.140:3306
+mysql slave1--192.168.200.140:3307
+mysql slave2--192.168.200.140:3308
+MHA manage----192.168.200.129
+
+
+
+master-slave设置
+
+
+master  ###server1
+###$mysql_master_home/data/my.cnf
+[mysqld]
+ server_id = 1
+ port =3306
+ basedir =/u01/mysql
+ datadir =/u01/mysql/data
+ socket =/tmp/mysql.sock
+ log-error=/u01/mysql/data/mysqld.log
+ pid-file=/u01/mysql/data/mysqld.pid
+ log_bin=mysql-bin
+ explicit_defaults_for_timestamp=1
+
+
+slave1  ###server2
+###$mysql_slave1_home/data/my.cnf
+[mysqld]
+ server_id = 2
+ port =3307
+ basedir =/u01/mysql_slave1
+ datadir =/u01/mysql_slave1/data
+ socket =/tmp/mysql_slave1.sock
+ log-error=/u01/mysql_slave1/data/mysqld.log
+ pid-file=/u01/mysql_slave1/data/mysqld.pid
+ log_bin=mysql-bin
+ relay-log=mysql-relay-bin
+ relay_log_purge=0					             ###设置中继日志手动清理，防止主从切换时新的master因删除中继日志导致slave丢失事务
+ explicit_defaults_for_timestamp=1
+
+
+slave2 ###server3
+###$mysql_slave2_home/data/my.cnf
+[mysqld]
+ server_id = 3
+ port =3308
+ basedir =/u01/mysql_slave2
+ datadir =/u01/mysql_slave2/data
+ socket =/tmp/mysql_slave2.sock
+ log-error=/u01/mysql_slave2/data/mysqld.log
+ pid-file=/u01/mysql_slave2/data/mysqld.pid
+ log_bin=mysql-bin
+ relay-log=mysql-relay-bin
+ relay_log_purge=0					
+ explicit_defaults_for_timestamp=1
+
+
+启动与连接
+###master
+cd $mysql_master_home
+./mysqld --defaults-file=../data/my.cnf &
+./mysql -u root -p -h 127.0.0.1 --port 3306 --prompt="master > "
+
+show master status;				
+
+###slave1
+cd $mysql_slave1_home
+./mysqld --defaults-file=../data/my.cnf
+./mysql -u root -p -h 127.0.0.1 --port 3307 --prompt="slave1 > "
+
+###slave2
+cd $mysql_slave2_home
+./mysqld --defaults-file=../data/my.cnf
+./mysql -u root -p -h 127.0.0.1 --port 3308 --prompt="slave2 > "
+
+
+slave1和slave2设置复制
+###mysql命令行中设置复制信息
+change master to 
+master_host='192.168.200.129',				----不要写成127.0.0.1，mha会报错
+master_port=3306,
+master_user='replication1',						
+master_password='replication1',				
+master_log_file='mysql-bin.000002',		
+master_log_pos=120
+
+
+MHA
+###使用perl编写，需要预先安装perl的相应模块
+
+
+MHA node编译安装
+###在每个msyql节点部署MHA node
+cd $mha_node_home
+perl Makefile.PL
+make
+make install
+
+MHA manager编译安装
+###MHA manager所在的节点也要部署MHA node
+cd $mha_node_home
+perl Makefile.PL
+make
+make install
+
+
+ssh设置
+###在192.168.200.129
+ssh-keygen -t rsa -b 1024
+ssh-copy-id -i /home/weideguo/.ssh/id_rsa.pub weideguo@192.168.200.140
+
+###在192.168.200.140
+ssh-keygen -t rsa -b 1024
+ssh-copy-id -i /home/weideguo/.ssh/id_rsa.pub weideguo@192.168.200.140
+ssh-copy-id -i /home/weideguo/.ssh/id_rsa.pub weideguo@192.168.200.129
+
+
+MHA manage配置文件 (MHA node无需配置文件，在每个mysql节点上安装即可)
+####默认加载配置文件/etc/master_default.cnf
+###可以写另外的配置文件配合默认配置文件使用，参数中指定额外的配置文件即可
+
+[server default]
+user=weideugo												###msyql slave中用于执行change master的账号与密码，应该有对应权限
+password=weideguo							
+repl_user=replication1										###用于msql master中用于复制的账号与密码
+repl_password=replicatin1					
+ssh_user=weideguo											###MHA manager 用于连接mysql的系统用户，需要预先设置ssh。默认使用当前运行MHA manager的系统用户
+manager_workdir=/u03/masterha
+manager_log=/u03/masterha/mha_manager.log
+remoute_workdir=/u03/masterha
+
+
+[server1]
+hostname=192.168.200.129
+port=3306
+master_binlog_dir="/u01/mysql/data"
+
+[server2]
+hostname=192.168.200.129
+port=3307
+candidate_master=1								          	 ###候选master必须启用二进制日志
+master_binlog_dir="/u01/mysql_slave1/data"
+
+[server3]
+hostname=192.168.200.129
+port=3308
+no_master=1
+master_binlog_dir="/u01/mysql_slave2/data"
+
+
+#########以下可选##############################
+#master_ip_failover_script=/u03/mha/scripts/master_ip_failover               #master failover时执行
+#report_script=/u03/mha/scripts/send_report                                  #master failover时执行
+#master_ip_online_change_script=/u03/mha/scripts/master_ip_online_change     #master switch时执行
+
+
+
+###在192.168.200.129上
+检查
+cd /usr/local/bin
+masterha_check_ssh --conf=/etc/masterha_default.cnf			 ####即使使用默认配置文件也要指出
+masterha_check_repl --conf=/etc/masterha_default.cnf
+
+
+启动
+masterha_manager --conf=/etc/masterha_default.cnf
+
+
+状态查看
+masterha_check_status --conf=/etc/masterha_default.cnf
+
+停止
+masterha_stop --conf=/etc/masterha_default.cnf
+
+
