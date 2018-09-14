@@ -1,0 +1,35 @@
+在命令行中查询当前连接所用的字符集show variables like '%char%';
+
+主要字符集参数说明
+参数	参考文档中的解释	说明
+character_set_client	The character set for statements that arrive from the client.	客户端传输语句到服务端所用的字符集。
+character_set_connection	used for literals that do not have a character set introducer and for number-to-string conversion.	用于转换没有字符集引导头的字符串、数字到字符串的转换。
+character_set_database	used by the default database.	显示当前所在数据库的默认字符集。动态参数，由mysql更改。不要手动修改。
+character_set_results	used for returning query results such as result sets or error messages to the client.	用于返回结果或错误信息到客户端。
+character_set_server	The server's default character set.	实例默认的字符集，创建数据库、创建表时如果不指定字符集，则使用默认字符集
+character_set_system	used for storing identifiers. The value is always utf8.	用于存储标识符，恒为utf8。
+
+三个关键参数character_set_client、character_set_connection、character_set_results
+即影响实际数据存储、交互的字符编码。
+
+mysql客户端字符编码修改，优先级由高到低：（以修改成utf8为例）
+1.在mysql命令行中执行【set names utf8;】
+等同于三个命令【set character_set_client=utf8】、【set character_set_connection=utf8】、【set character_set_results=utf8】。
+
+2.进入命令行时指定默认字符集：mysql --default-character-set=utf8  
+
+3.mysql使用的配置文件中[client] [mysql] 块的参数default-character-set=utf8
+ mysql默认配置文件优先级由低到高：【/etc/mysql/my.cnf】、【/etc/my.cnf】、【~/.my.cnf】
+
+特殊情况
+mysql在启动时使用参数skip-character-set-client-handshake
+会导致【mysql –default-character-set=utf8】设置连接字符集不生效，但显示执行【set names utf8】还是会生效。这不影响程序(python、java)的客户端的连接字符集设置。
+
+
+
+
+【表的编码】show create table 查看
+
+终端字符串---> 【character_set_client】与【表的编码】转换  ----> 磁盘存储
+
+磁盘存储-----> 【表的编码】与【character_set_results】转换 ----> 终端字符串
