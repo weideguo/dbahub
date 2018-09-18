@@ -1,0 +1,55 @@
+DR:192.168.59.129
+RS1:192.168.59.130
+RS2:192.168.59.131
+
+vip:192.168.59.200
+
+
+##########################################
+环回网卡 lo
+物理网卡 eth1
+##########################################
+
+####################RS1 RS2
+
+####不对外解析192.168.59.200
+echo 1 > /proc/sys/net/ipv4/conf/lo/arp_ignore 
+echo 2 > /proc/sys/net/ipv4/conf/lo/arp_announce 
+echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore 
+echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce 
+
+
+ifconfig lo:1 192.168.59.200 netmask 255.255.255.255
+route add -host 192.168.59.200 dev lo:1
+######################永久生效设置###########################
+##cd /etc/sysconfig/network-scripts/
+##cp ifcfg-lo ifcfg-lo:1
+##更改ifcfg-lo:1对应的ip
+
+
+####################DR
+ifconfig eth1:1 192.168.59.200 netmask 255.255.255.255 
+route add -host 192.168.59.200 dev eth1:1
+
+echo "1" > /proc/sys/net/ipv4/ip_forward 
+
+######################永久生效设置###########################
+##cd /etc/sysconfig/network-scripts/
+##cp ifcfg-eth1 ifcfg-eth1:1
+##更改ifcfg-eth1:1对应的ip
+
+####修改/etc/sysctl.conf
+##net.ipv4.ip_forward = 1
+
+
+ipvsadm -A -t 192.168.59.200:8091 -s rr  
+ipvsadm -a -t 192.168.59.200:8091 -r 192.168.59.130 -g    
+ipvsadm -a -t 192.168.59.200:8091 -r 192.168.59.131 -g
+
+
+#############################################
+不能在DR进行访问
+使用vip进行访问 192.168.59.200
+
+
+
