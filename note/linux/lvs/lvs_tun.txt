@@ -1,0 +1,43 @@
+
+##############################
+只是包头封装，并没有加密数据
+##############################
+
+
+vip 192.168.59.220  #使用vip访问
+
+LB 192.168.59.129
+
+RS1 192.168.59.130
+
+RS2 192.168.59.131
+
+
+
+#################RS1 RS2########################################################################
+
+ifconfig tunl0 192.168.59.220 broadcast 192.168.59.220 netmask 255.255.255.255 up
+route add -host 192.168.59.220 dev tunl0
+
+echo "1">/proc/sys/net/ipv4/conf/tunl0/arp_ignore
+echo "2">/proc/sys/net/ipv4/conf/tunl0/arp_announce
+echo "1">/proc/sys/net/ipv4/conf/all/arp_ignore
+echo "2">/proc/sys/net/ipv4/conf/all/arp_announce
+
+
+echo '0' > /proc/sys/net/ipv4/conf/tunl0/rp_filter
+echo '0' > /proc/sys/net/ipv4/conf/all/rp_filter
+
+################永久生效设置####################
+####编辑/etc/sysctl.conf
+
+
+#####################LB#######################################################################
+ifconfig tunl0 192.168.59.220 broadcast 192.168.59.220 netmask 255.255.255.255 up
+route add -host 192.168.59.220 dev tunl0
+
+ipvsadm -A -t 192.168.59.220:80 -s rr
+ipvsadm -a -t 192.168.59.220:80 -r 192.168.59.130 -i
+ipvsadm -a -t 192.168.59.220:80 -r 192.168.59.131 -i
+
+ 
