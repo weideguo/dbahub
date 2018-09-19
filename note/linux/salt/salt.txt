@@ -1,0 +1,186 @@
+##安装
+yum install master
+yum install minion
+
+
+/etc/salt/minion   #修改连接的master
+
+
+service salt-master start
+service salt-minion start
+
+
+
+#对master操作
+salt-key -a minion_ip     #将minion加入master
+
+
+minion上线后master端联系，把自己的pub key发过去，这时master端通过salt-key -L命令就会看到minion的key，接受该minion-key后，也就是master与minion已经互信
+
+
+##命令分发
+salt "*" cmd.run "ifconfig"
+salt -L '192.168.59.128,192.168.59.129' cmd.run 'ls /'
+
+
+
+
+##文件分发
+salt-cp '*' testfile.html /tmp
+salt-cp 'test*' index.html /tmp/a.html
+
+
+
+salt-run manage.status   ##查看所有minion状态
+salt-run manage.down     ##查看所有没在线minion
+salt-run manged.up       ##查看所有在线minion
+
+
+
+
+salt-call test.ping           ##minion上执行自己执行test.ping命令
+salt-call cmd.run 'ifconfig'  ##minion上执行自己执行cmd.run函数
+
+
+
+
+
+##api
+import salt.client
+local = salt.client.LocalClient()   #使用默认配置，可以修改其他连接参数
+
+#同步执行
+local.cmd('*', 'cmd.run', ['whoami'])
+
+
+
+#异步
+r=local.run_job('*', 'cmd.run', ["sleep 10;echo 'eeee'"])
+x=local.get_cli_returns(jid= r['jid'],minions=r['minions']) 
+for i in x:
+    print i
+
+
+
+
+
+
+##实现多级master Salt Syndic
+
+ master0
+    |
+    |
+--------------
+|            |
+master1      master2
+|
+|
+------------
+|          |
+minion11     minion12
+
+
+
+
+##state
+##### cat /srv/salt/nettools.sls ###########
+install_network_packages:        ###唯一即可
+  pkg.installed:                 ##function
+    - pkgs:                      ##参数
+      - curl
+
+##################################
+{'install_network_packages': {'pkg.installed': [{'pkgs': ['curl']}]}}
+##################################
+include:                ##实现引用
+  - myslstest           ##引用myslstest.sls
+
+##################################      
+
+
+
+salt 'minion1' state.apply nettools
+
+
+
+##### cat /srv/salt/top.sls #################
+
+base:
+  '*':
+    - common            ##对所有其他引用 common.sls
+  'minion1':
+    - nettools          ##对minion1引用 nettools.sls
+
+##############################################
+
+
+salt '*' state.apply          ##使用top.sls
+
+
+
+
+################################################################
+##pillar
+#cd /srv/pillar                ##pillar默认路径，可以由master的配置文件修改
+
+####cat top.sls
+base:
+  '*':
+    - pillar_demo
+    
+#cat pillar_demo.sls
+editor: vim
+
+
+salt '*' saltutil.refresh_pillar    ##刷新
+salt '*' pillar.items               ##列出pillar值
+
+
+
+#cat /srv/salt/pillar_test.sls 
+install editor:
+  pkg.installed:
+    - name: {{ pillar['editor'] }}
+    
+##################################################################
+
+
+
+
+salt '192.168.59.128' grains.items     ##获取机器的环境参数
+
+
+#####sls文件中使用##################################
+{% if grains['os_family'] == 'RedHat' %}
+apache: httpd
+git: git
+{% elif grains['os_family'] == 'Debian' %}
+apache: apache2
+git: git-core
+{% endif %}
+####################################################
+salt '*' state.apply ftpsync pillar='{"ftpusername": "test", "ftppassword": "0ydyfww3giq8"}'    ##直接通过命令行指定pillar值
+
+
+
+
+
+##############################################################################
+##分发文件
+deploy the http.conf file:
+  file.managed:
+    - name: /etc/http/conf/http.conf      ##分发目标目录
+    - source: salt://apache/http.conf     ##分发源目录   /srv/salt/下的相对路径
+
+####################################################
+##分发整个目录
+copy some files to the web server:
+  file.recurse:
+    - name: /var/www
+    - source: salt://apache/www
+###############################################################################
+
+
+
+
+
