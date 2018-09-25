@@ -1549,8 +1549,11 @@ printf #不换行输出
 
 
 ssh实现端口转发
-ssh -L <local port>:<remote host>:<remote port> <SSH hostname>
+ssh -L <local port>:<remote host>:<remote port> <SSH hostname>   ##远端端口转发给本地
 ssh -p 22 -l root -L 3306:127.0.0.1:5640 -CNfg 192.168.59.128    #将远端主机192.168.59.128的5640端口转发到3306  实现本地访问3306端口，并且访问ip为127.0.0.1ip 
+
+ssh -R <local port>:<remote host>:<remote port> <SSH hostname>   ##本地端口转发给远端
+ssh -R 3306:127.0.0.1:5640 -CNfg 192.168.59.129
 
 数据通过ssh传输，转发同时实现加密
 
