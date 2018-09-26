@@ -6,6 +6,8 @@
  
 
 默认端口5432 
+pg是多进程模式
+pg一个连接建立一个进程
  
  
 bin/initdb -D ./data/     				        #初始化数据库
@@ -44,24 +46,82 @@ psql [OPTION]... [DBNAME [USERNAME]]
   -W, --password          
 
 
+psql中的命令
+\?			###\开始的命令查看
+\h			###sql语句查看
+\! clear 	###执行系统的命令
+\q			###退出命令行 
+\db			###列出所有的tablespace	
+\l			###列出所有database
+\c db_name  ###切换数据库
+\dt			###查看数据库下的表
+\d tb_name	###查看表的字段 #表结构
+\dv			###查看视图
+\du			###查看用户    安装时默认以当前用户名创建一个用户，没有密码
 
-schema            #表的全型   schema_name.table_name
+
+schema            #表的全形   schema_name.table_name
 tablespace
 domains
 
+一个database下有多个schema
+不能同时方位不同database下的对象
+
+select * from schema_name.table_name;
+
+系统表
+pg_user
+pg_roles
+pg_tablespace
+pg_database
+pg_tables
+
+SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT LIKE 'sql_%' ORDER BY tablename;   ###查询数据库的非系统表
 
 创建表默认在pubic schema下
 
 select * from pg_tables;   #查看表信息 如 schema tablespace
 
+#角色
+CREATE ROLE role_name;
+DROP ROLE role_name;
+
+#用户
+create user test_user with password 'test_password' login in role "TestRole1" 
+ALTER USER postgres WITH PASSWORD 'postgres';
+
+##进行存储设置？
+create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###表空间的文件在数据目录下
+
+##进行命令空间限制？
+create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
+grant usage on schema01 to weideguo;
 
 
 
+show search_path;			               ###查看创建表时使用的schema
+set search_path=schema_name	       ###设置创建表时使用的schema
+show all;                          ##查看所有参数
+show XXX;      ##查看参数
+set XXX=yyyy;  ##设置参数
+
+
+##进行资源限制？
+create database demodb		###创建数据库 一个连接只能来连接一个数据库
+template template0
+encoding 'UTF8'
+tablespace ts_demo01
+connection limit 200;
+
+alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
+
+create table table_name(...) tablespace ts_demo; 
+ 
+select pg_relation_filepath('tab100');   ###查看表的位置 
 
 
 
-
-#配置文件
+#配置文件#########################################################################################################################
 $postgresql/data
 postgresql.conf   参数配置文件
 pg_hba.conf 		  认证文件，用户登录限制   host-based authentication
@@ -113,79 +173,7 @@ pg_ctl reload
 SELECT pg_reload_conf();
  
  
- 
-psql中的命令
-\?			###\开始的命令查看
-\h			###sql语句查看
-\! clear 	###执行系统的命令
-\q			###退出命令行 
-\db			###列出所有的tablespace	
-\l			###列出所有database
-\c db_name  ###切换数据库
-\dt			###查看数据库下的表
-\d tb_name	###查看表的字段 
-\dv			###查看视图
-\du			###查看用户    安装时默认以当前用户名创建一个用户，没有密码
-
-系统表
-pg_user
-pg_roles
-pg_tablespace
-pg_database
-pg_tables
-
-
-表结构
-\d table_name
-
-
-#角色
-CREATE ROLE role_name;
-DROP ROLE role_name;
-
-#用户
-create user test_user with password 'test_password' login in role "TestRole1" 
-ALTER USER postgres WITH PASSWORD 'postgres';
-
-##进行存储设置？
-create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###表空间的文件在数据目录下
-
-##进行命令空间限制？
-create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
-grant usage on schema01 to weideguo;
-
-一个database下有多个schema
-不能同时方位不同database下的对象
-
-select * from schema_name.table_name;
-
-show search_path;			             ###查看创建表时使用的schema
-set search_path=schema_name	       ###设置创建表时使用的schema
-show all;                          ##查看所有参数
-show XXX;      ##查看参数
-set XXX=yyyy;  ##设置参数
-
-
-##进行资源限制？
-create database demodb		###创建数据库 一个连接只能来连接一个数据库
-template template0
-encoding 'UTF8'
-tablespace ts_demo01
-connection limit 200;
-
-alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
-
-create table table_name(...) tablespace ts_demo; 
-
-
-SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT LIKE 'sql_%' ORDER BY tablename;   ###查询数据库的非系统表
- 
-select pg_relation_filepath('tab100');   ###查看表的位置 
- 
- 
-pg是多进程模式
-pg一个连接建立一个进程
- 
+#####################################################################################################################################  
  
 VACUUM
 VACUUM — garbage-collect and optionally analyze a database
@@ -245,3 +233,5 @@ pgsql_tmp开头的目录可以不复制
      recovery_target_timeline(string)                      #设置恢复到的时间点
      recovery_target_time (timestamp)
 启动实例
+
+#####################################################################################################################################
