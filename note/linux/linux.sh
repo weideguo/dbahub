@@ -180,45 +180,10 @@ setenforce 0  			   ##临时关闭；1 为开启
 进入kernel选择界面，编辑kernel，添加 
 enforing=0
 
-iptables -t filter -A INPUT -s 192.168.1.1 -j DROP
- -t 表：规定使用的表（filter、nat、mangle、raw）
- -A 链：规定过滤点（INPUT、OUTPUT、FORWARD、PREROUTING、POSTROUTING）
- -s 匹配属性：规定匹配数据包的特征 【源、目标IP地址、协议（TCP/IP）、端口号、接口】
- -j 匹配后的动作：放行、丢弃、记录 【ACCEPT、DROP、REJECT】
- -p tcp 匹配tcp协议
- --dport 22  匹配端口号22
+##iptables
+service iptables status
+service iptables stop
 
-iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 4005		###转换端口
-iptables -I INPUT -p tcp --dport 4005 -j ACCEPT											###开放端口
-
-
-端口映射(内网的端口映射成外网的端口)
-iptables -t nat -A PREROUTING -d 10.19.170.205 -p tcp --dport 3306 -j DNAT --to 117.121.27.47:3306
-iptables -t nat -A POSTROUTING -d 117.121.27.47 -p tcp --dport 3306 -j SNAT --to 10.19.170.205
-
-
-SNAT 源地址转换   内网访问外网
-DNAT 目的地址转换 外网访问内网
-
-
-允许指定ip访问指定端口
-iptables -I INPUT -s 117.121.27.47 -p tcp --dport 3306 -j ACCEPT
-
-删除规则
-iptables -D INPUT 1
-iptables -t nat -D PREROUTING 1
-
-清空规则
-iptables -t nat -F PREROUTING
-
-修改文件也可以更改规则
-/etc/sysconfig/iptables 
- 
- 
- 
-保存配置
-iptable-save > /etc/sysconfig/iptables
- 
 /etc/init.d/iptables status  
 /etc/init.d/iptables stop 
 
@@ -226,7 +191,7 @@ iptable-save > /etc/sysconfig/iptables
 chkconfig iptables on 
 chkconfig iptables off 或者 /sbin/chkconfig --level 2345 iptables off
 
-配置文件
+配置文件 修改配置文件实现规则修改
 /etc/sysconfig/iptables 
  
  
