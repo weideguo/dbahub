@@ -187,13 +187,12 @@ service iptables stop
 /etc/init.d/iptables status  
 /etc/init.d/iptables stop 
 
-重启后生效
-chkconfig iptables on 
-chkconfig iptables off 或者 /sbin/chkconfig --level 2345 iptables off
-
 配置文件 修改配置文件实现规则修改
 /etc/sysconfig/iptables 
- 
+
+##保存现有iptables规则
+service iptables save
+iptables-save > /etc/sysconfig/iptables
  
  
 用户管理、权限管理
