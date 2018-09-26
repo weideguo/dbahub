@@ -1,57 +1,16 @@
-bin/initdb -D ./data/     				  #初始化数据库
-bin/pg_ctl -D ./data/ -l logfile start    #启动实例
-bin/postgres -D ./data    				  #实际服务运行的文件
-
-bin/psql postgres            #使用初始化创建的数据库postgres
-
-bin/psql postgres user_name  #默认创建的用户名与启动pg服务的系统用户名一致
-
-psql [OPTION]... [DBNAME [USERNAME]]
-  -h, --host=HOSTNAME     
-  -p, --port=PORT         
-  -U, --username=USERNAME 
-  -w, --no-password       
-  -W, --password          
-
-
-schema            #表的全型   schema_name.table_name
-tablespace
-domains
-
-
-创建表默认在pubic schema下
-
-select * from pg_tables;   #查看表信息 如 schema tablespace
-
-
-
  编译安装
  cd $postgresql_home
  ./configure --prefix=/03/postgresql
  make
  make install
  
-初始化(数据库及配置文件)
-initdb -D  /u03/postgresql/data/
 
 默认端口5432 
  
  
-启动(选择其一)
-postgres -D /u03/postgresql/data/				 	####可以设置环境变量export PGDATA=/u03/postgresql/data  
-pg_ctl -D /u03/postgresql/data -l logfile start 
-
-psql 	####pg命令行工具
-
--d postgres
--h, --host=HOSTNAME    
--p, --port=PORT        
--U, --username=USERNAME
--w, --no-password      
--W, --password         
-
-
-
+bin/initdb -D ./data/     				        #初始化数据库
+bin/pg_ctl -D ./data/ -l logfile start    #启动实例
+bin/postgres -D ./data    				        #实际服务运行的文件
 
 关闭
 bin/pg_ctl -D ./data stop
@@ -70,6 +29,37 @@ SIGQUIT
 SIGKILL   
 此选项尽量不要使用，这样会阻止服务器清理共享内存和信号灯资源，那样的话你只能在启动服务器之前自己手工做这件事。另外，SIGKILL 直接把 postgres 杀掉，而不会等它把信号中继给它的子进程，因此我们还需要手工杀掉每个独立子进程。 
  
+
+
+
+bin/psql postgres            #使用初始化创建的数据库postgres
+
+bin/psql postgres user_name  #默认创建的用户名与启动pg服务的系统用户名一致
+
+psql [OPTION]... [DBNAME [USERNAME]]
+  -h, --host=HOSTNAME     
+  -p, --port=PORT         
+  -U, --username=USERNAME 
+  -w, --no-password       
+  -W, --password          
+
+
+
+schema            #表的全型   schema_name.table_name
+tablespace
+domains
+
+
+创建表默认在pubic schema下
+
+select * from pg_tables;   #查看表信息 如 schema tablespace
+
+
+
+
+
+
+
 
 #配置文件
 $postgresql/data
