@@ -144,7 +144,7 @@ CREATE ROLE role_name;
 DROP ROLE role_name;
 
 #用户
-create user "weieguo" with password 'weideugo' login in role "TestRole1" 
+create user test_user with password 'test_password' login in role "TestRole1" 
 ALTER USER postgres WITH PASSWORD 'postgres';
 
 ##进行存储设置？
