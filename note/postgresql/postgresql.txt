@@ -98,13 +98,13 @@ create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###�
 create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
 grant usage on schema01 to weideguo;
 
-
-
-show search_path;			               ###查看创建表时使用的schema
-set search_path=schema_name	       ###设置创建表时使用的schema
 show all;                          ##查看所有参数
 show XXX;      ##查看参数
 set XXX=yyyy;  ##设置参数
+
+show search_path;			               ###查看创建表时使用的schema
+set search_path=schema_name	       ###设置创建表时使用的schema
+ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
 
 
 ##进行资源限制？
