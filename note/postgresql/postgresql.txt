@@ -83,29 +83,24 @@ SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT
 
 select * from pg_tables;   #查看表信息 如 schema tablespace
 
+###用户权限
 #角色
 CREATE ROLE role_name;
 DROP ROLE role_name;
 
-#用户
 create user test_user with password 'test_password' login in role "TestRole1"     #同时需要修改与重载配置文件pg_hba.conf以允许用户访问
 ALTER USER postgres WITH PASSWORD 'postgres';
+
+grant usage on schema01 to test_user;
+GRANT ALL PRIVILEGES ON DATABASE exampledb TO test_user; 
+alter user test_user superuser createrole createdb replication;
+
 
 ##进行存储设置？
 create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###表空间的文件在数据目录下
 
 ##进行命令空间限制？
 create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
-grant usage on schema01 to weideguo;
-
-show all;                          ##查看所有参数
-show XXX;      ##查看参数
-set XXX=yyyy;  ##设置参数
-
-show search_path;			               ###查看创建表时使用的schema
-set search_path=schema_name	       ###设置创建表时使用的schema
-ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
-
 
 ##进行资源限制？
 create database demodb		###创建数据库 一个连接只能来连接一个数据库
@@ -116,10 +111,17 @@ connection limit 200;
 
 alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
 
-create table table_name(...) tablespace ts_demo; 
+create table table_name(...) tablespace ts_demo;   ##创建表
  
-select pg_relation_filepath('tab100');   ###查看表的位置 
+select pg_relation_filepath('tab100');             ###查看表的位置 
 
+show all;                          ##查看所有参数
+show XXX;      ##查看参数
+set XXX=yyyy;  ##设置参数
+
+show search_path;			               ###查看创建表时使用的schema
+set search_path=schema_name	       ###设置创建表时使用的schema
+ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
 
 
 #配置文件#########################################################################################################################
