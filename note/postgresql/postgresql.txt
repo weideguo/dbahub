@@ -65,7 +65,7 @@ tablespace
 domains
 
 一个database下有多个schema
-不能同时方位不同database下的对象
+不能同时访问不同database下的对象
 
 select * from schema_name.table_name;
 
