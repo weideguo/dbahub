@@ -69,6 +69,8 @@ domains
 
 select * from schema_name.table_name;
 
+use schema_name;   #切换schema
+
 系统表
 pg_user
 pg_roles
