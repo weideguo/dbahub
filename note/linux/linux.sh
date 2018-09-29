@@ -1304,7 +1304,7 @@ MBR主分区:最多只能创建4个主分区
 
 
 负载均衡
-lvs(linux virtual server)
+lvs(linux virtual server)    不会影响后端节点的网络识别，依然识别最初始的客户端的ip，而不是分发器的ip
 ipvsadm
 
 
