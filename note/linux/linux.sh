@@ -1522,6 +1522,14 @@ ssh -R 3306:127.0.0.1:5640 -CNfg 192.168.59.129
 数据通过ssh传输，转发同时实现加密
 
 
+##恢复
+yum install e2fsprogs*
+./configure
+make && make install
+
+fuser -m -u /u01            #identify processes using files or sockets  查看使用文件的进程，必须先杀死相关进程才能umount
+umount /dev/sdb1
+extundelete /dev/sdb1 --restore-all
 
 
 
