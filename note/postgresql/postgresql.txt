@@ -312,16 +312,16 @@ synchronous_commit = on                              #同步复制模式 off, lo
 ##########################################################################################################################
 
 
-select pg_current_wal_lsn();                主 当前日志点
-select pg_last_wal_receive_lsn();           从 最近接受的日志点
-select pg_is_in_recovery();                 是否进行恢复 实例复制也算一种恢复
-select pg_last_wal_replay_lsn();            已经回放的日志点
-select pg_last_xact_replay_timestamp();     从实例上一个回放事务的时间戳（为在主实例完成的时间戳）
+select pg_current_wal_lsn();                              主 当前日志点
+select pg_walfile_name_offset(pg_current_wal_lsn());      查看当前日志点对应的文件以及偏移量
+select pg_last_wal_receive_lsn();                         从 最近接受的日志点
+select pg_is_in_recovery();                               是否进行恢复 实例复制也算一种恢复
+select pg_last_wal_replay_lsn();                          已经回放的日志点
+select pg_last_xact_replay_timestamp();                   从实例上一个回放事务的时间戳（为在主实例完成的时间戳）
 
 
 select pg_start_backup('label_goes_here');                #开始备份
 SELECT * FROM pg_walfile_name_offset(pg_stop_backup());   #结束备份并显示备份的wal点 以便直接使用之后的wal进行恢复
-
 
 
 
@@ -330,6 +330,8 @@ select * from  pg_stat_replication    ##查看复制的信息 同步方式
 【sent_lsn】 【pg_last_wal_receive_lsn】    indicate network delay, or that the standby is under heavy load
 
 
+
+pg_waldump    #将wal文件导出成可读形式文件 
 
 
  
@@ -350,5 +352,9 @@ pg_ctl promote                                               ##提升当前实�
 
 #recovery.conf
 trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对应这个文件，即可提升当前实例为主  standby_mode = 'on'
+
+
+
+
 
 
