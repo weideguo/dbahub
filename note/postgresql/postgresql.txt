@@ -95,6 +95,17 @@ grant usage on schema01 to test_user;
 GRANT ALL PRIVILEGES ON DATABASE exampledb TO test_user; 
 alter user test_user superuser createrole createdb replication;
 
+GRANT { { CREATE | USAGE } [, ...] | ALL [ PRIVILEGES ] }
+    ON SCHEMA schema_name [, ...]
+    TO role_specification [, ...] [ WITH GRANT OPTION ]
+          
+GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON { [ TABLE ] table_name [, ...]
+         | ALL TABLES IN SCHEMA schema_name [, ...] }
+    TO role_specification [, ...] [ WITH GRANT OPTION ]
+
+
 
 ##进行存储设置？
 create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###表空间的文件在数据目录下
@@ -122,6 +133,16 @@ set XXX=yyyy;  ##设置参数
 show search_path;			               ###查看创建表时使用的schema
 set search_path=schema_name	       ###设置创建表时使用的schema
 ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
+
+
+##字符编码
+\encoding GBK
+show client_encoding;
+show server_encoding;
+ 
+ 
+select * from pg_stat_activity ;           #查看进程
+select pg_terminate_backend(procpid);      #杀死进程
 
 
 #配置文件#########################################################################################################################
@@ -181,6 +202,11 @@ SELECT pg_reload_conf();
 VACUUM
 VACUUM — garbage-collect and optionally analyze a database
 
+#autovacuum       automate the execution of VACUUM and ANALYZE commands    高版本才有
+#postgresql.conf
+track_counts = on
+autovacuum = on
+
 
 
 pg_dump dbname > dumpfile  #备份成sql文件
@@ -237,4 +263,93 @@ pgsql_tmp开头的目录可以不复制
      recovery_target_time = timestamp                         #latest 0 1423234
 启动实例
 
-#####################################################################################################################################
+
+#########主从###################################################################################################
+#Log-Shipping Standby Servers
+
+archive, pg_wal, streaming replication      #三步恢复方式
+
+
+##需要复制主的归档目录到从的归档目录，如果从实例需要从归档日志开始恢复
+
+主实例账号设置
+##pg_hba.conf
+##  host    all             foo             192.168.0.0/16          md5
+
+
+从实例
+
+#####recovery.conf
+standby_mode = 'on'
+primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'     
+restore_command = 'cp /path/to/archive/%f %p'                                  ##恢复用
+archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'              ##清理日志，pg_archivecleanup主要用于standby
+
+
+#############Replication Slots
+#replication slots provide an automated way to ensure that the master does not remove WAL segments until they have been received by all standbys, and that the master does not remove rows which could cause a recovery conflict even when the standby is disconnected.
+
+SELECT * FROM pg_create_physical_replication_slot('node_a_slot');
+SELECT slot_name, slot_type, active FROM pg_replication_slots;
+
+#####recovery.conf
+standby_mode = 'on'
+primary_conninfo = 'application_name=s1 host=192.168.1.50 port=5432 user=foo password=foopass'
+primary_slot_name = 'node_a_slot'
+
+
+##streaming replication 默认异步复制
+
+
+#同步复制
+#在主实例中设置postgresql.conf
+###哪些从实例需要同步复制
+synchronous_standby_names = 'FIRST 2 (s1, s2, s3)'   #列表中前两个从要同步复制  对应primary_conninfo中的application_name
+synchronous_standby_names = 'ANY 2 (s1, s2, s3)'     #任意两个从要同步复制
+synchronous_standby_names = '*'                      #所有从都需要同步复制
+
+synchronous_commit = on                              #同步复制模式 off, local, remote_write, remote_apply, on                                  
+
+##########################################################################################################################
+
+
+select pg_current_wal_lsn();                主 当前日志点
+select pg_last_wal_receive_lsn();           从 最近接受的日志点
+select pg_is_in_recovery();                 是否进行恢复 实例复制也算一种恢复
+select pg_last_wal_replay_lsn();            已经回放的日志点
+select pg_last_xact_replay_timestamp();     从实例上一个回放事务的时间戳（为在主实例完成的时间戳）
+
+
+select pg_start_backup('label_goes_here');                #开始备份
+SELECT * FROM pg_walfile_name_offset(pg_stop_backup());   #结束备份并显示备份的wal点 以便直接使用之后的wal进行恢复
+
+
+
+
+select * from  pg_stat_replication    ##查看复制的信息 同步方式
+【pg_current_wal_lsn】 【sent_lsn】         indicate that the master server is under heavy load
+【sent_lsn】 【pg_last_wal_receive_lsn】    indicate network delay, or that the standby is under heavy load
+
+
+
+
+ 
+
+防止脑裂
+STONITH
+Shoot The Other Node In The Head    
+    
+ 
+##切换为新主的从 如果失败，手动从新主备份然后再设主从
+pg_rewind [option...] { -D | --target-pgdata } directory { --source-pgdata=directory | --source-server=connstr }
+
+
+
+
+#fail over
+pg_ctl promote                                               ##提升当前实例为主
+
+#recovery.conf
+trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对应这个文件，即可提升当前实例为主  standby_mode = 'on'
+
+
