@@ -91,7 +91,6 @@ DROP ROLE role_name;
 create user test_user with password 'test_password' login in role "TestRole1"     #同时需要修改与重载配置文件pg_hba.conf以允许用户访问
 ALTER USER postgres WITH PASSWORD 'postgres';
 
-grant usage on schema01 to test_user;
 GRANT ALL PRIVILEGES ON DATABASE exampledb TO test_user; 
 alter user test_user superuser createrole createdb replication;
 
