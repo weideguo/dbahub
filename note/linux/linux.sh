@@ -307,7 +307,9 @@ basename $path/filename.txt	.txt			###从全录路径中提取文件名并去掉
 'sinosy_${DATE}_*.log'	同时禁止通配符扩展与变量扩展。
 sinosy_${DATE}_\*.log	使用转义字符——反斜杠，也可以防止扩展。
 
-date -d @141231322
+date -d @141231322   #时间戳换成时间
+date +%s             #显示时间戳
+date "+%Y-%m-%d %H:%M:%S"  #显示时间
 
 cat ctl | grep -v ^- | grep -v ^$  ###去除【-】开头的行及去除空行
 ## ^正则表达式中字符串的开始 $正则表达式中字符串的结束
