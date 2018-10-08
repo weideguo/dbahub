@@ -127,7 +127,11 @@ select pg_relation_filepath('tab100');             ###查看表的位置
 
 show all;                          ##查看所有参数
 show XXX;      ##查看参数
-set XXX=yyyy;  ##设置参数
+set XXX=yyyy;  ##设置参数           ##changes run-time configuration parameters，只对当前session有效
+set local XXX=yyyy;                ##指对当前事务有效
+
+alter system set set XXX=yyyy;     ##等同于更正配置文件再reload
+ALTER SYSTEM RESET XXX;
 
 show search_path;			               ###查看创建表时使用的schema
 set search_path=schema_name	       ###设置创建表时使用的schema
