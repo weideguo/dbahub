@@ -358,7 +358,7 @@ pg_ctl promote                                               ##提升当前实�
 trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对应这个文件，即可提升当前实例为主  standby_mode = 'on'
 
 
-
+pg_resetwal  #
 
 
 
