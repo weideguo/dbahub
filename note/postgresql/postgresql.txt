@@ -381,7 +381,7 @@ bin/pg_recvlogical -d postgres -h 192.168.59.130 -p 5432 -U wdg -W --file=/data/
 select * from pg_replication_slots;                      ##查看slot
 SELECT * FROM pg_drop_replication_slot('node_a_slot');   ##删除slot
 
-SELECT * FROM pg_create_logical_replication_slot('logical_slot_test', 'test_decoding');            #创建logical_replication_slot  需要wal_level为logical  需要安装插件test_decoding
+SELECT * FROM pg_create_logical_replication_slot('logical_slot_test', 'test_decoding');            #创建logical_replication_slot  需要wal_level为logical  需要编译扩展插件
 SELECT * FROM pg_logical_slot_get_changes('logical_slot_test', NULL, NULL);                        #由logical_replication_slot查看操作
 
 
