@@ -364,4 +364,18 @@ pg_test_timing     ##测试服务器的性能开销
 
 pg_receivewal -D /data/pg_test/pg_wal_test -h 192.168.1.128 -p 5432 -U pg_user -W    #直接接受wal文件并保存于本地 当前接收的文件以.partial结尾
 
+bin/pg_recvlogical -d postgres -h 192.168.59.130 -p 5432 -U wdg -W --file=/data/pg_test/pg_wal_logic/wal.txt -S logical_slot_test --start   ##接收wal的可读格式 需要预先创建logical slot
 
+
+
+select * from pg_replication_slots;                      ##查看slot
+SELECT * FROM pg_drop_replication_slot('node_a_slot');   ##删除slot
+
+SELECT * FROM pg_create_logical_replication_slot('logical_slot_test', 'test_decoding');            #创建logical_replication_slot  需要wal_level为logical
+SELECT * FROM pg_logical_slot_get_changes('logical_slot_test', NULL, NULL);                        #由logical_replication_slot查看操作
+
+
+##
+select * from pg_extension ;          #查看插件
+create extension postgres_fdw;        #创建插件
+drop extension postgres_fdw cascade;  #删除插件
