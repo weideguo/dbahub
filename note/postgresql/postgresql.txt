@@ -272,6 +272,8 @@ pgsql_tmp开头的目录可以不复制
 
 archive, pg_wal, streaming replication      #三步恢复方式
 
+从archive目录复制到pg_wal目录，根据pg_wal目录的日志文件恢复，然后根据streaming replication追加
+
 
 ##需要复制主的归档目录到从的归档目录，如果从实例需要从归档日志开始恢复
 
