@@ -359,3 +359,9 @@ bin/pg_rewind --target-pgdata=./data --source-server="host=192.168.1.128 port=54
 bin/pg_controldata -D ./data  ##查看实例状态 
 
 
+pg_test_fsync      ##测试wal的sync性能
+pg_test_timing     ##测试服务器的性能开销
+
+pg_receivewal -D /data/pg_test/pg_wal_test -h 192.168.1.128 -p 5432 -U pg_user -W    #直接接受wal文件并保存于本地 当前接收的文件以.partial结尾
+
+
