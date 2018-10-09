@@ -354,6 +354,8 @@ trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对�
 pg_waldump    #将wal文件导出成可读形式文件 
 pg_resetwal   #清空wal日志，需要关闭postgresql进程
 
-##切换为新主的从 如果失败，手动从新主备份然后再设主从
-pg_rewind [option...] { -D | --target-pgdata } directory { --source-pgdata=directory | --source-server=connstr }
+bin/pg_rewind --target-pgdata=./data --source-server="host=192.168.1.128 port=5432 user=pg_user password=pg_user_password dbname=postgres"   ##切换为新主的从 如果失败，手动从新主备份然后再设主从
+
+bin/pg_controldata -D ./data  ##查看实例状态 
+
 
