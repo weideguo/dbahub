@@ -88,6 +88,8 @@ select * from pg_tables;   #查看表信息 如 schema tablespace
 CREATE ROLE role_name;
 DROP ROLE role_name;
 
+select * from information_schema.table_privileges;  ##查看用户对表的权限
+
 create user test_user with password 'test_password' login in role "TestRole1"     #同时需要修改与重载配置文件pg_hba.conf以允许用户访问
 ALTER USER postgres WITH PASSWORD 'postgres';
 
