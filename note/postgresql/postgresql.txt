@@ -3,7 +3,11 @@
  ./configure --prefix=/03/postgresql
  make
  make install
- 
+
+cd ./contrib   ##编译扩展插件 可选
+make
+make install
+
 
 默认端口5432 
 pg是多进程模式
