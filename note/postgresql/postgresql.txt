@@ -83,6 +83,10 @@ SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT
 
 select * from pg_tables;   #查看表信息 如 schema tablespace
 
+
+select * from information_schema.tables;   ##查看所有的表
+
+
 ###用户权限
 #角色
 CREATE ROLE role_name;
