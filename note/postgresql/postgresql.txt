@@ -329,6 +329,7 @@ select pg_last_xact_replay_timestamp();                   从实例上一个回�
 select pg_start_backup('label_goes_here');                #开始备份
 SELECT * FROM pg_walfile_name_offset(pg_stop_backup());   #结束备份并显示备份的wal点 以便直接使用之后的wal进行恢复
 
+select pg_switch_wal();                                   #手动切换日志
 
 
 select * from  pg_stat_replication    ##查看复制的信息 同步方式
@@ -336,31 +337,23 @@ select * from  pg_stat_replication    ##查看复制的信息 同步方式
 【sent_lsn】 【pg_last_wal_receive_lsn】    indicate network delay, or that the standby is under heavy load
 
 
-
-pg_waldump    #将wal文件导出成可读形式文件 
-
-
- 
-
 防止脑裂
 STONITH
 Shoot The Other Node In The Head    
     
- 
-##切换为新主的从 如果失败，手动从新主备份然后再设主从
-pg_rewind [option...] { -D | --target-pgdata } directory { --source-pgdata=directory | --source-server=connstr }
 
-
-
-
-#fail over
+#fail over 二选一
 pg_ctl promote                                               ##提升当前实例为主
 
 #recovery.conf
 trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对应这个文件，即可提升当前实例为主  standby_mode = 'on'
 
 
-pg_resetwal  #
+##############################################################################################################################
 
+pg_waldump    #将wal文件导出成可读形式文件 
+pg_resetwal   #清空wal日志，需要关闭postgresql进程
 
+##切换为新主的从 如果失败，手动从新主备份然后再设主从
+pg_rewind [option...] { -D | --target-pgdata } directory { --source-pgdata=directory | --source-server=connstr }
 
