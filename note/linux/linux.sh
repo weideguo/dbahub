@@ -932,11 +932,18 @@ else
 ...
 fi
 
-if [ $a -gt 0 ] 2>/dev/null;then    ###将错误信息忽略
+if [ $a -gt 0 ] 2>/dev/null; then     ###将错误信息忽略
 echo "is number"
 else 
 echo "is not number"
 fi
+
+if [[ "11123213" =~ [0-9]{8} ]]; then  ##使用正则表达式   
+echo "yyy"
+else echo "nnn" 
+fi
+
+
 
 ${command} > out.file 2>&1    	####将错误的输出定向到标准输出
 
