@@ -446,15 +446,14 @@ SHOW VARIABLES LIKE "collation%"
 CREATE DATABASE database_name DEFAULT CHARACTER SET char_set1 DEFAULT COLLATION char_set2;
 --修改字符集
 ALTER  DATABASE database_name CHARACTER SET char_set1 COLLATION char_set2;	--修改数据库默认的字符集：
-alter table table_name convert to character set char_set1;					--转换表的默认字符集，字符不会发生变化，但如果表的转换存储字符集不兼容，可能导致数据丢失  The statement also changes the collation of all character columns. 
-alter table table_name DEFAULT CHARSET=utf8;                                --To change only the default character set for a table
+alter table table_name convert to character set char_set1;			--转换表的默认字符集，已有的数据会被转变，如果表的转换存储字符集不兼容，可能导致数据丢失
+alter table table_name DEFAULT CHARSET=utf8;                                    --To change only the default character set for a table
 alter table table_name change column_name1 column_name1 blob;
 
 
-latin1 	单字节编码。中文占三字节，如何存储？
-GBK		中文二字节，英文一字节
+latin1 	单字节编码
+GBK     中文二字节，英文一字节
 utf8	中文三字节，英文一字节
-
 
 skip-character-set-client-handshake   --mysql --default-character-set无效，连接使用默认编码
 
