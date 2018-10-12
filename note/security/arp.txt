@@ -8,19 +8,15 @@ arp    #查看arp信息
 arp -a
 
 
-#####python
+#####python scapy####################################################################################################
 from scapy.all import *
 
 res=sr1(ARP(pdst="192.168.59.130"))    #查询局域网主机mac地址
 
-srloop(ARP(psrc="192.168.1.101",hwsrc="11:22:33:44:55:66",pdst="192.168.1.1",op=2))    
 
-#主动告知网关192.168.1.101的MAC地址是11:22:33:44:55:66，并循环发送。
-
-
-
-result_raw=srp(Ether(dst='FF:FF:FF:FF:FF:FF')/ARP(op=1,hwdst='00:00:00:00:00:00',pdst=ipaddress,timeout=1,verbose=False))
-
+ans,unans=srp(Ether(dst='FF:FF:FF:FF:FF:FF')/ARP(op=1,hwdst='00:00:00:00:00:00',pdst=ipaddress,timeout=1,verbose=False))
+ans.summary()
+ans.summary(lambda (s,r): r.sprintf("%Ether.src% %ARP.psrc%") )
 
 
 arp_request=Ether(dst='FF:FF:FF:FF:FF:FF')/ARP(op=1,hwdst='00:00:00:00:00:00',pdst='192.168.219.180')
@@ -28,32 +24,8 @@ arp_request.show()可以查看铸造的包的信息。
 
 
 
-
-eth = Ether(src=self.gtw_mac, dst=tag_mac)
-arp = ARP(hwsrc='01:02:03:04:05:06', psrc=self.gtw_ip, hwdst=tag_mac, pdst=tag_ip, op=2)
-pkt = eth / arp
-sendp(pkt)
-
-
-
-
-
-
-
-
-
-
-send(IP(dst="192.0.2.1")/UDP(dport=53))         发送三层包
-
-sendp(Ether()/IP(dst="192.0.2.1")/UDP(dport=53))     发送二层包
-
-
-
 sr(pkt, filter=N, iface=N), srp(…)                       Send packets and receive replies 
 sr1(pkt, inter=0, loop=0, count=1, iface=N), srp1(…)     Send packets and return only the first reply 
 srloop(pkt, timeout=N, count=N), srploop(…)              Send packets in a loop and print each reply
-
-
-
 
 sniff(count=0, store=1, timeout=N)                       Record packets off the wire; returns a list of packets when stopped
