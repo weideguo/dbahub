@@ -427,7 +427,9 @@ show privileges     ---查看所有的权限
 
 mysql.db			---数据库的权限
 
-
+时区
+set global time_zone="+8:00"      --设置后即影响mysql的时间
+set time_zone="+8:00"						  
 
 
 字符集
