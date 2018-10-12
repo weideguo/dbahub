@@ -8,24 +8,7 @@ arp    #查看arp信息
 arp -a
 
 
-#####python scapy####################################################################################################
-from scapy.all import *
-
-res=sr1(ARP(pdst="192.168.59.130"))    #查询局域网主机mac地址
-
-
-ans,unans=srp(Ether(dst='FF:FF:FF:FF:FF:FF')/ARP(op=1,hwdst='00:00:00:00:00:00',pdst=ipaddress,timeout=1,verbose=False))
-ans.summary()
-ans.summary(lambda (s,r): r.sprintf("%Ether.src% %ARP.psrc%") )
-
-
-arp_request=Ether(dst='FF:FF:FF:FF:FF:FF')/ARP(op=1,hwdst='00:00:00:00:00:00',pdst='192.168.219.180')
-arp_request.show()可以查看铸造的包的信息。
 
 
 
-sr(pkt, filter=N, iface=N), srp(…)                       Send packets and receive replies 
-sr1(pkt, inter=0, loop=0, count=1, iface=N), srp1(…)     Send packets and return only the first reply 
-srloop(pkt, timeout=N, count=N), srploop(…)              Send packets in a loop and print each reply
 
-sniff(count=0, store=1, timeout=N)                       Record packets off the wire; returns a list of packets when stopped
