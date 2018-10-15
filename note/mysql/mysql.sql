@@ -1593,12 +1593,18 @@ tungsten-replicator
 支持多种数据库的复制工具
 mysql复制到其他数据源
 
+			       
+设置多线程复制
+set global slave_parallel_workers=30
 
 
 
+元数据锁
 
 
-spider存储引擎
+#第三方存储引擎
+
+##spider存储引擎
 本身只存路由信息，转发访问后端数据
 
 DDL语句不传输到后端？
@@ -1606,13 +1612,8 @@ DDL语句不传输到后端？
 mysqldump只导出spider的建表语句
 
 
+##tokuDB
 
-设置多线程复制
-set global slave_parallel_workers=30
-
-
-
-元数据锁
 
 
  
