@@ -391,3 +391,9 @@ SELECT * FROM pg_logical_slot_get_changes('logical_slot_test', NULL, NULL);     
 select * from pg_extension ;          #查看插件
 create extension postgres_fdw;        #创建插件
 drop extension postgres_fdw cascade;  #删除插件
+
+
+MVCC机制
+
+innodb的基于回滚段实现。undo日志自动清理。
+PG新老数据一起存放的基于XID实现。新老数据一起存放，需要定时触 发VACUUM。
