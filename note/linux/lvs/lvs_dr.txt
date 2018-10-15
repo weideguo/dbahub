@@ -17,7 +17,7 @@ vip:192.168.59.200   ##实际访问使用 不能在LB进行访问
 
 ####################RS1 RS2#######################################################
 
-####不对外解析192.168.59.200
+####不对外回应arp 192.168.59.200
 echo 1 > /proc/sys/net/ipv4/conf/lo/arp_ignore 
 echo 2 > /proc/sys/net/ipv4/conf/lo/arp_announce 
 echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore 
