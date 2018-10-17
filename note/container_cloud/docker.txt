@@ -90,7 +90,7 @@ docker push localhost:5000/my-alpine
 
 
 
-##dockfile
-docker build -t image_name:tag_name .            #使用当前目录下的Dockfile文件创建docker镜像
+##Dockerfile
+docker build -t image_name:tag_name .            #使用当前目录下的Dockerfile文件创建docker镜像
 
 
