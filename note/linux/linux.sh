@@ -231,6 +231,18 @@ sudo /bin/su - db_user00 /data/db_user00/redis_6379/redis_server.sh start   ##�
 runuser -l db_user00 -c "${command}"  ##root账号以特定用户执行
 
 
+##/etc/sudoers或/etc/sudoers.d目录下任意文件
+#可以在任意地方以任意账号免密执行
+%group_name  ALL=(ALL)  NOPASSWD: ALL
+user_name  ALL=(ALL)  NOPASSWD: ALL
+#可以在任意地方以root账号执行 需要输入当前账号的密码
+%group_name  ALL=/bin/ls 
+%group_name  ALL=(root)/bin/ls PASSWD: ALL
+user_name  ALL=/bin/ls 
+#可以在任意地方以root账号免密执行
+%group_name   ALL=(root) NOPASSWD: /bin/ls,(root) NOPASSWD: /bin/ln
+user_name   ALL=(root) NOPASSWD: /bin/ls,(root) NOPASSWD: /bin/ln
+
 
 whoami ##显示当前用户
 who    ##显示登陆用户
