@@ -27,3 +27,4 @@ Pyrex
 Psyco
 
 
+print sys.path   #查看模块的位置
