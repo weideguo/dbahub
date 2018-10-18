@@ -13,20 +13,11 @@ help("modules")    ###python查看已经安装的模块
 
 SWIG
 
-
-
-
 Pyrex
-
-
-
-
-
-
 
 Psyco
 
 
 print sys.path           #查看模块的位置
 pip install -t /usr/local/lib/python3.5/site-package/ MySQL-python        #安装到指定路径
-pip3 show MySQL-python   #查看模块的安装路径
+pip show MySQL-python   #查看模块的安装路径
