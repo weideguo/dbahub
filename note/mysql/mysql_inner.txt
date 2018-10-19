@@ -1,0 +1,16 @@
+索引高度查询
+--查询索引root页的信息
+SELECT b.name table_name,a.name index_name,index_id,TYPE,a.space,a.PAGE_NO
+FROM information_schema.INNODB_SYS_INDEXES a,information_schema.INNODB_SYS_TABLES b
+WHERE a.table_id = b.table_id AND a.space <> 0;
+
+                                root页
+                                   |
+        +--------------------------+--------------------------+
+        |                          |                          |   
+        非叶子页                非叶子页                   非叶子页 
+        |                          |                          |             
++-------+-------+          +-------+-------+          +-------+-------+
+|       |       |          |       |       |          |       |       |
+叶子页  叶子页  叶子页     叶子页  叶子页  叶子页     叶子页  叶子页  叶子页
+
