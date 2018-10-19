@@ -67,7 +67,7 @@ proxy_pass http://server_cluster; #后端服务器，具体配置upstream部分�
 ------------------------------
 PKI Public Key Infrastructure 公钥基础设置
 CA  Certificate Authority     证书授权机构 
-证书链 根CA为下层CA认证，最终浏览器逐层回溯到根CA，根CA的证书直接放在浏览器中，即验证ssl证书合法
+证书链 根CA为下层CA认证，最终浏览器逐层回溯到根CA，根CA的证书直接放在浏览器中，即验证ssl证书合法（公钥）
 
 
 
