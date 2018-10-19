@@ -1,0 +1,59 @@
+MGR 
+mysql group replication
+
+---配置文件
+[mysqld]
+
+# server configuration
+datadir=<full_path_to_data>/data/s1
+basedir=<full_path_to_bin>/mysql-5.7/
+
+port=24801
+socket=<full_path_to_sock_dir>/s1.sock
+
+#replication framework
+server_id=1
+gtid_mode=ON
+enforce_gtid_consistency=ON
+master_info_repository=TABLE
+relay_log_info_repository=TABLE
+binlog_checksum=NONE
+log_slave_updates=ON
+log_bin=binlog
+binlog_format=ROW
+
+#Group Replication Settings
+transaction_write_set_extraction=XXHASH64
+loose-group_replication_group_name="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"                    ---loose-  前缀表示跳过参数如果参数不可用，因为复制插件没有加载
+loose-group_replication_start_on_boot=off													 --- instructs the plugin to not start operations automatically when the server starts
+loose-group_replication_local_address= "127.0.0.1:24901"
+loose-group_replication_group_seeds= "127.0.0.1:24901,127.0.0.1:24902,127.0.0.1:24903"
+loose-group_replication_bootstrap_group= off												 ---instructs the plugin whether to boostrap the group or not.只能有一个实例为on，多个会导致脑裂
+
+
+
+
+
+---操作
+
+CHANGE MASTER TO MASTER_USER='rpl_user', MASTER_PASSWORD='rpl_pass' FOR CHANNEL 'group_replication_recovery';       --设置group replication，账号至少要有REPLICATION SLAVE权限
+INSTALL PLUGIN group_replication SONAME 'group_replication.so';                                                     --安装group replication插件
+SET GLOBAL group_replication_bootstrap_group=ON;																	--只需要在一个实例中操作 instruct server to bootstrap the group and then start Group Replication
+START GROUP_REPLICATION;  																							--启动group replication
+SET GLOBAL group_replication_bootstrap_group=OFF; 																	--After the group has been bootstrapped, set this option to OFF
+SELECT * FROM performance_schema.replication_group_members;    													    --查看组成员
+
+
+---添加组成员操作类似
+
+
+n个实例容忍f个实例失败
+n = 2 x f + 1
+
+Single-Primary Mode   --默认模式，只能在一个实例进行写操作
+	依赖server-id选择下一个主？
+	
+
+
+Multi-Primary Mode    --可以对多个实例进行些操作
+	group_replication_single_primary_mode=off   --所有实例设置
