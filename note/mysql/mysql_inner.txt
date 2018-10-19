@@ -4,7 +4,7 @@ SELECT b.name table_name,a.name index_name,index_id,TYPE,a.space,a.PAGE_NO
 FROM information_schema.INNODB_SYS_INDEXES a,information_schema.INNODB_SYS_TABLES b
 WHERE a.table_id = b.table_id AND a.space <> 0;
 
-                                root页
+                                 root页
                                    |
         +--------------------------+--------------------------+
         |                          |                          |   
@@ -14,3 +14,11 @@ WHERE a.table_id = b.table_id AND a.space <> 0;
 |       |       |          |       |       |          |       |       |
 叶子页  叶子页  叶子页     叶子页  叶子页  叶子页     叶子页  叶子页  叶子页
 
+SPACE对应每个表空间ID号，PAGE_NO对应每个页的ID号
+
+
+offset=@PAGE_NO*@@innodb_page_size+64                 #PAGE_LEVEL在每个root页的偏移量64位置初，占用两个字节
+
+hexdump -s offset -n 02 /path_to_data/test_table.ibd 
+
+获得root页的PAGE_LEVEL，树的高度为PAGE_LEVEL+1
