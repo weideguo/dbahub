@@ -1,5 +1,4 @@
-MGR 
-mysql group replication
+MGR mysql group replication
 
 ---配置文件
 [mysqld]
@@ -31,19 +30,26 @@ loose-group_replication_group_seeds= "127.0.0.1:24901,127.0.0.1:24902,127.0.0.1:
 loose-group_replication_bootstrap_group= off												 ---instructs the plugin whether to boostrap the group or not.只能有一个实例为on，多个会导致脑裂
 
 
+----创建复制账号
+SET SQL_LOG_BIN=0;
+CREATE USER rpl_user@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO rpl_user@'%';
+FLUSH PRIVILEGES;
+SET SQL_LOG_BIN=1;
+----
 
-
-
----操作
-
+-----设置复制与安装插件
 CHANGE MASTER TO MASTER_USER='rpl_user', MASTER_PASSWORD='rpl_pass' FOR CHANNEL 'group_replication_recovery';       --设置group replication，账号至少要有REPLICATION SLAVE权限
 INSTALL PLUGIN group_replication SONAME 'group_replication.so';                                                     --安装group replication插件
-SET GLOBAL group_replication_bootstrap_group=ON;		        --只需要在一个实例中操作 instruct server to bootstrap the group and then start Group Replication
+
+--启动复制，只需要在一个实例中执行
+SET GLOBAL group_replication_bootstrap_group=ON;		        --instruct server to bootstrap the group and then start Group Replication
 START GROUP_REPLICATION;  						--启动group replication
 SET GLOBAL group_replication_bootstrap_group=OFF;                       --After the group has been bootstrapped, set this option to OFF
+
 SELECT * FROM performance_schema.replication_group_members;    		--查看组成员
 
-
+------------------------------------------------------------------------------------------------------------------------------
 ---添加组成员操作类似
 
 
