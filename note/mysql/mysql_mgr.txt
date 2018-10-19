@@ -38,10 +38,10 @@ loose-group_replication_bootstrap_group= off												 ---instructs the plugin
 
 CHANGE MASTER TO MASTER_USER='rpl_user', MASTER_PASSWORD='rpl_pass' FOR CHANNEL 'group_replication_recovery';       --设置group replication，账号至少要有REPLICATION SLAVE权限
 INSTALL PLUGIN group_replication SONAME 'group_replication.so';                                                     --安装group replication插件
-SET GLOBAL group_replication_bootstrap_group=ON;																	--只需要在一个实例中操作 instruct server to bootstrap the group and then start Group Replication
-START GROUP_REPLICATION;  																							--启动group replication
-SET GLOBAL group_replication_bootstrap_group=OFF; 																	--After the group has been bootstrapped, set this option to OFF
-SELECT * FROM performance_schema.replication_group_members;    													    --查看组成员
+SET GLOBAL group_replication_bootstrap_group=ON;		        --只需要在一个实例中操作 instruct server to bootstrap the group and then start Group Replication
+START GROUP_REPLICATION;  						--启动group replication
+SET GLOBAL group_replication_bootstrap_group=OFF;                       --After the group has been bootstrapped, set this option to OFF
+SELECT * FROM performance_schema.replication_group_members;    		--查看组成员
 
 
 ---添加组成员操作类似
