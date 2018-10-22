@@ -99,3 +99,521 @@ docker exec -it <container-id> /bin/bash                   #进入容器 退出�
 docker attach <container-id>                               #进入容器 需要使用 ctrl+p ctrl+q 退出，否则容器会关闭
 
 
+
+启动镜像即生成一个容器。也可以启动一个容器。
+
+docker run -it --name my_docker_name --link docker_name:alias_name image_name /bin/bash
+#启动镜像image_name命名为my_docekr_name,连接到命名为docker_name的容器,并设置别名为alias_name。使用alias_name可以当做host_name使用从而进行连接
+
+docker inspect --format "{{.Volumes}}" container_id
+#查看volume
+
+
+
+namespace
+资源隔离        (flags)
+	UTS			CLONE_NEWUTS  主机名与域名	                  unix time-sharing system
+	IPC         CLONE_NEWIPC  信号量、消息队列、共享内存      Inter-Process Communication
+	PID         CLONE_NEWPID  进程编号
+	Network     CLONE_NEWNET  网络
+	Mount       CLONE_NEWNS   挂载点
+	User        CLONE_NEWUSER 用户、组
+
+	
+	通过调用系统函数clone等创建子进程
+		
+cgroups
+资源限制
+
+	表现为一个文件系统,挂载后可以看到自系统 
+		mkdir -p /cgroups/memory
+		mount -t cgroup -o memory memory /cgroups/memory
+	
+	在/sys/fs/cgroup/XXX(XXX: cpu | ...)下，创建目录，目录下自动生成文件，在文件中写入信息(进程号、cpu使用率)达到限制进程使用资源的目的
+	
+yum install libcgroups  #安装cgroups	
+
+service cgconfig start #启动cgroups？
+
+/etc/cgconfig.conf #配置文件 启动服务时依赖这个挂载cgroups文件，也可以在启动后在cgroups层级中手动添加目录并挂载
+	
+	
+	
+docker创建命名为docker的控制组/sys/fs/cgroup/cpu/docker/$container_id
+	tasks     		进程、线程ID
+	cgroup.proc		TGID（线程组ID，即线程组第一个进程的PID）
+	
+
+
+	
+	
+copy-in-write
+文件操作
+
+
+
+
+int clone(int (*child_func)(void *).void *child_stack,int flags,void *arg)   ##创建一个独立namespace的进程
+fork()       #创建子进程
+
+init进程托管孤儿进程，pid=1
+
+
+
+
+docker API 可以对docker进行管理
+
+
+
+容器执行驱动      execdriver
+
+volume存储驱动    volumedriver
+
+镜像存储驱动	  graphdriver
+
+
+
+
+
+
+client模式
+
+
+daemon模式
+
+build 创建镜像
+
+Dockfile
+	参数类型
+	
+	##Usage:  docker build [OPTIONS] PATH | URL | -
+	
+	
+		docker build github.com/creack/docker-firefox     			##url	
+		
+		docker build -t REPOSITORY_name:TAG_name - < Dockerfile   	##从STDIN导入Dockerfile, ADD只能使用URL
+		
+		docker build -t REPOSITORY_name:TAG_name .   				##使用当前目录下的Dockfile,Dockerfile指定的主机路径为相对路径
+		
+	
+	Dockfile命令
+		ENV	<key> <value>	  #环境变量声明
+		FROM <image>          #使用基础镜像
+		COPY <src> <dest>     #复制<src>的目录、文件添加到镜像中的dest
+		ADD <src> <dest>      #与COPY类似
+		RUN <command>         #创建容器，执行命令，命令结束后提交容器为新镜像，新镜像被下一条指令使用
+		CMD	<command>	      #执行命令
+		ENTRYPOINT  <command> #与CMD类似          
+		ONBUILD	<INSTRUCTION> #该镜像被作为FROM引用时执行docker指令
+		EXPOSE  <port> 		  #端口暴露
+		EXPOSE  <container_port>:<host_port>   #端口映射 
+
+		
+		
+docker pull
+docker push
+
+docker export <container>
+docker import
+##Export a container's filesystem as a tar archive
+
+
+docker save <image>
+docker load
+#Save one or more images to a tar archive (streamed to STDOUT by default)
+
+##查看生成的容器
+docker ps
+
+
+数据卷volume
+将宿主机的文件、文件夹挂载到容器
+
+docker run
+	-v vol_name:/container_dir		#指定名字创建volume		创建目录在/var/lib/docker/volumes
+	-v /container_dir				#随机生成名字、ID 		
+	-v /hostdir:/container_dir      #以主机指定目录挂载到容器指定目录
+
+docker volume inspect vol_name		#以名字查看volume的信息
+	
+	
+也可以使用Dockerfile创建volume
+VOLUME /data					#挂载到容器的/data   不能指定主机的目录
+#VOLUME ["/data1","/data2"]		#挂载两个目录
+
+
+网络驱动
+bridge
+host
+overlay
+remote
+null
+
+docker run -net #选择络驱动
+
+
+docker network ls   ##查看驱动
+
+ip addr show   #在容器中查看网络
+
+
+
+CNM
+container network model
+
+
+沙盒（sandbox）
+端点（endpoint）容器的网络点，类似于网卡？
+网络（network） 一个网络可以包含多个端点
+
+
+
+##bridge演示
+
+
+##会在容器中创建网卡eth0并自动配置ip
+##在宿主机中创建网卡veth
+##通过在宿主机创建的网桥docker0通信 
+##docker daemon启动后自动创建网桥docker0，默认172.17.0.1/16，docker容器都会在其中选择一个未使用的ip
+
+dockerd --fixed-cidr=172.18.0.1/24   ##启动daemon时指定使用的网段，与docker0网桥处于同一网段
+
+docker network create net_name1       							 #默认驱动选择bridge
+docker network create --driver <driver-name> <network-name>      #创建创建一个网络 创建网络时会生成一个虚拟网卡
+
+
+docker network ls                       #查看网络
+docker inspect <network-id>				#查看指定网络详细信息
+
+docekr run -it -name contrain1 --network net_name1 busybox     ##不指定network，则默认为bridge
+docekr run -it -name contrain2 --network net_name2 busybox
+docekr run -it -name contrain3 --network net_name2 busybox
+
+docker network connect net_name2 container1		#新增网络并配置ip以连接这个网络
+
+
+route -n	##查看静态路由
+brctl show  ##查看网桥
+
+
+
+##使用link通信
+
+#环境变量注入(/etc/hosts),传统
+docker run -d --name db training/postgres
+docker run -d -P --name web --link db:webdb tarining/webapp python app.py
+
+	--link <name or id>:alias
+
+
+#DNS实现，新
+docker network create isolated_nw  #创建网络
+docker run --net=isolated_nw -it --name=container1 --link container2:c2 busybox   #创建容器container1，并连接到container2
+docker run --net=isolated_nw -itd --name=container2 busybox   #创建容器container2
+
+
+
+
+docker exec -it <containerName> bash     #启动容器的shell
+
+
+
+
+
+linux network namespace
+
+ip netns add nstest;    		#创建network namespace
+ip netns list;					#增加
+ip netns delete nstest;			#删除
+
+ip netns exec nstest ip addr    #显示nstest namespace中的网卡信息；格式 ip netns exec <network namespace name> <command>
+ip netns exec nstest bash       #启动一个shell
+
+
+ip netns exec nstest ip link set dev lop up		#启动环回设备lo
+ip link add veth-a type veth peer name veth-b   #添加虚拟网卡veth-a veth-b
+ip link set veth-b netns nstest                 #将veth-b网卡添加到nstest
+
+
+ip netns exec nstest ip link    	#查看nstest命令空间的网卡
+
+ip addr add 10.0.0.1/24  dev veth-a #veth-a网卡没有分配，是主机的网卡
+ip link set dev veth-a up	        #启动网卡veth-a
+
+ip addr add 10.0.0.2/24  dev veth-b #veth-b网卡是nstest命名空间下的网卡
+ip link set dev veth-b up	        #启动网卡veth-b
+
+ip route                            #生成路由，在主机中
+ip netns exec netns ip route 		#生成路由，在nstest中
+
+ping 10.0.0.2						#ping,在主机中
+ip netns exec nstest ping 10.0.0.1  #ping,在nstest中
+
+
+
+
+ip netns list命令的信息由下获取
+/var/run/netns
+
+进程的network namespace，不同的net:[XXXXX] 代表不同network namespace
+/proc/$PID/ns
+
+ln -s /proc/$PID/ns/net /var/run/netns/nstest     将进程的network namespace文件链接到/var/run/netns下，即可使用ip netns进行操作
+
+
+
+
+
+原本主机网络
+#网络 10.1.1.0/24
+#eth0 10.1.1.1/24 
+#网关 10.1.1.254/24
+
+启动容器
+
+	docker run -itd --name test1 --net=none ubuntu /bin/bash
+
+创建网桥
+	brctl addbr br0
+	ip link set br0 up
+	#将主机eth0桥接到br0上，并把eth0的ip配置在br0
+	ip addr add  10.1.1.1/24 dev br0;\
+			ip addr del 10.1.1.1/24 dev eth0;\
+			btctl addif br0 eth0;\
+			ip route del default;\
+			ip route add default via 10.1.1.254/24 dev br0
+	
+	pid=$(docker inspect --format '{{.State.Pid}}' test1)   
+	mkdir -p /var/run/netns
+	ln -s /proc/$pid/ns/net /var/run/netns/$pid
+	ip link add veth-a type veth peer name veth-b
+	brctl addif br0 veth-a up  #veth-a连接到网桥
+	ip link set veth-b $pid    #veth-b加入network namespace
+	ip netns exec $pid ip link set dev veth-b eth0
+	ip netns exec $pid ip link set eth0 up	
+	ip netns exec $pid ip addr add 10.1.1.2/24/24 dev eth0   #容器的ip
+	ip netns exec $pid ip route add default via 10.1.1254
+
+pipework(直接使用pipework工具配置网络)
+
+跨主机通信(主机在同一网络)
+1.桥接
+使用两块网卡，一块用于主机通信，一块用于桥接所有容器。所有的容器处于一个二层网络。
+
+2.直接路由
+同一主机的容器在一个二层网络，不同主机的容器通过主机的网卡转发。只需要一块网卡。
+
+
+
+
+
+#跨网络通信
+GRE generic routing encapsulation
+用于实现VPN？
+
+
+
+
+systemd   CoreOS的init进程
+
+
+
+LXC  linux container
+libvirt-lxc
+
+
+
+
+/var/lib/docker
+
+dockerd  
+#1直接启动
+#2使用service docker start启动
+
+配置文件路径
+/etc/docker/daemon.json
+
+
+
+alpine  ##一个简单的基础镜像
+
+
+
+##私有仓库
+
+docker search ip1:port1/centos   #从指定仓库搜索镜像，默认从公共镜像搜索
+
+##import
+##Import the contents from a tarball to create a filesystem image
+##docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+tar cv --files-from /dev/null | docker import - scratch    ##scratch是空镜像
+tar -c centos-7-docker.tar | docker import - <image name>
+docker build - < Dockfile  #使用Dockerfile创建镜像
+docker build - -f <dockerfile name>
+docker build - -f Dockerfile
+
+##export
+##Export a container's filesystem as a tar archive
+##docker export [OPTIONS] CONTAINER
+docker export <container id> > container_filename.tar
+
+
+##load
+##docker load [OPTIONS]
+##Load an image from a tar archive or STDIN
+
+##save
+##docker save [OPTIONS] IMAGE [IMAGE...]
+##Save one or more images to a tar archive (streamed to STDOUT by default)
+docker
+
+
+docker rmi <image id> | <image name>    ##删除镜像
+docker rm <container id>  ##删除容器
+
+docker images ##查看镜像
+
+docker ps -a    ##查看容器
+
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+docker run -it centos7 /bin/sh                       #使用镜像创建新容器并进入shell，退出时会结束容器
+
+	-i   #交互模式
+	-t   #分配一个伪终端(pseudo-TTY)
+	-d   #后台进行方式运行
+	-p 8080:80   			#容器的80映射到主机8080
+	-p 127.0.0.1:8080:80	#端口绑定到127.0.0.1:8080
+	--expose 80 81			##开放一组端口
+	-user user_name  		##使用镜像中指定用户启动容器
+	
+	-v <conteiner path>		##挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
+	-v <host path>:<container pth>   ##将主机的目录挂载到容器的目录
+	
+【 ctl+p ctl+q】退出时不结束容器
+	
+	
+	
+#Attach to a running container
+docker attach [OPTIONS] CONTAINER
+
+
+docker kill
+
+
+##移动文件 主机与容器
+##Copy files/folders between a container and the local filesystem
+##docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+##docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+
+docker cp
+
+
+#启动停止的容器
+docker start
+
+
+#查看docker的信息，网络、volume等
+docker inspect <container id>     
+
+
+
+
+
+##Create a new image from a container's changes
+##docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+
+
+
+
+##Pull an image or a repository from a registry
+##docker pull [OPTIONS] NAME[:TAG|@DIGEST]
+
+docker pull localhost:5000/my-alpine
+
+
+
+##Push an image or a repository to a registry
+##docker push [OPTIONS] NAME[:TAG]
+
+
+##让运行中的容器执行一个命令
+##Run a command in a running container
+##docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+docker exec -it <container id> /bin/sh   #进入运行的容器的shell，退出不影响容器运行
+
+nsenter --target $PID --mount --uts --ipc --net --pid  
+
+##register
+#上传之前需要进行 docker tag
+#docker 容器内服务自启动 
+
+##启动TLS
+
+docker run -d \
+  --restart=always \
+  --name registry \
+  -v `pwd`/certs:/certs \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:80 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  -p 80:80 \
+  registry:2
+
+  
+不启用TLS
+docker run -d -p 5000:5000 --restart always --name registry registry:2  
+  
+  
+
+
+###############################
+##单机使用
+##Dockerfile使用 创建容器
+################################
+
+
+
+
+registry
+curl http://127.0.0.1:5000/v2/_catalog
+
+#使用私有仓库
+#编辑 /etc/docker/daemon.json
+#多个私有仓库，逗号分隔即可
+{
+    "insecure-registries": [
+        "registry:5000"
+    ]
+}
+
+
+
+
+##设置默认使用的仓库
+{
+    "registry-mirrors":["https://xxxx.xxxx.com"]
+}
+
+
+#默认仓库设置
+/etc/containers/registries.conf
+
+/etc/sysconfig/docker
+
+##############容器云#############################
+
+
+flannel  实现docker容器跨主机通信
+
+
+
+
+kubernates
+
+
+
+
+
+
