@@ -93,6 +93,9 @@ docker push localhost:5000/my-alpine
 ##Dockerfile
 docker build -t image_name:tag_name .            #使用当前目录下的Dockerfile文件创建docker镜像
 
-
 tar cv --files-from /dev/null | docker import - scratch    #scrach是专有名字 为空镜像 可以用作其他的基础镜像
+
+docker exec -it <container-id> /bin/bash                   #进入容器 退出不会导致容器关闭
+docker attach <container-id>                               #进入容器 需要使用 ctrl+p ctrl+q 退出，否则容器会关闭
+
 
