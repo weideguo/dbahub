@@ -94,3 +94,5 @@ docker push localhost:5000/my-alpine
 docker build -t image_name:tag_name .            #使用当前目录下的Dockerfile文件创建docker镜像
 
 
+tar cv --files-from /dev/null | docker import - scratch    #scrach是专有名字 为空镜像 可以用作其他的基础镜像
+
