@@ -430,7 +430,8 @@ show privileges     ---查看所有的权限
 mysql.db			---数据库的权限
 
 时区
-set global time_zone="+8:00"      --设置后即影响mysql的时间
+system_time_zone                  --服务器的时区，，默认由操作系统确定，不可以动态修改						  
+set global time_zone="+8:00"      --数据库实例当前的时区，设置后即影响mysql的时间，默认与system_time_zone一致
 set time_zone="+8:00"						  
 
 
