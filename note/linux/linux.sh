@@ -505,7 +505,15 @@ crtl+v 进入列模式
 shift+i 插入
 ESC两次 退出列模式
 
+TAB替换为空格
+~/.vimrc文件写入
+set ts=4 
+set expandtab
 
+对于已保存的文件
+:set ts=4
+:set expandtab
+:%retab!
 
 VI
 使用【Esc键】切换由插入模式进入命令模式（command mode、insert mode）
