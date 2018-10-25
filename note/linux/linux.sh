@@ -1553,6 +1553,16 @@ fuser -m -u /u01            #identify processes using files or sockets  查看�
 umount /dev/sdb1
 extundelete /dev/sdb1 --restore-all
 
+######centos7#########################################################################################################
+firewall-cmd --state  防火墙状态
+
+systemctl start firewalld    #启动
+systemctl stop firewalld     #关闭
+systemctl status firewalld   #查看状态
+systemctl disable firewalld  #开机禁用
+systemctl enable firewalld   #开机启用
+
+
 
 
 ##################安全################################################################################################
