@@ -714,13 +714,15 @@ DELETE FROM ... WHERE ...
 INSERT 
 INSERT ... ON DUPLICATE KEY UPDATE 
 REPLACE
-INSERT INTO T SELECT ... FROM S WHERE ... 
-CREATE TABLE ... SELECT ... 
+INSERT INTO T SELECT ... FROM S WHERE ...    
+CREATE TABLE ... SELECT ...   
 LOCK TABLES 
 
+INSERT ... SELECT 
+MyISAM that employs table-level locks locks all partitions of the target table; InnoDB that employ row-level locking.
 
-
-
+CREATE ... SELECT
+To ensure that the binary log can be used to re-create the original tables, MySQL does not permit concurrent inserts during CREATE TABLE ... SELECT.
 
 
 mysql mem = 
