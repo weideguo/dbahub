@@ -130,6 +130,8 @@ CREATE TABLE t1 (c1 INT PRIMARY KEY) DATA DIRECTORY = '/alternative/directory'; 
 ln -s existingfile newfile			---使用连接重定向数据文件，系统命令，只能对MyISAM的数据文件使用（数据文件[.myd]和索引文件[.myi]，格式文件[.fem]不能使用连接）
 
 
+create temporary table tmp_tablename ...        ---创建临时表，mysql临时表只在当前会话有效，结束会话临时表就被drop。mysql只有会话级临时表，没有事务级临时表。
+
 
 
 
