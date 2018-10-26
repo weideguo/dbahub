@@ -262,6 +262,8 @@ MyISAM
 不支持外键
 内存只加载索引的数据（叶子页和非叶子页），表的数据不加载
 
+If a MyISAM table has no holes in the data file (deleted rows in the middle), an INSERT statement can be executed to add rows to the end of the table at the same time that SELECT statements are reading rows from the table. 
+If there are multiple INSERT statements, they are queued and performed in sequence, concurrently with the SELECT statements. 
 新数据会被附加到数据文件的结尾，如果时常做一些UPDATE，DELETE操作之后，数据文件就不再是连续的，就是数据文件里出现了很多洞洞。
 concurrent_insert=0时，不允许并发插入功能。 
 concurrent_insert=1时，允许对没有洞洞的表使用并发插入，新数据位于数据文件结尾（缺省）。 
