@@ -621,12 +621,23 @@ service vsftpd stop   	##结束进程
 crontab -l           	##让使用者在固定时间或固定间隔执行程序之用
 						## -l 查看 、-e 编辑
 /var/log/cron			##crontab日志
-						
+
+##重启crond
+service syslog stop                     ##系统的日志守护进程
+service rsyslog restart                 ##sylog的增强版本，增加网络传输，远端的日志可以传输到本地
+service syslog start
+service crond restart
+
 
 logger 					##写日志进入/var/log/messages					
-						
-						
-						
+
+##linux日志
+/var/log目录下
+
+cat /etc/syslog.conf    #查看各个日志的对应路径
+
+
+											
 pidof ${command}		##查看当前命令的pid			
 
 kill -SIGUSR1 ${pid}	##将pid对应命令的日志进行分割					
