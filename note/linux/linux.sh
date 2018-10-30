@@ -362,8 +362,8 @@ wget  ##通过url下载
 scp local_file remote_username@remote_ip:remote_filefolder   ##从本地复制到远端，反过来即为远端复制到本地
 
 scp -oPort=3600 -r ...
--oPort  ##指定使用的端口
--r      ##复制目录
+-oPort -P       ##指定使用的端口
+-r              ##复制目录
 -C		##压缩传输
 
 
