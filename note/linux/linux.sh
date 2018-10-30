@@ -324,6 +324,16 @@ date +%s             #显示时间戳
 date "+%Y-%m-%d %H:%M:%S"  #显示时间
 date -R                    #显示时区
 
+#查看时区
+ll /etc/timezone
+
+
+#修改时区
+#操作后直接生效 不需要重启
+rm -rf /etc/timezone
+ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/timezone   #必须要确保文件存在
+
+
 cat ctl | grep -v ^- | grep -v ^$  ###去除【-】开头的行及去除空行
 ## ^正则表达式中字符串的开始 $正则表达式中字符串的结束
 
