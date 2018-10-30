@@ -333,6 +333,8 @@ ll /etc/timezone
 rm -rf /etc/timezone
 ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/timezone   #必须要确保文件存在
 
+export TZ='Asia/Shanghai'                               #修改环境变量也可以修改参数 如果要持久可以写入profile文件
+
 
 cat ctl | grep -v ^- | grep -v ^$  ###去除【-】开头的行及去除空行
 ## ^正则表达式中字符串的开始 $正则表达式中字符串的结束
