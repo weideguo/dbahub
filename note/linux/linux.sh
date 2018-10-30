@@ -157,14 +157,16 @@ DISPLAY hostname:displaynumber.screennumber  ##DISPLAY参数设置，使用xmana
 
 xclock   ###验证display参数
 
+环境变量
 系统参数
 存储位置为用户的跟目录,如weideguo用户为 【/home/weideugo/.bash_profile】
 使用【source .bash_profile】在更改后立即生效
 
-/home/weideugo/.bashrc   ###每次打开新shell都自动生效
+/home/weideugo/.bashrc   ###每次打开新会话都自动生效
 
 全局系统参数
 /etc/profile
+/etc/bashrc
 
 selinux
 配置文件/etc/sysconfig/selinux
