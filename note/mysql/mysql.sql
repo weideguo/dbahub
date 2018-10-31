@@ -1093,8 +1093,8 @@ mysqlbinlog  log_name    ----查看二进制日志的内容
 
 	--start-position
 	--stop-position
-	--base64-output=decode-rows        ##导出row格式
-	-v    							   ##导出成sql格式
+	--base64-output=decode-rows        ##导出row格式   只能用于查看，恢复的时候不要加这个参数
+	-v    				   ##导出成sql格式 
 	
 --从远端读取二进制日志并保存
 mysqlbinlog -u root -p -P 3306 -h host_name -R -r save_as_text_file_name remote_binlog_name
