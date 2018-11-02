@@ -630,14 +630,15 @@ Record Locks
 	
 Gap Locks
 	锁索引记录间隙。对隔离级别为RR以上的才有效。
-	select * from demo where id>10 and id<100 for update;  
+	SELECT c1 FROM t WHERE c1 BETWEEN 10 and 20 FOR UPDATE; 
 	--prevents other transactions from inserting a value of 15 into column demo.id, 
 	--whether or not there was already any such value in the column, 
 	--because the gaps between all existing values in the range are locked.
 
 	--间隙锁可以没有锁冲突，可以同时存在排他锁
 	
-	(Gap locking is not needed for statements that lock rows using a unique index to search for a unique row？)
+	(Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
+	 This does not include the case that the search condition includes only some columns of a multiple-column unique index; in that case, gap locking does occur.)
 	
 Next-Key Locks
 	record locks和gap locks的叠加
