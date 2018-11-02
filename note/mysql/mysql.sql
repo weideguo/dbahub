@@ -655,7 +655,10 @@ a next-key lock is an index-record lock plus a gap lock on the gap preceding the
 因为innodb对于非唯一索引锁的方式是通过索引上连续存在的键实现的？
 如索引存在（94，96，102，200）  
 则>100要锁住（96，+∞）；
-如果innodb_locks_unsafe_for_binlog=1，则导致锁是怎样？会有什么问题？
+如果innodb_locks_unsafe_for_binlog=1，则导致锁是怎样？存在事务丢失，部分操作没有持久化。
+session A: delete from a where a=400;
+session B: insert from a where a=400;
+
 						  
 Insert Intention Locks
 	An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
