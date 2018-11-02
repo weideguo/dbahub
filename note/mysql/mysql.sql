@@ -648,11 +648,12 @@ Next-Key Locks
 		insert into test1 values(1),(5),(7),(15),(19);
 		
 		session1
-		delete from test1 where id=7;   ----将锁住[5,15)的区间
+		delete from test1 where id=7;   ----将锁住[5,15)的区间	
 	
-	
-
-
+it sets shared or exclusive locks on the index records it encounters.row-level locks are actually index-record locks.
+a next-key lock is an index-record lock plus a gap lock on the gap preceding the index record. 
+						  
+						  
 Insert Intention Locks
 	An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
 
