@@ -140,11 +140,16 @@ prepare prod from "insert into example values(?,?)";	---创建预定义语句,�
 set @a='xxx'
 set @b='yyy'
 execute prod using @a,@b;								---使用预定义
-set @c='ccc'
-execute prod using @a,@c;
 deallocate prepare prod;								---释放预定义语句
 
-
+					    
+SET @c1 = "XYZ";
+set @c2 ="abc";
+SET @strsql = "select @c1 from t where column2=@c2;";
+PREPARE stmt FROM @strsql;
+EXECUTE stmt;					    
+					    
+					    				    
 create function func_name(arg1 int,arg2 varchar(10)...)
 returns varchar(10)
 begin
