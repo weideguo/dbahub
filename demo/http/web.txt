@@ -16,16 +16,3 @@ BaseHTTPServer ##http服务模块
 SimpleHTTPServer
 
 
-
-
-#django
-django-admin --help
-django-admin startproject project_name
-python manage.py runserver 0.0.0.0:80
-
-
-
-
-
-
-
