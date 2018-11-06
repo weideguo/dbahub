@@ -145,7 +145,7 @@ deallocate prepare prod;								---释放预定义语句
 					    
 SET @c1 = "XYZ";
 set @c2 ="abc";
-SET @strsql = "select @c1 from t where column2=@c2;";
+SET @strsql = concat("select ",@c1," from t where column2=",@c2);           --实现拼接sql，之后再执行
 PREPARE stmt FROM @strsql;
 EXECUTE stmt;					    
 					    
