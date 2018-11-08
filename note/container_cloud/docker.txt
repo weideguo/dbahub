@@ -210,7 +210,7 @@ docker run -it centos7 /bin/sh                                                  
 	
 	-v <conteiner path>		##挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
 	-v <host path>:<container pth>   ##将主机的目录挂载到容器的目录
-	
+	--env XXX=YYY                    ##可以有多个--env
     
 -d 运行时 紧跟的命令不能发生退出 否则容器会停止    
     
