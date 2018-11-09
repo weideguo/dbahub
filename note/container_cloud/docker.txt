@@ -345,17 +345,17 @@ docker network connect net_name2 container1		                          #新增�
 处在同一网络时可以直接使用其他容器的名称连接 如 ping contrain2
 
 
+#DNS实现，新
+docker network create isolated_nw                                                 #创建网络
+docker run --net=isolated_nw -it --name=container1 --link container2:c2 /bin/bash #创建容器container1，并连接到container2  可以使用别名连接
+docker run --net=isolated_nw -it --name=container2 /bin/bash                      #创建容器container2
+
+
 ##使用link通信
-#环境变量注入(/etc/hosts),传统
+#环境变量注入(/etc/hosts),传统（不再推荐使用）
 docker run -d --name db training/postgres
 docker run -d -P --name web --link db:webdb webapp python app.py         #--link <name or id>:alias  连接时使用别名即可连接 不用指定ip
 
-
-
-#DNS实现，新
-docker network create isolated_nw                                                 #创建网络
-docker run --net=isolated_nw -it --name=container1 --link container2:c2 /bin/bash #创建容器container1，并连接到container2
-docker run --net=isolated_nw -it --name=container2 /bin/bash                      #创建容器container2
 
 
 
