@@ -340,14 +340,15 @@ docekr run -it --name contrain1 --network net_name1 /bin/bash                   
 docekr run -it --name contrain2 --network net_name2 /bin/bash                    
 docekr run -it --name contrain3 --network net_name2 /bin/bash                    
                                                                                  
-docker network connect net_name2 container1		                                 #新增网络并配置ip以连接这个网络
+docker network connect net_name2 container1		                          #新增网络并配置ip以连接这个网络
 
+处在同一网络时可以直接使用其他容器的名称连接 如 ping contrain2
 
 
 ##使用link通信
 #环境变量注入(/etc/hosts),传统
 docker run -d --name db training/postgres
-docker run -d -P --name web --link db:webdb webapp python app.py         #--link <name or id>:alias
+docker run -d -P --name web --link db:webdb webapp python app.py         #--link <name or id>:alias  连接时使用别名即可连接 不用指定ip
 
 
 
