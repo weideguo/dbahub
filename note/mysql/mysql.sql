@@ -1073,9 +1073,26 @@ expire_logs_days	---保存时间（天）
 binlog-ignore-db=db1[,db2]    ---指定库不使用binlog
 binlog-do-db=db1[,db2]		  ---指定库使用binlog
 
-replicate-ignore-db			  ---从库中设置不复制的库
-replicate-do-db1			  ---从库中设置复制的库
-
+--从库设置不复制，需要在启动命令行中添加					  
+replicate-ignore-db			  
+replicate-do-db1			  
+replicate-wild-do-table                   --可以使用通配符
+replicate-wild-ignore			  --		  
+					  
+--mysql5.7
+--可以实现不重启设置过滤以及库名转换
+CHANGE REPLICATION FILTER filte
+filter:
+    REPLICATE_DO_DB = (db_list)
+  | REPLICATE_IGNORE_DB = (db_list)
+  | REPLICATE_DO_TABLE = (tbl_list)
+  | REPLICATE_IGNORE_TABLE = (tbl_list)
+  | REPLICATE_WILD_DO_TABLE = (wild_tbl_list)
+  | REPLICATE_WILD_IGNORE_TABLE = (wild_tbl_list)
+  | REPLICATE_REWRITE_DB = (db_pair_list)					  
+					  
+					  
+					  
 --强制写日志
 flush logs;
 flush binary logs;
