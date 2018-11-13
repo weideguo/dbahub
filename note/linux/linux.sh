@@ -624,6 +624,8 @@ sys 	底层硬件信息
 var 	保存经常变化的信息（如log，保存的是日志）
 tmp 	临时目录（系统会自动删除）
 
+/etc/cron.daily/tmpwatch  tmp目录清空机制centos6以及以下
+
 
 进程管理
 ps -ef | grep java   	##查看有关与java的进程
