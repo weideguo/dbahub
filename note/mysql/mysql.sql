@@ -132,6 +132,7 @@ ln -s existingfile newfile			---使用连接重定向数据文件，系统命令
 
 create temporary table tmp_tablename ...        ---创建临时表，mysql临时表只在当前会话有效，结束会话临时表就被drop。mysql只有会话级临时表，没有事务级临时表。
 
+临时表使用tmp参数指定的目录存放
 
 
 
