@@ -61,7 +61,10 @@ show full processlist;
 mysqladmin -u roo -p processlist
 select id from information_schema.processlist where user='root'; 
 
-kill id   ---终止连接（在mysql中执行），information_schema.processlist的id
+kill id   		---终止连接（在mysql中执行），information_schema.processlist的id
+kill connection id	---终止连接 跟 kill id 一致
+kill query id		---终止查询，连接依旧保存
+
 
 
 show variable like 'wait_timeout'               ---空闲连接的在被关闭前的秒
