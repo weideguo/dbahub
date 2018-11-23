@@ -1,1 +1,37 @@
+安装etcd
 
+###与zookeeper类似
+###也可以使用集群
+
+操作，可以使用url的API进行操作，也可以使用etcdctl进行操作
+###插入
+curl http://${etcd_ip_address}:${etcd_port}/v2/keys/${key_name} -XPUT -d value=="${key_value}"
+
+${etcd_ip_address}		ip地址
+${etcd_port}			端口
+${key_name} 			key为目录结构的层次
+${key_value}			value为字符串
+
+
+CAS : compare and set
+可用于PUT、DELETE
+
+preValue	检查key之前的值是否与客户端提供的一致
+preIndex	检查key之前的modifiedIndex与客户端提供的是否一致
+preExist	检查key是否存在
+
+
+如果${key_name}的值为${key_old_value}，则更改为${key_new_value}：
+cur PUT http://${etcd_ip_address}:${etcd_port}/v2/keys/${key_name} preValue==${key_old_value} value==${key_new_value}
+
+
+###获取 
+###删除 DELETE
+curl http://${etcd_ip_address}:${etcd_port}/v2/keys/${key_name}
+
+
+
+etcdctl set /key_name "key_value"
+etcdctl get /key_name 
+etcdctl mk /key_name "key_value"	
+etcdctl update /key_name "key_value"
