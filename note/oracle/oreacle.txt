@@ -318,7 +318,7 @@ alter database rename file  'xxxx' to 'yyyy';  --需要在在模式
 alter database clear logfile group 4; 
 ALTER DATABASE CLEAR UNARCHIVED LOGFILE GROUP 5;  ----清空避免归档
 
----分析日志
+---分析归档日志
 1.设置数据字典导出路径
 alter system set utl_file_dir='/home/oracle' scope=spfile;
 execute dbms_logmnr_d.build(dictionary_filename=>'logminer_dict.ora',dictionary_location=>'/home/orcle');
