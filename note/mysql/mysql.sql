@@ -8,6 +8,7 @@ mysql --prompt="what_to_prompt"
 \\p		端口
 \\d		数据库名
 \\r		时间
+quit  ---退出客户端
 
 
 help command_name;  ----查询命令的使用格式
@@ -39,12 +40,6 @@ FLUSH LOGS;			----closes and reopens all log files
 	flush RELAY logs;
 	flush SLOW logs;
 
-
-	
-	
-	
-
-quit  ---退出客户端
 
 
 show open status
@@ -80,7 +75,6 @@ show status like 'queries'
 QPS=(Q1-Q2)/time
 
 questions也可以做一定的衡量，不包含存储过程执行的语句
-
 
 
 show status like 'Com_commit'
