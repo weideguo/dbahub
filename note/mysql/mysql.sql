@@ -215,6 +215,10 @@ innoDB 存储引擎
 	1 中止新的连接，关闭会话，将提交的数据写入数据文件，未提交的事务回滚。  对应oracle: shutdown immediate
 	2 中止新的连接，关闭会话，忽略当前所有操作。重启需要执行故障恢复，重新读取日志文件，回滚未提交的事务等。 	对应oracle: shutdown abort
 	
+	sync_binlog=1 
+	innodb_flush_log_at_trx_commit=1
+	双1设置增强可用性
+	
 	
 	可移植表空间
 		--启用多重表空间
@@ -278,6 +282,26 @@ innodb
 
 索引组织表
 二级索引的叶子节点记录主键，由此查询clustr索引（即主键索引，innodb由主键组织存放）实现回表查询。
+
+
+
+checkpoint   --将内存的数据写回磁盘，从而实现跟日志的记录一致
+
+innodb 采用 Fuzzy Checkpoint
+
+During crash recovery, InnoDB looks for a checkpoint label written to the log files. 
+It knows that all modifications to the database before the label are present in the disk image of the database. 
+Then InnoDB scans the log files forward from the checkpoint, applying the logged modifications to the database.
+
+1.MasterThread Checkpoint
+2.FLUSH_LRU_LIST Checkpoint
+3.Async/Sync Flush Checkpoint      --redo日志不够的时候
+4.Dirty Page too much Checkpoint
+
+
+写入日志的LSN:redo_lsn
+刷新回磁盘的最新页LSN:checkpoint_lsn
+
 
 
 索引
