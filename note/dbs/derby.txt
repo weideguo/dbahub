@@ -1,0 +1,111 @@
+derby 
+由java写的RDBMS
+
+多个连接
+事务
+行级锁
+存储过程 函数
+
+
+
+#启动  默认端口1527
+bin/NetworkServerControl --help  
+bin/NetworkServerControl start 
+
+bin/startNetworkServer 
+
+
+
+#进入命令行
+bin/ij
+
+--连接
+connect 'jdbc:derby:/path_to_derby/derby;create=True';
+connect 'jdbc:derby://localhost:1527/dbname;create=true' ;      
+
+
+
+---权限
+
+          
+connect 'jdbc:derby:testdb;create=true;user=tquist';            --初次连接
+
+call SYSCS_UTIL.SYSCS_CREATE_USER( 'tquist', 'tquist' );        --创建账号
+
+connect 'jdbc:derby:testdb;user=tquist;password=tquist';        --使用账号密码连接
+
+grant select on tb_name to thardy;                              --授权
+
+
+
+
+
+help; 
+show tables;     --查看所有表
+
+默认schema为APP，可以自行创建schema
+
+
+
+
+
+隔离级别
+SERIALIZABLE (RR)
+REPEATABLE (RS)
+READ COMMITTED (CS)
+READ UNCOMMITTED (UR) 
+
+
+########################################################################################################################
+备份
+
+Roll-forward recovery    --可以依赖前滚日志实现恢复
+
+
+
+call SYSCS_UTIL.SYSCS_FREEZE_DATABASE();      --冻结所有dml操作
+                                              --调用系统命令备份数据目录实现备份
+call SYSCS_UTIL.SYSCS_UNFREEZE_DATABASE();
+
+-----------------------------------------------------------------------
+
+CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE('c:/mybackups/2012-04-01')
+CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE_NOWAIT()
+CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE()            --启用归档日志备份
+CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE_NOWAIT()
+
+
+
+SYSCS_UTIL.SYSCS_DISABLE_LOG_ARCHIVE_MODE                                      --结束归档
+                                                                               
+                                                                               
+
+--demo                                                                               
+CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE
+('/backup', 0);                                                                --备份
+                                                                               
+connect 'jdbc:derby:wombat;rollForwardRecoveryFrom=/backup/wombat;             
+logDevice=/databases/brokenwombat';                                            --恢复
+
+
+
+
+#调用函数
+select SYSCS_UTIL.SYSCS_CHECK_TABLE('APP', 'T') from SYSIBM.SYSDUMMY1;
+values SYSCS_UTIL.SYSCS_CHECK_TABLE('APP', 'T');
+
+
+
+--主从
+connect "jdbc:derby:wombat;startSlave=true"                                --创建从  slaveHost=hostname slavePort=portValue 
+connect "jdbc:derby:wombat;startMaster=true;slaveHost=myremotesystem"      --创建主
+
+
+jdbc:derby:wombat;stopMaster=true           --停止主从
+jdbc:derby:wombat;failover=true             --强制切换
+
+
+
+
+call SYSCS_UTIL.SYSCS_CHECKPOINT_DATABASE();                  --进行checkpoint操作将所有数据写入磁盘
+
