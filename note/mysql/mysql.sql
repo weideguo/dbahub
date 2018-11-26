@@ -333,9 +333,8 @@ linux
 		system {sys_command}    ----{sys_command}为系统命令
 		system clear   ---清屏 
 
-mysql命令
-	mysql -u root -p     
-	【-h hostname -P port_num】 --tcp连接
+mysql命令	   
+	【-h hostname -P port_num】 --tcp连接  mysql -u root -p  
 	【-S socket_file】          --socket文件连接 等同于tcp连接中的localhost形式登录
 	多个账号规则匹配时，以最精确配备优先。如以sock文件连接时，以localhost优先，其次%，最后127.0.0.1					  
 						  
