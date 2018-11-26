@@ -298,6 +298,8 @@ Then InnoDB scans the log files forward from the checkpoint, applying the logged
 3.Async/Sync Flush Checkpoint      --redo日志不够的时候
 4.Dirty Page too much Checkpoint
 
+Sharp Checkpoint   --关闭数据库的时候
+
 
 写入日志的LSN:redo_lsn
 刷新回磁盘的最新页LSN:checkpoint_lsn
