@@ -319,26 +319,27 @@ hash索引
 	Only whole keys can be used to search for a row
 	
 	
-	
-	
-	
 windows下
 	启动mysql服务
 		运行mysqld命令，命令位于bin目录下  mysqld 
 	关闭mysql
 		mysqladmin -u root -p shutdowmn ---root可以为其他有关闭权限的mysql用户
-	登录mysql
-		mysql -u root -p     
-		【-h hostname -P port_num】---指定服务器及端口号
-		【-S socket_file】  ---指定socket文件  
+	
 linux
 	启动mysql服务
 		mysqld或mysqld_safe或mysqld_multi
-		mysqld_safe --defaults-file=/my.cnf   ----指定配置文件的位置，也可以使用【mysqld】命令启动
-	运行系统命令
+		mysqld_safe --defaults-file=/etc/my.cnf   ----指定配置文件的位置，是【mysqld】的脚本封装，可以做到自动拉起，更安全
+	mysql命令行中运行系统命令
 		system {sys_command}    ----{sys_command}为系统命令
 		system clear   ---清屏 
 
+mysql命令
+	mysql -u root -p     
+	【-h hostname -P port_num】 --tcp连接
+	【-S socket_file】          --socket文件连接 等同于tcp连接中的localhost形式登录
+	多个账号规则匹配时，以最精确配备优先。如以sock文件连接时，以localhost优先，其次%，最后127.0.0.1					  
+						  
+						  
 mysqld --ship-grant-tables     -----安全模式启动  可用于在忘记密码时进行修改
 	
 mysqld_multi --defualts-extra-file=my.cnf start 1,2,3
