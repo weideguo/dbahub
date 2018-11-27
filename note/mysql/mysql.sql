@@ -284,7 +284,6 @@ innodb
 二级索引的叶子节点记录主键，由此查询clustr索引（即主键索引，innodb由主键组织存放）实现回表查询。
 
 
-
 checkpoint   --将内存的数据写回磁盘，从而实现跟日志的记录一致
 
 innodb 采用 Fuzzy Checkpoint
@@ -304,6 +303,23 @@ Sharp Checkpoint   --关闭数据库的时候
 写入日志的LSN:redo_lsn
 刷新回磁盘的最新页LSN:checkpoint_lsn
 
+
+Innodb的一条事务日志共经历4个阶段：
+
+创建阶段：事务创建一条日志
+日志刷盘：日志写入到磁盘上的日志文件
+数据刷盘：日志对应的脏页数据写入到磁盘上的数据文件
+写CKP：   日志被当作Checkpoint写入日志文件
+
+ 
+对应这4个阶段，系统记录了4个日志相关的信息：
+
+Log sequence number（LSN1）：当前系统LSN最大值，新的事务日志LSN将在此基础上生成（LSN1+新日志的大小）
+Log flushed up to  （LSN2）：当前已经写入日志文件的LSN
+Pages flushed up to（LSN3）：当前最旧的脏页数据对应的LSN，写Checkpoint的时候直接将此LSN写入到日志文件
+Last checkpoint at （LSN4）：当前已经写入Checkpoint的LSN
+
+LSN1>=LSN2>=LSN3>=LSN4
 
 
 索引
