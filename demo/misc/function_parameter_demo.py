@@ -11,7 +11,7 @@ def f2(**a):
 '''
 
 f1(p1,p2)
-f2(v1=p1,v2=p2)
+f2(p1=v1,p2=v2)
 
 
 def func1(arg1,arg2=value2,...)     ##提供默认值             定义: f(x,y=2) 调用：f(12) / f(12,11)
