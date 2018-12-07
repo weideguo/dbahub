@@ -5,8 +5,9 @@ pyqrcode
 pypng
 """
 
-string="http://httpbin.org"
-qr=pyqrcode.create(string)
+a="http://httpbin.org"
+a=u"中文"
+qr=pyqrcode.create(a)
 file_path="./test.png"
 qr.png(file_path,scale=5)      			#导出png
-print(qr.terminal()) 	  #终端打印
+print(qr.terminal()) 	              #终端打印
