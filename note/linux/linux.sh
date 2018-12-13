@@ -434,7 +434,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到�
 ##如果生成密钥对时设置密码，则远程连接需要输入该密码  
 ##可以使用ssh-agent保存该密码 实现免密登录
 ssh-agent bash          #启动ssh-agent
-ssh-add ~/.ssh/id_rsa   #将密钥文件添加到ssh-agent  #需要输入生成密钥对时的密码 必须在同一个会话中操作？
+ssh-add ~/.ssh/id_rsa   #将密钥文件添加到ssh-agent  #需要输入生成密钥对时的密码 
 
 ssh -A host2            #免密登录host2 host2必须先设置~/.ssh/authorized_keys
 ssh host2              
@@ -442,8 +442,8 @@ ssh host2
 ssh-add -l                        #查看
 ssh-add -d /root/.ssh/id_rsa      #移除ssh-agent中的指定密钥文件
 
-ssh-agent -k             #关闭ssh-agent   必须在同一个会话中操作？
-ssh-agent 重启后信息丢失
+ssh-agent -k             #关闭ssh-agent   
+ssh-agent 重启后信息丢失 只能对单一会话生效
 
 
 重启ssh
