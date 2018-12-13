@@ -417,19 +417,25 @@ rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_hos
 	
 
 	
-
-
-
-
-
-	
 ssh (secure shell)   	###远程登录
 ssh信息保存在/home/user_name目录下.ssh隐藏文件夹内
 
-ssh-keygen	-t rsa -b 2048			###生成ssh密钥
-ssh-copy-id	-i /home/user_name/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到远程主机
-###远程主机生成一个在/home/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
+
+#host1免密登录host2
+#host1
+ssh-keygen -t rsa -b 2048			###生成ssh密钥对 ~/.ssh/id_rsa.pub ~/.ssh/id_rsa
+#host2
+ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到远程主机  可以直接复制host1的 ~/.ssh/id_rsa.pub 到host2的 ~/.ssh/authorized_keys
+
+###远程主机生成一个在~/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
 ##设置完毕即可由本地使用私钥无密码登陆到远程主机
+
+
+ssh-agent
+ssh-add
+
+
+
 
 重启ssh
 service sshd restart
