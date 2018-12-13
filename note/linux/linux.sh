@@ -428,12 +428,19 @@ ssh-keygen -t rsa -b 2048			###生成ssh密钥对 ~/.ssh/id_rsa.pub ~/.ssh/id_rs
 ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到远程主机  可以直接复制host1的 ~/.ssh/id_rsa.pub 到host2的 ~/.ssh/authorized_keys
 
 ###远程主机生成一个在~/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
-##设置完毕即可由本地使用私钥无密码登陆到远程主机
-##如果生成密钥对时设置密码，则远程连接是需要输入该密码
+##设置完毕即可由本地使用私钥无密码登陆到远程主机 如果生成密钥对时没有设置密码
 
 
-ssh-agent
-ssh-add
+##如果生成密钥对时设置密码，则远程连接需要输入该密码  
+##可以使用ssh-agent保存该密码 实现免密登录
+ssh-agent               #启动ssh-agent
+ssh-add ~/.ssh/id_rsa   #将密钥文件添加到ssh-agent  #需要输入生成密钥对时的密码
+
+ssh -A host2            #免密登录host2 host2必须先设置~/.ssh/authorized_keys
+ssh host2              
+
+ssh-add -l                        #查看
+ssh-add -d /root/.ssh/id_rsa      #移除ssh-agent中的指定密钥文件
 
 
 
