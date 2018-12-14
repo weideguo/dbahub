@@ -1,6 +1,6 @@
 ##安装
-yum install master
-yum install minion
+yum install salt-master
+yum install salt-minion
 
 
 /etc/salt/minion   #修改连接的master
