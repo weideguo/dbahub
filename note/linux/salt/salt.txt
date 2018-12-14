@@ -83,14 +83,16 @@ minion11     minion12
 
 
 ##state
-##### cat /srv/salt/nettools.sls ###########
+#cat /srv/salt/nettools.sls
 install_network_packages:        ###唯一即可
   pkg.installed:                 ##function
     - pkgs:                      ##参数
       - curl
 
-##################################
-{'install_network_packages': {'pkg.installed': [{'pkgs': ['curl']}]}}
+#########################################################
+salt 'minion1' state.apply nettools   
+
+
 ##################################
 include:                ##实现引用
   - myslstest           ##引用myslstest.sls
@@ -99,12 +101,9 @@ include:                ##实现引用
 
 
 
-salt 'minion1' state.apply nettools
 
 
-
-##### cat /srv/salt/top.sls #################
-
+# cat /srv/salt/top.sls 
 base:
   '*':
     - common            ##对所有其他引用 common.sls
@@ -116,41 +115,53 @@ base:
 
 salt '*' state.apply          ##使用top.sls
 
-
-
-
 ################################################################
-##pillar
-#cd /srv/pillar                ##pillar默认路径，可以由master的配置文件修改
-
-####cat top.sls
-base:
-  '*':
-    - pillar_demo
-    
-#cat pillar_demo.sls
-editor: vim
-
+##pillar    可以实现变量替换  变量值可以写在pillar文件或者在执行时直接赋值
 
 salt '*' saltutil.refresh_pillar    ##刷新
 salt '*' pillar.items               ##列出pillar值
 
 
+#cat /srv/pillar/op.sls           #pillar默认路径，可以由master的配置文件修改 
+base:
+  '*':
+    - pillar_demo
+    
+#cat pillar_demo.sls
+myeditor: vim                         #设置变量myedit的值
+
 
 #cat /srv/salt/pillar_test.sls 
 install editor:
   pkg.installed:
-    - name: {{ pillar['editor'] }}
+    - name: {{ pillar['myeditor'] }}        #在sls文件中使用变量
     
 ##################################################################
 
+salt '*' state.apply pillar_test                                ##使用文件的赋值进行变量替换
+salt '*' state.apply pillar_test pillar='{"myeditore": "vi}'    ##直接通过命令行指定pillar值
 
 
 
-salt '192.168.59.128' grains.items     ##获取机器的环境参数
 
 
-#####sls文件中使用##################################
+#cat /srv/salt/pillar_test.sls    
+cmd-test:
+  cmd.run:
+    - names:
+      - touch /tmp/cmdweewjgtest.txt
+      - touch -f /tmp/{{ pillar['editor'] }}    
+    
+#cat /srv/salt/pillar_test.sls 
+cmd_test:
+  cmd.run:
+    - name: touch -f /tmp/{{ pillar['editor'] }}
+    - onlyif: touch -f /tmp/{{ pillar['editor'] }}         #执行成功时执行后面
+    - unless: touch -f /tmp/{{ pillar['editor'] }}         #执行失败时执行后面
+
+
+
+#sls文件中使用判断语句
 {% if grains['os_family'] == 'RedHat' %}
 apache: httpd
 git: git
@@ -159,10 +170,6 @@ apache: apache2
 git: git-core
 {% endif %}
 ####################################################
-salt '*' state.apply ftpsync pillar='{"ftpusername": "test", "ftppassword": "0ydyfww3giq8"}'    ##直接通过命令行指定pillar值
-
-
-
 
 
 ##############################################################################
@@ -181,6 +188,6 @@ copy some files to the web server:
 ###############################################################################
 
 
-
+salt '192.168.59.128' grains.items     ##获取机器的环境参数
 
 
