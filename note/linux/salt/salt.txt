@@ -139,7 +139,7 @@ install editor:
 ##################################################################
 
 salt '*' state.apply pillar_test                                ##使用文件的赋值进行变量替换
-salt '*' state.apply pillar_test pillar='{"myeditore": "vi}'    ##直接通过命令行指定pillar值
+salt '*' state.apply pillar_test pillar='{"myeditore": "vi"}'    ##直接通过命令行指定pillar值
 
 
 
