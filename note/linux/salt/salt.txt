@@ -122,7 +122,7 @@ salt '*' saltutil.refresh_pillar    ##刷新
 salt '*' pillar.items               ##列出pillar值
 
 
-#cat /srv/pillar/op.sls           #pillar默认路径，可以由master的配置文件修改 
+#cat /srv/pillar/top.sls           #pillar默认路径，可以由master的配置文件修改 
 base:
   '*':
     - pillar_demo
