@@ -4,7 +4,7 @@
 """
 TOTP  Time-based One-time Password Algorithm 
 is an extension of the HMAC-based OneTime Password algorithm HOTP to support a time based moving factor
-HMAC -Hash-based Message Authentication Code
+HMAC  Hash-based Message Authentication Code
 
 
 HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))
