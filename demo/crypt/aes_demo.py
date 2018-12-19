@@ -1,7 +1,9 @@
 from Crypto.Cipher import AES
 import base64
 
-
+"""
+Advanced Encryption Standard
+"""
 
 key="qwertyuiopasdfgh"    #加密时使用的key，只能是长度16,24和32的字符串 #大小写敏感
 
