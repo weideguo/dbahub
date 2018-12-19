@@ -3,6 +3,7 @@ import base64
 
 """
 Advanced Encryption Standard
+对称加密算法
 """
 
 key="qwertyuiopasdfgh"    #加密时使用的key，只能是长度16字节（16*8=128位）,24（24*8=192位）和32（32*8=256位）的字符串 #大小写敏感
