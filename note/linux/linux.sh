@@ -214,6 +214,10 @@ chgrp group_name file_name  ###修改文件所属组
 chmod -R 774 /var/www/  ###更改目录及目录下所有文件的权限
 id -a user ###查看user所属的组
 usermod    ##修改用户的信息，如修改所属组、home文件、密码、uid
+usermod -a -G new_group username  #添加从组
+usermod -G "" username            #移除所有从组
+usermod -g primary_group username #修改主组
+
 userdel user_name ##删除用户   (加 -r 删除用户目录）
 /etc/passwd  ##保存用户信息
 /etc/shadow  ##保存用户密码
