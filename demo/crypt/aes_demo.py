@@ -17,7 +17,7 @@ def aes_encrypt(data,key):
     return result
 
 def aes_decrypt(en_data,key):
-    unpad = lambda s : s[0:-ord(s[-1])]
+    unpad = lambda s : s[0:-ord(s[-1])]     #ord 8进制对应的ascii码
     cipher = AES.new(key)
     result2 = base64.b64decode(en_data)
     decrypted = unpad(cipher.decrypt(result2))
