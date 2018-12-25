@@ -45,7 +45,7 @@ def my_md5(file=None,str=None,afile=None):
         return None
       
 
-if __name__="__main__":
+if __name__=="__main__":
       
     hash_bytestr_iter(file_block_iter("/root/ansible-2.7.4.zip"),hashlib.md5())  
        
