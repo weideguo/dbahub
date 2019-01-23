@@ -30,3 +30,16 @@ pip show MySQL-python                                                     #查�
 pip安装
 wget https://bootstrap.pypa.io/2.6/get-pip.py  
 python get-pip.py  
+
+
+pip install -i <mirror> --trusted-host <mirrorhost> package
+
+
+pip配置文件
+/etc/pip.conf
+~/.config/pip/pip.conf
+~/.pip/pip.conf
+
+[global]
+trusted-host=mirrors.aliyun.com
+index-url=http://mirrors.aliyun.com/pypi/simple/
