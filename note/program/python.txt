@@ -31,9 +31,8 @@ pip安装
 wget https://bootstrap.pypa.io/2.6/get-pip.py  
 python get-pip.py  
 
-
+使用指定源安装
 pip install -i <mirror> --trusted-host <mirrorhost> package
-
 
 pip配置文件
 /etc/pip.conf
