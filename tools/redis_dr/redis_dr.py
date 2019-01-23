@@ -15,7 +15,7 @@ import redis
 line_split_flag="        "      #key's name should not have substring like this
 
 
-def get_redis_client(host='127.0.0.1',port=6402,db=0,password=None):
+def get_redis_client(host='127.0.0.1',port=6379,db=0,password=None):
     print host,port,db,password
     return redis.StrictRedis(host=host,port=port,db=db,password=password)
 
