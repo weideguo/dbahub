@@ -26,5 +26,7 @@ print r.communicate()  #返回值
 
 import sys
 args=sys.argv    #使用sys模块，在运行脚本时可传入参数;可以选择 argv[x] 获取第x个参数
-				 
-				
+			
+
+#获取文件的绝对路径
+os.path.dirname(os.path.abspath(__file__))
