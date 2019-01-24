@@ -7,7 +7,6 @@ from daemon.runner import DaemonRunner
 _base_path="/tmp/"
 class MyApp(object):
  
- 
     stdin_path = "/dev/null"
     stdout_path = os.path.join(_base_path, "myapp.stdout")
     stderr_path =  os.path.join(_base_path, "myapp.stderr")
