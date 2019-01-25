@@ -792,6 +792,25 @@ set global innodb_status_output=on;
 show engine innodb status\G     --可查看锁的信息						  
 						  
 --innodb-status-file      #在启动命令行中加入 定时输出show engine innodb status\G 到文件
+	
+通过创建表实现监控，删除则关闭监控 兼容旧版本<=5.5  5.6可以使用performance_schema下的表查看
+		
+标准监控(Standard InnoDB Monitor)：监视活动事务持有的表锁、行锁；事务锁等待；线程信号量等待；文件IO请求；buffer pool统计信息；InnoDB主线程purge和change buffer merge活动
+CREATE TABLE innodb_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_monitor;	
+	
+锁监控(InnoDB Lock Monitor)：提供额外的锁信息。
+CREATE TABLE innodb_lock_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_lock_monitor;						  
+	
+表监控(InnoDB Table Monitor)：显示内部数据字典的内容。						  
+CREATE TABLE innodb_table_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_table_monitor;
+
+表空间监控(InnoDB Tablespace Monitor)：显示共享表空间中的文件段以及表空间数据结构配置验证。						  
+CREATE TABLE innodb_tablespace_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_tablespace_monitor;
+						  					  
 						  
 mysql mem = 
   key_buffer_size 						--缓存MyISAM的Index block		   
