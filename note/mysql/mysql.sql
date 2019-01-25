@@ -789,8 +789,9 @@ To ensure that the binary log can be used to re-create the original tables, MySQ
 set global innodb_status_output_locks=on;
 set global innodb_status_output=on;      
 
-show engine innodb status\G     --可查看锁的信息
+show engine innodb status\G     --可查看锁的信息						  
 						  
+--innodb-status-file      #在启动命令行中加入 定时输出show engine innodb status\G 到文件
 						  
 mysql mem = 
   key_buffer_size 						--缓存MyISAM的Index block		   
