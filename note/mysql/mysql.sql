@@ -785,7 +785,13 @@ MyISAM that employs table-level locks locks all partitions of the target table; 
 CREATE ... SELECT
 To ensure that the binary log can be used to re-create the original tables, MySQL does not permit concurrent inserts during CREATE TABLE ... SELECT.
 
+锁监控
+set global innodb_status_output_locks=on;
+set global innodb_status_output=on;      
 
+show engine innodb status\G     --可查看锁的信息
+						  
+						  
 mysql mem = 
   key_buffer_size 						--缓存MyISAM的Index block		   
 + innodb_buffer_pool_size               --innodb的缓冲，缓冲数据和索引      
