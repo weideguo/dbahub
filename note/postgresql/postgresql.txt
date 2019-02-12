@@ -206,6 +206,14 @@ omicron         bryanh                  guest1
     bsd
        
 
+内存设置
+shared_buffers
+temp_buffers  数据库会话访问临时表数据
+work_mem      内部的sort和hash操作
+maintenance_work_mem   VACUUM，CREATE INDEX，REINDEX等操作
+
+
+
 
 #配置文件重新加载（二选一）
 pg_ctl reload
