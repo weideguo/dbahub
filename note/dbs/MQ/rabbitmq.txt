@@ -1,0 +1,1 @@
+Erlang编写的消息队列（message queue）
