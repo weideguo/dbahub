@@ -1,1 +1,16 @@
 Erlang编写的消息队列（message queue）
+
+需要预先安装erlang环境 而且需要版本兼容 可以在rabbitmq的官网查看兼容
+
+service rabbitmq-server start                     #配置文件/etc/rabbitmq/rabbitmq.config 日志/var/log/rabbitmq
+
+rabbitmq-plugins enable rabbitmq_management       #开启管理页面 开启后需要重启服务
+
+service rabbitmq-server restart
+
+
+https://localhost:15672                           #管理页面 默认存在账号 guest/guest
+
+rabbitmqctl 管理命令
+
+rabbitmqctl list_users
