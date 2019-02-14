@@ -712,7 +712,7 @@ bin/mongod  --repair   #启动是修复数据库
 主
 master=yes
 
-从
+从   #中途重建主从事可以清除从的数据 重新启动即可
 slave=yes
 source=<master ip>:<master port>
 
