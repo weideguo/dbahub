@@ -16,6 +16,8 @@ pip install SomePackage==1.0.4     # specific version
 pip install 'SomePackage>=1.0.4'   # minimum version
 pip install -U PackageName	###更新
 pip uninstall PackageName	###移除
+pip install -t /usr/local/lib/python3.5/site-package/ MySQL-python        #安装到指定路径
+pip show MySQL-python                                                     #查看模块的安装路径
 pip search PackageName		###搜索
 pip help 					###帮助
 
@@ -29,6 +31,22 @@ sys.path
 #设置模块的存储路径
 sys.path.append("/path_to_store_python_model")
 
+
+pip安装
+wget https://bootstrap.pypa.io/2.6/get-pip.py  
+python get-pip.py  
+
+使用指定源安装
+pip install -i <mirror> --trusted-host <mirrorhost> package
+
+pip配置文件
+/etc/pip.conf
+~/.config/pip/pip.conf
+~/.pip/pip.conf
+
+[global]
+trusted-host=mirrors.aliyun.com
+index-url=http://mirrors.aliyun.com/pypi/simple/
 
 
 
@@ -48,22 +66,3 @@ Pyrex
 Psyco
 
 
-pip install -t /usr/local/lib/python3.5/site-package/ MySQL-python        #安装到指定路径
-pip show MySQL-python                                                     #查看模块的安装路径
-
-
-pip安装
-wget https://bootstrap.pypa.io/2.6/get-pip.py  
-python get-pip.py  
-
-使用指定源安装
-pip install -i <mirror> --trusted-host <mirrorhost> package
-
-pip配置文件
-/etc/pip.conf
-~/.config/pip/pip.conf
-~/.pip/pip.conf
-
-[global]
-trusted-host=mirrors.aliyun.com
-index-url=http://mirrors.aliyun.com/pypi/simple/
