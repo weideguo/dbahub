@@ -2,7 +2,6 @@
 #请求响应模式
 
 
-import time
 import zmq
 
 context = zmq.Context()
@@ -21,7 +20,6 @@ socket.send(data)
 
 
 import zmq
-import sys
 
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
