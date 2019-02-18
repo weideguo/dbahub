@@ -26,7 +26,7 @@ socket = context.socket(zmq.REQ)
 socket.connect("tcp://localhost:5555")
 
 data = "request data "
-#如果远端没有接收，则发送失败
+#不阻塞 如果远端没有接收，则发送失败
 socket.send(data)
 
 #阻塞 如果没有本地请求发送，则接收失败    
