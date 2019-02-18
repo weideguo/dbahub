@@ -54,7 +54,7 @@ index-url=http://mirrors.aliyun.com/pypi/simple/
 
 
 help("modules")    ###python查看已经安装的模块
-print sys.path                                                            #查看模块的位置
+print sys.path     #查看模块的位置
 
 
 与C/C++交互的技术
