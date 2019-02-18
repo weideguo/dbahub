@@ -29,5 +29,5 @@ data = "request data "
 #如果远端没有接收，则发送失败
 socket.send(data)
 
-#如果远端没有发送，则接收失败    
+#如果没有本地请求发送，则接收失败    
 response = socket.recv()
