@@ -8,7 +8,7 @@ context = zmq.Context()
 socket = context.socket(zmq.REP)
 socket.bind("tcp://*:5555")
 
-#会阻塞直至有请求被接收
+#会阻塞直至有请求被接收          可以接收多个客户端的消息 但必须回应请求后才能再次接收
 message = socket.recv()
 
 data="reply data"
