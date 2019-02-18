@@ -219,7 +219,7 @@ usermod -G "" username            #移除所有从组
 usermod -g primary_group username #修改主组
 
 userdel user_name ##删除用户   (加 -r 删除用户目录）
-/etc/passwd  ##保存用户信息
+/etc/passwd  ##保存用户信息  LOGNAME:PASSWORD:UID:GID:USERINFO:HOME:SHELL UID为0则为root账号同一用户级别
 /etc/shadow  ##保存用户密码
 /etc/group   ##保存组信息
 
