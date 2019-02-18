@@ -1,4 +1,5 @@
-
+#Parallel Pipeline
+#
 #一个pull对应对各push
 import zmq
 
