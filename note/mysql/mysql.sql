@@ -1060,7 +1060,15 @@ nysqlcheck		---检查数据库、表、字段的存在、可访问情况，以�
 myisamcheck     ---检查myisam表
 	-o  ---修复myisam的表
 	-r  ---更快速修复，如失败，使用-o
-	
+
+#自动统计参数
+innodb_stats_*
+myisam_stats_*					  
+When innodb_stats_on_metadata is enabled, InnoDB updates non-persistent statistics when metadata statements such as 
+SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEMA.TABLES or INFORMATION_SCHEMA.STATISTICS tables. 
+(These updates are similar to what happens for ANALYZE TABLE.) 
+					  
+					  
 ##更新表的统计信息
 analyze table table_name;
 
