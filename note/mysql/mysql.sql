@@ -707,7 +707,8 @@ Insert Intention Locks
 AUTO-INC Locks				   	 ---表中有auto_increment键时在插入产生的锁
 	【innodb_autoinc_lock_mode】 ---变量确定自动增长锁类型
 	
-
+InnoDB行锁是通过给索引上的索引项加锁来实现 只有通过索引条件检索数据，InnoDB才使用行级锁，否则InnoDB将使用表锁。
+	 
 
 SELECT ... LOCK IN SHARE MODE;		----- sets an IS lock
 SELECT ... FOR UPDATE;				----- sets an IX lock  ??
