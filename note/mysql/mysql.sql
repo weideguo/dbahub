@@ -658,7 +658,17 @@ innodb的锁
 Shared Locks Exclusive Locks
 	A shared (S) lock permits the transaction that holds the lock to read a row.
 	An exclusive (X) lock permits the transaction that holds the lock to update or delete a row.
-	
+
+???
+IX，IS是表级锁，不会和行级的X，S锁发生冲突。只会和表级的X，S发生冲突						  
+意向锁是在添加行锁之前添加。
+当再向一个表添加表级X锁的时候
+如果没有意向锁的话，则需要遍历所有整个表判断是否有行锁的存在，以免发生冲突
+如果有了意向锁，只需要判断该意向锁与即将添加的表级锁是否兼容即可。因为意向锁的存在代表了，有行级锁的存在或者即将有行级锁的存在。因而无需遍历整个表，即可获取结果
+
+事务申请一行的行锁的时候，数据库会自动先开始申请表的意向锁
+						  
+						  
 Intention Locks
 	Intention shared (IS): Transaction T intends to set S locks on individual rows in table t.
 	Intention exclusive (IX): Transaction T intends to set X locks on those rows.
