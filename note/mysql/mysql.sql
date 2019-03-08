@@ -651,6 +651,11 @@ record lock		--锁住一行记录(行锁)
 gap lock 		--锁住一段范围的记录(间隙锁)
 next-key lock	--前两者效果的叠加
 
+        X	        IX	        S	        IS
+X	Conflict	Conflict	Conflict	Conflict
+IX	Conflict	Compatible	Conflict	Compatible
+S	Conflict	Conflict	Compatible	Compatible
+IS	Conflict	Compatible	Compatible	Compatible						  
 
 
 innodb的锁
