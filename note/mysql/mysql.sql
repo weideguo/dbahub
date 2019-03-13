@@ -648,7 +648,9 @@ latches   闩
         
 record-level lock：
 record lock		--锁住一行记录(行锁)
-gap lock 		--锁住一段范围的记录(间隙锁)
+gap lock 		
+--锁住一段范围的记录(间隙锁) gap lock可以同时加，其中一个转变为意向锁，
+即可在for update中加入gap锁，但其中一个事务在插入时则被阻塞。
 next-key lock	--前两者效果的叠加
 
         X	        IX	        S	        IS
