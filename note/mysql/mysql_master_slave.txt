@@ -89,3 +89,26 @@ set global slave_parallel_workers=30
 atomic commitment protocol,APC
 两阶段提交 (two-phase commit,2PC)
 msater提交事务后，等slave节点提交完毕
+
+
+
+延时复制
+slave节点中
+change master to master_delay=n;   ----n为延时的秒
+
+
+多源复制 mulit source replication 5.6以上支持
+一个从库可以有多个主库
+change master to master_host='127.0.0.1'
+,master_port=3306
+,master_user='root'
+,master_password=''
+,master_auto_position=1     --也可以使用传统的指定binlog文件名及position确定复制点
+for channel 'master_2';
+
+
+
+	
+复制跳过
+--slave_skip_errors	
+--sql_slave_skip_counter	  ----跳过事件数
