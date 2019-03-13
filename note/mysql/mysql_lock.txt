@@ -1,0 +1,208 @@
+乐观锁
+提交事务时验证 
+
+
+悲观锁
+提交事务前验证，执行语句时验证
+
+
+latches   闩
+    Mutexes and rw-locks are known collectively as latches.
+    
+    Mutex(mutual exclusion)  
+        represent and enforce exclusive-access locks to internal in-memory data structures
+    
+    rw-lock 
+        represent and enforce shared-access locks to internal in-memory data structures.
+
+
+
+        
+record-level lock：
+record lock		--锁住一行记录(行锁)
+gap lock 		
+--锁住一段范围的记录(间隙锁) 
+gap lock可以同时加，不可其中一个转变为意向锁，
+即可在for update中加入gap锁，但其中一个事务在插入时则被阻塞。
+next-key lock	--前两者效果的叠加
+
+        X	        IX	        S	        IS
+X	Conflict	Conflict	Conflict	Conflict
+IX	Conflict	Compatible	Conflict	Compatible
+S	Conflict	Conflict	Compatible	Compatible
+IS	Conflict	Compatible	Compatible	Compatible						  
+
+
+innodb的锁
+
+Shared Locks Exclusive Locks
+	A shared (S) lock permits the transaction that holds the lock to read a row.
+	An exclusive (X) lock permits the transaction that holds the lock to update or delete a row.
+
+???
+当我们向一张表加入表级锁的时候，这时候我们必须去表中每一行去遍历，看看对应的行是否已经用到对应的锁。
+IX，IS是表级锁，不会和行级的X，S锁发生冲突。只会和表级的X，S发生冲突						  
+意向锁是在添加行锁之前添加。
+当再向一个表添加表级X锁的时候
+如果没有意向锁的话，则需要遍历所有整个表判断是否有行锁的存在，以免发生冲突
+如果有了意向锁，只需要判断该意向锁与即将添加的表级锁是否兼容即可。因为意向锁的存在代表了，有行级锁的存在或者即将有行级锁的存在。因而无需遍历整个表，即可获取结果
+
+事务申请一行的行锁的时候，数据库会自动先开始申请表的意向锁
+
+一个事务在需要获取资源的锁定时，如果该资源已经被排他锁占用，则数据库会自动给该事务申请一个该表的意向锁。
+如果自己需要一个共享锁定，就申请一个意向共享锁。
+如果需要的是某行（或者某些行）的排他锁定，则申请一个意向排他锁。
+				  
+						  
+Intention Locks
+	Intention shared (IS): Transaction T intends to set S locks on individual rows in table t.
+	Intention exclusive (IX): Transaction T intends to set X locks on those rows.
+
+Record Locks
+	Record locks always lock index records, even if a table is defined with no indexes.
+	锁加在索引记录上。
+	SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE;				---当条件列存在索引时，只锁住所选的范围；当不存在，锁全表
+	
+Gap Locks
+	锁索引记录间隙。对隔离级别为RR以上的才有效。
+	SELECT c1 FROM t WHERE c1 BETWEEN 10 and 20 FOR UPDATE; 
+	--prevents other transactions from inserting a value of 15 into column demo.id, 
+	--whether or not there was already any such value in the column, 
+	--because the gaps between all existing values in the range are locked.
+
+	--间隙锁可以没有锁冲突，可以同时存在排他锁
+	
+	(Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
+	 This does not include the case that the search condition includes only some columns of a multiple-column unique index; in that case, gap locking does occur.)
+	
+Next-Key Locks
+	record locks和gap locks的叠加
+	存在索引，锁定下开上闭的区间。
+		create table test1(id int);
+		create index i_test1 on test1(id);
+		insert into test1 values(1),(5),(7),(15),(19);
+		
+		session1
+		delete from test1 where id=7;   ----将锁住[5,15)的区间	
+	
+it sets shared or exclusive locks on the index records it encounters.row-level locks are actually index-record locks.
+a next-key lock is an index-record lock plus a gap lock on the gap preceding the index record. 
+因为innodb对于非唯一索引锁的方式是通过索引上连续存在的键实现的？
+如索引存在（94，96，102，200）  
+则>100要锁住[96,+∞);
+如果innodb_locks_unsafe_for_binlog=1，只锁原本纪录中存在的记录。存在事务丢失，部分操作没有持久化。
+session A: delete from t where a=400;    --只锁原来表中a=400对应的记录
+session B: insert from t where a=400;    --不会受到锁，因为没有更改原来的记录 但如果 update t set a=300 where a=400; 则被锁住，因为记录已经被session A锁住了 
+
+						  
+Insert Intention Locks
+	An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
+
+
+AUTO-INC Locks				   	 ---表中有auto_increment键时在插入产生的锁
+	【innodb_autoinc_lock_mode】 ---变量确定自动增长锁类型
+	
+InnoDB行锁是通过给索引上的索引项加锁来实现 只有通过索引条件检索数据，InnoDB才使用行级锁，否则InnoDB将使用表锁。
+	 
+
+SELECT ... LOCK IN SHARE MODE;		----- sets an IS lock
+SELECT ... FOR UPDATE;				----- sets an IX lock  ??
+If you use 【FOR UPDATE】 with a storage engine that uses page or row locks, rows examined by the query are write-locked until the end of the current transaction. 
+Using 【LOCK IN SHARE MODE】 sets a shared lock that permits other transactions to read the examined rows but not to update or delete them
+
+---【commit】【rollback】会释放【FOR UPDATE】、【LOCK IN SHARE MODE】锁
+
+读写分离
+
+设置只读
+set global read_only=1;   	    ----1为只读；0为读写；super用户依然可以写入
+
+-----解锁
+unlock tables;     				---开启事务先前有【lock tables】时，解锁时隐式提交事务
+
+
+flush tables;   --刷数据到磁盘
+
+---加锁
+flush tables with read lock;    						----全局锁。锁住所有的表。加锁实现super用户也不能写入
+
+FLUSH TABLES tbl_name [, tbl_name] ... WITH READ LOCK;	---对指定的表加锁
+LOCK TABLES `table_name` WRITE;							---添加写锁，其他事务不可再加锁，其他事务不能读表
+lock tables `table_name` read;							---添加读锁，其他事务可以再加读锁，其他事务可以读表
+
+select * from table_name where ... for update;   
+
+
+---一个会话只能同时有一个锁，以最后加的锁为当前状态；
+---开启事务【start transaction】时会释放会话拥有的锁
+---加锁时隐式提交会话先前的事务
+LOCK TABLES												
+    tbl_name [[AS] alias] lock_type
+    [, tbl_name [[AS] alias] lock_type] ...
+
+lock_type:
+    READ [LOCAL]				--获取读锁
+  | [LOW_PRIORITY] WRITE		--获取写锁
+
+
+  
+锁等待时间
+--由锁造成等待时，等待多久才发出超时错误
+lock_wait_timeout
+
+
+死锁解决
+等待超时。
+杀死连接。【show processlist】【kill id】
+
+
+When you call 【LOCK TABLES】, InnoDB internally takes its own table lock, and MySQL takes its own table lock.
+InnoDB releases its internal table lock at the next commit, but for MySQL to release its table lock，you have to call 【UNLOCK TABLES】. 
+You should not have 【autocommit = 1】, because then InnoDB releases its internal table lock immediately after the call of LOCK TABLES, and deadlocks can very easily happen.
+
+
+
+---innodb有可能产生锁的语句
+SELECT ... FROM
+SELECT ... FROM ... LOCK IN SHARE MODE 
+SELECT ... FROM ... FOR UPDATE 
+UPDATE ... WHERE ... 
+DELETE FROM ... WHERE ... 
+INSERT 
+INSERT ... ON DUPLICATE KEY UPDATE 
+REPLACE
+INSERT INTO T SELECT ... FROM S WHERE ...    
+CREATE TABLE ... SELECT ...   
+LOCK TABLES 
+
+INSERT ... SELECT 
+MyISAM that employs table-level locks locks all partitions of the target table; InnoDB that employ row-level locking.
+
+CREATE ... SELECT
+To ensure that the binary log can be used to re-create the original tables, MySQL does not permit concurrent inserts during CREATE TABLE ... SELECT.
+
+锁监控
+set global innodb_status_output_locks=on;
+set global innodb_status_output=on;      
+
+show engine innodb status\G     --可查看锁的信息						  
+						  
+--innodb-status-file      #在启动命令行中加入 定时输出show engine innodb status\G 到文件
+	
+通过创建表实现监控，删除则关闭监控 兼容旧版本<=5.5  5.6可以使用performance_schema下的表查看
+		
+标准监控(Standard InnoDB Monitor)：监视活动事务持有的表锁、行锁；事务锁等待；线程信号量等待；文件IO请求；buffer pool统计信息；InnoDB主线程purge和change buffer merge活动
+CREATE TABLE innodb_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_monitor;	
+	
+锁监控(InnoDB Lock Monitor)：提供额外的锁信息。
+CREATE TABLE innodb_lock_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_lock_monitor;						  
+	
+表监控(InnoDB Table Monitor)：显示内部数据字典的内容。						  
+CREATE TABLE innodb_table_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_table_monitor;
+
+表空间监控(InnoDB Tablespace Monitor)：显示共享表空间中的文件段以及表空间数据结构配置验证。						  
+CREATE TABLE innodb_tablespace_monitor (a INT) ENGINE=INNODB;
+DROP TABLE innodb_tablespace_monitor;
