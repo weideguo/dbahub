@@ -1019,97 +1019,7 @@ mysqlbinlog -u root -p -P 3306 -h host_name -R -r save_as_text_file_name remote_
 在执行操作前【set sql_log_bin=0(或者off)】可禁止执行的语句生成二进制日志
 
 
-中继日志(relay log)    
-----(io_thread)从节点I/O线程将主节点的二进制日志读取并记录到从节点本地文件形成中继日志
---- (sql_thread)然后从节点SQL线程会读取relay_log日志的内容并应用到从服务器
-【relay_log】
-
-
-复制特性(replication)
-
-【MASTER】
-	设置唯一的server_id的值；
-	必须启用二进制日志（设置【log_bin】参数）。
-	
-show master status\G;	-----查看主节点的状态
-show slave hosts;		-----差看slave节点
-	
-	
-【SLAVE】
----设置唯一的server_id值；(slave节点可以自由确定是否启用二进制日志)
----配置slave到master的连接。
----应该设置中继日志
-change master to
-master_host='master_host',				-----
-master_port=master_port,				-----
-master_user='master_user',				-----主节点的账号，并拥有replication slave权限（grant replication slave on *.* to 'master_user'@'host' identified by 'user_password'; 创建用户并赋予权限）
-master_password='master_user_password', -----
-master_log_file='master_logfile',		-----在master中使用【show master status】查看
-master_log_pos=master_position;			-----在master中使用【show master status】查看
-
-show slave status\G;    ---查看从节点的状态
-
-show slave hosts;		---在主节点查看从节点的信息
-
-start slave sql_thread;  ---启动从节点sql线程
-start slave io_thread;   ---启动从节点io线程
-
-stop slave;   ---停止从节点的slave服务
-start slave;  ---开启从节点的slave服务
-
-
-出现告警 If a crash happens this configuration does not guarantee that the relay log info will be consistent, Error_code: 0
----在配置文件添加参数
-在复制的slave节点会创建两个日志：master.info、relay-log.info。可以选择存放在文件(file)或者表(table)中。
-slave启动时会读取master.info和relay-log.info确认从master读取relay log的情况。
-io_thread线程维护master.info。
-sql_thread线程维护relay-log.info。
-或
-set global master_info_repository='TABLE';
-set global relay_log_info_repository='TABLE';
-
-
-
-#从节点
-Relay_Master_Log_File   SQL线程执行到的主节点的文件
-Exec_Master_Log_Pos     SQL线程执行到的主节点的position
-
-
-Master_Log_File         IO线程读取到的主节点的文件
-Read_Master_Log_Pos     IO线程读取到的主节点的position
-
-
-主从信息删除
-1. reset master;						----删除所有二进制日志
-2. purge master logs to 'log_name';     ----删除位于指定日志或日期之前的日志索引中的二进制日志。
-3. purge master logs before 'date';     ----date格式：'YYYY-MM-DD hh:mm:ss'
-
-reset slave all;	---从库删除主从信息
-
-
-联级复制  
-slave节点启动二进制日志，并设置【--log-slave-updates】参数，由中继日志产生的数据库修改也会写到本地二进制日志
-slave节点作为下一层级slave节点的master
-
-由slave节点进行备份
-将slave节点的sql_thread关闭，在slave节点执行mysqldump
-
-半同步机制 (semisynchronous replication)
-一主多从架构中至少一个slave几点接收到事务(io_thread同步即可),即可返回成功的信息
-----启用半同步，需要预先安装半同步插件
-----master安装 semisync_master.so
-----slave安装 semisync_slave.so
-rpl_semi_sync_master_enabled=on    	---master的设置
-rel_semi_sync_master_status=on		---master的设置
-rpl_semi_sync_slave_status=on		---slave的设置
-
-					  
-设置多线程复制
-set global slave_parallel_workers=30					  
-
-atomic commitment protocol,APC
-两阶段提交 (two-phase commit,2PC)
-msater提交事务后，等slave节点提交完毕
+中
 
 
 
@@ -1144,10 +1054,8 @@ checksum table table_name;
 
 
 
-
 压测
 mysqlslap -u root -p -c 100 -i 10 -e innodb --create-schema='test' --query='select * from ddd' --number-of-queries=100
-
 
 
 
@@ -1157,7 +1065,6 @@ mysqlslap -u root -p -c 100 -i 10 -e innodb --create-schema='test' --query='sele
 server_audit_events="connect,query,table,query_ddl,query_dml,query_dcl"     ---设置审计的事件，可以选择一种或多种
 server_audit_incl_users=root 												---设置审计包含的对象   或者使用【server_audit_excl_users】审计不包含的对象
 server_audit_logging=on														---启动审计
-
 
 
 
@@ -1178,7 +1085,6 @@ SELECT * FROM t1, t2 FORCE INDEX (index_for_column)
 
 
 show open tables [from databases_name]   ---查看打开的表
-
 
 
 
@@ -1243,29 +1149,6 @@ mysql --ssl-ca=ca.pem \
  
  
 create user ... require ssl;
-
-延时复制
-slave节点中
-change master to master_delay=n;   ----n为延时的秒
-
-
-多源复制 mulit source replication
-一个从库可以有多个主库
-change master to master_host='127.0.0.1'
-,master_port=3306
-,master_user='root'
-,master_password=''
-,master_auto_position=1     --也可以使用传统的指定binlog文件名及position确定复制点
-for channel 'master_2';
-
-
-
-
-	
-	
-复制跳过
---slave_skip_errors	
---sql_slave_skip_counter	  ----跳过事件数
 	
 	
 	
@@ -1274,8 +1157,6 @@ for channel 'master_2';
 不指定主键，但unqiue键在为第一个字段，按unique键排序。
 不指定主键，按照插入顺序排序。	
 	
-	
-
 	
 	
 count(*)/count(1)  --没有where子句时，使用最小的索引进行查询；带有where子句，使用能优化where的索引。	
