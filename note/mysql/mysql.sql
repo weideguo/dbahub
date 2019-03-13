@@ -823,13 +823,6 @@ mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
 --ingore-table=dbname.tb_name  导出时排出某张表，多张表时重复使用这个参数，精确匹配
 
 
-第三方逻辑备份
-备份
-./mydumper -u root -p weideguo -h 127.0.0.1 -R -B test -o /u03/mydumper_dir
-还原
-./myloader -u root -p weideguo -h 127.0.0.1 -B wdg -d /u03/mydumper_dir
-
-	-t 					--线程数
 
 	
 
@@ -1356,10 +1349,10 @@ information_schema.tables;
 	
 select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的字符转换实现去掉字段中的中文
 
-myisam没有行级锁？
+myisam_sort_buffer_size   #加快myisam的插入速度
+myisam只有表级锁
 
-
-
+			       
 在线DDL	
 
 
@@ -1400,33 +1393,6 @@ ALTER TABLE tbl_name FORCE
 	
 	
 
-myisam_sort_buffer_size   #加快myisam的插入速度
-
-
-
-##存在数据字符编码转换
-gbk -> utf8
-
-1.以utf8字符编码导出
-mysqldump --default-character-set=utf8
-
-2.修改导出格式中的创建表的语句，字符编码修改为utf8
-
-3.导入
-
-
-###编码
-
-mysql存储的字符编码
-create table(...) default charset=utf8;
-
-mysql用于转换客户端二进制到存储二进制的编码
-set names utf8;
-
-终端编码
-终端将字符串转换成二进制的编码 
-
-
 
 
 #在线DDL工具
@@ -1460,37 +1426,3 @@ OnlineSchemaChange(python)
 
 
 
-
-
-tungsten-replicator
-##
-支持多种数据库的复制工具
-mysql复制到其他数据源
-
-			       
-设置多线程复制
-set global slave_parallel_workers=30
-
-
-
-元数据锁
-
-
-#第三方存储引擎
-
-##spider存储引擎
-本身只存路由信息，转发访问后端数据
-			       
-后端节点的数据如果不匹配spider前端的规则，则会导致后端的数据在之后的操作出现bug。
-如使用mod分表，但后端存在不一致的数据
-			       
-DDL语句不传输到后端
-
-mysqldump只导出spider的建表语句
-
-
-##tokuDB
-
-
-
- 
