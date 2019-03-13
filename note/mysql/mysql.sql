@@ -1103,61 +1103,15 @@ rpl_semi_sync_master_enabled=on    	---master的设置
 rel_semi_sync_master_status=on		---master的设置
 rpl_semi_sync_slave_status=on		---slave的设置
 
+					  
+设置多线程复制
+set global slave_parallel_workers=30					  
 
 atomic commitment protocol,APC
 两阶段提交 (two-phase commit,2PC)
 msater提交事务后，等slave节点提交完毕
 
 
-高可用架构
-
-
-MMM(Multi-Master Replication Manager) 双主故障切换
-mmm: http://mysql-mmm.org/
-mha: https://code.google.com/p/mysql-master-ha/
-heartbeat+brdb: http://lin128.blog.51cto.com/407924/279411 http://www.centos.bz/2012/03/achieve-drbd-high-availability-with-heartbeat/
-cluster:http://database.51cto.com/art/201008/218326.htm
-双master+keeplived: http://database.51cto.com/art/201012/237204.htm
-双master: http://yunnick.iteye.com/blog/1845301
-
-
-
-DRBD(Distributed Replicated Block Device)：分布式复制块设备
-物理同步，由物理设备组成虚拟设备，可以由多个物理节点组成，数据存储于虚拟设备上。
-drbd节点分master/secondary(主/从)角色
-
-
-NDB   ---一种存储引擎，在mysql cluster中使用
-管理节点(mgmd)，数据节点(ndbd)，服务节点(mysqld)；启动顺序是：mgmd -> ndbd -> mysqld
-
-cluster集群
-----需要使用mysql的cluster版本
-
-管理节点(management node)
-提供管理服务
-ndb_mgmd -f $mysql_cluster_home/config.ini   ----启动管理节点   管理节点通过config.init配置data节点和sql节点
-
-ndb_mgm    ----管理节点的命令行工具
-
-data节点(data node)
-保存集群中的数据
-ndbd  --initial  ----第一次启动时添加【--initial】参数，再次启动不添加，启动时清空整个集群的数据
-
-sql节点(sql node)
-为客户端提供读取cluster数据
-mysqld --defaults-file=$mysql_cluster_home/my.cnf    -----启动sql节点  或使用mysqld_safe
-
-
-关闭
-sql节点				 mysqladmin
-管理节点、data节点	 ndb_mgm命令行中的shutdown命令	
-
-
-
-MHA(master high availability) mysql master-slave的自动切换
-需要额外的软件
-MHA node		在所有mysql节点上安装
-MHA manage		
 
 
 
@@ -1186,7 +1140,6 @@ select concat(round(sum(data_length/1024/1024),2),'MB') data_size from informati
 
 ##比较表的差异
 checksum table table_name;
-
 
 
 
