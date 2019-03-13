@@ -668,6 +668,7 @@ Shared Locks Exclusive Locks
 	An exclusive (X) lock permits the transaction that holds the lock to update or delete a row.
 
 ???
+当我们向一张表加入表级锁的时候，这时候我们必须去表中每一行去遍历，看看对应的行是否已经用到对应的锁。
 IX，IS是表级锁，不会和行级的X，S锁发生冲突。只会和表级的X，S发生冲突						  
 意向锁是在添加行锁之前添加。
 当再向一个表添加表级X锁的时候
