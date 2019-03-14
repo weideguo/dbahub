@@ -857,6 +857,14 @@ For MyISAM tables, the key statistics are updated as well.
 #消除碎片和链接
 optimize table table_name; 
 
+#5.5以及以下不支持online DDL
+ALTER TABLE tbl_name FORCE;    
+ALTER TABLE tbl_name ENGINE=InnoDB;
+
+/*!5.6*/
+ALTER TABLE tbl_name FORCE, ALGORITHM=INPLACE, LOCK=NONE;    
+ALTER TABLE tbl_name ENGINE=InnoDB, ALGORITHM=INPLACE, LOCK=NONE;
+
 #recover myisam table
 myisamchk -r table_name.myi
 
