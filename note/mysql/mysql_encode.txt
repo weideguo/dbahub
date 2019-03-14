@@ -61,7 +61,6 @@ latin1 	单字节编码
 GBK     中文二字节，英文一字节
 utf8	中文三字节，英文一字节
 
-skip-character-set-client-handshake   --mysql --default-character-set无效，连接使用默认编码
 
 设置MySQL默认编码：配置文件中
 [client]
