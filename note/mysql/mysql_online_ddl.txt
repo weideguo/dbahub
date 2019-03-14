@@ -1,0 +1,70 @@
+在线DDL	
+
+
+5.5或5.1在使用innodb plugin
+fast index creation
+sql语句无需更改	
+	
+	
+online ddl 5.6之后的特性
+innodb_online_alter_log_max_size 
+Specifies an upper limit on the size of the temporary log files used during online DDL operations for InnoDB tables. This log file stores data inserted, updated, or deleted in the table during the DDL operation.
+
+LOCK = DEFAULT
+Maximum level of concurrency for the given ALGORITHM clause (if any) and ALTER TABLE operation: Permit concurrent reads and writes if supported. If not, permit concurrent reads if supported. If not, enforce exclusive access.
+
+LOCK = NONE
+If supported, permit concurrent reads and writes. Otherwise, return an error message.
+
+LOCK = SHARED
+If supported, permit concurrent reads but block writes. Note that writes will be blocked even if concurrent writes are supported by the storage engine for the given ALGORITHM clause (if any) and ALTER TABLE operation. If concurrent reads are not supported, return an error message.
+
+LOCK = EXCLUSIVE
+Enforce exclusive access. This will be done even if concurrent reads/writes are supported by the storage engine for the given ALGORITHM clause (if any) and ALTER TABLE operation.
+
+
+ALTER TABLE ...,ALGORITHM=INPLACE 
+ALTER TABLE ...,ALGORITHM=COPY
+
+
+alter table t1 add b int ,ALGORITHM=INPLACE,lock=none;	
+#同一张表同时执行alter语句，后面的语句会被阻塞，因为要等metadata lock
+
+alter table add key(c) ,ALGORITHM=copy,lock=exclusive;	
+#lock只能选择shared(默认)、exclusive
+
+
+ALTER TABLE tbl_name FORCE	
+	
+	
+
+
+
+#在线DDL工具
+
+都需要有主键或唯一键
+任何表都可以
+
+#percona
+
+percona-toolkit(perl)
+#online ddl
+bin/pt-online-schema-change --alter="add key(c1,c2)" --execute u=root,p=,h=127.0.0.1,P=3306,D=test,t=aa2
+
+
+#github(go)
+
+gh-ost -execute --allow-on-master -conf /data/hadoop/mysql5530/etc/my.cnf -alter "add x int" -database test -table a -user root -password 
+
+#在主库执行，从库会复制
+
+
+#facebook 
+OnlineSchemaChange(python)
+
+
+./osc_cli copy --allow-drop-column --mysql-user root --mysql-password "" --socket /data/hadoop/mysql5530/data/mysql5530.sock --database test --ddl-file-list new_create.sql 
+
+#sql文件为新的表的建表语句
+#只能在本地修改
+#表要有主键
