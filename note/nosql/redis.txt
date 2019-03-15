@@ -52,6 +52,17 @@ DISCARD         ###用来取消一个事务
 WATCH key   	   ###在事务中监视key
 UNWATCH key     ###取消对key的监视
 
+Redis的事务没有关系数据库事务提供的回滚（rollback）功能。
+WATCH命令可以监控一个或多个键，一旦其中有一个键被修改（或删除），之后的事务就不会执行。监控一直持续到EXEC命令（事务中的命令是在EXEC之后才执行的，所以在MULTI命令后可以修改WATCH监控的键值）
+   WATCH mykey
+   val = GET mykey
+   val = val + 1
+   MULTI
+   SET mykey $val
+   EXEC
+
+
+
 
 SAVE  	         ##备份
 BGSAVE          ##在后台备份 父进程继续处理客户端请求，fork出子进程，负责将数据保存到磁盘
