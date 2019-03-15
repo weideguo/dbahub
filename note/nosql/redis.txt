@@ -52,7 +52,7 @@ DISCARD         ###用来取消一个事务
 WATCH key   	   ###在事务中监视key
 UNWATCH key     ###取消对key的监视
 
-Redis的事务没有关系数据库事务提供的回滚（rollback）功能？  4.0支持
+Redis的事务没有关系数据库事务提供的回滚（rollback）功能  不能实现要么全部提交 要么全部回滚
 WATCH命令可以监控一个或多个键，一旦其中有一个键被修改（或删除），之后的事务就不会执行。监控一直持续到EXEC命令（事务中的命令是在EXEC之后才执行的，所以在MULTI命令后可以修改WATCH监控的键值）
    WATCH mykey
    val = GET mykey
