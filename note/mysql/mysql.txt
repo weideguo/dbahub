@@ -936,6 +936,7 @@ replicate-wild-ignore			  --
 					  
 --mysql5.7
 --可以实现不重启设置过滤以及库名转换
+--mysql5.1不持支这个语法
 CHANGE REPLICATION FILTER filte
 filter:
     REPLICATE_DO_DB = (db_list)
