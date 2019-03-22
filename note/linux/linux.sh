@@ -502,6 +502,9 @@ find ./ -name "*test*" –type f -exec rm -rf {} \;   ###查找当前目录下�
 find ./ -name "*test*" –type d						###查找当前目录下指定的目录
 find ./ -type f -ctime +14 -exec rm -rf {} \;		##查找时间离现在大于14天的文件，删除
 
+-maxdepth   #目录深度指定
+
+
 
 wc -l   ###计算行数
 wc      ###文本计数
