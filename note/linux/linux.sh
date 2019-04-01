@@ -42,17 +42,18 @@ initrd   初始化RAM磁盘，文件系统可用之前的一个初始化文件�
 
 
 内核参数设置
-/etc/sysctl.conf  					##修改该文件中对应的值
-sysctl -p  		  					##使修改生效
+/etc/sysctl.conf  			##修改该文件中对应的值
+sysctl -p  		  		##使修改生效
 sysctl vm.overcommit_memory=1		###直接使内核参数生效
 
 
+echo 0 > /proc/sys/vm/swapping		 ##禁用所有进程使用swap 直接生效 重启失效
+vm.swapping=0                            ###/etc/sysctl.conf中修改禁用swap
+
+cat /proc/sys/vm/swappiness               ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
+vm.swappiness=10                          ##修改swap的使用权重
 
 swapoff -a                          ##临时关闭swap
-
-###禁用swap
-/proc/sys/vm/swapping=0				##禁用所有进程使用swap
-vm.swapping=0
 
 OOM out-of memory   				##系统会杀掉一些进程以释放内存
 
