@@ -145,7 +145,8 @@ lock_type:
   | [LOW_PRIORITY] WRITE		--获取写锁
 
 
-  
+show open tables    #查看表的锁状态 
+ 
 锁等待时间
 --由锁造成等待时，等待多久才发出超时错误
 lock_wait_timeout
