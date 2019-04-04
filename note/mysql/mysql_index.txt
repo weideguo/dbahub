@@ -1,0 +1,14 @@
+show index from table_name [from database_name] 
+
+SELECT * FROM t1, t2 FORCE INDEX (index_for_column) WHERE t1.col_name=t2.col_name;  --强制使用指定索引
+
+
+SELECT * FROM t1, t2 IGNORE INDEX (index_for_column) where ...                      ---强制不使用某个索引
+
+
+
+
+count(*)/count(1)  --没有where子句时，使用最小的索引进行查询；带有where子句，使用能优化where的索引。	
+count(*)           --所有行都计算
+count(colume)      --字段的值为空时不计算
+
