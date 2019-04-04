@@ -1045,17 +1045,6 @@ show profile [all|...];
 show profiles;
 
 
-索引
-show index from table_name [from database_name] 
-
-SELECT * FROM t1, t2 FORCE INDEX (index_for_column)
-  WHERE t1.col_name=t2.col_name;  --强制使用指定索引
-
-
-show open tables [from databases_name]   ---查看打开的表
-
-
-
 
 event   --类似于oracle中的job,定时调度
 --mysql.event
@@ -1125,12 +1114,6 @@ create user ... require ssl;
 不指定主键，但unqiue键在为第一个字段，按unique键排序。
 不指定主键，按照插入顺序排序。	
 	
-	
-	
-count(*)/count(1)  --没有where子句时，使用最小的索引进行查询；带有where子句，使用能优化where的索引。	
-count(*)           --所有行都计算
-count(colume)      --字段的值为空时不计算
-
 
 
 分区表
