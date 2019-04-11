@@ -806,9 +806,9 @@ selct ... from ... into outfile "file_name" [export_options];     --导出数据
 
 ----导入分割文件  
 mysqlimport											
-load data infile 'file_name' into table 'table_name' [export_options];     --账号需要有file权限 并且设置secure_file_priv正确 
+load data infile 'file_name' into table 'table_name' [export_options];     --账号需要有file权限 并且设置secure_file_priv正确  文件在mysql所在的服务器上
 
-load data local infile ...;               --导入不需要额外设置
+load data local infile ...;               --导入不需要额外设置 文件在执行命令的当前客户机上
 
 
 ---export_options
