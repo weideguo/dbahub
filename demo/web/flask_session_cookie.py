@@ -19,8 +19,8 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
 def test1(username):
     session['username'] = username
     response=make_response('Hello World');
-    response.set_cookie('kkkkk','vvvvv')        #设置cookie    JS获取cookie:  document.cookie 
-    #outdate=datetime.datetime.today() + datetime.timedelta(days=30)  
+    response.set_cookie('kkkkk','vvvvv')                                 #设置cookie    JS获取cookie:  document.cookie 
+    #outdate=datetime.datetime.today() + datetime.timedelta(days=30)     #默认为浏览回话结束 即关闭浏览器后清除
     #response.set_cookie('kkkkk222','vvvvv222',expires=outdate)
     return response
 
