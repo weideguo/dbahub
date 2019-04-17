@@ -15,7 +15,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
 #其他web服务可能存储在服务端
 
 
-@app.route('/<username>')
+@app.route('/set/<username>')
 def test1(username):
     session['username'] = username
     response=make_response('Hello World');
@@ -28,6 +28,7 @@ def test1(username):
 @app.route('/get/')
 def test2():
     print request.cookies
+    print request.headers
     a=session.get('username')
     return a
 
