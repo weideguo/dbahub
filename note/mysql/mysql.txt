@@ -1107,6 +1107,7 @@ mysql --ssl-ca=ca.pem \
  
 create user ... require ssl;
 	
+mysql_ssl_rsa_setup 命令可以快速生成密钥对
 	
 	
 排序
