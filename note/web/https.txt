@@ -1,19 +1,23 @@
-# 1、首先，进入你想创建证书和私钥的目录，例如：
-cd /etc/nginx/
+自签发证书
 
-# 2、创建服务器私钥，命令会让你输入一个口令：
-openssl genrsa -des3 -out server.key 1024
+制作 CA 私钥
+openssl genrsa -out ca.key 2048
 
-# 3、创建签名请求的证书（CSR）：  相当于创建公钥？
-openssl req -new -key server.key -out server.csr
-
-# 4、在加载SSL支持的Nginx并使用上述私钥时除去必须的口令：
-cp server.key server.key.org
-openssl rsa -in server.key.org -out server.key
+制作 CA 根证书（公钥）
+openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
 
 
-# 5、最后标记证书使用上述私钥和CSR：  相当于使用公钥进行CA认证？
-openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+服务器端证书
+制作服务端私钥
+openssl genrsa -out server.pem 1024
+openssl rsa -in server.pem -out server.key
+
+生成签发请求
+openssl req -new -key server.pem -out server.csr
+
+
+用 CA 签发
+openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out server.crt
 
 
 
