@@ -1,0 +1,18 @@
+getshell
+
+#mysql安全
+通过
+1. 开启general log，使用sql拼接
+2. select ... from ... into outfile
+将代码写入文件
+文件放在web程序的对应目录，web程序有可能执行该文件 如php
+
+
+
+
+XSS  (Cross Site Scripting) 跨域脚本攻击                 是向网站A注入JS代码。
+
+CSRF (Cross-site request forgery) 跨站请求伪造           访问危险网站B时，B的页面使用A存放在浏览器的cookie访问网站A。
+
+
+
