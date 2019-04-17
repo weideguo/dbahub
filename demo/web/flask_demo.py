@@ -48,6 +48,7 @@ def test3():
     curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application"
     curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application/text"
     curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application/json"
+    content-type 不为 application/x-www-form-urlencoded 即可
     """
     print request.method
     print request.url
