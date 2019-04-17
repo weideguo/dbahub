@@ -1,11 +1,8 @@
-cookie      #浏览器缓存，每次访问同时时提交指定域的cookie
-session     #服务端缓存，用于判断用户的登录状态？
+cookie      #缓存在浏览器，每次访问同时时提交指定域的cookie
+session     #服务端设置 
 
 
-客户端保存机制
-
+客户端保存与提交机制
 [1] 使用cookie来保存。
-
-[2] 使用URL附加信息的方式。（localStorage等存储，访问时再拼接到url）
-
+[2] 使用URL附加信息的方式。（sessionStorage/localStorage等存储，访问时再拼接到url）
 [3] 在页面表单里面增加隐藏域。(表单有一行不显示，通过表单提交)
