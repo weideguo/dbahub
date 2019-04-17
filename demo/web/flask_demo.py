@@ -39,6 +39,14 @@ def test2():
     return a
 
 
+"""
+http header不分大小写 域名不分大小写 url区分大小写
+content-type      
+application/x-www-form-urlencoded  数据被编码为名称/值对。这是标准的编码格式。
+multipart/form-data                数据被编码为一条消息，页上的每个控件对应消息中的一个部分。
+text/plain                         数据以纯文本形式(text/json/xml/html)进行编码，其中不含任何控件或格式字符。postman软件里标的是RAW。
+"""
+
 @app.route('/post/',methods=['GET','PUT','POST'])
 def test3():
     """
@@ -84,6 +92,7 @@ def test32():
 def test4():
     """
     curl "http://this_host/upload/" -F "filename=@/root/x.txt"  
+    
     """
     print request.headers
     file = request.files.get('filename')
