@@ -35,6 +35,8 @@ server {
 
     ssl_session_timeout  5m;
 
+#    ssl_client_certificate /etc/nginx/ssl/ca.crt;   #
+#    ssl_verify_client on;                           #启用客户端ssl验证 双向ssl
 #    ssl_protocols  SSLv2 SSLv3 TLSv1;
 #    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
 #    ssl_prefer_server_ciphers   on;
