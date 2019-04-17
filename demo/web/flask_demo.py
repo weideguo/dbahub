@@ -51,11 +51,7 @@ text/plain                         数据以纯文本形式(text/json/xml/html)�
 def test3():
     """
     curl $root_url"/post/" -d "a=aaaa&b=bbbbb"  -H "Content-Type:application"
-    curl $root_url"/post/" -d "a=aaaa&b=bbbbb"  -H "Content-Type:application/text"
-    curl $root_url"/post/" -d "a=aaaa&b=bbbbb"  -H "Content-Type:application/json"
     curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application"
-    curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application/text"
-    curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application/json"
     content-type 不为 application/x-www-form-urlencoded 即可
     """
     print request.method
@@ -92,7 +88,7 @@ def test32():
 def test4():
     """
     curl "http://this_host/upload/" -F "filename=@/root/x.txt"  
-    
+    Content-Type: multipart/form-data; 
     """
     print request.headers
     file = request.files.get('filename')
