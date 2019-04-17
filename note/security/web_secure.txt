@@ -10,7 +10,7 @@ getshell
 
 
 
-XSS  (Cross Site Scripting) 跨域脚本攻击                 是向网站A注入JS代码。
+XSS  (Cross Site Scripting) 跨域脚本攻击                 向网站A注入JS代码。
 
 CSRF (Cross-site request forgery) 跨站请求伪造           访问危险网站B时，B的页面使用A存放在浏览器的cookie访问网站A。
 
