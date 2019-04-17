@@ -14,5 +14,8 @@ XSS  (Cross Site Scripting) 跨域脚本攻击                 向网站A注入J
 
 CSRF (Cross-site request forgery) 跨站请求伪造           访问危险网站B时，B的页面使用A存放在浏览器的cookie访问网站A。
 
+CSRF防御
+获取header的Referer参数，判断发起请求的上一级页面。referer由浏览器设置，JS代码不能设置。
+服务端生成html页面时在其中加入token，提交时将token返回  通过header或者拼接到url
 
 
