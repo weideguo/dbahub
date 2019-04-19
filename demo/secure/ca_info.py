@@ -1,11 +1,16 @@
 ##CA证书的验证
 
 ##离线验证
+from binascii  import hexlify
 import OpenSSL
+
 f=open('./ca.crt','r')
 x=OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM,f.read())
 x.get_subject()
 x.get_issuer()
+
+cryptCert = x.to_cryptography()
+print hexlify(cryptCert.signature)
 
 
 
