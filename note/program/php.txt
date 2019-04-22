@@ -1,0 +1,3 @@
+启动php
+php-fpm -c /etc/php.ini -y /usr/local/etc/php-fpm.conf
+
