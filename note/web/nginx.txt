@@ -40,5 +40,9 @@ location ~ \.php$ {
     include fastcgi_params;
 }
 
-
-
+#账号登录
+location / {
+    auth_basic           "my site";
+    auth_basic_user_file conf/htpasswd; 
+    #使用htpasswd 创建格式为 user:user_encrypted_passwd 的用户密码对 
+}
