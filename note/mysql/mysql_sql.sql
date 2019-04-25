@@ -31,11 +31,10 @@ DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59 	YYYY-MM-DD HH:MM:SS 混�
 TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时 			YYYYMMDD HHMMSS 混合日期和时间值,时间戳
 
 
-BIT[(M)]   M=(1,64)     
-插入格式 
+BIT[(M)]   M=(1,64)            二进制格式
+JSON                           json格式 5.7.8以后支持
 
-	b'101' 
-
+插入格式 b'101' 
 查看格式 
 	hex(column_name)   转成十六进制
 
@@ -43,6 +42,11 @@ select CONV('10000', 2, 16);   #任意进制之间转换 如二进制转16进制
 select b'10'<<2;   #左移
 select b'10'>>2;   #右移
 select ~b'100';    #取反
+
+SELECT col->"$.json_filed_name" FROM t_name;    #查询json的制订字段
+UPDATE t_name SET col = json_set(col,'$.json_filed_name','xxyy1') ...     #增加/修改json中字段
+json_remove(col,'$.json_filed_name')                                      #删除json中字段
+JSON_EXTRACT(col,'$.json_filed_name')                                     #提取字段
 
 ENUM('value1','value2',...)     A string object that can have only one value
 SET('value1','value2',...)      A string object that can have zero or more values
