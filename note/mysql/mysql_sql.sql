@@ -40,7 +40,9 @@ BIT[(M)]   M=(1,64)
 	hex(column_name)   转成十六进制
 
 select CONV('10000', 2, 16);   #任意进制之间转换 如二进制转16进制
-
+select b'10'<<2;   #左移
+select b'10'>>2;   #右移
+select ~b'100';    #取反
 
 ENUM('value1','value2',...)     A string object that can have only one value
 SET('value1','value2',...)      A string object that can have zero or more values
