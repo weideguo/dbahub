@@ -34,9 +34,10 @@ TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时 			YYYYMMDD HHMMSS 混合日期
 BIT[(M)]   M=(1,64)            二进制格式
 JSON                           json格式 5.7.8以后支持
 
-插入格式 b'101'             表的字段格式为bit
+插入格式 b'101'             
 查看格式 
 	hex(column_name)   转成十六进制
+	select conv(hex(column_name),16,2) from tb_name   以二进制格式查询
 
 select CONV('10000', 2, 16);   #任意进制之间转换 如二进制转16进制
 select b'10'<<2;   #左移
