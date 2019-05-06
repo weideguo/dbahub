@@ -13,11 +13,6 @@ node进入命令行
 
 
 
-
-
-
-
-
 JS
 
 变量
@@ -198,8 +193,70 @@ else
   }
 
 
+##################################################################
+
+某一段时间后执行
+setTimeout(function(){ alert("Hello"); }, 3000);
 
 
 
+
+<html>
+<body>
+
+<input type="text" id="clock" size="35" />
+<script language=javascript>
+var int=self.setInterval("clock()",50)
+function clock()
+  {
+  var t=new Date()
+  document.getElementById("clock").value=t
+  }
+</script>
+</form>
+<button onclick="int=window.clearInterval(int)">Stop interval</button>
+
+</body>
+</html>
+
+
+
+#########################################################################
+
+
+
+#browser对象
+Window 对象表示浏览器中打开的窗口。 如果文档包含框架（<frame> 或 <iframe> 标签），浏览器会为 HTML 文档创建一个 window 对象，并为每个框架创建一个额外的 window 对象。
+Navigator 对象包含有关浏览器的信息
+Screen 对象包含有关客户端显示屏幕的信息
+History 对象包含用户（在浏览器窗口中）访问过的 URL。 History 对象是 window 对象的一部分，可通过 window.history 属性对其进行访问。
+Location 对象包含有关当前 URL 的信息。Location 对象是 window 对象的一部分，可通过 window.Location 属性对其进行访问。
+//存储对象
+localStorage 用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去除。
+sessionStorage 用于临时保存同一窗口(或标签页)的数据，在关闭窗口或标签页之后将会删除这些数据。
+
+#DOM对象 Document Object Mode
+document
+console
+
+
+
+#js变量
+const定义的变量不可以修改，而且必须初始化。
+var定义的变量可以修改，如果不初始化会输出undefined，不会报错。
+let是块级作用域，函数内部使用let定义后，对函数外部无影响。
+
+
+
+
+#cookie每次提交时浏览器自动提交给服务器，而localStorage/sessionStorage不会
+document.cookie
+
+document.cookie = 'a=aaaa'                 //添加cookie项 在原有cookie上添加 自动以";"分隔  需要通过覆盖清除cookie项
+
+
+
+
+cookie可以在服务端中设置
 
 
