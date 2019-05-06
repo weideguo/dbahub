@@ -10,4 +10,11 @@ cookie_lenght=document.cookie.length
 document.cookie.substring(0,cookie_lenght)
 
 
-//使用浏览机器时 访问url则该网站的cookie会自动全部提交
+cookie      #缓存在浏览器，每次访问同时时提交指定域的cookie  使用浏览机器时 访问url则该网站的cookie会自动全部提交
+session     #服务端设置 
+
+
+客户端保存与提交机制
+[1] 使用cookie来保存。
+[2] 使用URL附加信息的方式。（sessionStorage/localStorage等存储，访问时再拼接到url）
+[3] 在页面表单里面增加隐藏域。(表单有一行不显示，通过表单提交)
