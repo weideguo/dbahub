@@ -1,0 +1,68 @@
+########################################################################################################################
+
+node
+vue 
+######################模块设置
+#path_to_file/name.vue           
+export default {
+  name: 'dataSourcePie',            #
+  mounted () {                      #加载时执行的操作
+  },
+  methods: {                        #模块中使用的函数
+  },
+  data () {
+    return {
+      todoitem: false
+    };
+  },
+  props: {
+    content: String
+  },
+  
+}
+  
+
+
+
+################使用模块
+
+import dataSourcePie from 'path_to_file/name.vue'
+export default {
+    components: {
+      dataSourcePie
+    },
+}
+
+<data-source-pie></data-source-pie>
+
+
+
+
+
+
+
+computed 方法可以直接当成属性使用
+
+
+created:在模板渲染成html前调用，即通常初始化某些属性值，然后再渲染成视图。
+mounted:在模板渲染成html后调用，通常是初始化页面完成后，再对html的dom节点进行一些需要的操作。
+
+watch
+
+
+
+
+vuex.store
+将store文件夹分为四个文件夹，分别是actions,mutations,getters,state。
+
+action: 和mutatation功能是类似的，都是修改state里面的数据，区别是action用于异步修改  如setTimeout
+
+mutations：用于处理同步数据修改
+
+getter：后端传过来的数据，如果需要做一些处理就在getter里面写。computer一样，都是对后台返回的数据做处理，只是这个可以应用多个页面
+
+state：存放后端传过来的原生数据。
+
+
+
+########################################################################################################################
