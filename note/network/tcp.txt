@@ -1,0 +1,44 @@
+TCP
+在TCP层，有个FLAGS字段，这个字段有以下几个标识：
+
+SYN 建立连接        synchronous                    
+FIN 关闭连接        finish                   
+ACK 响应            acknowledgement                    
+PSH 有DATA数据传输  push                    
+RST 连接重置        reset                   
+URG 紧急            urgent
+
+
+
+
+出现SYN、SYN+ACK，建立了一个连接
+出现FIN、RST、FIN+ACK，断开了连接
+
+
+PSH为1的情况，一般只出现在DATA内容不为0的包中，也就是说PSH为1表示的是有真正的TCP数据包内容被传递。
+
+
+TCP的连接建立和连接关闭，都是通过请求－响应的模式完成的。
+
+三次握手
+第一次握手：主机A发送 [SYN=1]，Seq=0 的数据包到主机B，主机B由[SYN=1]知道，A要求建立联机；
+第二次握手：主机B收到请求后要确认联机信息，向A发送 [SYN=1，ACK=1] Ack=(0+1)，Seq=0 的包；
+第三次握手：主机A收到后检查；若正确，主机A发送[ACK=1] Ack=(0+1) Seq=(0+1)。主机B收到后确认则连接建立成功。
+
+
+四次挥手
+A--->B A请求断开
+A<---B B确认A的断开
+A<---B B请求断开
+A--->B A确认B的断开
+
+
+Sequence number    顺序号码     表示的是我方（发送方）这边，这个packet的数据部分的第一位应该在整个data stream中所在的位置
+Acknowledge number 确认号码     表示的是期望的对方（接收方）的下一次sequence number是多少。
+
+
+SYN/FIN的传输虽然没有data，但是会让下一次传输的packet seq增加一，即本次发送的Ack需要加一
+ACK的传输，不会让下一次的传输packet加一。结束断开除外。
+
+
+回应的seq应该与请求的Ack相同
