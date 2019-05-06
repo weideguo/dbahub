@@ -15,9 +15,9 @@ int main()
     struct sockaddr_in servaddr;  
     char dns[32];  
     char url[128];  
-    char *IP = "218.244.133.30";  
+    char *IP = "your_host_ip";  
     char *buf = "GET /forum.php HTTP/1.1\r\n\  
-Host: 218.244.133.30\r\n\  
+Host: your_host_ip\r\n\  
 Proxy-Connection: keep-alive\r\n\  
 Cache-Control: max-age=0\r\n\  
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n\  
