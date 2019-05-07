@@ -10,27 +10,14 @@ lock = threading.Lock()
 def updatex():
     global lock 
     lock.acquire()
+    
     global n
     n=n+1
     time.sleep(random.random())
     print n
-import time
-import random
-import threading
-
-
-n=0
-lock = threading.Lock()
-
-"""
-def updatex():
-    global lock 
-    lock.acquire()
-    global n
-    n=n+1
-    time.sleep(random.random())
-    print n
+    
     lock.release()
+    
 """
 """
 def updatex():
