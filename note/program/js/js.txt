@@ -254,7 +254,9 @@ document.cookie
 
 document.cookie = 'a=aaaa'                 //添加cookie项 在原有cookie上添加 自动以";"分隔  需要通过覆盖清除cookie项
 
-
+cookie是http中header的熟悉  
+客户端设置 Cookie
+服务端设置 Set-Cookie
 
 
 cookie可以在服务端中设置
