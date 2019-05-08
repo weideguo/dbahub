@@ -17,6 +17,11 @@ a.text
 r=requests.get("http://httpbin.org/get")
 r.text
 
+#get带有headers
+headers={}
+r=requests.get("http://httpbin.org/get",headers=headers)
+r.text
+
 #post
 #post(url, data=None, json=None, **kwargs)
 payload = dict(key1='value1', key2='value2')
