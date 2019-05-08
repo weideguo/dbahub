@@ -256,7 +256,7 @@ document.cookie = 'a=aaaa'                              //添加cookie项 在原
 document.cookie = "m=sssss;expires=16000000000"         //设置cookie项的过期时间 可以以此cookie项
 
 
-cookie是http中header的熟悉  
+cookie是http中headers的熟悉  
 客户端设置 Cookie
 服务端设置 Set-Cookie
 
