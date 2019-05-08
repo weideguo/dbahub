@@ -252,7 +252,9 @@ let是块级作用域，函数内部使用let定义后，对函数外部无影�
 #cookie每次提交时浏览器自动提交给服务器，而localStorage/sessionStorage不会
 document.cookie
 
-document.cookie = 'a=aaaa'                 //添加cookie项 在原有cookie上添加 自动以";"分隔  需要通过覆盖清除cookie项
+document.cookie = 'a=aaaa'                              //添加cookie项 在原有cookie上添加 自动以";"分隔  
+document.cookie = "m=sssss;expires=16000000000"         //设置cookie项的过期时间 可以以此cookie项
+
 
 cookie是http中header的熟悉  
 客户端设置 Cookie
