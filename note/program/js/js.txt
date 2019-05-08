@@ -253,7 +253,11 @@ let是块级作用域，函数内部使用let定义后，对函数外部无影�
 document.cookie
 
 document.cookie = 'a=aaaa'                              //添加cookie项 在原有cookie上添加 自动以";"分隔  
-document.cookie = "m=sssss;expires=16000000000"         //设置cookie项的过期时间 可以以此cookie项
+document.cookie = "m=sssss;expires=Wed, 08 May 2019 07:33:32 GMT"         //设置cookie项的过期时间 可以以此cookie项
+
+//时间获取
+var exp = new Date();
+exp.toGMTString()
 
 
 cookie是http中headers的熟悉  
