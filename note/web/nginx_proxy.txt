@@ -43,7 +43,7 @@ http {
 #正向代理http 使用
 #curl --proxy "proxy_server:80" "http://web_hostname"
 
-#正向代理https时需要在编译时引入第三方模块 
+#正向代理https时需要在编译时引入第三方模块  需要从github下载模块
 #./configure --add-module=/path/to/ngx_http_proxy_connect_module
     
 #使用代理
