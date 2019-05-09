@@ -34,6 +34,7 @@ http {
         proxy_connect;
         
         location / {
+            #proxy_pass $scheme://$host$request_uri;    #适应http以及https
             proxy_pass https://$host$request_uri;
         }
     }
