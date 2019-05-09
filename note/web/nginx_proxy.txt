@@ -46,7 +46,7 @@ http {
 #正向代理https时需要在编译时引入第三方模块  需要从github下载模块
 #./configure --add-module=/path/to/ngx_http_proxy_connect_module
     
-#使用代理
+#https 使用    可以做到全链路数据都是https传输 当前主机<->代理机<->服务器
 #curl --proxy "proxy_server:443" "https://web_hostname"
 
 
