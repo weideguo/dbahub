@@ -34,3 +34,18 @@ requests.put(url, data=payload)
 
 
 request(method, url, **kwargs)
+
+
+#使用代理
+proxy_dict = {
+    "http": "http://192.168.59.128:443",
+    "https": "https://192.168.59.128:443",
+    #"https": "http://username:password@proxy_server:proxy_port"
+}
+
+session=requests.Session()
+r=session.get(url,proxies=proxy_dict)
+
+
+
+
