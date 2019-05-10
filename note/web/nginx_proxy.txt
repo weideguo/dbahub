@@ -51,4 +51,8 @@ http {
 
 
 
+##################################
+代理使用http的connect方法(跟get post put delete同一级别)
+
+
 
