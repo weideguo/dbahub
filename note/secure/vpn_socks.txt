@@ -1,0 +1,19 @@
+vpn实现方式与对应软件
+PPTP
+    PPTPD
+    
+L2TP
+    xl2tpd
+    
+IPSec
+    openswan
+    
+SSLVPN 基于SSL实现
+    OpenVPN 需要客户端
+
+
+
+
+socks5 应用层协议，基于TCP/UDP 相对于PPTP等更低层
+    shadowsocks 需要对应的各户端如shadowsocks-windows
+    
