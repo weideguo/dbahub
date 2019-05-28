@@ -26,3 +26,11 @@ make 重新编译程序
 ./constraints_parser -5 -D -f pages-xxxxx/FIL_PAGE_INDEX/0-123  > data/mytest.recovery
 
 ##step 5 使用 load infile 命令导入分割符文件
+
+
+############################################################
+对于使用恭喜表空间drop table语句的恢复
+undrop-for-innodb
+
+
+
