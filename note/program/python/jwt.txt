@@ -1,0 +1,9 @@
+jwt json web tokens
+服务端仅需要解析这个token，来判别客户端的身份和合法性，不需要存储。
+
+header.payload.signature
+
+header      #base64编码  类型和使用的哈希算法
+payload     #base64编码  需要传输的信息，不要在此放入敏感的信息
+signature   #签名串
+
