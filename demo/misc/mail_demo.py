@@ -26,10 +26,7 @@ def get_smtp(from_addr, password):
     smtp.login(from_addr, password)
     return smtp
     
-def send_email(from_addr, to_addr, msg_str):
-    smtp.sendmail(from_addr, to_addr, msg_str)
-
-
+    
 def msg_text(title,content):    
     """
     发送文字
