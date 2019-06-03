@@ -198,7 +198,10 @@ else
 某一段时间后执行
 setTimeout(function(){ alert("Hello"); }, 3000);
 
+var id = setTimeout("function",time)   // 只执行一次
+var id = setInterval("function",time)  // 重复执行
 
+clearTimeout(id);               //取消定时 window.clearTimeout(id)
 
 
 <html>
