@@ -46,3 +46,14 @@ location / {
     auth_basic_user_file conf/htpasswd; 
     #使用htpasswd 创建格式为 user:user_encrypted_passwd 的用户密码对 
 }
+
+#跨站点请求允许
+add_header Access-Control-Allow-Origin *;
+add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+
+#直接展示文件
+autoindexon; 		# 开启目录文件列表
+autoindex_exact_sizeon; # 显示出文件的确切大小，单位是bytes
+autoindex_localtimeon; 	# 显示的文件时间为文件的服务器时间
+charset utf-8,gbk; 	# 避免中文乱码
