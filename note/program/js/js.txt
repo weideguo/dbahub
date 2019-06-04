@@ -61,13 +61,15 @@ console.log(d);
 并返回一个 t，最后返回一个 t+10给 d。
 
 
-
+//匿名函数直接调用
+!function(){console.log('xxxx');}()        // true
++function(){console.log('xxxx');}()        // NaN
+-function(){console.log('xxxx');}()        // NaN
+~function(){console.log('xxxx');}()        // -1
 
 
 eval(string)   //以js命令执行字符串
 eval("x=10;y=20;console.log(x*y)")
-
-
 
 
 
