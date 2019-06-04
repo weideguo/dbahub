@@ -57,3 +57,6 @@ autoindexon; 		# 开启目录文件列表
 autoindex_exact_sizeon; # 显示出文件的确切大小，单位是bytes
 autoindex_localtimeon; 	# 显示的文件时间为文件的服务器时间
 charset utf-8,gbk; 	# 避免中文乱码
+
+#引入其他配置文件
+include nginx_config_filename;
