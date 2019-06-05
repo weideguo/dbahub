@@ -69,6 +69,8 @@ var id = setInterval("function",time)  // 重复执行
 clearTimeout(id);               //取消定时 为window对象可以加上前缀 window.clearTimeout(id)
 clearInterval()
 
+js 的执行顺序为异步模式 即如果执行多个函数，执行的顺序不是逐一顺序运行。如果需要实现这个目的，可以通过回调函数实现，或者使用jQuery中的控制方案
+
 
 headers
 Connection: keep-alive       #请求网页一次之后tcp连接没有关闭 连接依旧保持
