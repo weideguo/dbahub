@@ -14,6 +14,12 @@ document.cookie.substring(0,cookie_lenght)
 
 //cookie没有删除方法 通过重置其expires时间实现删除
 
+// 获取指定key的值
+function getCookie(name){
+  let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+  if (arr != null) return unescape(arr[2]); 
+  return null;
+}
 
 
 cookie      #缓存在浏览器，每次访问同时时提交指定域的cookie  使用浏览机器时 访问url则该网站的cookie会自动全部提交
