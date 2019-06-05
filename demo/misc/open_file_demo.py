@@ -10,12 +10,12 @@ a ab a+ ab+
 """
 
 #需要进行显示关闭
-f=open("/root/ansible-2.7.4.zip","rb")
+f=open("/path_to_file/file_name","r")
 f.read()
 f.close()
 
 
 #结束模块时自动关闭 不必显式关闭
-with open("/root/ansible-2.7.4.zip","rb") as f:
+with open("/path_to_file/file_name","r") as f:
     f.read()
     
