@@ -99,81 +99,7 @@ CSS
 <canvas id="myCanvas"  style="width:200px;height:100px;border:1px solid #c3c3c3;">Your browser does not support the canvas element.</canvas>  //solid 边框颜色  
 
 
-AJAX
-Asynchronous  JavaScript And XML
 
-xmlhttp=new XMLHttpRequest();
-
-//用于和服务器交换数据
-xmlhttp.open("GET","demo_get2.asp?fname=Bill&lname=Gates",true);     
-//open(method,url,async)  async：true（异步）或 false（同步）
-xmlhttp.send();
-
-//POST方法
-xmlhttp.open("POST","ajax_test.asp",true);
-xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-xmlhttp.send("fname=Bill&lname=Gates");
-
-xmlhttp.reponseText;
-
-//responseText	获得字符串形式的响应数据。
-//responseXML	获得 XML 形式的响应数据
-
-
-
-
-onreadystatechange	存储函数（或函数名），每当 readyState 属性改变时，就会调用该函数。
-readyState	
-存有 XMLHttpRequest 的状态。从 0 到 4 发生变化。
-0: 请求未初始化
-1: 服务器连接已建立
-2: 请求已接收
-3: 请求处理中
-4: 请求已完成，且响应已就绪
-
-xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)   //status	200: "OK"404: 未找到页面
-    {
-    document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
-    }
-  }
-
-
-//加载xml
-function loadXMLDoc(dname) 
-{
-try //Internet Explorer
-  {
-  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-  }
-catch(e)
-  {
-  try //Firefox, Mozilla, Opera, etc.
-    {
-    xmlhttp=document.implementation.createDocument("","",null);
-    }
-  catch(e) {alert(e.message)}
-  }
-try 
-  {
-  xmlhttp.async=false;
-  xmlhttp.load(dname);
-  return(xmlhttp);
-  }
-catch(e) {alert(e.message)}
-return(null);
-}
-
-var xmlhttp;
-if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
-  }
-else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
 
 
 ##################################################################
@@ -228,6 +154,6 @@ console
 
 
 
-
+Connection: keep-alive       #请求网页一次之后tcp连接没有关闭 连接依旧保持
 
 
