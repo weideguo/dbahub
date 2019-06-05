@@ -1,15 +1,19 @@
 cookies
 // js 设置cookies
 var exp = new Date();
-exp.setTime(exp.getTime() + 10000);               //单位为毫秒
+exp.setTime(exp.getTime() + 10000);               
 document.cookie="mykey_name=xxx;expires="+exp.toGMTString()+";path=/"  
-//expires 过期时间 超过这个时间浏览器不再传这个字段
+//expires 过期时间 超过这个时间浏览器不再传这个字段  单位为毫秒
+//max-age 保存的时间 优先级高于expires 秒
 //path 如果不设置，只能在当前页面获取
 //httponly=true 不允许js获取 只允许通过http传输到服务端
 
 //获取
 cookie_lenght=document.cookie.length
 document.cookie.substring(0,cookie_lenght)
+
+//cookie没有删除方法 通过重置其expires时间实现删除
+
 
 
 cookie      #缓存在浏览器，每次访问同时时提交指定域的cookie  使用浏览机器时 访问url则该网站的cookie会自动全部提交
