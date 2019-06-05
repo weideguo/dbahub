@@ -1,9 +1,12 @@
 cookies
 // js 设置cookies
-expire_time=(new Date()).getTime()+100
-document.cookie="mykey_name=xxx;expires=expire_time;path=/"  
-//expires 
+var exp = new Date();
+exp.setTime(exp.getTime() + 10000);               //单位为毫秒
+exp.toGMTString()
+document.cookie="mykey_name=xxx;expires=exp;path=/"  
+//expires 过期时间 超过这个时间浏览器不再传这个字段
 //path 如果不设置，只能在当前页面获取
+//httponly=true 不允许js获取 只允许通过http传输到服务端
 
 //获取
 cookie_lenght=document.cookie.length
