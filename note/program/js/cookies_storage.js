@@ -32,3 +32,12 @@ session     #服务端设置
 [1] 使用cookie来保存。
 [2] 使用URL附加信息的方式。（sessionStorage/localStorage等存储，访问时再拼接到url）
 [3] 在页面表单里面增加隐藏域。(表单有一行不显示，通过表单提交)
+
+
+// localStorage   不自动清理
+// sessionStorage 关会话即清理
+localStorage.setItem(key,value);    // 保存数据
+localStorage.getItem(key);          // 读取数据
+localStorage.removeItem(key);       // 删除单个数据 
+localStorage.clear();               // 删除所有数据 
+localStorage.key(index);            // 得到某个索引的key
