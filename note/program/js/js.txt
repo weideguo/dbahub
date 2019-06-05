@@ -15,7 +15,6 @@ let是块级作用域，函数内部使用let定义后，对函数外部无影�
 var mycars=new Array();
 mycars[0]="Saab";
 mycars[1]="Volvo";
-mycars[2]="BMW";
 var mycars2=new Array("Saab","Volvo","BMW");
 
 
@@ -61,67 +60,9 @@ eval(string)   //以js命令执行字符串
 eval("x=10;y=20;console.log(x*y)")
 
 
-
-浏览器的HTML文档  document 对象
-document.write(string);   //在浏览器页面写入html代码
-document.getElementById("mydiv").innerHTML = "<h>weideguo</h>";   //通过id获取元素在元素中插入html代码  如<div>inner_HTML</div>
-document.getElementById("mydiv").setAttribute("style","height:100px;width:965px;background-color:#0000FF;");   		//设置属性
-document.getElementById("mydiv").removeAttribute("style","height:100px;width:965px;background-color:#0000FF;");     //删除属性
-
-//getElementsByClassName("myClass") 	 通过类名获取元素   如<div  class="myClass"></div>
-//getElementsByName("myInput")        通过名称获取元素   如<input name="myInput" type="text" size="20" />
-//getElementsByTagName("div") 		 通过元素类型获取元素 如<div></div>	
-//getElementsByTagNameNS				 
-document.getElementsByTagName("p")[3];    //获取第4个段落
-
-
-
-浏览器窗口 window对象
-
-window.location.host; 		//返回url 的主机部分，例如：www.xxx.com  
-window.location.hostname; 	//返回www.xxx.com  
-window.location.href; 		//返回整个url字符串(在浏览器中就是完整的地址栏)，例如：www.xxx.com/index.php?class_id=3&id=2  
-window.location.pathname; 	//返回/a/index.php或者/index.php  
-window.location.protocol; 	//返回url 的协议部分，例如： http:，ftp:，maito:等等。  
-window.location.port 		//url 的端口部分，如果采用默认的80端口，那么返回值并不是默认的80而是空字符
-
-window.open("http://www.weideguo.com")   //浏览器新开一个页面访问url
-
-
-
-
 alert(string);        //浏览器中弹出对话框
 console.clear();      //chrome控制台中清屏
 
 
-CSS
-//<div id="mydiv" class="myclass" style="height:100px;width:965px;background-color:#0099FF;"></div>
-<canvas id="myCanvas"  style="width:200px;height:100px;border:1px solid #c3c3c3;">Your browser does not support the canvas element.</canvas>  //solid 边框颜色  
-
-
-
-
-#########################################################################
-
-
-
-#browser对象
-Window 对象表示浏览器中打开的窗口。 如果文档包含框架（<frame> 或 <iframe> 标签），浏览器会为 HTML 文档创建一个 window 对象，并为每个框架创建一个额外的 window 对象。
-Navigator 对象包含有关浏览器的信息
-Screen 对象包含有关客户端显示屏幕的信息
-History 对象包含用户（在浏览器窗口中）访问过的 URL。 History 对象是 window 对象的一部分，可通过 window.history 属性对其进行访问。
-Location 对象包含有关当前 URL 的信息。Location 对象是 window 对象的一部分，可通过 window.Location 属性对其进行访问。
-//存储对象
-localStorage 用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去除。
-sessionStorage 用于临时保存同一窗口(或标签页)的数据，在关闭窗口或标签页之后将会删除这些数据。
-
-#DOM对象 Document Object Mode
-document
-console
-
-
-
-
+headers
 Connection: keep-alive       #请求网页一次之后tcp连接没有关闭 连接依旧保持
-
-
