@@ -101,38 +101,6 @@ CSS
 
 
 
-
-##################################################################
-
-某一段时间后执行
-setTimeout(function(){ alert("Hello"); }, 3000);
-
-var id = setTimeout("function",time)   // 只执行一次
-var id = setInterval("function",time)  // 重复执行
-
-clearTimeout(id);               //取消定时 为window对象可以加上前缀 window.clearTimeout(id)
-clearInterval()
-
-<html>
-<body>
-
-<input type="text" id="clock" size="35" />
-<script language=javascript>
-var int=self.setInterval("clock()",50)
-function clock()
-  {
-  var t=new Date()
-  document.getElementById("clock").value=t
-  }
-</script>
-</form>
-<button onclick="int=window.clearInterval(int)">Stop interval</button>
-
-</body>
-</html>
-
-
-
 #########################################################################
 
 
