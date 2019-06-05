@@ -1,22 +1,15 @@
-node.js
-实现js在服务端运行
-
-脚本模式
-node helloworld.js
-
-
-
-
-交互模式
-node进入命令行
-
-
-
-
 JS
 
+数据类型
+字符串（String）、数字(Number)、布尔(Boolean)、数组(Array)、对象(Object)、空（Null）、未定义（Undefined）
+
 变量
-var x=var_value;   //变量指定时不需指定类型
+var x=var_value;   //变量指定时不需指定类型 指定值动态设置类型
+let x=var_value;   //作用域只在当前块
+
+const定义的变量不可以修改，而且必须初始化。
+var定义的变量可以修改，如果不初始化会输出undefined，不会报错。
+let是块级作用域，函数内部使用let定义后，对函数外部无影响。
 
 数组
 var mycars=new Array();
@@ -30,35 +23,31 @@ var mycars2=new Array("Saab","Volvo","BMW");
 function function_name(x,y){
 return x*y;
 }
-func1(10,20)    //调用
+function_name(10,20)    //调用
 
-var doSomething = function(a,b){
+var function_name = function(a,b){
  return a + b;
 }
-doSomething(10,20)   ///调用
+function_name(10,20)   ///调用
 
 回调函数 callback
 A callback is a function that is passed as an argument to another function and 
 is executed after its parent function has completed.
 
-var doit = function(callback)
+var f=function(x,y,z){
+    return (x+y+z);
+};
+
+var ff = function(callback)
 {
     var a = 1,
         b = 2,
         c = 3;
-    var t = callback(a,b,c);
+    var t = callback(a,b,c);   ///callback不是关键字，可以任取
     return t + 10;
 };
-var d = doit(function(x,y,z){
-    return (x+y+z);
-});
-console.log(d);
 
-///callback不是关键字，可以任取
-
-调用 doit函数，参数是一个匿名函数；
-进入 doit 的函数体中，先定义 a,b,c，然后执行刚才的匿名函数，参数是 a,b,c，
-并返回一个 t，最后返回一个 t+10给 d。
+console.log(ff());
 
 
 //匿名函数直接调用
@@ -73,7 +62,6 @@ eval("x=10;y=20;console.log(x*y)")
 
 
 
-
 浏览器的HTML文档  document 对象
 document.write(string);   //在浏览器页面写入html代码
 document.getElementById("mydiv").innerHTML = "<h>weideguo</h>";   //通过id获取元素在元素中插入html代码  如<div>inner_HTML</div>
@@ -85,16 +73,6 @@ document.getElementById("mydiv").removeAttribute("style","height:100px;width:965
 //getElementsByTagName("div") 		 通过元素类型获取元素 如<div></div>	
 //getElementsByTagNameNS				 
 document.getElementsByTagName("p")[3];    //获取第4个段落
-
-
-
-
-
-CSS
-//<div id="mydiv" class="myclass" style="height:100px;width:965px;background-color:#0099FF;"></div>
-<canvas id="myCanvas"  style="width:200px;height:100px;border:1px solid #c3c3c3;">Your browser does not support the canvas element.</canvas>  //solid 边框颜色  
-
-
 
 
 
@@ -116,12 +94,15 @@ alert(string);        //浏览器中弹出对话框
 console.clear();      //chrome控制台中清屏
 
 
+CSS
+//<div id="mydiv" class="myclass" style="height:100px;width:965px;background-color:#0099FF;"></div>
+<canvas id="myCanvas"  style="width:200px;height:100px;border:1px solid #c3c3c3;">Your browser does not support the canvas element.</canvas>  //solid 边框颜色  
+
 
 AJAX
 Asynchronous  JavaScript And XML
 
 xmlhttp=new XMLHttpRequest();
-
 
 //用于和服务器交换数据
 xmlhttp.open("GET","demo_get2.asp?fname=Bill&lname=Gates",true);     
@@ -246,33 +227,7 @@ console
 
 
 
-#js变量
-const定义的变量不可以修改，而且必须初始化。
-var定义的变量可以修改，如果不初始化会输出undefined，不会报错。
-let是块级作用域，函数内部使用let定义后，对函数外部无影响。
 
 
-
-
-#cookie每次提交时浏览器自动提交给服务器，而localStorage/sessionStorage不会
-document.cookie
-
-document.cookie = 'a=aaaa'                              //添加cookie项 在原有cookie上添加 自动以";"分隔  
-document.cookie = "m=sssss;expires=Wed, 08 May 2019 07:33:32 GMT"         //设置cookie项的过期时间 可以以此cookie项
-
-//时间获取
-var exp = new Date();
-exp.setTime(exp.getTime() +1000*60*60)      //设置时间 
-exp.toGMTString()
-
-
-cookie是http中headers的属性 
-客户端设置 Cookie
-服务端设置 Set-Cookie
-
-
-Connection: keep-alive       #请求网页一次之后tcp连接没有关闭 连接依旧保持
-
-cookie可以在服务端中设置
 
 
