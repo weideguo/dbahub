@@ -1,5 +1,5 @@
 cookies
-//设置cookies
+// js 设置cookies
 expire_time=(new Date()).getTime()+100
 document.cookie="mykey_name=xxx;expires=expire_time;path=/"  
 //expires 
@@ -11,6 +11,8 @@ document.cookie.substring(0,cookie_lenght)
 
 
 cookie      #缓存在浏览器，每次访问同时时提交指定域的cookie  使用浏览机器时 访问url则该网站的cookie会自动全部提交
+            #可以在服务端中设置 通过在response中设置Set-Cookie字段实现
+            
 session     #服务端设置 
 
 
