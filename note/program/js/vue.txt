@@ -71,9 +71,9 @@ const store = new Vuex.Store({})
 new Vue({
   el: '#all',           #渲染的dom对象的ID
   template: '<app/>',   #使用模块的html设置
-  components: {app},    #使用的模块进行渲染  组建可以为一个 vue文件
+  components: {app},    #使用的模块进行渲染  组建可以为一个 vue文件如 import app from 'file_to_path/filename.vue'
   store: store,         #store对象
-  router: router        #路由规则
+  router: router        #路由规则   即为对组建<router-view></router-view>的渲染
 })
 
 
