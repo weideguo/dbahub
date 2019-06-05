@@ -3,51 +3,52 @@
 node
 vue 
 ######################模块设置
-#path_to_file/name.vue           
+#path_to_file/name.vue
+<template>
+...some content in here...
+</template>
 export default {
-  name: 'dataSourcePie',            #
-  mounted () {                      #加载时执行的操作
-  },
-  methods: {                        #模块中使用的函数
-  },
-  data () {
+  name: 'dataSourcePie',            #模块名
+  data () {                         #供函数 页面使用的变量
     return {
       todoitem: false
     };
   },
+  methods: {                        #模块中使用的函数
+    function_name: function(v1,v2){...},
+  },
+  mounted () {                      #html加载后执行
+  },
+  created (){                       #html加载前执行
+  },
   props: {
-    content: String
+    content: String                 #父页传给模块的参数 通过 <data-source-pie :content="xxxx"></data-source-pie>
   },
   
 }
   
 
-
-
 ################使用模块
-
+<template>
+<data-source-pie></data-source-pie>
+</template>
+<script>
 import dataSourcePie from 'path_to_file/name.vue'
 export default {
     components: {
       dataSourcePie
     },
 }
-
-<data-source-pie></data-source-pie>
-
+</script>
 
 
 
 
 
-
-computed 方法可以直接当成属性使用
-
-
+computed:方法可以直接当成属性使用
 created:在模板渲染成html前调用，即通常初始化某些属性值，然后再渲染成视图。
 mounted:在模板渲染成html后调用，通常是初始化页面完成后，再对html的dom节点进行一些需要的操作。
-
-watch
+watch：监听某一变量变化时执行操作
 
 
 
@@ -63,6 +64,17 @@ getter：后端传过来的数据，如果需要做一些处理就在getter里�
 
 state：存放后端传过来的原生数据。
 
+const store = new Vuex.Store({})
+
+#######################################################
+
+new Vue({
+  el: '#all',           #渲染的dom对象的ID
+  template: '<app/>',   #使用模块的html设置
+  components: {app},    #使用的模块进行渲染  组建可以为一个 vue文件
+  store: store,         #store对象
+  router: router        #路由规则
+})
 
 
 ########################################################################################################################
