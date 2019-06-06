@@ -76,6 +76,20 @@ var f1 =function(...args) {
 ...[]             // 将数组转成","分隔的队列
 [1, ...[2,3,4]]   // 实现队列合并
 
+// yield //可以实现多次返回 
+function* f(){
+    yield '111'
+    yield '222'
+    return '333'
+}
+
+
+let f1=f()
+f1.next()     // 逐个获取yield的值
+
+for(let i of f()){}   // for...of语句迭代  
+
+
 //匿名函数直接调用
 !function(){console.log('xxxx');}()        // true
 +function(){console.log('xxxx');}()        // NaN
