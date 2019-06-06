@@ -15,11 +15,11 @@ class Person(object):
 dir(p)
 
 #判断是否存在属性 方法
-hasattr(jason, 'get_first_name')
+hasattr(p, 'get_first_name')
 
 #获取属性或方法
-y=getattr(jason, 'name')
+y=getattr(p, 'name')
 print y
 
-x=getattr(jason, 'get_first_name')
+x=getattr(p, 'get_first_name')
 x()
