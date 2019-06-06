@@ -57,6 +57,24 @@ var ff = function(callback)
 
 console.log(ff());
 
+// 剩余参数
+var f =function(...args) {
+    // args 即为数组
+    return args.reduce((pre,current) => {
+        return pre + current;
+    });
+}
+
+// () => {}  //创建匿名函数
+
+var f1 =function(...args) {
+    return args.reduce(function(pre,current){
+        return pre + current;
+    });
+}
+
+...[]             // 将数组转成","分隔的队列
+[1, ...[2,3,4]]   // 实现队列合并
 
 //匿名函数直接调用
 !function(){console.log('xxxx');}()        // true
