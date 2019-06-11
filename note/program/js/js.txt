@@ -66,12 +66,9 @@ var f =function(...args) {
 }
 
 // () => {}  //创建匿名函数
+var f=(x) => x+1
+var f=function(x){return x+1}
 
-var f1 =function(...args) {
-    return args.reduce(function(pre,current){
-        return pre + current;
-    });
-}
 
 ...[]             // 将数组转成","分隔的队列
 [1, ...[2,3,4]]   // 实现队列合并
