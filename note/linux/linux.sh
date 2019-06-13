@@ -40,8 +40,8 @@ kernel	 内核选择
 initrd   初始化RAM磁盘，文件系统可用之前的一个初始化文件系统。作为内核引导的一部分进行加载。
 
 
-
-内核参数设置
+OOM out-of memory   				##系统会杀掉一些进程以释放内存
+OOM内核参数设置
 /etc/sysctl.conf  			##修改该文件中对应的值
 sysctl -p  		  		##使修改生效
 sysctl vm.overcommit_memory=1		###直接使内核参数生效
@@ -53,14 +53,17 @@ vm.swapping=0                            ###/etc/sysctl.conf中修改禁用swap
 cat /proc/sys/vm/swappiness               ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
 vm.swappiness=10                          ##修改swap的使用权重
 
-swapoff -a                          ##临时关闭swap
+swapoff -a  #临时关闭swap
+##编辑/etc/fstab实现固定设置
 
-OOM out-of memory   				##系统会杀掉一些进程以释放内存
+SWAP分区异常使用
+ 程序内存泄露  
+ NUMA使用不当
+处理方法 重启OS
 
-	mysqld --memlock                ##内存锁定             
-	vm.nr_hugepage=hugepage_num     ##使用hugepage  巨型页
-	 
-	
+mysqld --memlock                ##内存锁定             
+
+	 	
 /proc/$pid/smaps					##查看进程的swap的使用
 /proc/$pid/maps
 
@@ -74,6 +77,7 @@ pmap -d $pid
 
 透明巨型页
 echo never > /sys/kernel/mm/transparent_hugepage/enabled    #修改巨型页的使用
+vm.nr_hugepage=hugepage_num     ##使用hugepage  巨型页
 
 透明巨型页的参数
 cat /proc/meminfo | grep Huge
@@ -82,6 +86,27 @@ cat /proc/meminfo | grep Huge
 x86的默认内存页大小是4kb，可以使用2mb或者更大的巨型页
 
 echo 2000 > /proc/sys/vm/nr_hugepages  #修改巨型页的数量
+
+numactl 			##控制进程与共享存储的numa技术
+
+numactl --interleave=all ${command}
+#当当前cpu没有可以分配的内存，可以使用其他cpu的内存。all表示所有
+#不设置时当达到cpu的分配阈值，即使系统还有空余内存，也不分配给当前cpu，而选择使用SWAP
+
+
+SMP  symmetic multi processing				对称多处理系统
+MPP  massvie parallel processor    			大规模并行处理
+NUMA non uniform memory access architecture		非统一内存访问
+
+
+vmstat		        ###查看虚拟内存swap si/so 表示与物理内存的交换
+vmstat -S m 1		###隔1秒显示一次
+
+##增加swap分区  重启后失效
+dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建一个大文件，内容全为0
+/sbin/mkswap /home/swap  ##执行命令
+/sbin/swapon /home/swap  ##执行命令
+/usr/swap/swapfile  /swap   swap    defaults    0 0   ##编辑/etc/fstab实现固定设置
 
 
 
@@ -116,7 +141,6 @@ ulimit -Hn                          ##查看
 
 quota  				#磁盘使用限制
 edquota				#编辑数据文件
-
 
 
 pmap pid							##查看指定pid使用的内存
@@ -804,21 +828,6 @@ badblocks -s -v sdb1   ##坏道检测
 hdparm sdb1			   ##磁盘信息获取
 
 
-numactl 			##控制进程与共享存储的numa技术
-
-numctl --interleave=all ${command}
-#当当前cpu没有可以分配的内存，可以使用其他cpu的内存。all表示所有
-#不设置时当达到cpu的分配阈值，即使系统还有空余内存，也不分配给当前cpu，而选择使用SWAP
-
-
-
-SMP	symmetic multi processing					对称多处理系统
-MPP  massvie parallel processor    				大规模并行处理
-NUMA non uniform memory access architecture		非统一内存访问
-
-
-vmstat				###查看虚拟内存
-vmstat -S m 1		###隔1秒显示一次
 sar 				###系统活动信息
 
 /proc/meminfo		##内存信息
@@ -1283,18 +1292,6 @@ tune2fs -l /dev/sda3 | grep Block  ##查看文件系统block等
 
 
 dd ##把指定的输入文件拷贝到指定的输出文件中
-
-##增加swap分区  重启后失效
-dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建一个大文件，内容全为0
-/sbin/mkswap /home/swap  ##执行命令
-/sbin/swapon /home/swap  ##执行命令
-/usr/swap/swapfile  /swap   swap    defaults    0 0   ##编辑/etc/fstab实现固定设置
-
-
-删除swap
-swapoff -a
-##编辑/etc/fstab实现固定设置
-
 
 ##添加磁盘
 echo "scsi add-single-device 0 0 2 0"> /proc/scsi/scsi  ###第三个数对应为设备节点
