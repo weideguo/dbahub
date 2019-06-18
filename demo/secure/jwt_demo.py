@@ -13,9 +13,9 @@ signature   #签名串
 
 """  
  
-secret_key='^z=xr3j)gipqyjsl)04+e$5zz&4d@l&+qko@&&5=dh^5+kblm3'
+secret_key='^z=xr3j)gipqyjsl)04+e$5zz&4d@l&+q'
  
-payload={'status': 'ready'} 
+payload={'user': 'xxx','expire':11111}    
  
 #生成签名串
 signature = jwt.encode(payload, signer=jws.HmacSha(bits=128, key=secret_key))
