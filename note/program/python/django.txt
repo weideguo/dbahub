@@ -20,3 +20,56 @@ python manage.py startapp app_name
 python manage.py makemigrations
 # 2.将生成的py文件应用到数据库
 python manage.py migrate
+
+
+django-admin help <command>  
+django-admin <command>  
+python manage.py help <command>   #查看命令的帮助
+python manage.py <command>        #执行命令
+
+
+
+
+[auth]
+    changepassword                #
+    createsuperuser               #超级用户有 /admin 页面查看 --email admin@example.com --username admin   #创建管理用户？用作什么？
+
+[contenttypes]
+    remove_stale_contenttypes     #
+
+[django]
+    check                         #Checks the entire Django project for potential problems.
+    compilemessages               #Compiles .po files to .mo files for use with builtin gettext support. 用于国际化
+    createcachetable              #Creates the tables needed to use the SQL cache backend.
+    dbshell                       #进入django配置的数据库的shell
+    diffsettings                  #Displays differences between the current settings.py and Django's default settings.
+    dumpdata                      #导出数据   python manage.py dumpdata app_name > app_name.json
+    flush                         #清空数据库 python manage.py loaddata app_name.json
+    inspectdb                     #由数据库导出django的model文件
+    loaddata                      #导入数据
+    makemessages                  #用于国际化
+    makemigrations                #将model层转为迁移文件                  python manage.py makemigrations app_name    不指定app时为全部
+    migrate                       #新版本的迁移文件执行，更新数据库
+    runserver                     #python manage.py runserver 0.0.0.0:8000           运行项目
+    sendtestemail                 #Sends a test email to the email addresses specified as arguments.
+    shell                         #进入python的shell 可以直接调用model的api
+    showmigrations                #Shows all available migrations for the current project
+    sqlflush                      #获得清空数据库的sql
+    sqlmigrate                    #Prints the SQL statements for the named migration.
+    sqlsequencereset              #Prints the SQL statements for resetting sequences for the given app
+    squashmigrations              #压缩迁移文件，当执行多次迁移后迁移文件变大
+    startapp                      #创建应用 需要在项目的目录下
+    startproject                  #创建项目 一个项目保护多个应用
+    test                          #Discover and run tests in the specified modules or the current directory.
+    testserver                    #Runs a development server with data from the given fixture(s).
+    
+    
+    
+    
+makemessages  
+runs over the entire source tree of the current directory and pulls out all
+strings marked for translation. It creates (or updates) a message file in the
+conf/locale (in the django tree) or locale (for projects and applications)
+directory. You must run this command with one of either the --locale,
+--exclude, or --all options.
+
