@@ -14,3 +14,15 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 BaseHTTPServer ##http服务模块
 
 SimpleHTTPServer
+
+
+
+
+
+oauth
+实现包 django-oauth-toolkit
+
+实现
+通过第三放实现登录验证 
+连接三方的api
+
