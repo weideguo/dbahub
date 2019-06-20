@@ -452,6 +452,9 @@ create user user_name identified by user_password;
 create user user_name@'host_ip' identified by user_password;  --设置用户并限定登陆ip或主机名，
 RENAME USER old_name TO new_name;   ----更改用户名
 
+---role使用 mysql8.0以上支持
+create role ...                     ---角色可以授权给用户
+
 ---更改密码
 set password [for user_name]=password('user_password');
 update mysql.user set password=password('user_password') where user='user_name';
