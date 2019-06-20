@@ -1,0 +1,13 @@
+mysql router
+#mysql读写分离中间件
+
+
+mysql proxy
+#mysql旧的读写分离中间件 使用mysql router代替
+
+
+ProxySQL
+#第三方读写分离中间件 
+
+
+
