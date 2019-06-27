@@ -1148,5 +1148,29 @@ select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的
 myisam_sort_buffer_size   #加快myisam的插入速度
 myisam只有表级锁
 
-			       
+	
+	
+--mysql5.6.3以后 
+--快速预热Buffer_Pool缓冲池 防止重启时因内存数据重新加载导致的性能下降
+--加载时后台运行 不会延缓启动
+--只存储 tablespace ID / page ID
+
+
+--关闭实例时dump出内存数据
+innodb_buffer_pool_dump_at_shutdown 
+innodb_buffer_pool_dump_now           --手动dump 完成后回自动重置 可以在运行时手动设置导出  如在运行非常规任务时导致内存被刷新 可以先导出然后再导入以避免导致性能下降 
+innodb_buffer_pool_dump_pct         
+
+--启动时从磁盘文件load到内存 ib_buffer_pool
+--即使在导出与导入期间有数据变更也会不导致数据被污染
+innodb_buffer_pool_load_abort         
+innodb_buffer_pool_load_at_startup
+innodb_buffer_pool_load_now           --手动load 可以在运行时手动设置导入 
+innodb_force_load_corrupted           --允许load到内存 即使表被标记为损坏
+
+
+
+--状态查看
+Innodb_buffer_pool_load_status
+Innodb_buffer_pool_dump_status
 
