@@ -5,3 +5,7 @@
 配置文档/etc/ld.so.conf中指定的动态库搜索路径
 默认的动态库搜索路径/lib
 默认的动态库搜索路径/usr/lib
+
+
+ldconfig     #/etc/ld.so.conf 更该生效
+
