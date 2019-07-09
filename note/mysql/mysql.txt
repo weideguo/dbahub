@@ -449,6 +449,7 @@ mysql.tables_priv	---表的权限
 	
 ---创建用户
 create user user_name identified by user_password;
+create user user_name identified by password 'encrypt_password';   --使用密码的加密串创建账号 
 create user user_name@'host_ip' identified by user_password;  --设置用户并限定登陆ip或主机名，
 RENAME USER old_name TO new_name;   ----更改用户名
 
