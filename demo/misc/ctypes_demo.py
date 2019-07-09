@@ -28,5 +28,5 @@ libc = CDLL('libc.so.6')
 libc.time(None)                  
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/paht_2_so    #指定使用动态连接库的路径
-#调用动态连接库中的函数
+
 
