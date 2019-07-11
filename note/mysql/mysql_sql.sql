@@ -367,47 +367,6 @@ RETURN CONCAT('Hello, ',s,'!');
 
 
 
-
-
-#####################spider engin#############################################
-create server backend1 
-foreign data wrapper mysql 
-options 
-( host '192.168.4.165',port 3306,user 'root',password '',database 'test');
-
-create server backend2 
-foreign data wrapper mysql 
-options 
-( host '192.168.4.165',port 5634,user 'root',password '',database 'test');
-
-
-CREATE TABLE `a` (
-  `a` int(11) NOT NULL,
-  `b` int(11) DEFAULT NULL,
-  PRIMARY KEY (`a`)
-)engine=spider comment='srv "backend1",wrapper "mysql",table "a"';
-
-
-
-CREATE TABLE `a2` (
-  `a` int(11) NOT NULL,
-  `b` int(11) DEFAULT NULL,
-  PRIMARY KEY (`a`)
-)engine=spider comment='srv "backend2",wrapper "mysql",table "a"';
-
-CREATE TABLE `aaa` (
-  `a` int(11) NOT NULL,
-  `b` int(11) DEFAULT NULL,
-  PRIMARY KEY (`a`)
-)engine=spider comment='wrapper "mysql",table "a"'
-partition by list (mod(a,2))
-(partition p0 values in (0) comment='srv "backend1"',
-partition p1 values in (1) comment='srv "backend2"'
-);
-
-
-
-
 delimiter //
 create procedure random_insert_max()
 begin
