@@ -1,0 +1,15 @@
+#检查是否启用透明巨型页
+cat /sys/kernel/mm/transparent_hugepage/enabled
+
+#关闭透明巨型页 
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+
+#cat my.cnf 配置文件中设置
+[mysqld]
+plugin-load=ha_tokudb
+
+
+MySQL> INSTALL SONAME 'ha_tokudb';        #启用tokudb存储引擎
+
+
