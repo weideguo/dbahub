@@ -13,3 +13,13 @@ postdata_dict=urllib.urlencode(postdata)
 request = urllib2.Request(url,postdata_dict)
 response=urllib2.urlopen(request)
 res = response.read()
+
+
+#download
+from urllib import urlopen
+
+f=open('/data/Demo2.zip','wb')            	  
+u=urlopen('https://github.com/rest-client/rest-client/archive/master.zip')
+f.write(u.read())
+f.close()
+
