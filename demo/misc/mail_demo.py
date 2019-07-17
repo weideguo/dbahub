@@ -16,7 +16,7 @@ smtp_port=465
 from_addr="your_email"
 # 这里的密码是开启smtp服务时输入的客户端登录授权码，并不是登录网页邮箱使用的密码
 password='smtp_password'
-to_addr=["fack_name@fakinc.com"]
+to_addr=["fake_name@fake.com"]
     
 
 def get_smtp(from_addr, password):
