@@ -1,0 +1,34 @@
+Log sequence number   已经写到log buffer中的lsn。              参考mtr_t::Command::finish_write函数。
+Log flushed up to     已经写到日志文件的redo的lsn。            参考log_write_flush_to_disk_low函数。
+Pages flushed up to   此lsn之前的脏数据都已经写到了数据文件。  参考log_buf_pool_get_oldest_modification函数。
+Last checkpoint at    最后一次检查点记录到了什么位置。         参考log_complete_checkpoint函数。
+
+
+Log sequence number >Log flushed up to> Pages flushed up to>Last checkpoint at
+
+
+
+fprintf(file,
+       "Log sequence number " LSN_PF "\n"
+       "Log flushed up to   " LSN_PF "\n"
+       "Pages flushed up to " LSN_PF "\n"
+       "Last checkpoint at  " LSN_PF "\n",
+       log_sys->lsn,
+       log_sys->flushed_to_disk_lsn,
+       log_buf_pool_get_oldest_modification(),
+       log_sys->last_checkpoint_lsn);
+
+#define SIZE_OF_MLOG_CHECKPOINT 9
+oldest_lsn <= log_sys->last_checkpoint_lsn + SIZE_OF_MLOG_CHECKPOINT 
+
+
+相差为9
+(Pages flushed up to) - (Last checkpoint at)
+
+
+
+
+unflushed_log=('Log sequence number') - ('Log flushed up to' ))
+uncheckpointed_bytes=('Log sequence number')- ('Last checkpoint at'))
+
+
