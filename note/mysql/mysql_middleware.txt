@@ -10,4 +10,27 @@ ProxySQL
 #第三方读写分离中间件 
 
 
+maxscale
+#mariaDB开发的读写分离中间件
+
+
+amoeba
+#读写分离中间件（缺乏维护）
+
+
+Atlas
+#读写分离中间件 360基于proxy开发
+
+
+Vitess
+#水平扩展中间件 youtube使用
+
+
+phxsql
+#高可用中间件 微信开发
+
+
+
+
+
 
