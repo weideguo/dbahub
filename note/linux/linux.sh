@@ -339,6 +339,11 @@ grep -oP "(?<=//).*?(?=/)"					###-P perl类型的正则表达式，支持零宽
 
 grep -v "exp" filename						###反向选择，获取不包含exp的行
 
+grep -C 5 "foo" file    #显示file文件里匹配foo字串那行以及上下5行
+grep -B 5 "foo" file    #显示foo及前5行
+grep -A 5 "foo" file    #显示foo及后5行
+
+
 uniq filename								###获取的行没有重复，-d获取有重复的行
 
 cmp filename1 filename2						###逐位比较两个文件
