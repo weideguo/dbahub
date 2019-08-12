@@ -1210,6 +1210,11 @@ trap "echo 'hello'" INT		###键盘ctrl+c，执行echo hello命令
 vi /etc/sysctl.conf
 net.ipv4.ip_forward = 1
 
+#将经过自己的流量转发到真正的目标地址
+echo 1 > /proc/sys/net/ipv4/ip_forward
+sysctl -w net.ipv4.ip_forward=1
+
+
 
 编译安装
 cmake  
