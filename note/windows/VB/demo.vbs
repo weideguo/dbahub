@@ -45,5 +45,6 @@ app.sendkeys " "
 'ALT + s
 app.SendKeys "%s"
 
-
+'alt +f4 关闭窗口
+app.SendKeys "%{F4}"
 
