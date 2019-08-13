@@ -42,7 +42,7 @@ app.sendkeys " "
 '回车
 'app.sendkeys "{ENTER}"
 
-'ALT + s
+'ALT + s  微信PC版本中的发送
 app.SendKeys "%s"
 
 'alt +f4 关闭窗口
