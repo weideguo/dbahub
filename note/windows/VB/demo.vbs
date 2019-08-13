@@ -2,6 +2,8 @@
 wscript.sleep(3000)
 
 '创建 ActiveX 对象
+'COM（组件对象模型）
+'Scripting.FileSystemObject、WScript.Shell、ADODB.Stream
 Set app = CreateObject("wscript.shell")
 
 'vbs中不能使用shell函数
