@@ -34,6 +34,10 @@ TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时 			YYYYMMDD HHMMSS 混合日期
 BIT[(M)]   M=(1,64)            二进制格式
 JSON                           json格式 5.7.8以后支持
 
+SERIAL           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE 的别称
+    
+
+
 插入格式 b'101'             
 查看格式 
 	hex(column_name)   转成十六进制
