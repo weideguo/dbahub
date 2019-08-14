@@ -224,7 +224,7 @@ innoDB 存储引擎
 		--启用多重表空间
 		--创建相同结构的表，抛弃表空间
 		ALTER TABLE tbl_name DISCARD TABLESPACE;
-		--使用元有的数据文件导入表空间
+		--使用原有的数据文件导入表空间
 		ALTER TABLE tbl_name IMPORT TABLESPACE;
 	
 	
