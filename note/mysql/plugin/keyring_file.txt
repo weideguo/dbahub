@@ -1,4 +1,4 @@
-mysql表空间文件的加密  plugin
+mysql表空间文件的加密  plugin  >=5.7.11
 keyring_file
 
 
