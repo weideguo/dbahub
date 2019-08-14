@@ -1,11 +1,11 @@
 
-
 shutdown 关机
   -h 关机
   -r 重启
 poweroff 关机
 reboot 重启
 halt -p
+init 0
 
 运行级别
 /etc/inittab   ##配置文件
@@ -38,6 +38,33 @@ dmesg 查看启动过程
 root	 启动磁盘的位置，可以选择从磁盘 root (hd0,0) / root (cd0,0)
 kernel	 内核选择
 initrd   初始化RAM磁盘，文件系统可用之前的一个初始化文件系统。作为内核引导的一部分进行加载。
+
+#启动顺序
+1）加载内核
+2）执行init程序
+3）/etc/rc.d/rc.sysinit             # 由init执行的第一个脚本
+4）/etc/rc.d/rc$RUNLEVEL            # $RUNLEVEL为缺省的运行模式
+5）/etc/rc.d/rc.local
+6）/sbin/mingetty                   # 或/sbin/agetty等类似进程  用于开启终端，接受tty
+
+
+当init进入一个运行等级的时候，按照数字顺序运行所有以K开头的脚本并传入stop参数，除非对应的init脚本在前一个运行等级中没有启动
+按照数字顺序运行所有以S开头的脚本并传入start参数
+任何以D开头的脚本都会被忽略
+
+
+tty  #查看当前的tty
+
+
+sshd
+root@notty            #scp sftp连接时的标识
+
+
+#tty  teletypes、teletypewriters  终端
+#pty  pseudo tty  虚拟终端
+
+
+
 
 
 OOM out-of memory   				##系统会杀掉一些进程以释放内存
@@ -728,9 +755,6 @@ ps -xH   #查看所有线程
 ps aux   
 #rss  占用的物理内存，包含调用的.so共享文件
 #vss  占用的虚拟内存
-
-#tty  teletypes、teletypewriters  终端
-#pty  pseudo tty  虚拟终端
 
 
 ps -eF
