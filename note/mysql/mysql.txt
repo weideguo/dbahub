@@ -247,6 +247,15 @@ MyISAM 存储引擎
 	myisamchk -ed table_name.myi  ---查看表表对象的链接数
 	
 	
+#通用表空间 >=5.7
+CREATE TABLESPACE tablespace_name
+    [ADD DATAFILE 'file_name']
+    [FILE_BLOCK_SIZE = value]
+        [ENGINE [=] engine_name]
+
+CREATE TABLE tbl_name ... TABLESPACE [=] tablespace_name 
+ALTER TABLE tbl_name TABLESPACE [=] tablespace_name 
+	
 	
 	
 csv存储引擎 
