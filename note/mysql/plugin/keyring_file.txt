@@ -1,0 +1,19 @@
+mysql表空间文件的加密  plugin
+keyring_file
+
+
+#命令行设置
+INSTALL PLUGIN keyring_file soname 'keyring_file.so';   
+set global keyring_file_data='/path_2_keyring';    
+
+
+#配置文件设置
+[mysqld]
+early-plugin-load=keyring_file.so
+keyring_file_data=/root/mysql-keyring/keyring    
+
+
+
+
+#加密现有表 对客户端透明
+alter table table_name encryption='Y';
