@@ -1,0 +1,30 @@
+裸设备：是一种没有经过格式化，不被Unix/Linux通过文件系统来读取的特殊类型的块设备文件，允许以直接访问硬盘的方式访问一个存储设备，而不经过操作系统的高速缓存和缓冲器。
+裸设备可以绑定一个分区，也可以绑定一个磁盘，或者一个逻辑卷（lv）。
+应用程序如数据库可以直接使用裸设备，来管理数据的缓存方式，而不将这些任务推给操作系统。
+
+1）#使用raw命令绑定裸设备。n的范围是0-8191。执行完会在/dev/raw/目录下生成一个对应的raw[n]文件。系统重启后会失效。
+raw /dev/raw/raw[n] /dev/<blockdev>
+2)
+修改配置文件 /etc/sysconfig/rawdevices
+#两者选一
+#/dev/raw/raw1 /dev/VolGroup00/lv_mydata
+#/dev/raw/raw1 253 2      #为raw命令的输出
+启动             service rawdevices start
+设置开启启动     chkconfig rawdevices on
+
+#mysql使用裸设备用于innodb系统表空间
+[mysqld]
+#初始化裸设备
+innodb_data_file_path = /dev/<blockdev>:2Gnewraw
+#初始化后重启
+innodb_data_file_path = /dev/<blockdev>:2Graw
+
+
+字符设备：对字符设备的读写不需要通过系统的buffer。不可被文件系统mount。
+是指只能一个字节一个字节读写的设备，不能随机读取设备内存中的某一数据，读取数据需要按照先后数据。字符设备是面向流的设备，常见的字符设备有鼠标、键盘、串口、控制台和LED设备等。
+
+块设备：对块设备的读写需要通过系统的buffer。可以被mount到文件系统中。
+是指可以从设备的任意位置读取一定长度数据的设备。块设备包括硬盘、磁盘、U盘和SD卡等。
+
+
+网络设备：网卡
