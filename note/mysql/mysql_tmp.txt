@@ -1,0 +1,40 @@
+使用临时文件
+一、tmpdir
+1、执行计划file sort    文件开头MY
+
+2、大事物binary log缓存 文件开头 ML
+
+3、压缩的tempory table  名字为sql
+CREATE TEMPORARY TABLE tmp_table1(id int) ROW_FORMAT=COMPRESSED ;
+
+4、online DDL 涉及排序比如add key  文件开头 ib
+alter table testsort add key(id);
+设置 innodb_tmpdir可以将这类文件放到指定的目录
+
+
+
+二、online ddl 
+1、ALGORITHM copy    文件开头 #sql-
+  alter table testsort ALGORITHM=copy ,add  im int ;
+
+2、ALGORITHM inplace 文件开头 #sql-ib 
+  alter table test add key id int;
+涉及到排序比如add key 则使用tmpdir或者innodb_tmpdir
+
+
+
+三、innodb_temp_data_file_path  #5.7.1以后使用临时表空间
+1、执行计划use temporay table
+2、非压缩tempory table  
+CREATE TEMPORARY TABLE tmp_table1(id int);
+可以使用 select * from information_schema.INNODB_TEMP_TABLE_INFO; 查询这些也看不到 表现为innodb表 
+
+
+
+
+ 
+如果临时表中需要存储的数据量超过了上限（ tmp-table-size 或 max-heap-table-size 中取其大者），会生成基于磁盘的临时表。
+
+
+#设置临时表空间的上限防止无限扩展
+innodb_temp_data_file_path = ibtmp1:12M:autoextend:max:5G
