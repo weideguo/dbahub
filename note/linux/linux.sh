@@ -1613,13 +1613,16 @@ https
 curl -k    #忽略https未信任证书错误
 
 
-
+#分割压缩文件
 tar -zcvf ABCD.tar.gz ABCD | split -b 2000M -d -a 1 - ABCD.tar.gz
 
 split -b 2000M -d -a 1 ABCD.tar.gz ABCD.tar.gz.
 
-
 cat ABC.tar.gz.* | tar -zxv
+
+#压缩过滤 多个目录可以用多个exclude
+tar -zcvf abcd.tar.gz --exclude=abcd/def abcd
+
 
 
 expect -c {
