@@ -87,12 +87,7 @@ Next-Key Locks
 	
 it sets shared or exclusive locks on the index records it encounters.row-level locks are actually index-record locks.
 a next-key lock is an index-record lock plus a gap lock on the gap preceding the index record. 
-因为innodb对于非唯一索引锁的方式是通过索引上连续存在的键实现的？
-如索引存在（94，96，102，200）  
-则>100要锁住[96,+∞);
-如果innodb_locks_unsafe_for_binlog=1，只锁原本纪录中存在的记录。存在事务丢失，部分操作没有持久化。
-session A: delete from t where a=400;    --只锁原来表中a=400对应的记录
-session B: insert from t where a=400;    --不会受到锁，因为没有更改原来的记录 但如果 update t set a=300 where a=400; 则被锁住，因为记录已经被session A锁住了 
+
 
 						  
 Insert Intention Locks
