@@ -1,0 +1,114 @@
+Record Locks
+	Record locks always lock index records, even if a table is defined with no indexes.
+
+
+
+Gap Locks
+	锁索引记录间隙。对隔离级别为RR以上的才有效。
+	SELECT c1 FROM t WHERE c1 BETWEEN 10 and 20 FOR UPDATE; 
+	--prevents other transactions from inserting a value of 15 into column demo.id, 
+	--whether or not there was already any such value in the column, 
+	--because the gaps between all existing values in the range are locked.
+
+	--间隙锁可以没有锁冲突，可以同时存在排他锁
+	
+	(Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
+	 This does not include the case that the search condition includes only some columns of a multiple-column unique index; in that case, gap locking does occur.)
+	
+Next-Key Locks
+	record locks和gap locks的叠加
+
+
+    
+    
+
+
+RC/RU隔离级别
+没有gap lock，即没有范围锁，
+
+#条件列不为唯一索引时
+只对对匹配且已经存在的主键加锁
+
+#条件列为唯一索引时
+加锁范围为：
+主键=选中列的主键
+主键=选中列的num 且 主键!=所有已经存在的主键
+
+
+
+
+RR隔离级别
+innodb依赖于索引结构加锁
+
+
+#选择列为主键
+假设id为主键
+
+select * from t where id=5 for update;
+加锁范围为：
+选中：
+主键=选中列的主键
+
+不选中：
+主键(最近列的主键最小值,最近列的主键最大值)
+  
+  
+select * from t where id>5 for update;
+加锁范围为：
+主键(最近列的主键,+∞)
+
+
+
+
+#选择列为非索引
+通过转成在主键上的间隙锁？表现为整个表都被锁住
+
+
+
+
+#选择列为非唯一键
+假设num为非唯一键
+
+select * from t where num=200 for update;
+加锁范围为：
+num(最近列的num小值,最近列的num大值)  
+num=最近列的num小值 主键(最近列的主键最小值,+∞)
+num=最近列的num大值 主键(-∞,最近列的主键最大值)
+
+
+select * from t where num>200 for update;
+加锁范围为：
+num(最近列的num,+∞)
+num=最近列的num 主键[选中列的主键最小值,+∞)，没有选中则 主键(所有主键最大值,+∞)
+
+
+
+
+#选择列为唯一键
+假设num为唯一键
+
+select * from t where num=200 for update;
+加锁范围为：
+选中
+num=选中列的num
+主键=选中列的主键
+
+
+不选中
+num(最近列的num小值,最近列的num大值) 
+num=最近列的num小值 主键(最近列的主键最小值,最近列的主键最大值)
+num=最近列的num大值 主键(最近列的主键最小值,最近列的主键最大值)
+
+
+select * from t where num>200 for update;
+加锁范围为：
+num(最近列的num, +∞)
+num=最近列的num 主键[选中列的主键最小值, +∞), 没有选中则没有这个部分锁
+
+
+
+seriable隔离级别
+读写互斥 读和写都加锁 加锁可以参照RR
+
+
+
