@@ -1175,7 +1175,7 @@ myisam只有表级锁
 --只存储 tablespace ID / page ID
 
 
---关闭实例时dump出内存数据
+--关闭实例时dump出内存数据 >=5.6.3
 innodb_buffer_pool_dump_at_shutdown 
 innodb_buffer_pool_dump_now           --手动dump 完成后回自动重置 可以在运行时手动设置导出  如在运行非常规任务时导致内存被刷新 可以先导出然后再导入以避免导致性能下降 
 innodb_buffer_pool_dump_pct         
