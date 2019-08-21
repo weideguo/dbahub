@@ -59,36 +59,10 @@ Intention Locks
 	Intention exclusive (IX): Transaction T intends to set X locks on those rows.
 
 Record Locks
-	Record locks always lock index records, even if a table is defined with no indexes.
-	锁加在索引记录上。
-	SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE;				---当条件列存在索引时，只锁住所选的范围；当不存在，锁全表
-	
-Gap Locks
-	锁索引记录间隙。对隔离级别为RR以上的才有效。
-	SELECT c1 FROM t WHERE c1 BETWEEN 10 and 20 FOR UPDATE; 
-	--prevents other transactions from inserting a value of 15 into column demo.id, 
-	--whether or not there was already any such value in the column, 
-	--because the gaps between all existing values in the range are locked.
 
-	--间隙锁可以没有锁冲突，可以同时存在排他锁
-	
-	(Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
-	 This does not include the case that the search condition includes only some columns of a multiple-column unique index; in that case, gap locking does occur.)
+Gap Locks
 	
 Next-Key Locks
-	record locks和gap locks的叠加
-	存在索引，锁定下开上闭的区间。
-		create table test1(id int);
-		create index i_test1 on test1(id);
-		insert into test1 values(1),(5),(7),(15),(19);
-		
-		session1
-		delete from test1 where id=7;   ----将锁住[5,15)的区间	
-	
-it sets shared or exclusive locks on the index records it encounters.row-level locks are actually index-record locks.
-a next-key lock is an index-record lock plus a gap lock on the gap preceding the index record. 
-
-
 						  
 Insert Intention Locks
 	An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
