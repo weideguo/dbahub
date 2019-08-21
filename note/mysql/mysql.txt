@@ -144,6 +144,8 @@ innoDB 存储引擎
 	
 	row_format={compressed | dynamic}   ---创建时指定存储格式
 	
+	show table status like 'table_name'  ---查看表的状态 等同于查询information_schema.tables
+	
 	COMPACT    默认，性能瓶颈不在CPU时性能可以提高
 	REDUNDANT  兼容旧版本
 	DYNAMIC    COMPACT的衍生，变长存储
