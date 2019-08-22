@@ -1,6 +1,10 @@
 'vb不区分大小写 关键字使用风格为首字母大写
 wscript.sleep(3000)
 
+'弹出框
+MsgBox("yyyy")
+wscript.Echo("xxx")
+
 '创建 ActiveX 对象
 'COM（组件对象模型）
 'Scripting.FileSystemObject、WScript.Shell、ADODB.Stream
