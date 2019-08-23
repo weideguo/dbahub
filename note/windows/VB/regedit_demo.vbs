@@ -5,5 +5,7 @@ n = WSHShell.RegRead(p)
 MsgBox(n)
 '修改注册表
 '键 值 键的类型
-'RegWrite(strName, anyValue [,strType])
-'WSHShell.RegWrite p, n, itemtype 
+RegWrite(strName, anyValue [,strType])
+WSHShell.RegWrite p, n, itemtype 
+'删除键
+WSHShell.RegDelete(p)
