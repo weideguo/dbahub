@@ -3,9 +3,6 @@
 'wscript.exe 关闭改进程可恢复正常
 '跳过错误
 On Error Resume Next
-'如何确定只启动一次？
-
-
 
 set wmi=Getobject("winmgmts:\\.\root\cimv2")
 Set shell = CreateObject("wscript.shell")
