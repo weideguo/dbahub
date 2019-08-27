@@ -1,0 +1,66 @@
+gpg GnuPG
+
+#非对称的加密工具 可以选用RSA算法
+
+
+dd if=/dev/sda of=/dev/zero
+
+#生成密钥 生成过程需要设置足够熵值 可以使用dd写数据倒空文件
+gpg --gen-key
+
+
+#列出密钥
+gpg --list-keys
+
+
+撤销生成的密钥
+gpg --gen-revoke [用户ID]
+
+
+
+#删除
+gpg --delete-key  [用户ID]
+
+
+#导出公钥 指定公钥或私钥的用户id都只导出公钥
+gpg --armor --output public-key.txt --export [用户ID]
+
+
+
+#导入公钥
+gpg --import [密钥文件]
+
+
+加密
+gpg --recipient [用户ID] --output demo.en.txt --encrypt demo.txt
+
+
+解密
+gpg --decrypt demo.en.txt --output demo.de.txt
+gpg demo.en.txt
+
+
+
+#签名
+#生成二进制格式的签名
+gpg --sign demo.txt
+#生成ascii码格式的签名
+gpg --clearsign demo.txt
+
+#生成二进制格式的签名 签名文件单独存放
+gpg --detach-sign demo.txt
+#生成ascii码格式的签名 签名文件单独存放
+gpg --armor --detach-sign demo.txt
+
+
+
+
+#签名+加密
+#解密时会同时验证签名
+gpg --local-user [发信者ID] --recipient [接收者ID] --armor --sign --encrypt demo.txt
+
+
+#使用单独的签名文件验证签名  ascii或二进制都可以
+gpg --verify demo.txt.sig demo.txt
+
+
