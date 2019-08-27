@@ -1,0 +1,160 @@
+##在要执行git命令的主机上生成key 文件存在的目录 ~/.ssh
+ssh-keygen                    
+
+#在githu中设置密钥
+#生成ssh密钥对将公钥(.pub结尾)添加到github的 Settings -> SSH and GPG keys -> New SSH key
+
+
+
+submodule应用
+增加一个submodule到指定目录：
+
+git submodule add git://git.linphone.org/linphone.git ThirdParts/linphone
+
+git submodule add -b 3.10.x git://git.linphone.org/linphone.git ThirdParts/linphone
+
+.gitmodules 文件
+[submodule "ThirdParts/libpcap"]
+    path = ThirdParts/libpcap
+    url = https://github.com/the-tcpdump-group/libpcap.git
+    branch = libpcap-1.5
+[submodule "ThirdParts/sipp"]
+    path = ThirdParts/sipp
+    url = https://github.com/SIPp/sipp.git
+[submodule "ThirdParts/osip"]
+    path = ThirdParts/osip
+    url = git://git.savannah.gnu.org/osip.git
+[submodule "ThirdParts/linphone"]
+    path = ThirdParts/linphone
+    url = git://git.linphone.org/linphone.git
+    branch = 3.10.x
+
+    
+    
+  
+
+#在已有项目文件下创建.git文件 如果没有本地项目而从github中下载则不需要这项操作
+git init    
+    
+    
+#从github下载项目到到本地 
+#目录下会创建.git目录以保存提交的信息 这个目录不会推送到远端
+git clone git@github.com:ansible/ansible.git    
+    
+
+#查看文件状态是否与之前的提交有不同 不必先跟踪文件
+git status
+
+#查看跟踪文件的与上次提交的不同
+git diff
+
+#进入项目的目录 
+#.gitignore 设置要忽视的文件，对所有命令都生效  格式模板https://github.com/github/gitignore 
+
+
+#跟踪新文件 文件依然保存在本地仓库 文件每次要commit前都要执行
+git add xxx.txt    
+#git reset HEAD <file> 
+#撤销跟踪
+
+#保存提交 文件依然保存在本地仓库   提交的次数由此计算
+git commit -m "new commit test"
+#git commit -a  -m "new commit test"           
+#-a 把所有已经跟踪过的文件暂存起来一并提交，从而跳过 git add 步骤    
+#-m 提交的注释说明        
+    
+#覆盖之前的提交，确保只提交一次，如提交后发现有文件没有提交，需要再次提交    
+git commit --amend    
+    
+    
+#推到github    
+git push    
+    
+#文件、文件夹的增删都可以通过本地 创建/删除 后推送到github    
+ 
+#回滚文件到上次commit的状态 
+git checkout -- <file>
+
+  
+
+
+
+#查看git远端github仓库 需要在本地项目的目录中操作
+#origin为初始的远端仓库信息 默认 拉取/推送 于此
+#可以自行搭建git服务器   
+git remote -v
+
+
+#添加远程仓库
+git remote add <shortname> <url>
+ 
+#从远端仓库拉取本地没有的文件 
+git fetch [remote-name] 
+  
+#推送到远端仓库指定分支
+git push [remote-name] [branch-name]  
+#git push origin master    #默认的推送    
+  
+#远程仓库的更多信息
+git remote show [remote-name]
+  
+#远端的分支拉取到本地与本地的合并，默认为 master -> master  
+#本地有而远端没有的文件不会被删除，都有的文件则会被同步
+git pull
+
+#重命令远端仓库
+git remote rename <old_name> <new_name>
+
+#删除远端仓库
+git remote rm <remote-name>
+
+
+
+
+
+#给比较稳定的提交打标签
+#显示已经有的标签  
+git tag    
+git tag -l 'v1.8.5*'       #过滤显示指定格式的tag   
+    
+#添加标签，指对本地有效 提交id由git log查看
+#git tag -a v1.2 9fceb02  
+git tag -a <tar-name> <commit-id>  
+   
+#推送标签信息到远端 默认不会提交   
+git push <remote-name> <tag-name>
+#git push origin v1.5
+ 
+ 
+#删除标签 指对本地有效
+git tag -d <tag-name>
+ 
+#推送本地标签的删除到远端 即删除远端仓库的标签
+git push origin :refs/tags/<tag-name>
+ 
+   
+ 
+#查看所有提交信息    
+git log    
+git log --pretty=oneline    
+
+
+
+  
+#创建分支    
+git branch 0.0.1    
+    
+#切换到分支    
+git checkout 0.0.1      
+
+#创建分支并切换
+git checkout -b 0.0.1
+
+
+#另外一个分支合并到当前分支
+git merge iss53
+
+
+
+
+

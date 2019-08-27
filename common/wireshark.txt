@@ -1,0 +1,61 @@
+过滤规则
+
+ip.src eq 14.215.177.38 or ip.dst eq 14.215.177.38
+
+
+
+
+过滤端口
+tcp.port eq 80    // 不管端口是来源的还是目标的都显示
+tcp.port == 80
+tcp.port eq 2722
+tcp.port eq 80 or udp.port eq 80
+tcp.dstport == 80  // 只显tcp协议的目标端口80
+tcp.srcport == 80  // 只显tcp协议的来源端口80
+
+
+
+3.过滤协议
+例子:
+tcp
+udp
+arp
+icmp
+http
+smtp
+ftp
+dns
+msnms
+ip
+ssl
+oicq
+bootp
+等等
+排除arp包，如!arp   或者   not arp
+
+
+
+http.request.method == "GET"
+http.request.method == "POST"
+http.request.uri == "/img/logo-edu.gif"
+http contains "GET"
+http contains "HTTP/1."
+// GET包包含某头字段
+http.request.method == "GET" && http contains "Host: "
+http.request.method == "GET" && http contains "User-Agent: "
+// POST包包含某头字段
+http.request.method == "POST" && http contains "Host: "
+http.request.method == "POST" && http contains "User-Agent: "
+// 响应包包含某头字段
+http contains "HTTP/1.1 200 OK" && http contains "Content-Type: "
+http contains "HTTP/1.0 200 OK" && http contains "Content-Type: "
+
+
+
+
+ip.dst eq 192.168.1.5 and http 
+
+
+
+ip.src eq 192.168.59.132 or ip.dst eq 192.168.59.132
+
