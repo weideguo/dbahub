@@ -1,0 +1,54 @@
+
+lsmod显示Linux内核中modules 的状态
+
+Module：  模块的名称。 这通常是模块文件的名称，减去扩展名（.o或.ko），但它可能有一个自定义名称，可以在使用insmod命令插入模块时将其指定为选项。
+Size：    驻留模块使用的内存量，以字节为单位。
+Used by： 此列包含一个数字，表示正在使用的模块实例数。 如果该数字为零，则当前未使用该模块。 数字后面的文本表示有关使用模块的内容的任何可用信息：这通常是设备名称，文件系统标识符或另一个模块的名称。
+
+cat /proc/modules  #对应的文件映射
+
+
+##############################################################vim hello_module.c
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/init.h>
+
+static int __init init_my_module(void) {
+  printk(KERN_INFO "Hello, my module!\n");
+  return 0;
+}
+
+static void __exit exit_my_module(void) {
+  printk(KERN_INFO "Bye, my module!\n");
+}
+
+module_init(init_my_module);
+module_exit(exit_my_module);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("csprojectedu");
+
+################################################################## vim Makefile  
+obj-m += hello_module.o
+all:
+    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+clean:
+    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+#################################################################
+
+
+insmod hello_module.ko  #安装模块
+rmmod hello_module.ko   #卸载模块
+modinfo hello_module    #查看已经安装的可以通过lsmod查看的内核模块的信息
+modinfo hello_module.ko #通过文件查看内核模块的信息
+
+###########################################################################################
+应用程序的入口始终是main()函数，而出口是main()函数的return。
+内核模块的入口是init_module()，而出口是cleanup_module()。
+
+
+应用程序可以调用很多C标准库中的函数，如printf，编译到libc中，只有当你的代码在编译的链接阶段时，才会和libc中实际的函数地址绑定。
+
+在Intel x86架构上中，有四种模式，也叫ring 0 - ring 3，模式之间的权限不同，这里的权限指的是对硬件设备的操作，如读写内存，读写硬盘等。
+Linux使用其中两种模式，即内核模式/特权模式/supervisor mode/ring 0，以及用户模式/非特权模式/user mode/ring 3。
+

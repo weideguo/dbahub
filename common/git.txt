@@ -1,37 +1,20 @@
+##初始设置
 ##在要执行git命令的主机上生成key 文件存在的目录 ~/.ssh
 ssh-keygen                    
 
 #在githu中设置密钥
 #生成ssh密钥对将公钥(.pub结尾)添加到github的 Settings -> SSH and GPG keys -> New SSH key
 
+#全局信息设置 
+#信息存储在：
+#/etc/gitconfig  --system 所有用户的通用配置
+#~/.gitconfig    --global 当前用户的配置
+git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+#设置信息查看
+git config --list
 
 
-submodule应用
-增加一个submodule到指定目录：
-
-git submodule add git://git.linphone.org/linphone.git ThirdParts/linphone
-
-git submodule add -b 3.10.x git://git.linphone.org/linphone.git ThirdParts/linphone
-
-.gitmodules 文件
-[submodule "ThirdParts/libpcap"]
-    path = ThirdParts/libpcap
-    url = https://github.com/the-tcpdump-group/libpcap.git
-    branch = libpcap-1.5
-[submodule "ThirdParts/sipp"]
-    path = ThirdParts/sipp
-    url = https://github.com/SIPp/sipp.git
-[submodule "ThirdParts/osip"]
-    path = ThirdParts/osip
-    url = git://git.savannah.gnu.org/osip.git
-[submodule "ThirdParts/linphone"]
-    path = ThirdParts/linphone
-    url = git://git.linphone.org/linphone.git
-    branch = 3.10.x
-
-    
-    
-  
 
 #在已有项目文件下创建.git文件 如果没有本地项目而从github中下载则不需要这项操作
 git init    
@@ -89,7 +72,7 @@ git remote -v
 git remote add <shortname> <url>
  
 #从远端仓库拉取本地没有的文件 
-git fetch [remote-name] 
+git fetch [remote-name]   
   
 #推送到远端仓库指定分支
 git push [remote-name] [branch-name]  
@@ -98,9 +81,13 @@ git push [remote-name] [branch-name]
 #远程仓库的更多信息
 git remote show [remote-name]
   
-#远端的分支拉取到本地与本地的合并，默认为 master -> master  
+#远端的分支拉取到本地与本地的当前分支合并，默认为 master -> master  
 #本地有而远端没有的文件不会被删除，都有的文件则会被同步
 git pull
+#相当于
+#git fetch origin master
+#git merge FETCH_HEAD
+
 
 #重命令远端仓库
 git remote rename <old_name> <new_name>
@@ -119,7 +106,7 @@ git tag -l 'v1.8.5*'       #过滤显示指定格式的tag
     
 #添加标签，指对本地有效 提交id由git log查看
 #git tag -a v1.2 9fceb02  
-git tag -a <tar-name> <commit-id>  
+git tag -a <tag-name> <commit-id>  
    
 #推送标签信息到远端 默认不会提交   
 git push <remote-name> <tag-name>
@@ -140,7 +127,8 @@ git log --pretty=oneline
 
 
 
-  
+
+#以下都只对本地的生效  
 #创建分支    
 git branch 0.0.1    
     
@@ -154,7 +142,50 @@ git checkout -b 0.0.1
 #另外一个分支合并到当前分支
 git merge iss53
 
+#列出分支  *开头为当前分支
+git branch --list
+
+#删除分支
+git branch -d 0.0.1
+
+
+#密码存储
+#默认在每次push都询问密码
+#可以设置密码的存储方式
+git config --global credential.helper cache        #存在内存中 定期清理
+git config --global credential.helper store        #存在磁盘 ~ 目录下
+
+
+
+#提交到不存在的远端分支则远端自动创建
+#远端分支的删除需要在远端删除
+#显示远端分支
+git ls-remote
 
 
 
 
+###################################################################################################
+
+submodule应用
+增加一个submodule到指定目录：
+
+git submodule add git://git.linphone.org/linphone.git ThirdParts/linphone
+
+git submodule add -b 3.10.x git://git.linphone.org/linphone.git ThirdParts/linphone
+
+.gitmodules 文件
+[submodule "ThirdParts/libpcap"]
+    path = ThirdParts/libpcap
+    url = https://github.com/the-tcpdump-group/libpcap.git
+    branch = libpcap-1.5
+[submodule "ThirdParts/sipp"]
+    path = ThirdParts/sipp
+    url = https://github.com/SIPp/sipp.git
+[submodule "ThirdParts/osip"]
+    path = ThirdParts/osip
+    url = git://git.savannah.gnu.org/osip.git
+[submodule "ThirdParts/linphone"]
+    path = ThirdParts/linphone
+    url = git://git.linphone.org/linphone.git
+    branch = 3.10.x

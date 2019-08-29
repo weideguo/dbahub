@@ -194,14 +194,6 @@ which command	##查看command的路径
 whereis command
 type command	##查看command的路径
 
-lsmod显示Linux内核中modules 的状态
-
-Module：  模块的名称。 这通常是模块文件的名称，减去扩展名（.o或.ko），但它可能有一个自定义名称，可以在使用insmod命令插入模块时将其指定为选项。
-Size：    驻留模块使用的内存量，以字节为单位。
-Used by： 此列包含一个数字，表示正在使用的模块实例数。 如果该数字为零，则当前未使用该模块。 数字后面的文本表示有关使用模块的内容的任何可用信息：这通常是设备名称，文件系统标识符或另一个模块的名称。
-
-cat /proc/modules  #对应的文件映射
-
 
 time command    #计算命令执行的时间
 date 显示时间
@@ -1655,6 +1647,10 @@ ssh -R <local port>:<remote host>:<remote port> <SSH hostname>   ##本地端口�
 ssh -R 3306:127.0.0.1:5640 -CNfg 192.168.59.129
 
 数据通过ssh传输，转发同时实现加密
+
+
+
+
 
 
 ##恢复
