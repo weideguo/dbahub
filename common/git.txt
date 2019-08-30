@@ -36,7 +36,9 @@ git diff
 
 
 #跟踪新文件 文件依然保存在本地仓库 文件每次要commit前都要执行
-git add xxx.txt    
+git add xxx.txt  
+#跟踪删除
+git rm yyy.txt    
 #git reset HEAD <file> 
 #撤销跟踪
 
@@ -144,6 +146,7 @@ git merge iss53
 
 #列出分支  *开头为当前分支
 git branch --list
+git branch -vv
 
 #删除分支
 git branch -d 0.0.1
@@ -152,8 +155,8 @@ git branch -d 0.0.1
 #密码存储
 #默认在每次push都询问密码
 #可以设置密码的存储方式
-git config --global credential.helper cache        #存在内存中 定期清理
-git config --global credential.helper store        #存在磁盘 ~ 目录下
+git config --global credential.helper cache        #存在内存中，定期清理 设置过期时间--timeout <seconds>
+git config --global credential.helper store        #存在磁盘~/.git-credentials 可以自行指定--file ~/.my-credentials
 
 
 
@@ -163,6 +166,20 @@ git config --global credential.helper store        #存在磁盘 ~ 目录下
 git ls-remote
 
 
+#跟踪远程分支 git pull获取的分支
+git checkout -b [branch] [remotename]/[branch]
+
+#删除远端分支
+git push origin --delete [remote-branch-name]
+
+
+git pull --rebase
+#相当于以下两条命令
+git fetch
+git rebase origin/master
+
+#合并 master 分支，使之包含来自 client 分支的修改 #会丢失提交信息？？
+git rebase [basebranch] [topicbranch]
 
 
 ###################################################################################################
@@ -189,3 +206,9 @@ git submodule add -b 3.10.x git://git.linphone.org/linphone.git ThirdParts/linph
     path = ThirdParts/linphone
     url = git://git.linphone.org/linphone.git
     branch = 3.10.x
+
+    
+    
+[![Build Status](https://img.shields.io/travis/geekwolf/fms.svg?branch=master)](https://img.shields.io/travis/geekwolf/fms.svg)
+[![Python Version](https://img.shields.io/badge/Python--3.6-paasing-green.svg)](https://img.shields.io/badge/Python--3.6-paasing-green.svg)
+[![Django Version](https://img.shields.io/badge/Django--1.11.0-paasing-green.svg)](https://img.shields.io/badge/Django--1.11.0-paasing-green.svg)

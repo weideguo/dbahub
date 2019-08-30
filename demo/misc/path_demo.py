@@ -13,10 +13,11 @@ import sys
 print __file__                       
 print os.path.dirname(__file__)                        #为相对路径
 
-print sys.argv[0]
+print sys.argv[0]                                       #文件名
 print os.path.realpath(sys.argv[0])
 print os.path.dirname(os.path.realpath(sys.argv[0]))    #为绝对路径
 
+print os.path.abspath(__file__)                         #文件的绝对路径
 
 sys.path.append(os.path.dirname(os.path.realpath(sys.argv[0]))+"/../")      #切换到上层目录以导入其他模块
 
@@ -36,6 +37,6 @@ pack1
 |
 +-----------+
 |           |  
-subpack1   subpack1
+subpack1   subpack2
 |
 real_name.py

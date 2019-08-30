@@ -10,6 +10,11 @@ cls().showme()
 
 
 
+
+
+
+
+
 #热加载技术
 """
 监听文件的时间 时间改变 即时加载
@@ -23,3 +28,19 @@ sys.modules
 """
 所有已经加载的模块的字典
 """
+
+#config.py
+a="aaaa"
+
+
+#demo.py
+if __name__ == "__main__":
+    import time
+    from imp import reload
+    import config
+    while True:
+        reload(config)
+        print(config.a)
+        time.sleep(2)
+        
+#config.py可以在线更改 无需重新运行demo.py
