@@ -10,6 +10,7 @@ a ab a+ ab+
 """
 
 #需要进行显示关闭
+#f=file("/path_to_file/file_name","r")   #file() open() 两者类似返回值都是file类
 f=open("/path_to_file/file_name","r")
 f.read()
 f.close()

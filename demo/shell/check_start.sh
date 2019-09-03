@@ -1,10 +1,15 @@
 #!/bin/sh
 #by weideguo
-cd $(dirname $0)
+
+#通过配置文件由端口检查服务是都存在，不存在则启动
+
 # process_list
 # 6379|/data/redis/redis-server /data/redis/redis.conf
 
-cat process_list | while read line
+cd $(dirname $0)
+config_file="process_list"
+
+cat ${config_file} | while read line
 do
     port=`echo $line | cut -d "|" -f 1`
     startup_command=`echo $line | cut -d "|" -f 2`
