@@ -14,3 +14,12 @@ https://localhost:15672                           #管理页面 默认存在账�
 rabbitmqctl 管理命令
 
 rabbitmqctl list_users
+
+
+
+
+#持久化机制
+Exchange、Queue、Message 可以设置持久化
+
+Message发送至Exchange 
+Exchange将Message发送给Queue

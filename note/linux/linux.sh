@@ -795,7 +795,7 @@ ps -ejH   #查看进程树
 ps axjf   
 
 pstree $pid				##查看进程、线程的层级
-
+tree                    ##展示目录的树状结构
 
 top                     ##使用子命令H查看线程，Tasks数增多
 
