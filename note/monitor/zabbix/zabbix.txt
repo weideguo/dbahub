@@ -1,0 +1,242 @@
+
+
+安装cmake
+cd $cmake_dir   		###切换到cmake源文件的根目录
+./configure
+make & make install
+
+
+
+安装mysql
+cd $mysql_source		###切换到mysql源文件的根目录
+cmake . -DCMAKE_INSTALL_PREFIX=/u01/mysql -DSYSCONFDIR=/u01/mysql/data
+make 
+make install
+
+切换到安装目录，初始化数据库
+scripts/mysql_install_db --datadir=/u01/mysql/data
+切换到/u01/mysql/data修改参数文件 my.cnf
+
+[mysqld]
+datadir =/u01/mysql/data
+port =3306
+socket =/tmp/mysqld.sock
+log-error=/u01/mysql/data/mysqld.log
+pid-file=/u01/mysql/data/mysqld.pid 
+explicit_defaults_for_timestamp=1
+
+
+安装php
+
+cd $php_source
+###遇到安装不得可能是版本问题，请使用更低版本
+###
+./configure --prefix=/u02/php --enable-fpm --with-mysql=/u01/mysql --with-jpeg-dir=/usr/lib64 --with-freetype-dir=/usr/include/freetype2/freetype  --with-gd --with-gettext --enable-mbstring --enable-sockets --enable-bcmath 
+make 
+make install
+
+cp php.ini-development /u02/php/lib/php.ini					###可以再启动后使用页面 <? phpinfo(); ?> 查看
+cp /u02/php/etc/php-fpm.conf.default /u02/php/etc/php-fpm.conf
+
+###修改/usr/local/lib/php.ini
+cgi.fix_pathinfo=0
+date.timezone =Asia/Shanghai
+max_execution_time = 300
+
+
+##修改/u02/php/etc/php-fpm.conf
+##修改的参数只对root用户有效
+user = weideguo
+group = weideguo
+
+
+##启动php
+##-c $php_ini_path/php.ini -y $php_fpm_conf_path/php-fpm.conf
+/u02/php/sbin/php-fpm -c /u02/php/lib/php.ini -y /u02/php/etc/php-fpm.conf
+
+
+./php-fpm -c ../lib/php.ini -y ../etc/php-fpm.conf
+
+安装nginx
+./configure --prefix=/u02/nginx
+make
+make install
+
+##修改/u02/nginx/conf/nginx.conf
+worker_processes  1;
+events {
+    worker_connections  1024;
+}
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    server {
+        listen       80;
+        server_name  localhost;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+        location ~ \.php$ {
+            root           html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+    }
+}
+
+###启动nginx
+/u02/nginx/sbin/nginx
+
+####在mysql中创建zabbix的数据库、用户并授予权限
+create database zabbix;
+grant all privileges on zabbix.* to 'zabbix'@'%' identified by 'zabbix';
+
+###初始化zabbix数据库 data.sql  images.sql  schema.sql
+mysql -uroot -p -h127.0.0.1 zabbix < $zabbix_source/database/mysql/schema.sql
+
+##编译安装zabbix
+./configure --prefix=/u02/zabbix --with-mysql --with-net-snmp --enable-agent --enable-proxy --enable-server --with-libcurl
+make install
+
+###修改/etc/services
+zabbix-agent    10050/tcp               # zabbix-agent
+zabbix-agent    10050/udp               # zabbix-agent
+zabbix-trapper  10051/tcp               # zabbix-trapper
+zabbix-trapper  10051/udp               # zabbix-trapper
+
+
+部署zabbix的web程序
+###复制zabbix源代码目录下的web程序到nginx中web的目录下
+cp $zabbix_source/frontends/php $nginx_home/html/zabbix        
+
+修改web的配置/u02/nginx/html/zabbix/conf目录下
+
+
+重启php-fpm、nginx
+进入web界面 http://localhost/zabbix/setup.php        
+根据界面的参数说明修改修改/u02/php/lib/php.ini及安装php模块
+###web前端默认账号/密码：admin/zabbix
+
+
+php模块安装
+###$extentiion_name为对应的模块名
+cd $php_source/ext/$extentiion_name
+/u02/php/bin/phpize												###生成configure文件  phpize
+./configure --with-php-config=/u02/php/bin/php-config			###./configure 
+make
+make install
+把生成的so文件复制到php的extensions目录下
+修改php.ini 
+##$extension_path为so文件所在目录的路径 $extension_name为so文件名
+extension_dir=$extension_path	
+extension=$extension_name		
+
+
+###出现mysql_connect()过期的告警，使用php5.5以下的版本
+
+###解决启动zabbix_server时出现libmysqlclient.so.18缺失
+locate libmysqlclient.so.18
+##由locate命令所得的路径修改/etc/ld.so.conf.d/mysql-x86_64.conf的内容
+ldconfig
+
+##修改/u02/zabbix/etc/zabbix_server.conf
+LogFile=/tmp/zabbix_server.log
+PidFile=/tmp/zabbix_server.pid
+DBName=zabbix
+DBUser=zabbix
+DBPassword=zabbix
+ListenIP=127.0.0.1
+
+启动zabbix服务端后台
+/u02/zabbix/sbin/zabbix_server
+
+
+###zabbix需要在被监控的主机上安装agent
+
+
+##修改/u02/zabbix/etc/zabbix_agentd.conf
+LogFile=/tmp/zabbix_agentd.log
+Server=127.0.0.1				###被动模式，允许访问的zabbix服务器
+ServerActive=127.0.0.1			###主动模式，向zabbix服务器发送数据
+Hostname=db1.yh.cn				###与web界面Configuration->Hosts->name一致
+LogFile=/tmp/zabbix_agentd.log
+ListenPort=10052
+
+
+###启动agent
+/u02/zabbix/sbin/zabbix_agentd
+
+
+
+Configuration->Hosts->Create Host    ###在web界面添加监控的主机
+
+
+
+
+proxy
+##zabbix_proxy收集 zabbix_agentd的信息，发给zabbix_server。
+###配置文件/u02/zabbix/etc/zabbix_proxy.conf
+ProxyMode=1
+Server=127.0.0.1					###zabbix_server地址
+Hostname=zabbix_proxy				###与zabbix_server的web界面Administration->DM->name一致
+LogFile=/tmp/zabbix_proxy.log
+DBName=zabbix_proxy
+DBUser=zabbix_proxy
+DBPassword=zabbix_proxy
+ServerPort=10051
+ListenPort=10050
+
+
+
+####在mysql中创建zabbix的数据库、用户并授予权限
+create database zabbix_proxy;
+grant all privileges on zabbix_proxy.* to 'zabbix_proxy'@'%' identified by 'zabbix_proxy';
+
+###初始化数据库，只需创表
+mysql -uroot -p -h127.0.0.1 zabbix_proxy < $zabbix_source/database/mysql/schema.sql
+
+###启动proxy
+/u02/zabbix/sbin/zabbix_proxy
+
+
+
+
+
+添加监控
+
+
+
+
+
+
+测试
+
+bin/zabbix_get -s 127.0.0.1 -p 8099 -k key_name      #测试获取key的值
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

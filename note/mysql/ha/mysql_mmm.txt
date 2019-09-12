@@ -1,0 +1,26 @@
+Master-Master replication manager
+
+双主多从
+
+mmm依赖perl包
+liblog-log4perl-perl libmailtools-perl liblog-dispatch-perl libclass-singleton-perl libproc-daemon-perl libalgorithm-diff-perl libdbi-perl libdbd-mysql-perl
+
+
+/usr/lib/perl5/vendor_perl/5.8.8/MMM                    MMM使用的主要perl模块
+/usr/lib/mysql-mmm                                      MMM使用的主要脚本
+/usr/sbin                                               MMM使用的主要命令的路径
+/etc/init.d/                                            MMM的agent和monitor启动服务的目录
+/etc/mysql-mmm                                          MMM配置文件的路径，默认所以的配置文件位于该目录下
+/var/log/mysql-mmm                                      默认的MMM保存日志的位置
+
+
+mmm_common.conf，mmm_agent.conf为agent端的配置文件
+mmm_mon.conf为monitor端的配置文件
+
+
+agent节点(部署在每个数据库实例的主机上)
+
+
+monitor节点
+
+

@@ -1,0 +1,96 @@
+#申明本机使用的IP地址，也可以不说明
+;local a.b.c.d
+#申明使用的端口，默认1194
+port 1194
+#申明使用的协议，默认使用UDP，如果使用HTTP proxy，必须使用TCP协议
+;proto tcp
+proto udp
+#申明使用的设备可选tap和tun，tap是二层设备，支持链路层协议。
+#tun是ip层的点对点协议，限制稍微多一些，本人习惯使用TAP设备
+dev tap
+;dev tun
+#OpenVPN使用的ROOT CA，使用build-ca生成的，用于验证客户是证书是否合法
+ca ca.crt
+#Server使用的证书文件
+cert server.crt
+#Server使用的证书对应的key，注意文件的权限，防止被盗
+key server.key # This file should be kept secret
+#CRL文件的申明，被吊销的证书链，这些证书将无法登录
+crl-verify vpncrl.pem
+#上面提到的生成的Diffie-Hellman文件
+dh dh1024.pem
+#这是一条命令的合集，如果你是OpenVPN的老用户，就知道这条命令的来由
+#这条命令等效于：
+# mode server #OpenVPN工作在Server模式，可以支持多client同时动态接入
+# tls-server #使用TLS加密传输，本端为Server，Client端为tls-client
+#
+# if dev tun: #如果使用tun设备，等效于以下配置
+# ifconfig 10.8.0.1 10.8.0.2 #设置本地tun设备的地址
+# ifconfig-pool 10.8.0.4 10.8.0.251 #说明OpenVPN使用的地址池（用于分配给客户），分别是起始地址、结束地址
+# route 10.8.0.0 255.255.255.0 #增加一条静态路由，省略下一跳地址，下一跳为对端地址，这里是: 10.8.0.2
+# if client-to-client: #如果使用client-to-client这个选项
+# push “route 10.8.0.0 255.255.255.0″ #把这条路由发送给客户端，客户连接成功后自动加入路由表，省略了下一跳地址: 10.8.0.1
+# else
+# push “route 10.8.0.1″ #否则发送本条路由，这是一个主机路由，省略了子网掩码和下一跳地址，分别为: 255.255.255.255 10.8.0.1
+#
+# if dev tap: #如果使用tap设备，则等效于以下命令
+# ifconfig 10.8.0.1 255.255.255.0 #配置tap设备的地址
+# ifconfig-pool 10.8.0.2 10.8.0.254 255.255.255.0 #客户端使用的地址池，分别是起始地址、结束地址、子网掩码
+# push “route-gateway 10.8.0.1″ #把环境变量route-gateway传递给客户机
+#
+server 10.8.0.0 255.255.255.0 #等效于以上命令
+#用于记录某个Client获得的IP地址，类似于dhcpd.lease文件，
+#防止openvpn重新启动后“忘记”Client曾经使用过的IP地址
+ifconfig-pool-persist ipp.txt
+#Bridge状态下类似DHCPD的配置，为客户分配地址，由于这里工作在路由模式，所以不使用
+;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
+#通过VPN Server往Client push路由，client通过pull指令获得Server push的所有选项并应用
+;push “route 192.168.10.0 255.255.255.0″
+;push “route 192.168.20.0 255.255.255.0″
+#VPN启动后，在VPN Server上增加的路由，VPN停止后自动删除
+;route 10.9.0.0 255.255.255.252
+#Run script or shell command cmd to validate client
+#virtual addresses or routes. 具体查看manual
+;learn-address ./script
+#其他的一些需要PUSH给Client的选项
+#
+#使Client的默认网关指向VPN，让Client的所有Traffic都通过VPN走
+;push “redirect-gateway”
+#DHCP的一些选项，具体查看Manual
+;push “dhcp-option DNS 10.8.0.1″
+;push “dhcp-option WINS 10.8.0.1″
+#如果可以让VPN Client之间相互访问直接通过openvpn程序转发，
+#不用发送到tun或者tap设备后重新转发，优化Client to Client的访问效率
+client-to-client
+#如果Client使用的CA的Common Name有重复了，或者说客户都使用相同的CA
+#和keys连接VPN，一定要打开这个选项，否则只允许一个人连接VPN
+;duplicate-cn
+#NAT后面使用VPN，如果VPN长时间不通信，NAT Session可能会失效，
+#导致VPN连接丢失，为防止之类事情的发生，keepalive提供一个类似于ping的机制，
+#下面表示每10秒通过VPN的Control通道ping对方，如果连续120秒无法ping通，
+#认为连接丢失，并重新启动VPN，重新连接
+#（对于mode server模式下的openvpn不会重新连接）。
+keepalive 10 120
+#上面提到的HMAC防火墙，防止DOS攻击，对于所有的控制信息，都使用HMAC signature，
+#没有HMAC signature的控制信息不予处理，注意server端后面的数字肯定使用0，client使用1
+tls-auth ta.key 0 # This file is secret
+#对数据进行压缩，注意Server和Client一致
+comp-lzo
+#定义最大连接数
+;max-clients 100
+#定义运行openvpn的用户
+user nobody
+group nobody
+#通过keepalive检测超时后，重新启动VPN，不重新读取keys，保留第一次使用的keys
+persist-key
+#通过keepalive检测超时后，重新启动VPN，一直保持tun或者tap设备是linkup的，
+#否则网络连接会先linkdown然后linkup
+persist-tun
+#定期把openvpn的一些状态信息写到文件中，以便自己写程序计费或者进行其他操作
+status openvpn-status.log
+#记录日志，每次重新启动openvpn后删除原有的log信息
+log /var/log/openvpn.log
+#和log一致，每次重新启动openvpn后保留原有的log信息，新信息追加到文件最后
+;log-append openvpn.log
+#相当于debug level，具体查看manual
+verb 3

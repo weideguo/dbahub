@@ -1,0 +1,7 @@
+tomcat三种模式
+bio  blocking I/O
+nio  new I/O
+apr  Apache Portable Runtime
+
+
+

@@ -1,0 +1,66 @@
+openvpn服务端和客户端使用的配置文件不同，使用的程序相同
+
+使用easyrsa制作服务端证书和客户端证书
+先设置var文件中参数
+
+
+在easy-rsa-master_server/easy3下操作
+
+1 ./easyrsa init-pki 
+初始化，会在当前目录创建PKI目录，用于存储一些中间变量及最终生成的证书 
+
+2 ./easyrsa build-ca 
+创建根证书，首先会提示设置密码，用于ca对之后生成的server和client证书签名时使用
+
+3 ./easyrsa gen-req server nopass 
+创建server端证书和private key
+nopass表示不加密private key
+
+4 ./easyrsa sign server server 
+给server端证书做签名
+输入build-ca时设置的那个密码；第二个server不是关键字，对应操作3的证书名
+
+5 ./easyrsa gen-dh 
+创建Diffie-Hellman
+
+	
+	创建client端证书
+	在easy-rsa-master_client/easy3下操作，使用另外一个目录，否则会删除之前的server端证书
+		./easyrsa init-pki  
+		./easyrsa gen-req client nopass 
+	生成文件在easy-rsa-master_clilent/easyrsa3/pki/reqs
+
+6  ./easyrsa import-req easy-rsa-master_clilent/easyrsa3/pki/reqs/client.req client 
+
+7 ./easyrsa sign client client 
+给client端证书做签名
+输入build-ca时设置的那个密码；第二个client不是关键字，对应创建client端操作的证书名
+
+
+8、生成ta.key(可选操作，如果服务端设置，则客户端也需要设置，使用相同的文件)
+openvpn --genkey --secret ta.key 
+
+
+.key 私钥
+.crt 公钥
+
+
+服务端
+linux下启动
+./openvpn --config ../conf/server.conf   ###由指定的配置文件启动
+
+需要的证书
+ca ca.crt
+cert server.crt
+key server.key 
+dh dh.pem
+
+
+客户端
+window下配置文件在config文件夹下
+
+需要的证书
+ca ca.crt
+cert client.crt
+key client.key
+

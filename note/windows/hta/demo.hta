@@ -1,0 +1,46 @@
+<HTML>  
+<HEAD>  
+<HTA:APPLICATION  
+CAPTION="no"  
+SCROLL="no"  
+SHOWINTASKBAR="no"  
+INNERBORDER="no"  
+CONTEXTMENU="no"  
+BORDER="none"  
+SINGLEINSTANCE="yes"  
+WINDOWSTATE="maximize"  
+> 
+<title>random color</title> 
+<script type="text/javascript">
+var randDiv =  document.createElement("DIV");  
+window.onload = function()  
+{  
+    randDiv.style.cssText = "filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50);";  
+    randDiv.style.position = "absolute";      
+	randDiv.style.top =0;  
+    randDiv.style.left = 0;  
+    randDiv.style.width = 1366;  
+    randDiv.style.height = 768; 	
+	//randDiv.style.background = "#81cecf";
+	document.body.appendChild(randDiv);
+	setColor();
+}  
+function setColor(){	
+	randDiv.style.background=getRandomColor();
+	setTimeout("setColor()",100);
+}
+function getRandomColor()  
+{  
+    var r = Math.floor(Math.random() * 255).toString(16);  //获取十六进制
+    var g = Math.floor(Math.random() * 255).toString(16);  
+    var b = Math.floor(Math.random() * 255).toString(16);  
+    r = r.length == 1 ? "0" + r : r;  ////补全为两位十进制
+    g = g.length == 1 ? "0" + g : g;  
+    b = b.length == 1 ? "0" + b : b;  
+    return "#" + r + g + b;  
+}
+</script>
+</HEAD>  
+<BODY>  
+</BODY>  
+</HTML>

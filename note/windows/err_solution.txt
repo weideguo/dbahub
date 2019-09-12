@@ -1,0 +1,14 @@
+netsh winsock reset
+winsock是Windows网络编程接口，winsock工作在应用层，它提供与底层传输协议无关的高层数据传输编程接口 netsh winsock reset 是把它恢复到默认状态
+
+netsh winsock reset命令，作用是重置 Winsock 目录。
+如果一台机器上的Winsock协议配置有问题的话将会导致网络连接等问题，就需要用netsh winsock reset命令来重置Winsock目录借以恢复网络。
+这个命令可以重新初始化网络环境，以解决由于软件冲突、病毒原因造成的参数错误问题。
+netsh是一个能够通过命令行操作几乎所有网络相关设置的接口，比如设置IP，DNS，网卡，无线网络等，Winsock是系统内部目录，
+Winsock是Windows网络编程接口，winsock工作在应用层，它提供与底层传输协议无关的高层数据传输编程接口，reset是对Winsock的重置操作。
+当执行完winsock的命令重启计算机后，需要重新配置IP。
+
+1.单击“开始”，在开始搜索框中键入cmd，右键单击“cmd.exe”，单击“以管理员身份运行”，然后按“继续”。
+2.在命令提示符处键入 netsh winsock reset，然后按 Enter。
+3.注意：如果该命令键入错误，则出现一条错误消息。重新键入该命令。当该命令成功完成时，出现一条确认消息，后跟一个新的命令提示符。
+4.然后键入 exit，然后按 Enter，退出命令行对话框。

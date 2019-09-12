@@ -1,0 +1,64 @@
+SSL
+secure sockets layer  安全套接层
+
+TLS
+transport layer security 传输层安全
+
+TLS与SSL在传输层对网络连接进行加密
+
+tomcat中启用https
+
+1.使用keytool生成keystore 
+2.设置tomcat下conf/server.xml文件
+	<Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol"
+               maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" 
+			   keystoreFile="D:/tomcat.keystore"
+			   keystorePass="Carnation2015"
+			   />
+	
+	生成安全证书时的姓氏与姓名为域名
+	添加后可以删除8080端口的配置，即只使用8443端口
+	https默认端口是443，设置成443即可不用输入端口号
+	keystoreFile	服务端的keysore文件
+	keystorePass	生成安全证书时的密码
+	
+	clientAuth		是否需要验证客户端证书
+	false 单向SSL验证。
+	true  强制双向SSL验证。必须验证客户端证书。    
+	want  可以验证客户端证书，但如果客户端没有有效证书，也不强制验证。 
+	双向验证需要在<Connector>添加  
+		truststoreFile="E:/client.keystore" truststorePass="client_pwd"   
+	对应由客户端cer文件生成的keystore文件，以及在生成文件时设置的密码
+	
+
+keystore               私钥  自签证书(self-signed certificate)
+crt/cer (certificate)  公钥
+
+CSR (Certificate Signing Request)证书签名请求，生成证书时要把这个提交给权威的证书颁发机构。	
+CA (certificate authority)  数据证书认证中心
+
+java环境下生成
+keytool -genkeypair -alias "tomcat" -keyalg "RSA" -keystore "E:/server.keystore"  						###生成keystore
+keytool -export -trustcacerts -alias "tomcat" -file "E:/server.cer"    			  						###依据keystore生成证书文件
+			
+keytool -certreq -keyalg "RSA " -alias "tomcat" -file "E:/certreq.csr" -keystore "E:/server.keystore" 	###生成csr文件
+
+keytool -import -alias "clientkey" -file "E:/client.cer" -keystore "E:/client.keystore"   				###由客户端的证书文件（cer）生成keystore文件，以供双向SSL验证使用
+
+
+参数意义
+		-genkeypair 生成秘钥对
+		-alias 		别名
+		-keyalg 	加密算法
+		-keystore 	保存路径与文件名	
+		-file	    生成的文件
+
+
+		
+		
+使用openssl也可以生成 公钥/私钥
+	
+
+验证权威证书、公钥、私钥	
+openssl verify -CAfile ca.pem server-cert.pem client-cert.pem

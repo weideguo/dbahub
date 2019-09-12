@@ -1,0 +1,110 @@
+安卓框架
+application
+
+application framework
+	View  System		一套用于图形界面开发组件
+	Activity Manager	管理Activity的生命周期
+	Content Providers	管理数据共享
+	Resource Manager	管理资源文件
+	Location Manager	管理定位服务
+	Telephony Manager	管理电话服务
+libraries+android runtime
+	OpenGL ES			开发3D图形技术
+	SQLite				嵌入式数据库
+	WebKit				Web浏览器引擎
+	Media Framework		支持音频视频解码、录制
+	Surface Manager 	Android平台绘制窗口和控件，以及绘制一些图形和视频输出
+linux kernel
+
+
+Android工程目录
+src  	存放源代码
+gen		自动生成文件
+bin		存放编译后的字节码，编译过程为首先编译成安卓的java虚拟机（Dalvik Virtual Machine）文件classes.dex,在打包成apk包
+libs	外部依赖包
+res		存放资源,在此目录的资源或被R.java自动记录
+assets  存放资源，不会在R.java自动生成id，读取assets目录下的文件必须指定文件的路径
+
+android五个常用组件：
+	Activity、Service、Broadcast Receiver、Content Provider、Intent
+
+Activity
+	onCreate()
+	onStart()
+	onResume()
+	onPause()
+	onStop()
+	onDestroy()
+	
+
+使用 Intent 实现页面调转：
+新的页面（对应java文件，每个页面一个java文件加一个xml文件）应该在AndroidMainfest.xml文件中注册
+
+android 平台数据存储形式：
+文件系统
+	资源文件    存放在：/res/raw、/asset   只可读
+	数据区文件  存放在：/data/data/{app名}/files/    可读写  
+	SD卡文件    存放在：sdcard上  可读写
+嵌入式数据库SQLite
+网络
+Shared Preference   默认存储在/data/dat/{app名}/shared_prefs
+
+SQLite
+管理命令：以"."开头，结尾不加";"
+.help    		查看帮助
+.quite   		退出sqlite命令行
+.tables  		显示该库中所有的表
+.schema<表名>	显示表的结构信息
+
+android模拟器sdcard为read only file system 解决方法：
+	进入adb shell
+	mount -o remount rw /
+	chmod 777 sdcard 
+
+在cmd中使用telnet可以远程登录android模拟器（如：telnet localhost 5554）
+
+
+	
+
+	
+使用sdcard应该在AndroidMainfest.xml文件中输入可读取sdcard权限的语句
+	<!-- 在SDCard中创建与删除文件权限 -->  
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>  
+    <!-- 往SDCard写入数据权限 -->  
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>  
+
+配置文件中对Activity节点添加android:screenOrientation属性(landscape是横向，portrait是纵向)
+android:screenOrientation="portrait"
+
+
+Service、Broadcast Receiver 为非UI后台组件
+Service
+	onCreate()
+	onStart()
+	onDestroy()
+
+	本地Service、远程Service
+	
+	AIDL Android接口描述语言
+
+	
+数据交换格式
+	纯文本
+	xml
+	JSON（JavaS Object Notation）
+
+网络通信
+	Socket
+		原始的通讯方式
+	HTTP 
+		java.net.URL类 （只能发出GET请求）
+		HttpClient类库 （Apache提供）
+	Web Service
+		使用第三方类库 KSOAP2
+		
+DTD （Document Type Definition，文档类型定义）
+XML解析方式
+	DOM
+	SAX
+	
+

@@ -1,0 +1,91 @@
+使用mysql_upgrade升级数据库
+
+
+#####mysql5.5.30######
+###编译安装
+cd $mysql5530_src
+cmake . -DCMAKE_INSTALL_PREFIX=/u05/mysql5530 -DSYSCONFDIR=/u05/mysql5530/data -DMYSQL_DATADIR=/u05/mysql5530/data -DMYSQL_UNIX_ADDR=/u05/mysql5530/data/mysqld.sock
+make
+make install
+
+###初始化数据库
+cd /u05/mysql5530
+scripts/mysql_install_db --datadir=/u05/mysql5530/data
+####修改/u05/mysql5530/data/my.cnf
+[mysqld]
+ basedir =/u05/mysql5530
+ datadir =/u05/mysql5530/data
+ port =3306
+ server_id = 1
+ socket =/u05/mysql5530/data/mysqld.sock
+ log-error=/u05/mysql5530/data/mysqld.log
+ pid-file=/u05/mysql5530/data/mysqld.pid
+
+####启动mysql5.5.30
+cd /u05/mysql5530/bin
+./mysqld --defaults-file=../data/my.cnf &
+
+###导入数据到5.5.30
+./mysql -u root hive < /home/weideguo/20161205/hive.201612050300_192_168_3_138_3306.sql
+./mysql -u root yh_rpt_extract < /home/weideguo/20161205/yh_rpt_extract.201612050300_192_168_3_138_3306.sql
+./mysql -u root yh_rpt_finance < /home/weideguo/20161205/yh_rpt_finance.201612050300_192_168_3_138_3306.sql
+./mysql -u root yh_rpt_hjlr_ios < /home/weideguo/20161205/yh_rpt_hjlr_ios.201612050300_192_168_3_138_3306.sql
+./mysql -u root yh_rpt_hjlr_zyy < /home/weideguo/20161205/yh_rpt_hjlr_zyy.201612050300_192_168_3_138_3306.sql
+./mysql -u root youlong_report < /home/weideguo/20161205/youlong_report.201612050659_192_168_3_138_3306.sql
+
+###导出mysql5.5.30的数据
+./mysqldump -u root yh_rpt_extract > /home/weideguo/mybackup/5530/yh_rpt_extract_5530.sql
+./mysqldump -u root yh_rpt_finance > /home/weideguo/mybackup/5530/yh_rpt_finance_5530.sql
+./mysqldump -u root yh_rpt_hjlr_ios > /home/weideguo/mybackup/5530/yh_rpt_hjlr_ios_5530.sql
+./mysqldump -u root youlong_report > /home/weideguo/mybackup/5530/youlong_report_5530.sql
+./mysqldump -u root yh_rpt_hjlr_zyy > /home/weideguo/mybackup/5530/yh_rpt_hjlr_zyy_5530.sql
+./mysqldump -u root hive > /home/weideguo/mybackup/5530/hive_5530.sql
+ 
+ 
+#######mysql5.6.34#######
+###编译安装
+cd $mysql5634_src
+cmake . -DCMAKE_INSTALL_PREFIX=/u05/mysql5634 -DSYSCONFDIR=/u05/mysql5634/data -DMYSQL_DATADIR=/u05/mysql5634/data -DMYSQL_UNIX_ADDR=/u05/mysql5634/data/mysqld.sock
+make
+make install
+
+####删除编译安装时生成的数据目录，使用旧版mysql的数据
+rm -rf /u05/mysql5634/data						
+cp -R  /u05/mysql5530/data /u05/mysql5634/data
+###修改/u05/mysql5634/data/my.cnf
+[mysqld]
+ basedir =/u05/mysql5634
+ datadir =/u05/mysql5634/data
+ port =3307
+ server_id = 2
+ socket =/u05/mysql5634/data/mysqld.sock
+ log-error=/u05/mysql5634/data/mysqld.log
+ pid-file=/u05/mysql5634/data/mysqld.pid
+ explicit_defaults_for_timestamp=1
+
+###启动mysql5.6.34
+cd /u05/mysql5634/bin
+./mysqld --defaults-file=../data/my.cnf &
+
+###升级数据文件
+./mysql_upgrade
+
+###导出mysql5.6.34的数据
+./mysqldump -u root yh_rpt_extract > /home/weideguo/mybackup/5634/yh_rpt_extract_5634.sql
+./mysqldump -u root yh_rpt_finance > /home/weideguo/mybackup/5634/yh_rpt_finance_5634.sql
+./mysqldump -u root yh_rpt_hjlr_ios > /home/weideguo/mybackup/5634/yh_rpt_hjlr_ios_5634.sql
+./mysqldump -u root youlong_report > /home/weideguo/mybackup/5634/youlong_report_5634.sql
+./mysqldump -u root yh_rpt_hjlr_zyy > /home/weideguo/mybackup/5634/yh_rpt_hjlr_zyy_5634.sql
+./mysqldump -u root hive > /home/weideguo/mybackup/5634/hive_5634.sql
+
+
+##使用diff命令对比mysql5.6.34和mysql5.6.34导出的数据
+cd /home/weideguo/mybackup/5634/
+diff yh_rpt_extract_5634.sql ../5530/yh_rpt_extract_5530.sql 
+diff yh_rpt_finance_5634.sql ../5530/yh_rpt_finance_5530.sql 
+diff yh_rpt_hjlr_ios_5634.sql ../5530/yh_rpt_hjlr_ios_5530.sql 
+diff youlong_report_5634.sql ../5530/youlong_report_5530.sql
+diff yh_rpt_hjlr_zyy_5634.sql ../5530/yh_rpt_hjlr_zyy_5530.sql 
+diff hive_5634.sql ../5530/hive_5530.sql 
+
+
