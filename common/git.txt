@@ -14,6 +14,12 @@ git config --global user.email johndoe@example.com
 #设置信息查看
 git config --list
 
+#密码存储
+#默认在每次push都询问密码
+#可以设置密码的存储方式
+git config --global credential.helper cache        #存在内存中，定期清理 设置过期时间--timeout <seconds>
+git config --global credential.helper store        #存在磁盘~/.git-credentials 可以自行指定--file ~/.my-credentials
+
 
 
 #在已有项目文件下创建.git文件 如果没有本地项目而从github中下载则不需要这项操作
@@ -127,7 +133,8 @@ git push origin :refs/tags/<tag-name>
 git log    
 git log --pretty=oneline    
 
-
+#回滚到某次提交
+git reset --hard <commit_id>
 
 
 #以下都只对本地的生效  
@@ -150,13 +157,6 @@ git branch -vv
 
 #删除分支
 git branch -d 0.0.1
-
-
-#密码存储
-#默认在每次push都询问密码
-#可以设置密码的存储方式
-git config --global credential.helper cache        #存在内存中，定期清理 设置过期时间--timeout <seconds>
-git config --global credential.helper store        #存在磁盘~/.git-credentials 可以自行指定--file ~/.my-credentials
 
 
 
