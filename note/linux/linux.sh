@@ -997,6 +997,9 @@ set -- v1 v2 v3
 ##$2    ##2=v2
 ##$3    ##3=v3
 
+set -x          # 执行指令前，先输出指令
+#set -o xtrace  # 与set -x效果一样  
+
 
 SHELL脚本
 参数

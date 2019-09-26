@@ -119,7 +119,7 @@ git tag -a <tag-name> <commit-id>
 #推送标签信息到远端 默认不会提交   
 git push <remote-name> <tag-name>
 #git push origin v1.5
- 
+#git push [remoteName] [localBranchName]
  
 #删除标签 指对本地有效
 git tag -d <tag-name>
@@ -159,12 +159,19 @@ git branch -vv
 git branch -d 0.0.1
 
 
+#切换到分支 并清除所有提交的log
+git checkout --orphan <commit-id>
+
 
 #提交到不存在的远端分支则远端自动创建
 #远端分支的删除需要在远端删除
 #显示远端分支
 git ls-remote
 
+#提交本地分支到远端分支 
+#远端分支不存在则自动创建
+#git push [remote-name] [local-branch]:[remote-branch]
+git push origin master:0.1
 
 #跟踪远程分支 git pull获取的分支
 git checkout -b [branch] [remotename]/[branch]

@@ -3,19 +3,17 @@ yum install salt-master
 yum install salt-minion
 
 
-/etc/salt/minion   #修改连接的master
-
-
-service salt-master start
-service salt-minion start
-
 
 
 #对master操作
-salt-key -a minion_ip     #将minion加入master
+salt-key -a minion_ip     #将master接受minion-key
+
+salt-key -L               #查看minion的key
+                          #minion上线后master端联系，把自己的pubkey发过去，这时master接受该minion-key后，也就是master与minion已经互信
 
 
-minion上线后master端联系，把自己的pub key发过去，这时master端通过salt-key -L命令就会看到minion的key，接受该minion-key后，也就是master与minion已经互信
+salt '*' sys.list_functions     #列出模块
+salt '*' sys.list_modules       #列出function
 
 
 ##命令分发
@@ -49,6 +47,8 @@ salt-call cmd.run 'ifconfig'  ##minion上执行自己执行cmd.run函数
 import salt.client
 local = salt.client.LocalClient()   #使用默认配置，可以修改其他连接参数
 
+local.opts['syndic_wait']=0         #重新设置这个参数 默认为5 会休眠5秒后再返回结果
+
 #同步执行
 local.cmd('*', 'cmd.run', ['whoami'])
 
@@ -65,20 +65,21 @@ for i in x:
 
 
 
+
 ##实现多级master Salt Syndic
 
- master0
-    |
-    |
---------------
-|            |
-master1      master2
-|
-|
-------------
-|          |
-minion11     minion12
-
+ master0               |   service salt-master start    |  #grep ^[a-z] /etc/salt/master
+    |                  |                                |  order_masters: True
+    |                  |                                |  
+--------------         |                                |  
+|            |         |                                |  
+master1      master2   |   service salt-master start    |  #grep ^[a-z] /etc/salt/master
+|                      |   service salt-syndic start    |  auto_accept: True
+|                      |                                |  syndic_master: <master0-ip>
+------------           |                                |  
+|          |           |                                |  
+minion11     minion12  |   service salt-minion start    |  #grep "^[a-Z]" /etc/salt/minion
+					   |                                |  master: <master1-ip or master2-ip>
 
 
 
