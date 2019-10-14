@@ -1,0 +1,10 @@
+#流媒体协议
+RTMP
+tcp
+
+
+RTSP
+tcp
+
+httpflv
+http

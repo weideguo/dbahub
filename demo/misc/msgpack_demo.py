@@ -7,6 +7,12 @@ var = {'a': 'this',
        'c': 'a test'
 }
 
+#直接转换
+#参数可以是字符串 字典
+x=msgpack.dumps(var)
+msgpack.loads(x)
+
+
 with open('/root/data.txt', 'wb') as f1:
     msgpack.dump(var, f1)                  # 存储数据
 	
