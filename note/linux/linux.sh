@@ -1238,7 +1238,16 @@ trap "echo 'hello'" INT		###键盘ctrl+c，执行echo hello命令
 
 
 关闭ICMP回应(不能使用ping命令连接)
-/proc/sys/net/ipv4/icmp_echo_ignore_all   ###设置为0，开启；1，关闭
+
+临时设置
+#设置为0，开启；1，关闭
+echo 0 >/proc/sys/net/ipv4/icmp_echo_ignore_all
+
+永久设置
+#vim /etc/sysctl.conf
+net.ipv4.icmp_echo_ignore_all=1
+
+
 
 开启器端路由转发功能
 vi /etc/sysctl.conf
@@ -1684,6 +1693,15 @@ tcpdump 导出后的文件可以使用wireshark打开
 
 #######################################################################################################################
 dos2unix    #dos的文本转换成unix的
+
+
+
+#####################################
+GPU
+
+lspci | grep -i vga      #查看显卡信息
+
+
 
 
 

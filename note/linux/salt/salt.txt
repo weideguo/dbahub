@@ -7,6 +7,7 @@ yum install salt-minion
 
 #对master操作
 salt-key -a minion_ip     #将master接受minion-key
+salt-key -d minion_ip     #将master删除minion-key
 
 salt-key -L               #查看minion的key
                           #minion上线后master端联系，把自己的pubkey发过去，这时master接受该minion-key后，也就是master与minion已经互信
