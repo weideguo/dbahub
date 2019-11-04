@@ -1,0 +1,37 @@
+#完全并发操作 每个主机一个并发 可以分发多个命令
+#多条命令会串行执行 即执行第一条完毕且返回码为0，然后再执行下一条
+#service iptables stop
+#service iptables status
+#FILE 上传；上传的文件名为当前目录的相当路径 或 绝对路径；后一项为目录名，不存在都创建;
+#force会使用时间戳重命名已经存在的目录，重新创建
+#FILE:ip_list:/data/bbb:force
+#FILE:ip_list:/data/bbb
+#FILE:ip_list:/data/bbb
+#FILE:/root/ip_list:/data/bbb
+#ls -altr /data/
+#ls -alt /data/ | grep '20181224'
+#crontab -l
+#which mysqladmin
+#mysqladmin -uroot -pmysql_passwd shutdown
+#mysql -uroot -pmysql_passwd -Bse "show databases" | grep "db_strategy_"
+#mysql -Bse "select now()"
+#mysql -Bse "select \"aaa\""
+#mysql -Bse "select 'aaa'"
+#mysql -e'show processlist'
+#mysql -e'show databases'
+#单引号不能转义 只能将分割成多个命令
+#可以正常使用单引号双引号
+#echo '"this is my favorite "'
+#echo "'abcd'"
+#echo "abcd"`date`
+#ps -ef | grep mysqld
+#ls -altr /data/gameTools/config
+#ls -altr /etc/localtime
+#who
+#command_list ip_list 文件可以存在空行以及空格
+# 
+date
+#后台运行存在bug 不会正常返回 但会执行 终止当前操作不会影响已经分发的命令
+#/mysqld_safe &
+#echo 'host_passwd' | passwd --stdin root
+#mv /data/aaa /data/aaa.bak20191104
