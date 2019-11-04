@@ -5,6 +5,7 @@
 需要预先安装好sshpass 并设置文件 config.sh
 
 command_list 命令存放文件
+
 ip_list      分发的ip
 
 
