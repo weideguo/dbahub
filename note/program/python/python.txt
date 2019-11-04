@@ -43,6 +43,13 @@ sys.path
 sys.path.append("/path_to_store_python_model")
 
 
+#python编译安装时指定使用的库 如制定使用特定位置下的sqlite库
+./configure
+LD_RUN_PATH=/usr/local/lib make
+LD_RUN_PATH=/usr/local/lib make install
+
+
+
 pip安装
 wget https://bootstrap.pypa.io/2.6/get-pip.py  
 python get-pip.py  

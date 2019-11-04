@@ -20,6 +20,8 @@ npm install                #安装所有依赖包 文件package.json中模块dep
 npm install package-name   #安装模块
 npm install --production   #安装文件package.json中模块dependencies的包
 
+npm info package-name      #查看模块的信息 如版本号
+
 #####################################################################
 npm set registry https://registry.some_other_else       #增加镜像源
 npm config rm registry                                  #删除镜像源
