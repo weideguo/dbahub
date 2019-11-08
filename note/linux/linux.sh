@@ -399,7 +399,7 @@ date -R                    #显示时区
 
 #查看时区
 ll /etc/timezone
-
+ll /etc/localtime    #centos
 
 #修改时区
 #操作后直接生效 不需要重启

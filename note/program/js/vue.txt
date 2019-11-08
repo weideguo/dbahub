@@ -86,3 +86,13 @@ vue init webpack Vue-Project
 
 main.js 为主脚本
 
+
+
+
+两者等价，后者为缩写
+熟悉绑定
+v-bind:
+:
+
+
+

@@ -22,6 +22,9 @@ npm install --production   #安装文件package.json中模块dependencies的包
 
 npm info package-name      #查看模块的信息 如版本号
 
+--save-dev                 #安装同时写入package.json 的 dependencies模块
+--save                     #安装同时写入package.json 的 devDependencies模块
+
 #####################################################################
 npm set registry https://registry.some_other_else       #增加镜像源
 npm config rm registry                                  #删除镜像源
