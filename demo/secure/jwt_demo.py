@@ -24,3 +24,12 @@ signature = jwt.encode(payload, signer=jws.HmacSha(bits=128, key=secret_key))
 #获取明文信息 以及校验
 jwt.decode(signature, signers=[jws.HmacSha(bits=128, key=secret_key)])
 
+
+
+
+#django使用jwt
+每次链接依旧会查询数据库进行校验
+
+
+
+

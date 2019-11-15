@@ -20,6 +20,8 @@ python manage.py startapp app_name
 python manage.py makemigrations
 # 2.将生成的py文件应用到数据库
 python manage.py migrate
+# 3.创建账号，如果使用内部账号验证机制，需要在初始化时设置账号
+python manage.py createsuperuser  
 
 
 django-admin help <command>  
@@ -32,7 +34,7 @@ python manage.py <command>        #执行命令
 
 [auth]
     changepassword                #
-    createsuperuser               #超级用户有 /admin 页面查看 --email admin@example.com --username admin   #创建管理用户？用作什么？
+    createsuperuser               #
 
 [contenttypes]
     remove_stale_contenttypes     #
@@ -72,4 +74,18 @@ strings marked for translation. It creates (or updates) a message file in the
 conf/locale (in the django tree) or locale (for projects and applications)
 directory. You must run this command with one of either the --locale,
 --exclude, or --all options.
+
+
+
+
+
+django内部的session前端都通过cookie存储，后端存储格式
+数据库（默认）
+缓存
+文件
+缓存+数据库
+加密cookie         #session数据不保存在后端，直接加密后存储在前端
+
+
+
 

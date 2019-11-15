@@ -1,0 +1,231 @@
+###################################
+keepalive+LVS nat
+
+LB load balancer 负载均衡器前端
+RS real server   负载均衡器后端服务
+
+#################################
+架构
+基于已有内网网络部署
+使用虚拟网卡虚拟另外一套网络用于内部服务器通信    192.169.2.X          VIP: 192.168.2.250
+原有的内网网络对外服务（不是对外网）              172.16.2.X           VIP: 172.16.2.250
+
+
+由于后端节点的端口可能不一样，所以使用nat模式，可以实现端口映射
+
+
+
+#其他说明
+#限制
+LB不能跟RS放在一起
+从RS访问不了LB
+
+LB需要两个或以上，可实现高可用
+自动对RS做存活检测，自动剔除与加入
+
+网络流量都从LB进入与流出。（LB之间没有负载均衡）
+
+
+###############################
+#使用步骤
+
+#对于LB
+#安装
+yum install ipvsadm                
+yum install keepalived
+
+#开启路由转发
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+
+#所有涉到的服务器(不只是LB和RS，还需要设置其他的RS需要通信的服务器，通信时使用新的网络，即关联的服务监听新的网卡)
+ifconfig eth0:1 192.168.2.X netmask 255.255.255.0   #网卡名要要对应实际的网卡
+
+
+#对于LB
+#设置keepalived配置文件
+vim /etc/keepalived/keepalived.conf    #默认的配置文件
+service keepalived start               #启动keepalived
+
+
+
+#所有RS
+route add default gw 192.168.2.250        #增加新网关
+route del default gw 172.16.2.X           #删除原有网关
+route del -net 172.16.2.0/24              #删除原网络的路由
+
+
+###############################
+#管理
+
+#lvs状态管理
+ipvsadm -ln
+ipvsadm -lnc
+
+#网络信息查看
+ip a   
+ifconfig  
+
+#路由管理  
+route     
+route add ...
+route del ...
+
+###############################
+#故障处理
+
+路由问题 路由的设置可能导致网络不通，需要查看路由表确定路由走向
+防火墙问题
+selinux问题
+
+
+
+#####################################################################################################################
+#LB主keepalived配置文件
+#vim /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+global_defs {
+   router_id LVS_MASTER            
+}
+
+vrrp_instance VI_1 {
+    state MASTER                   
+    interface eth0                             #对应的对外的网卡     
+    virtual_router_id 51
+    priority 100                   
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 7road123
+    }
+    virtual_ipaddress {
+        172.16.2.250
+    }
+}
+
+vrrp_instance VI_2 {
+    state MASTER                            
+    interface eth0                            #对应的对内的网卡，可以都使用同一张网卡
+    virtual_router_id 52
+    priority 100                              #由此确定LB切换的优先级              
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 7road123
+    }
+    virtual_ipaddress {
+        192.168.2.250
+    }
+}
+
+
+vrrp_sync_group VG_1 {
+    group {
+    VI_1
+    VI_2
+   }
+}
+
+virtual_server 172.16.2.250 80 {
+    delay_loop 6                            #健康监测时间间隔
+    lb_algo rr                              #负载均衡算法
+    lb_kind NAT                             #lvs模式
+#   persistence_timeout 86400               #最好设置跟后端服务的超时时间一致  如mysql的wait_timeout参数
+    protocol TCP
+
+    real_server 192.168.2.151 82 {
+        weight 3
+        TCP_CHECK {                         #健康监测方式
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 82
+        }
+    }
+    
+    real_server 192.168.2.153 83 {
+        weight 3
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 83
+        }
+    }
+}
+
+###########################################################################
+#LB从keepalived配置文件
+#vim /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+global_defs {
+   router_id LVS_BACKUP           
+}
+
+vrrp_instance VI_1 {
+    state BACKUP                  
+    interface eth0                
+    virtual_router_id 51
+    priority 80                   
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 7road123456
+    }
+    virtual_ipaddress {
+        172.16.2.250
+    }
+}
+
+vrrp_instance VI_2 {
+    state BACKUP                  
+    interface eth0                
+    virtual_router_id 52
+    priority 80                   
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 7road123456
+    }
+    virtual_ipaddress {
+        192.168.2.250
+    }
+}
+
+
+vrrp_sync_group VG_1 {
+    group {
+    VI_1
+    VI_2
+   }
+}
+
+virtual_server 172.16.2.250 80 {
+    delay_loop 6
+    lb_algo rr
+    lb_kind NAT
+#   persistence_timeout 5
+    protocol TCP
+
+    real_server 192.168.2.151 82 {
+        weight 3
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 82
+        }
+    }
+    
+    real_server 192.168.2.153 83 {
+        weight 3
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 83
+        }
+    }
+}
+
+

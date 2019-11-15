@@ -7,7 +7,7 @@ LB:192.168.59.129
 RS1:192.168.59.130
 RS2:192.168.59.131
 
-vip:192.168.59.200   ##实际访问使用 不能在LB进行访问
+vip:192.168.59.200   ##实际访问使用 不能在LB进行访问 选择处于同一网段下的任意ip
 
 
 ##########################################
@@ -23,19 +23,30 @@ echo 2 > /proc/sys/net/ipv4/conf/lo/arp_announce
 echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore 
 echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce 
 
-
+#设置网卡
 ifconfig lo:1 192.168.59.200 netmask 255.255.255.255
+#设置路由
 route add -host 192.168.59.200 dev lo:1
+
 ######################永久生效设置###########################
+# vim /etc/sysctl.conf
+net.ipv4.conf.lo.arp_ignore = 1
+net.ipv4.conf.lo.arp_announce = 2
+net.ipv4.conf.all.arp_ignore = 1
+net.ipv4.conf.all.arp_announce = 2
+# sysctl -p
+
 ##cd /etc/sysconfig/network-scripts/
 ##cp ifcfg-lo ifcfg-lo:1
 ##更改ifcfg-lo:1对应的ip
-
+#############################################################
 
 ####################LB############################################################
+#设置网卡
 ifconfig eth1:1 192.168.59.200 netmask 255.255.255.255 
+#设置路由
 route add -host 192.168.59.200 dev eth1:1
-
+#开启路由转发
 echo "1" > /proc/sys/net/ipv4/ip_forward 
 
 ######################永久生效设置###########################
@@ -43,8 +54,11 @@ echo "1" > /proc/sys/net/ipv4/ip_forward
 ##cp ifcfg-eth1 ifcfg-eth1:1
 ##更改ifcfg-eth1:1对应的ip
 
-####修改/etc/sysctl.conf
-##net.ipv4.ip_forward = 1
+# vim /etc/sysctl.conf
+net.ipv4.ip_forward = 1
+# sysctl -p
+#############################################################
+
 
 
 ipvsadm -A -t 192.168.59.200:8091 -s rr  

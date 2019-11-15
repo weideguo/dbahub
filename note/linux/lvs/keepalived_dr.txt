@@ -7,9 +7,19 @@
 
 keepalived之间通过VRRP(Virtual Router Redundancy Protocol, 虚拟路由器冗余协议)进行检测
 ################################################################################
-ip a l eth0   ##查看网卡的ip信息
-ip a l eth1   ##
+service keepalived start   ##启动
 ####################RS1 RS2#######################################################
+
+VIP  192.168.59.200
+
+LB1  192.168.59.110
+LB2  192.168.59.111
+
+RS1  192.168.59.130
+RS2  192.168.59.131
+
+
+
 
 ####不对外解析192.168.59.200
 echo 1 > /proc/sys/net/ipv4/conf/lo/arp_ignore 
@@ -17,8 +27,10 @@ echo 2 > /proc/sys/net/ipv4/conf/lo/arp_announce
 echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore 
 echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce 
 
-
+#设置网卡
 ifconfig lo:1 192.168.59.200 netmask 255.255.255.255
+
+#设置路由
 route add -host 192.168.59.200 dev lo:1
 
 ##需要额外设置配置文件以实现重启生效
@@ -28,13 +40,9 @@ route add -host 192.168.59.200 dev lo:1
 
 ####################LB###############################################################
 
-############################################
-vip 192.168.59.200
-
-service keepalived start   ##启动
 
 ###############keepalive主##################
-vim /etc/keepalived/keepalived.conf
+#vim /etc/keepalived/keepalived.conf
 vrrp_instance VI_1 {
     state MASTER
     interface eth0                            ##对应物理网卡
@@ -53,7 +61,7 @@ vrrp_instance VI_1 {
 virtual_server 192.168.59.200 80 {
     delay_loop 6                              ##服务轮询的时间间隔;检测RS服务器的状态
     lb_algo rr                                ##lvs调动算法
-    lb_kind DR                                ##lvs工作模式 可选 NAT TUN
+    lb_kind DR                                ##lvs工作模式 可选 NAT TUN(配置类似于DR？)
     persistence_timeout 0                     ##持久连接，指对后端节点连接的时间
     protocol TCP                              ##检测协议
 
@@ -80,7 +88,7 @@ virtual_server 192.168.59.200 80 {
 
 
 #############keepalive从#####################################
-vim /etc/keepalived/keepalived.conf
+#vim /etc/keepalived/keepalived.conf
 vrrp_instance VI_1 {
     state BACKUP                              ###与主不同
     interface eth1         

@@ -873,12 +873,6 @@ sar 				###系统活动信息
 
 cat /proc/cpuinfo | grep processor | wc -l   ##cpu核数
 
-netstat -nlap |grep .21|more  ##查看端口21 ftp服务器启动不得时可能时端口被占用的问题
-netstat -nlt | grep 3306
-netstat -nat                  ##连接数查看
-
-netstat -ntlpa                ##查看连接      
-
 
 setup  		##进入图形化设置界面
 xmanager 	###远程桌面软件，可以使用图形界面
@@ -1187,34 +1181,6 @@ shell执行方式
 加入【&】在执行脚本后面实现后台运行
 nohup command_nam &  ##在后台运行命令command_name
 
-网络
-/etc/sysconfig/network-scripts/ifcfg-eth0  ###配置文件
-重启网卡 
-1. service network restart
-2. ifconfig eth0 down   ##etho为网卡名，使用ifconfig -a查看
-   ifconfig eth0 up
-3. ifdown eth0
-   ifup eth0
-ethtool eth0    #查看网卡物理特性
-ethtool -i eth0 #查看驱动信息
-ethtool -s eth0 #查看网卡状态
-
-虚拟ip(vip)
-ifconfig eth0:1 192.168.10.100 netmask 255.255.255.0 	 	###eth0为网卡，eth0:1 为子网卡
-ip addr del 192.168.10.100 dev eth0:1						###删除
-
-
-ip [ OPTIONS ] OBJECT { COMMAND | help }
-
-OBJECT := { link | addr | addrlabel | route | rule | neigh | tunnel | maddr | mroute | monitor }
-OPTIONS := { -V[ersion] | -s[tatistics] | -r[esolve] | -f[amily] { inet | inet6 | ipx | dnet | link } | -o[neline] }
-
-
-
-nsenter     #管理namespace
-
-
-arping -c 3 -U -I eth0 192.168.10.100							###更新arp
 
 setup         ##进入图形配置界面
 
@@ -1336,110 +1302,6 @@ rpm -e package_name         ##删除包
 
 
 
-磁盘管理
-du -sk directory_name  ##目录及子目录的总大小
-df -k  ##磁盘的使用情况
-file -s /dev/sda1   ###查看文件系统的类型
-df -T
-
-tune2fs -l /dev/sda3 | grep Block  ##查看文件系统block等
-
-
-dd ##把指定的输入文件拷贝到指定的输出文件中
-
-##添加磁盘
-echo "scsi add-single-device 0 0 2 0"> /proc/scsi/scsi  ###第三个数对应为设备节点
-echo "scsi add-single-device 0 0 3 0"> /proc/scsi/scsi  
-
-fdisk ##对物理设备【/dev/】进行分区，分区后需要挂载才能使用
-fdisk -l  ##查看磁盘信息
-fdisk /dev/sdb   ##进行添加磁盘后才会在/dev下出现新的盘符，由提示命令进行分区
-
-mkfs -t ext4 /dev/sdb1    	##给分区创建文件系统
-mkfs.ext3 lv_name   	 	####给逻辑卷安装文件系统
-mount /dev/sdb1 /u01   	  	##不应该多个分区挂载到同一目录
-
-/proc/sys/dev/cdrom/info   ###光驱的信息文件，可由此获取光驱名
-
-mount 					##挂载，外部存储设备需要挂载才能使用，物理设备在 【/dev/】目录下
-mount /dev/cdrom /mnt  	##前光驱挂载在【/mnt】目录下，即光驱的内容可以在【/mnt】下查看
-mount  -a   			###挂载/etc/fstab的配置
-/dev/sdc1 /update/game2 ext3 default 1 2   ###修改文件/etc/fstab开启时自动挂载
-
-##修改/dev/shm的大小
-tmpfs /dev/shm tmpfs defaults,size=1G 0 0 ##修改/etc/fstab挂载目录的大小
-umount /dev/shm   		###脱载分区
-mount /dev/shm   		##重新挂载实现修改
-
-fuser -m /dev/cdrom   	##查看那个进程正在使用挂载设备
-lsof /dev/cdrom			##查看挂载点与正在使用的进程
-
-LVM (Logical Volume Manager)  ##lv可以按磁盘分区的形式使用，安装文件系统后挂载
-##可以在raid基础上再使用lvm
-
-pv(physical volume,物理卷)  由分区构成
-vg(volume group,卷组)		若干个pv组成
-lv(logical volume,逻辑卷)   从vg中划分
-
-/dev/mapper   ###创建lv后生成的文件
-
-pvcreate /dev/sdb1    				##转换磁盘分区为物理卷
-vgcreate vg_name /dev/sdb1   		###创建名为vg_name的vg(Volume Group)
-lvcreate -L 1000M lv_name vg_name   ##创建lv(Logical Volume)
-
-vgextend vg_name /dev/hda6    			#扩展vg_name
-lvextend –L 1G /dev/vg_name/lv_name  	#扩展LV
-resize2fs /dev/vg_name/lv_name    		###更新文件系统
-
-缩小无法在线缩小  需要先unmount
-resize2fs /dev/linuxcast/mylv 5G    	###缩小磁盘分区
-lvreduce -L -1G /dev/linuxcast/mylv  	###缩小LV
-vgreduce linuxcast /dev/sdd   			###缩小卷组
-
-
-pvdisplay   ##显示pv(Physical Volume)
-pvscan
-vgdisplay   ##显示vg信息
-lvdisplay   ##显示lv信息
-
-pvmove /dev/sda1   ##删除pv
-vgmove vg_name	   ##删除vg
-lvmove /dev/vg_name/lv_name   ###删除lv
-
-RAID(redundant array of independent disks)
-
-软件raid
-RAID信息保存在/proc/mdstat 文件中
-mdadm -C /dev/md0 -a yes -l 0 -n 2 /dev/sdb1 /dev/sdc1   ###使用磁盘分区创建RAID
-mdadm -D --scan > /etc/mdadm.conf    	####创建好RAID后，创建新的配置文件
-mkfs.ext4 /etc/md0   					###安装文件系统
-mount /dev/md0   						###挂载
-
-mdadm -S /dev/md0  ### 关闭RAID（关闭前先卸载）
-mdadm -R /dev/md0  ###重新启用RAID
-mdadm /dev/md0 -f /dev/sdb   ###模拟一个磁盘故障：
-mdadm /dev/md0 -r /dev/sdb1  ###从一个RAID中移出一个磁盘
-mdadm /dev/md0 -a /dev/sdc1  ###向一个RAID中添加一个磁盘
-
-
-硬件raid
-查看磁盘的信息，由获取的raid卡型号查询使用方式
-cat /proc/scsi/scsi 
-
-
-磁盘引导头 
-MBR（master boot record）只支持不超过2T硬盘  
-GPT（GUD Partition Table）支持2T磁盘 
-
-parted /dev/sdb   ###使用parted命令创建gpt分区；fdisk只支持mbr
-
-MBR主分区:最多只能创建4个主分区
-扩展分区
-逻辑分区：由扩展分区创建
-
-
-
-
 负载均衡
 lvs(linux virtual server)    不会影响后端节点的网络识别，依然识别最初始的客户端的ip，而不是分发器的ip
 ipvsadm
@@ -1449,8 +1311,6 @@ haproxy
 
 
 nginx
-
-
 
 
 ipcmk -Q   ##创建message queue
@@ -1497,10 +1357,6 @@ xxd
 使用其他用户执行命令
 sudo -u yhserver bin/mysqld_safe --defaults-file=etc/my_3306.cnf &
 su - yhserver -c "bin/mysqld_safe --defaults-file=etc/my_3306.cnf &"
-
-
-
-
 
 
 ipcmk

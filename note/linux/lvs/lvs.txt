@@ -4,13 +4,38 @@ ipvsadm -C                                      #清空所有
 ipvsadm -D -t 192.168.59.200:6379               #delete virtual service
 ipvsadm -d -t 10.1.1.1:80 -r 192.168.1.2:80     #delete real server
 
+ipvsadm -ln                                     #显示策略
+ipvsadm -Lnc
 
 调度算法
 rr|wrr|lc|wlc|lblc|lblcr|dh|sh|sed|nq
 
 
 #三种模式 都没有额外的加密
-dr      请求中转，请求结果直接返回不需要负载均衡器中转，不支持端口映射
-nat     请求/请求结果直需要负载均衡器中转，支持端口映射
-tun     类似DR，但通过隧道技术实现中转，可以跨网络，不支持端口映射
+dr      请求中转，请求结果直接返回不需要负载均衡器中转，不支持端口映射         网络 LAN
+nat     请求/请求结果直需要负载均衡器中转，支持端口映射                        网络 private
+tun     类似DR，但通过隧道技术实现中转，可以跨网络，不支持端口映射             网络 LAN/WAN
+
+
+#原生lvs没有故障剔除
+
+service ipvsadm save
+service ipvsadm stop
+service ipvsadm start
+
+ipvsadm -Sn > /etc/sysconfig/ipvsadm
+#保存配置 设置开机启动
+
+
+# 连接时间设置
+ipvsadm --list --timeout
+ipvsadm --set 7200 50 60 
+
+
+#参数意义
+tcp      #连接的保存时间 长连接应用应该设置超时时间符合应用的超时时间
+tcpfin   #TIME_WAIT状态后 连接保留多久
+udp      #UDP超时时间（两次发送数据包的时间间隔）
+
+
 

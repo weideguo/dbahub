@@ -1,0 +1,94 @@
+#需要跟LB的ip1处于同一网段
+VIP 10.0.0.227        #对外
+VIP 192.168.10.10     #对内   RS的网关都需要设置为此
+
+
+
+#LB需要都设置路由转发
+LB1
+   ip1 10.0.0.221
+   ip2 192.168.10.2
+LB2
+   ip1 10.0.0.222
+   ip2 192.168.10.3
+
+
+RS1
+   ip 192.168.10.4
+Rs2
+   ip 192.168.10.5
+
+
+
+####################################################################
+#vim /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+global_defs {
+   router_id LVS_MASTER            #BACKUP上修改为LVS_BACKUP
+}
+
+vrrp_instance VI_1 {
+    state MASTER                   #BACKUP上修改为BACKUP
+    interface eth0                 #所在主机的外网网卡 启动后会在此网卡绑定对外vip
+    virtual_router_id 51
+    priority 100                   #BACKUP上修改为80
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        10.0.0.227
+    }
+}
+
+vrrp_instance VI_2 {
+    state MASTER                   #BACKUP上修改为BACKUP
+    interface eth1                 #所在主机的内网网卡 启动后会在此网卡绑定对内vip
+    virtual_router_id 52
+    priority 100                   #BACKUP上修改为80
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.10.10
+    }
+}
+
+
+vrrp_sync_group VG_1 {
+    group {
+    VI_1
+    VI_2
+   }
+}
+
+virtual_server 10.0.0.227 80 {
+    delay_loop 6
+    lb_algo rr
+    lb_kind NAT
+#   persistence_timeout 5
+    protocol TCP
+
+    real_server 192.168.10.4 80 {
+        weight 3
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 80
+        }
+    }
+    
+    real_server 192.168.10.5 80 {
+        weight 3
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 80
+        }
+    }
+}

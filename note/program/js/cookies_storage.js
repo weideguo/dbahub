@@ -21,11 +21,15 @@ function getCookie(name){
   return null;
 }
 
-
+headers的key和值不区分大小写
 cookie      #缓存在浏览器，每次访问同时时提交指定域的cookie  使用浏览机器时 访问url则该网站的cookie会自动全部提交
-            #可以在服务端中设置 通过在response中设置Set-Cookie字段实现
+            #请求时由headers的Cookie携带
+            #响应时设置headers的Set-Cookie字段，浏览器获取后自动设置成cookie
             
-session     #服务端设置 
+session     #服务端的封装 在前端都是通过cookie存储，后端再存储一份，用于登陆的验证
+
+
+
 
 
 客户端保存与提交机制

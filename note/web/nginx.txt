@@ -24,8 +24,8 @@ server {
 
     ###可以有多个location，【/】也可以使用【~ (\.jsp)|(\.do)$】指定特定页面的代理
     location / {						
-            root   html;
-            index  index.html index.htm;
+        root   html;
+        index  index.html index.htm;
 	    proxy_pass http://mytomcats;    ###指向代理集群，可以直接使用url
     }
 }
@@ -47,16 +47,28 @@ location / {
     #使用htpasswd 创建格式为 user:user_encrypted_passwd 的用户密码对 
 }
 
+#直接返回客户端ip
+location /ip {
+    default_type text/plain;
+    return 200 $remote_addr;
+}
+
+location /json_ip {
+    default_type application/json;
+    return 200 "{\"ip\":\"$remote_addr\"}";
+}
+
+
 #跨站点请求允许
 add_header Access-Control-Allow-Origin *;
 add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
 add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
 
 #直接展示文件
-autoindexon; 		# 开启目录文件列表
+autoindexon; 		    # 开启目录文件列表
 autoindex_exact_sizeon; # 显示出文件的确切大小，单位是bytes
 autoindex_localtimeon; 	# 显示的文件时间为文件的服务器时间
-charset utf-8,gbk; 	# 避免中文乱码
+charset utf-8,gbk; 	    # 避免中文乱码
 
 #引入其他配置文件
 include nginx_config_filename;

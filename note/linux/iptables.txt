@@ -46,3 +46,5 @@ SNAT：出去的时候改变源地址（snat），回来的时候改变目的地
 iptables -t nat -nvL    #查询nat的规则
 iptables -nvL           #查询filter的规则 不指定测默认filter
 
+
+
