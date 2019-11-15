@@ -80,7 +80,7 @@ directory. You must run this command with one of either the --locale,
 
 
 django内部的session前端都通过cookie存储，后端存储格式
-数据库（默认）
+数据库（默认）     默认存放在django_session
 缓存
 文件
 缓存+数据库
