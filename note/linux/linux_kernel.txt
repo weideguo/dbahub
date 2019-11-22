@@ -7,6 +7,8 @@ Used by： 此列包含一个数字，表示正在使用的模块实例数。 �
 
 cat /proc/modules  #对应的文件映射
 
+#内核文件的路径
+/lib/modules/`uname -r`/
 
 //#############################################################vim hello_module.c
 #include <linux/kernel.h>

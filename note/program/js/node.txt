@@ -17,13 +17,21 @@ npm node package manage
 npm run run_tag            #run_tag为package.json中scripts块指定的名字
 npm run build              #即实际执行 node build/build.js    生成dist目录即可当成静态html项目使用 但不能直接用浏览器打开文件
 npm install                #安装所有依赖包 文件package.json中模块dependencies、devDependencies的包
-npm install package-name   #安装模块
+npm install -g package-name   #全局安装模块
+npm install package-name   #安装模块，默认只在当前项目的目录安装
 npm install --production   #安装文件package.json中模块dependencies的包
 
 npm info package-name      #查看模块的信息 如版本号
 
 --save-dev                 #安装同时写入package.json 的 dependencies模块
 --save                     #安装同时写入package.json 的 devDependencies模块
+
+npm ls --depth 0           #列出安装过的模块
+npm ls -g --depth 0
+
+npm install -g less
+lessc xxx.less xxxcss      #将less编译成css
+
 
 #####################################################################
 npm set registry https://registry.some_other_else       #增加镜像源

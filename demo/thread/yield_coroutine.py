@@ -12,7 +12,7 @@ def consumer():
             return
         print('[CONSUMER] Consuming %s...' % n)
         c_response=int(n)*int(n)
-        time.sleep(1)
+        time.sleep(10)
         
         
 def produce(c):

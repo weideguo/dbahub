@@ -94,5 +94,6 @@ main.js 为主脚本
 v-bind:
 :
 
-
+v-on:
+@
 
