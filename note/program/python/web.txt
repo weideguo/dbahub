@@ -26,3 +26,52 @@ oauth
 通过第三放实现登录验证 
 连接三方的api
 
+
+
+
+graphQL
+将数据的查询前移给前端，后端只提交标准的对数据库访问的接口
+
+curl "http://192.168.59.132:9095/graphql/" -H "Content-Type: application/json" -d "{\"query\":\"query {allBooks {id,title {id,title},author {id,name}}}\",\"variables\":null}"
+
+
+query {
+  allBooks {
+    id,
+    title {
+      id,
+      title
+    },
+    author {
+      id,
+      name
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

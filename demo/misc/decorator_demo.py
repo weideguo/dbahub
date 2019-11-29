@@ -49,6 +49,29 @@ def f3(*a,**b):
 f3('ref','re',rf='rtb',g='r')
 
 
+
+
+######################################################  
+from functools import wraps
+
+def decorator31(func):
+    @wraps(func)
+    def my_wrapper(*args,**kwargs):
+        func(*args,**kwargs)
+    return my_wrapper    
+
+
+@decorator31
+def f31(*a,**b):
+    """
+    help(f31) 可以查看原函数的定义
+    """
+    print(a)
+    print(b)
+  
+help(f31)
+f31('ref','re',rf='rtb',g='r')
+
 ################################################################################    
     
 def decorator4(x=None):

@@ -1238,16 +1238,17 @@ make install  	###默认由Makefile文件执行install操作(以【install:】�
 
 md5sum 			##计算文件的MD5
 
+sha1sum
+
 sha256sum
 
-base64
+base64编码
+echo "AAA@#$" | base64
+echo "QUFBQCMkCg==" | base64 -d
 
 
 随机生成密码
 date |md5sum
-
-
-
 
 
 

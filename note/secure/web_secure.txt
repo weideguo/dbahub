@@ -20,3 +20,7 @@ CSRF防御
 服务端生成html页面时在其中加入token，提交时将token返回  通过header或者拼接到url
 
 
+相同域
+协议 主机 端口 都需要相同
+
+

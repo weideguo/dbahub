@@ -23,19 +23,33 @@ C 基于时间戳的变化周期
 import pyotp
 
 #Generating a base32 Secret Key
-pyotp.random_base32()
+base32secret3232=pyotp.random_base32()
 
 
 
 #客户端
-totp = pyotp.TOTP('base32secret3232')
-totp.now()                                # => '492039'
+totp = pyotp.TOTP(base32secret3232)
+totp = pyotp.TOTP(base32secret3232,interval=60)
+totp_demo=totp.now()                                # => '492039'
 
 
 
 #服务端
-totp = pyotp.TOTP('base32secret3232')
-totp.verify('492039')                     # => True
+totp = pyotp.TOTP(base32secret3232)
+totp.verify(totp_demo)                     # => True
 time.sleep(30)
-totp.verify('492039')                     # => False
+totp.verify(totp_demo)                     # => False
+
+
+
+
+
+
+
+
+
+
+
+
+
 

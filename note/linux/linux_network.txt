@@ -11,6 +11,7 @@ ifconfig eth1 up                                                   #启动网卡
 #添加路由
 route add -host 192.168.168.119  gw  192.168.168.1
 route add -host 192.168.59.200   dev lo:1   
+route add -net 192.168.59.0/24   dev eth0
 route add -net 192.168.168.0/24  gw  192.168.168.1
 route add default gw 192.168.59.129                   #默认路由/网关
 
