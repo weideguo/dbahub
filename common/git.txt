@@ -97,7 +97,7 @@ git pull
 #git merge FETCH_HEAD
 
 
-#重命令远端仓库
+#重命名远端仓库
 git remote rename <old_name> <new_name>
 
 #删除远端仓库
