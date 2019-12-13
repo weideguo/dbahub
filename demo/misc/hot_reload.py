@@ -9,9 +9,15 @@ cls = getattr(mod, 'A')  # 另外模块中定义 class A
 cls().showme()
 
 
+#getattr(object, name[, default])
+#获取对象的属性
+class A(object):
+    a='aaa'
+    def f(self):
+        print('fff')
 
-
-
+f0=getattr(A,'f')  #f0('')
+a0=getattr(A,'a')
 
 
 

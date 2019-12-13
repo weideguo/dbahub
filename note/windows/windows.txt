@@ -73,7 +73,9 @@ command 为可执行程序
 
 
 
+netsta -ano              #查看端口占用
 
+tasklist | find "xxx"    #查看进程状态
 
 taskkill /f /pid $PID    #强制杀死进程
 
@@ -140,10 +142,16 @@ chcp 936    #更改编码
 
 
 
+RDO  Remote Desktop Organizer
+windows远程工具 可以
 
 
+mingw Minimalist GNUfor Windows
+可以用于在windows安装linux命令
 
 
+Cygwin
+可以用于在windows安装linux命令 相对于mingw更完善？
 
 
 

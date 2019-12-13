@@ -486,6 +486,22 @@ rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_hos
 	
 使用密码文件权限必须其他账号不能访问	
 	
+#进入stfp交互模式
+sftp -o Port=22  root@10.10.1.10
+ #在本地执行
+ lpwd
+ lcd
+ lls
+ #对远端主机执行
+ pwd
+ cd
+ ls
+ #上传下载
+ get remote_file local_path
+ put local_file remote_path
+
+
+
 
 	
 ssh (secure shell)   	###远程登录
@@ -579,16 +595,21 @@ wc      ###文本计数
 
 strings binary_file      ###查看二进制文件
 
-##将文档写入文件
+##将流传给命令
 cat >>./filename <<EOF
 ${linetxt}
 EOF
 
-mysql ... <<
+cat <<EOF
+${linetxt}
+EOF
+
+mysql ... << EOF
 use xxx;
 create ...
 EOF
 
+#EOF并不是关键字 可以使用任意字符代替
 
 
 
