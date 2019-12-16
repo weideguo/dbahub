@@ -1,3 +1,15 @@
+
+
+A schema is a collection of database objects (used by a user.).
+schema objects are the logical structures that directly refer to the database’s data.
+A user is a name defined in the database that can connect to and access objects.
+schemas and users help database administrators manage database security
+
+在数据库中一个对象的完整名称为 schema_name.object_name
+一个database下有多个schema，一个user对应一个schema
+创建user即创建schema
+
+
 sqlplus使用
 
 sqlplus sys/sys_passwd@orcl as sysdba   ---登录 密码和connect_identify不是必须
@@ -92,6 +104,8 @@ dba_tab_privs
 grant {object_privileges_name | system_privileges_name} to public; ---将权限授予给所有用户
 系统权限(system privileges)，回收时不级联     [with admin option] 授权同时允许被授予的对象将系统权限付给其他用户
 对象权限(object privileges)，回收时级联回收   [with grant option] 授权同时允许被授予的对象将对象权限付给其他用户
+
+GRANT SELECT,DELETE,UPDATE,INSERT ON USER1.TABLE1 TO USER2 ;
 
 
 查看用户默认的表空间
