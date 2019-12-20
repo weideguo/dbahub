@@ -547,20 +547,7 @@ notee
 set global var_name=var_value;    ---var_name参数名  var_value参数值
 set var_name=var_value;     ----重启失效
 
-
-set autocommit={on|off}  ---设置是否自动提交事务
-
-事务
-start transaction;   ----开始事务
-...
-commit;    ----提交事务   ---rollback回滚事务
-
-
-SAVEPOINT identifier
-ROLLBACK [WORK] TO [SAVEPOINT] identifier
-RELEASE SAVEPOINT identifier
-
-
+                                                                                                                      
 
 隔离级别
 
@@ -1170,7 +1157,7 @@ myisam_sort_buffer_size   #加快myisam的插入速度
 myisam只有表级锁
 
 	
-	
+--warm up
 --mysql5.6.3以后 
 --快速预热Buffer_Pool缓冲池 防止重启时因内存数据重新加载导致的性能下降
 --加载时后台运行 不会延缓启动

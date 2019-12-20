@@ -15,13 +15,13 @@ GO 在批处理结束和任何缓存 Transact-SQL 语句执行时发出信号。
 
 
 #安装cygwin时在shell中命令的位置
-"/cygdrive/C/Program Files/Microsoft SQL Server/90/Tools/binn/SQLCMD.EXE" -S 127.0.0.1,2433 -Q "set  nocount on;select GameZoneId from db_gms..V_GameZoneName_Version" -h-1 > /cygdrive/c/shell/gameZoneName.txt
+"/cygdrive/C/Program Files/Microsoft SQL Server/90/Tools/binn/SQLCMD.EXE" -S 127.0.0.1,2433 -E -Q "select ..." 
 
 
 #
-sqlcmd -S 127.0.0.1,2433 -E -b -r0 -h-1 -Q "insert into db_mart..ddtupload_log(count_date) values(getdate())" > updateDB.txt 2>&1
+sqlcmd -S 127.0.0.1,2433 -E -Q "insert into ..." 
 
-
+-E 使用可信连接
 
 
 #查看所有库
@@ -35,7 +35,10 @@ select * from sysobjects where xtype='u';
 
 
 
+
+
 #系统表
+sys.server_principals
 sysaltfiles     主数据库 保存数据库的文件
 syscharsets     主数据库 字符集与排序顺序
 sysconfigures   主数据库 配置选项
@@ -52,7 +55,7 @@ sysfilegroups   每个数据库 文件组
 sysfiles        每个数据库 文件
 sysforeignkeys  每个数据库 外部关键字
 sysindexs       每个数据库 索引
-sysmenbers      每个数据库 角色成员
+sysmembers      每个数据库 角色成员
 sysobjects      每个数据库 所有数据库对象
 syspermissions  每个数据库 权限
 systypes        每个数据库 用户定义数据类型

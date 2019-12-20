@@ -1,0 +1,78 @@
+
+set autocommit={on|off}  ---设置是否自动提交事务
+
+事务
+start transaction;   ----开始事务 或 begin
+...
+commit;    ----提交事务   ---rollback回滚事务
+
+
+SAVEPOINT identifier
+ROLLBACK [WORK] TO [SAVEPOINT] identifier
+RELEASE SAVEPOINT identifier
+
+
+begin;
+SQL1;
+savepoint x;
+SQL2;
+rollback to x;
+commit;         --SQL1会被提交
+
+
+begin;
+SQL1;
+savepoint x;
+SQL2;
+savepoint x1;
+SQL3
+rollback to x;
+commit;         --SQL1会被提交
+
+
+
+
+
+global transaction 包含多个XA（Distributed Transaction）
+
+在DTP（Distributed Transaction Processing）模型中
+数据库服务属于资源管理器RM（Resource Manager ）
+客户程序为Transaction Manager
+
+两阶段提交 two-phase commit (2PC)
+In the first phase, all branches are prepared.   其他事务还不能看到结果。
+In the second phase, the TM tells the RMs whether to commit or roll back.  由第一阶段的结果确实提交或者回滚。
+
+xid 不同的TM应该不同 
+
+XA {START|BEGIN} xid [JOIN|RESUME]   --开启XA事务。如果使用的是XA START而不是XA BEGIN，那么不支持[JOIN|RESUME]，xid是一个唯一值，表示事务分支标识符
+XA END xid [SUSPEND [FOR MIGRATE]]   --结束一个XA事务。不支持[SUSPEND [FOR MIGRATE]]？
+XA PREPARE xid                       --准备提交 由所有的RM的prepare结果确定下一步是否提交或回滚。在此阶段之后不能再执行SQL。
+XA COMMIT xid                        --提交。
+XA ROLLBACK xid                      --回滚
+XA RECOVER                           --列出所有处于PREPARE阶段的XA事务
+
+
+XA COMMIT xid ONE PHASE              --提交。在IDLE状态之后直接提交，表示使用一阶段提交，两阶段提交协议中，如果只有一个RM参与，那么可以优化为一阶段提交
+
+
+
+1.使用XA START来启动一个XA事务，并把它置于ACTIVE状态。
+2.对于一个ACTIVE状态的 XA事务，可以执行构成事务的SQL语句，然后发布一个XA END语句。XA END把事务放入IDLE状态。
+3.对于一个IDLE 状态XA事务，可以执行一个XA PREPARE语句或一个XA COMMIT … ONE PHASE语句：
+  XA PREPARE把事务放入PREPARED状态。在此点上的XA RECOVER语句将在其输出中包括事务的xid值，因为XA RECOVER会列出处于PREPARED状态的所有XA事务。
+  XA COMMIT … ONE PHASE用于预备和提交事务。xid值将不会被XA RECOVER列出，因为事务终止。
+4.对于一个PREPARED状态的 XA事务，可以发布一个XA COMMIT语句来提交和终止事务，或者发布XA ROLLBACK来回滚并终止事务。
+
+
+
+xa start '1111';
+SQL1;
+xa end '1111';
+xa prepare '1111';  --所有RM都进入prepare阶段，如果存在失败，则下一操作都执行rollback；否则可以执行commit。
+xa commit '1111';   --或 xa rollback '1111';
+
+
+
+
+

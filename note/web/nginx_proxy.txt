@@ -30,9 +30,9 @@ http {
         server_name localhost;
         access_log logs/access_proxy-443.log;
         resolver 114.114.114.114;
-        listen 443;
-        proxy_connect;
-        
+        listen 443;  
+            
+        #proxy_connect;      #使用第三方模块时才能使用
         location / {
             #proxy_pass $scheme://$host$request_uri;    #适应http以及https
             proxy_pass https://$host$request_uri;
@@ -40,16 +40,20 @@ http {
     }
 }
 
-#正向代理http 使用
+#正向代理http
 #curl --proxy "proxy_server:80" "http://web_hostname"
 
-#正向代理https时需要在编译时引入第三方模块  需要从github下载模块
+
+#正向代理https
+
+#引入第三方模块  需要从github下载模块
 #./configure --add-module=/path/to/ngx_http_proxy_connect_module
-    
-#https 使用    可以做到全链路数据都是https传输 当前主机<->代理机<->服务器
+#可以做到全链路数据都是https传输 当前主机<->代理机<->服务器
 #curl --proxy "proxy_server:443" "https://web_hostname"
 
-
+#不安装第三方模块 https和http的访问通过使用不同端口实现
+#初始请求的地址使用http，当前主机<->代理机 是http传输； 代理机<->服务器 是https传输
+#curl --proxy "proxy_server:443" "http://web_hostname"
 
 ##################################
 代理使用http的connect方法(跟get post put delete同一级别)
