@@ -21,6 +21,8 @@ npm install -g package-name   #全局安装模块
 npm install package-name   #安装模块，默认只在当前项目的目录安装
 npm install --production   #安装文件package.json中模块dependencies的包
 
+npm uninstall -g vue-cli   #移除包
+
 npm info package-name      #查看模块的信息 如版本号
 
 --save-dev                 #安装同时写入package.json 的 dependencies模块
