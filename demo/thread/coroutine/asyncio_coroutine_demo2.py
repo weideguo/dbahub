@@ -1,18 +1,7 @@
-#python >= 3.3
+#coding:utf8
+#python >= 3.6
 
-
-def gen():
-    yield from range(1, 3)
-
-for x in gen():
-    print(x)
-    
-
-################################################################
-#协程函数（async def 或者 @asyncio.coroutine）
-#协程函数所返回的协程对象
-
-
+#yield from 获取子生成器返回值
 
 import asyncio
 
@@ -23,18 +12,30 @@ def wget(host):
     reader, writer = yield from connect
     header = 'GET / HTTP/1.0\r\nHost: %s\r\n\r\n' % host
     writer.write(header.encode('utf-8'))
-    yield from writer.drain()
+    #yield from writer.drain()
+    '''
     while True:
         line = yield from reader.readline()
-        if line == b'\r\n':
+        if line == b'\r\n':   #http返回值头部结束标识
             break
         print('%s header > %s' % (host, line.decode('utf-8').rstrip()))
     # Ignore the body, close the socket
+    '''
+    all=yield from reader.read()
+    print(all)
+    
     writer.close()
 
 
-loop = asyncio.get_event_loop()
-tasks = [wget(host) for host in ['www.google.com', 'www.baidu.com']]
+if __name__=="__main__":
+    tasks = [wget(host) for host in ['www.google.com', 'www.baidu.com']]
+    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.wait(tasks))
+    loop.close()
 
-loop.run_until_complete(asyncio.wait(tasks))
-loop.close()
+
+
+
+
+

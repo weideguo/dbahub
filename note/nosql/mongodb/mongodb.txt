@@ -206,7 +206,7 @@ db.createView(view_name,collection_name,)
 
 
 
-删除
+删除delete
 db.collection_name.remove({'title':'MongoDB 教程'})     //删除文档
 db.collection_name.drop()    		 					//删除集合
 db.dropDatabase()   									//删除数据库，先切换到指定数据库
@@ -356,7 +356,10 @@ db.table1.aggregate([
 {$group:{_id:"",num_tutorial:{$sum:"$day_income"}}}
 ])
 
-
+host_log
+{"key_list":[...]}
+#查看list字段的长度
+db.host_log.aggregate([{ $project : {len: {$size:"$key_list"} }} ])
 
 
 //管道

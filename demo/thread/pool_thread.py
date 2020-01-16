@@ -5,55 +5,61 @@ import time
 import traceback
 from multiprocessing import Process,Pool,Queue
 from threading import Thread
-	
-def t_func(thred_queue,a):
-    thred_queue.put(1)
-    print "thread  begin"
-    time.sleep(100)
-    print a
-    print "thread end"
-    thred_queue.get()
+import random	
+    
+#multiprocessing下的Queue可以实现在多进程之间共享
+#使用进程池生产 
+#使用线程消费
 
-my_queue=Queue()
 
-def p_advance():
-    print "this is advance process"
-    thred_queue=Queue(2)
+p_queue=Queue()    
+
+
+def thread_func(t_queue,a):
+    t_queue.put(1)
+    print("thread get %s begin" % a)
+    time.sleep(random.randint(1,10))
+    print("thread get %s end" % a)
+    t_queue.get()
+
+
+def process_func():
+    print("customer process begin")
+    t_queue=Queue(2)
     while True:
-        a=my_queue.get()
+        a=p_queue.get()
         if a != 100:
-            my_thread=Thread(target=t_func,args=(thred_queue,a))
+            my_thread=Thread(target=thread_func,args=(t_queue,a))
             my_thread.start()
-            
         else:
             break
     my_thread.join()
-    print "advance process end"
+    print("customer process end")
 		
-			
-
-def p_func(i,my):
-    print "process begin"
+ 
+def pool_func(i,):
+    print("pool process begin put %s" % i)
     
-    my_queue.put(i)
-    time.sleep(100)
+    p_queue.put(i)
+    time.sleep(random.randint(1,5))
     
-    print "process end"
+    print("pool process end put %s" % i)
 
 
 if __name__ == '__main__':
     
     my_pool=Pool(3)
-    #my_queue=Queue()
-    my=''
     for i in  range(5):
-        my_pool.apply_async(func=p_func,args=(i,my))
-    my_process=Process(target=p_advance,args=())
+        my_pool.apply_async(func=pool_func,args=(i,))
+    
+    my_process=Process(target=process_func,args=())
+    
     my_process.start()	
+    
     my_pool.close()
-    my_pool.join()
-    my_queue.put(100)
-    #my_process.start()		
+    my_pool.join()          #阻塞至所有pool的进程结束
+    
+    p_queue.put(100)
     my_process.join()
     
-    print "all complete"
+    print("all complete")

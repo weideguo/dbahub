@@ -1,9 +1,10 @@
 #!/bin.env python
 #coding:utf8
 #实现异步的生产消费模式
+from multiprocessing import Queue,Process
 import os,time,random
 
-def write(q):
+def product(q):
     for value in ['A','B','C']:
         print('write put: %s...'%value)
         q.put(value)
@@ -12,7 +13,7 @@ def write(q):
         #print('write put: %s...'%value)
         #q.put(value)
 
-def read(q):
+def consumer(q):
     while True:
         value = q.get(True)
         if value=="QUIT":
@@ -20,6 +21,7 @@ def read(q):
             break
         else:
             print('read get: %s...'%value)
+            
 
 if __name__ == '__main__':
     print('start...')
@@ -30,7 +32,7 @@ if __name__ == '__main__':
     pw.start()
     pr.start()
 
-    pw.join()
+    pw.join()       #阻塞至pw结束
     q.put('QUIT')
-    pr.join()
+    pr.join()       #阻塞至pr结束
     print('done...')

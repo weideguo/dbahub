@@ -11,7 +11,7 @@ import requests_async as requests
 
 
 
-async def myget(url):
+async def wget(url):
     #print('Hello world! (%s) %s %s' % (threading.currentThread(),url,str(time.time())))
     #await asyncio.sleep(10)
     response = await requests.get(url)    #await需要在async函数内？
@@ -19,12 +19,16 @@ async def myget(url):
     print(response.text)
     #print('Hello again! (%s) %s %s' % (threading.currentThread(),url,str(time.time())))
 
+if __name__ == "__main__":
 
-
-loop = asyncio.get_event_loop()
-#tasks = [myget('https://www.google.com'), myget('https://www.baidu.com')]
-tasks = [myget(x) for x in ['https://www.google.com','https://www.baidu.com']]
-
-#异步执行 被卡住的task不会阻塞另外的task
-loop.run_until_complete(asyncio.wait(tasks))
-loop.close()
+    #loop = asyncio.get_event_loop()
+    #tasks = [wget('https://www.google.com'), wget('https://www.baidu.com')]
+    tasks = [wget(x) for x in ['https://www.google.com','https://www.baidu.com']]
+    
+    #异步执行 被卡住的task不会阻塞另外的task
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.wait(tasks))
+    #阻塞至所有task执行结束
+    print("all done")
+    loop.close()
+ 

@@ -21,7 +21,7 @@ def produce(c):
     while n < 5:
         n = n + 1
         print('[PRODUCER] Producing %s...' % n)
-        c_response = c.send(n)
+        c_response = c.send(n)       #send发送 yield返回与接收
         print('[PRODUCER] Consumer return: %s' % c_response)
     c.close()
 
