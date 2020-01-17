@@ -8,6 +8,7 @@ import time
 
 from threading import Thread
 
+
 my_queue=Queue(2)
 
 
@@ -41,7 +42,7 @@ def p():
 def t():
     #线程模型 
     #线程间变量共享。
-    #但multiprocessing.Queue Queue.Queue 都能用于线程模型
+    #multiprocessing.Queue Queue.Queue 都能用于线程模型
     t_list=[]
     for i in range(10):
         t = Thread(target = func, args = (i,my_queue))

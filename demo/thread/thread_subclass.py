@@ -24,8 +24,7 @@ class MyThreadWithArgs(threading.Thread):
         self.args=args
         self.kwargs = kwargs
         
-
-
+    #start实际调用的函数
     def run(self):
         logging.debug('running with %s and %s',self.args,self.kwargs)
         

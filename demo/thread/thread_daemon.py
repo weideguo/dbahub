@@ -7,6 +7,7 @@ import threading
 import time
 import random
 
+#logging模块线程安全 即可以控制同时只有一个线程占用
 logging.basicConfig(
     level = logging.DEBUG,
     format = '(%(threadName)-10s) %(message)s',
