@@ -361,6 +361,8 @@ host_log
 #查看list字段的长度
 db.host_log.aggregate([{ $project : {len: {$size:"$key_list"} }} ])
 
+#修改表名
+db.vars.renameCollection('vars_tmp')
 
 //管道
 //将MongoDB文档在一个管道处理完毕后将结果传递给下一个管道处理
