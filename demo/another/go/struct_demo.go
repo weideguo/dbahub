@@ -11,7 +11,11 @@ func main() {
         x int
         y int
     }
+    
     var p Point
+    // p := &Point{}
+    // p := new(Point)
+
     p.x = 100
     p.y = 200
     fmt.Println(p.x)

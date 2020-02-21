@@ -3,3 +3,8 @@ go build my_go_program.go
 
 编译并运行
 go run my_go_program.go
+
+
+下载第三方包 使用git
+go get -u github.com/go-sql-driver/mysql
+

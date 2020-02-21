@@ -1133,6 +1133,26 @@ mysql_ssl_rsa_setup 命令可以快速生成密钥对
 不指定主键，但unqiue键在为第一个字段，按unique键排序。
 不指定主键，按照插入顺序排序。	
 	
+FEDERATED
+CREATE TABLE (......) 
+ENGINE =FEDERATED CONNECTION='mysql://username:password@hostname:port/database/tablename'
+
+CREATE TABLE test_table (
+......
+)
+ENGINE=FEDERATED
+CONNECTION='fedlink/test_table';
+--fedlink为server名 test_table为表名
+
+MRG_MYISAM
+--MYISAM的分区表 比较老的版本使用 5.5以上MyISAM以及支持分区表
+CREATE TABLE `article_0` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE = MYISAM ;
+CREATE TABLE `article_1` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE = MYISAM ;
+
+CREATE TABLE `article_merge` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE=MRG_MyISAM DEFAULT CHARSET=utf8 UNION=(article_0,article_1);
+
+插入数据只能往后端的表操作
+更新 删除可以在前端表操作
 
 
 分区表

@@ -1,0 +1,25 @@
+--8.0.19引入
+
+MySQL 副本集
+
+MySQL Shell 
+    前端命令行工具
+    自带的AdminAPI创建、配置、删除等管理副本集
+    MySQL Sandbox 功能，可轻松部署用以测试的MySQL数据库实例
+
+角色分为Primary和Secondary
+    Primary 即传统意义上的 Master，一个副本集只允许一个
+    Secondary 即 Slave，允许一个或多个
+
+
+
+通过 MySQL Router 使用副本集，引导与连接方式与InnoDB Cluster和MGR有点类似，不同之处在于新增了cluster_type = rs 集群类型。
+
+
+sandbox
+# mysqlsh
+MySQL  JS > dba.deploySandboxInstance(3306)
+MySQL  JS > dba.deploySandboxInstance(3307)
+MySQL  JS > dba.deploySandboxInstance(3308)
+
+
