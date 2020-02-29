@@ -80,7 +80,18 @@ alter table recovery_table_demo import tablespace;
 对于非事务类型的表，在备份innodb表后，使用lock tables for backup(percona特有，oracle版应该使用flush tables with read lock)，然后备份
 
 
+
 percona-toolkit
+#安装
+yum install perl perl-devel perl-Time-HiRes perl-DBI perl-DBD-MySQL
+
 #online ddl
 bin/pt-online-schema-change --alter="add key(openId,status)" --execute u=root,p=,h=10.66.137.197,P=3306,D=wxkf,t=tbFans_bak
+
+
+pt–table-checksum
+#在主库运行。在主库、从库的表进行checksum，判断数据是否一致。执行过的sql语句记录到binlog。不在意从库延时，延迟多少，计算的校验值都一样。
+
+pt-table-sync
+#用来修复多个实例之间数据的不一致。内部集成了pt-table-checksum的校验功能
 

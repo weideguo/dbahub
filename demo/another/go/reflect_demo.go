@@ -15,5 +15,11 @@ func main(){
     var x int = 10
     v := reflect.TypeOf(x)
     fmt.Println(v.Kind())
-    fmt.Println(reflect.TypeOf(x))
+    fmt.Println(v.Name())
+    
+    y :="100"
+    a,b := reflect.TypeOf(y),reflect.ValueOf(y)
+    m :=make(map[reflect.Type]reflect.Value)    
+    m[a]=b
+    fmt.Println(a,b,m)    
 }

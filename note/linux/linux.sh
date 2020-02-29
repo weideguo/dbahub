@@ -916,12 +916,18 @@ environ 进程运行时的环境变量
 fd 进程打开或使用的文件符号连接
 
 
-
-
-
 head -n 1  #前一行
 head -c 1  #前一个字符
 
+#最后一行
+awk 'END {print}'
+sed -n '$p'
+sed '$!N;$!D'
+awk '{b=$0}END{print b}'
+#最后2行
+awk '{b=a"\n"$0;a=$0}END{print b}'
+#最后3行
+awk '{b=a"\n"$0;a=c"\n"$0;c=$0}END{print b}'
 
 /etc/rc.d/init.d/service_name    ### linux服务设置；如【service xxx start】为调用脚本时传入【start】参数
 

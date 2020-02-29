@@ -1202,3 +1202,16 @@ innodb_force_load_corrupted           --允许load到内存 即使表被标记�
 Innodb_buffer_pool_load_status
 Innodb_buffer_pool_dump_status
 
+
+
+mysql-utilities      #mysql提供的一些脚本工具集 以后可能集成到mysql shell？
+mysqldiff      #对比两个实例的表结构
+
+
+
+binlog
+文件开头前4字节（MagicNumber）
+\xfe\x62\x69\x6e
+
+
+

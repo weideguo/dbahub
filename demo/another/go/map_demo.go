@@ -30,5 +30,6 @@ func mapTest2() {
 
 
 func main() {
+    //mapTest()
     mapTest2()
 }
