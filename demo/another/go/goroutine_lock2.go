@@ -6,12 +6,9 @@ import (
 )
 var (
     counter int64
-    //mutex   sync.RWMutex
     mutex   sync.Mutex
 )
 //Mutex 完全阻止进入代码区
-//sync 包中的 RWMutex 提供了读写互斥锁的封装。
-//比互斥锁更加高效,会阻止写，但不阻止读
 
 func main() {
     c := make(chan int)

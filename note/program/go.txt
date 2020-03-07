@@ -43,10 +43,25 @@ go help clean
 
 跨平台编译
 #windows编译linux的可执行文件
-set GOARCH=amd64                //设置目标可执行程序操作系统构架，包括 386，amd64，arm
-set GOOS=linux                  //设置可执行程序运行操作系统，支持 darwin，freebsd，linux，windows
+set GOARCH=amd64                #设置目标可执行程序操作系统构架，包括 386，amd64，arm
+set GOOS=linux                  #设置可执行程序运行操作系统，支持 darwin，freebsd，linux，windows
 #linux编译windows的可执行文件
 export GOARCH=amd64      
 export GOOS=windows      
 go build ./main.go       
+
+
+go env        #列出go的环境变量
+#设置代理
+go env -w GOPROXY=https://goproxy.cn,direct   
+export GOPROXY=https://goproxy.cn             #只能用于linux
+
+#初始化当前文件夹，创建go.mod文件
+#之后源代码中依赖的第三方包不需要再提前下载到GOPATH，运行时自动从GOPROXY加载
+go mod init example.com/m/v2                  
+
+go mod download	   根据go.mod文件下载依赖包到本地（默认为 GOPATH/pkg/mod 目录）
+go mod tidy        直接下载以来的包到本地（默认为 GOPATH/pkg/mod 目录）
+
+
 

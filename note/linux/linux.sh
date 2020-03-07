@@ -244,6 +244,11 @@ setenforce 0  			   ##临时关闭；1 为开启
 进入kernel选择界面，编辑kernel，添加 
 enforing=0
 
+
+传统的Linux系统安全，采用的是 DAC（自主访问控制方式），对应用户是否拥有某个资源的权限（读、写、执行）
+SELinux是部署在Linux系统中的安全增强功能模块，对进程和文件资源采用 MAC（强制访问控制方式）
+
+
 ##iptables
 service iptables status
 service iptables stop

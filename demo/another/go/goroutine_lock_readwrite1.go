@@ -39,8 +39,8 @@ func incCounter(id int,c chan int) {
     for count := 0; count < 2; count++ {
         //允许多个goroutine读 
         //只运行一个获得锁的goroutine写
-        mutex.RLock()
-        //mutex.Lock()        //RWMutex使用这个方法跟Mutex一样
+        mutex.RLock()         //RWMutex读锁
+        //mutex.Lock()        //RWMutex写锁 个方法跟Mutex类似
         {
             fmt.Println(id, "read0: ",counter)
             time.Sleep(time.Second)
@@ -59,17 +59,3 @@ func incCounter(id int,c chan int) {
     c <- 1
 }
 
-func incCounter1(id int,c chan int) {
-    for count := 0; count < 2; count++ {
-        //mutex.Lock()
-        mutex.RLock()
-        {   
-            fmt.Println(id,"read0:",counter) 
-            time.Sleep(time.Second)               //使用RWMutex在读时不会被阻止，因而这里不会给其他goroutine加锁
-            fmt.Println(id,"read1:",counter)
-        }
-        mutex.RUnlock()
-        //mutex.Unlock()
-    }
-    c <- 1
-}
