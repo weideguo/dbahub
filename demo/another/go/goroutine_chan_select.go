@@ -34,6 +34,7 @@ func main(){
     // select语句会阻塞，直到监测到一个可以执行的IO操作为止。
     // 有default则不会阻塞
     select {
+    // 每个 case 语句里必须是一个 IO 操作
     case <- c:
 
         fmt.Printf("Unblocked %v later.\n", time.Since(start))

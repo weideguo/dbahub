@@ -8,7 +8,7 @@ os.system('clear')		###linux命令行清屏
 #slave_IP=commands.getstatusoutput(get_ip_cmd)
 #slave_IP=commands.getoutput(get_ip_cmd)
 p0=os.popen(get_ip_cmd)
-
+p0.read()
 
 #以后使用代替
 import subprocess

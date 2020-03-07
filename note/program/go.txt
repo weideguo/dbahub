@@ -1,12 +1,52 @@
-编译
+编译 编译的文件头部必须为 package main
 go build my_go_program.go
 编译动态库
 go build --buildmode=plugin plugin.go
+编译多个文件
+go build file1.go file2.go……
+编译目录下所有文件
+go build
 
 编译并运行
 go run my_go_program.go
 
+#移除当前源码包和关联源码包里面编译生成的文件
+go clean
+#只列出如何清理 但不执行
+go -n clean 
 
 下载第三方包 使用git
 go get -u github.com/go-sql-driver/mysql
+
+运行测试 *_test.go文件的TestXXX函数
+go test -v
+
+格式化代码文件，统一风格
+go fmt
+gofmt
+
+编译并安装
+go install
+export GOPATH=XXX
+GOPATH
+   ├── bin    生成的可执行文件，名称来自于编译时的包名。
+   ├── pkg    编译期间的中间文件
+   └── src    在这个目录下运行go install d1/d2 最后的目录下的文件引用main
+
+查看GOPATH
+go env GOPATH
+
+#查看命令的说明
+go help build 
+go help run
+go help clean
+
+跨平台编译
+#windows编译linux的可执行文件
+set GOARCH=amd64                //设置目标可执行程序操作系统构架，包括 386，amd64，arm
+set GOOS=linux                  //设置可执行程序运行操作系统，支持 darwin，freebsd，linux，windows
+#linux编译windows的可执行文件
+export GOARCH=amd64      
+export GOOS=windows      
+go build ./main.go       
 

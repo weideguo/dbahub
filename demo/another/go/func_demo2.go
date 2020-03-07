@@ -12,9 +12,9 @@ func main() {
 
 
     // 匿名函数
-    f := func(x int) {
-        fmt.Println(x)
+    f := func(x int,y int) {
+        fmt.Println(x, y)
     }
 
-    f(200)
+    f(100,200)
 }
