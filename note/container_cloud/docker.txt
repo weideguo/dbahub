@@ -143,7 +143,7 @@ docker pull image_tag                                               ###添加镜
 docker pull private-registry.com/user-name/ubuntu:latest            
 docker push 192.168.0.100:5000/ubuntu                               # 推送镜像库到私有源，也可以推送到官方
 docker tag apline:3.4 localhost:5000/my-alpine
-docker push localhost:5000/my-alpine                                #上传镜像到仓库要先tag？
+docker push localhost:5000/my-alpine                                #上传镜像到仓库要先tag
 
 
                          
@@ -236,6 +236,13 @@ docker run -d \
   -p 80:80 \
   registry:2
 
+
+使用账号密码
+htpasswd 创建密码文件并上传到/auth/htpasswd
+-e "REGISTRY_AUTH=htpasswd" \
+-e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+-e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+
   
 不启用TLS
 docker run -d -p 5000:5000 --restart always --name registry registry:2  
@@ -273,6 +280,16 @@ docker run -d -p 5000:5000 --restart always --name registry registry:2
 docker run -d -p 5000:5000 --restart=always --name registry registry-1.docker.io/distribution/registry
 
 curl http://127.0.0.1:5000/v2/_catalog            #仓库查看
+
+########################################
+第三方仓库
+#登陆
+docker login --username=user_name 3th_parth_registry_server
+#下载
+docker pull ...
+#上传
+docker tag ...
+docker push ...
 
 
 ####################################################################################################################################################

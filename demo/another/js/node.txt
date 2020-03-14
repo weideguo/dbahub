@@ -17,8 +17,8 @@ npm node package manage
 npm run run_tag            #run_tag为package.json中scripts块指定的名字
 npm run build              #即实际执行 node build/build.js    生成dist目录即可当成静态html项目使用 但不能直接用浏览器打开文件
 npm install                #安装所有依赖包 文件package.json中模块dependencies、devDependencies的包
-npm install -g package-name   #全局安装模块
-npm install package-name   #安装模块，默认只在当前项目的目录安装
+npm install -g package-name   #全局安装模块 安装在node目录的lib/node_modules
+npm install package-name   #安装模块，默认只在当前项目的目录安装 安装在当前目录的node_modules
 npm install --production   #安装文件package.json中模块dependencies的包
 
 npm uninstall -g vue-cli   #移除包
@@ -39,6 +39,11 @@ lessc xxx.less xxxcss      #将less编译成css
 npm set registry https://registry.some_other_else       #增加镜像源
 npm config rm registry                                  #删除镜像源
 npm config list            #npm配置查看
+
+设置镜像
+~/.npmrc
+registry = https://registry.npm.taobao.org
+
 
 #使用nrm进行源管理
 npm install nrm -g --save
