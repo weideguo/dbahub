@@ -261,18 +261,6 @@ docker run -d -p 5000:5000 --restart always --name registry registry:2
 
 
 
-##设置默认使用的仓库
-{
-    "registry-mirrors":["https://xxxx.xxxx.com"]
-}
-
-
-#默认仓库设置
-/etc/containers/registries.conf
-
-/etc/sysconfig/docker
-
-
 
 
 ##容器私有仓库启动
@@ -292,6 +280,21 @@ docker tag ...
 docker push ...
 
 
+########################################
+默认仓库设置
+/etc/docker/daemon.json
+
+{
+    "registry-mirrors":["https://registry.docker-cn.com"]
+}
+
+
+#其他设置
+/etc/containers/registries.conf
+/etc/sysconfig/docker
+
+
+docker info         #查看默认使用的registry等其他信息
 ####################################################################################################################################################
 ##网络
 

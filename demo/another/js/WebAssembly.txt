@@ -1,0 +1,87 @@
+可以由浏览器运行的二进制格式
+
+Emscripten 
+#将c/c++编译
+
+#每次重新登陆或者新建 Shell 窗口，都要执行一次
+source ./emsdk_env.sh
+
+# 编译生成js wasm， 可以用node运行js文件
+# c文件为完整的c源码文件
+emcc hello.c
+emcc hello.c -o hello.js
+
+# 编译生成 wasm js html，html可以挂在nginx，通过url访问
+emcc hello.c -o hello.html
+
+
+###########################################################
+默认情况下，Emscripten 生成的代码只会调用 main() 函数，其它的函数将被视为无用代码。
+在一个函数名之前添加 EMSCRIPTEN_KEEPALIVE 能够防止这样的事情发生。
+
+// test.c
+#include <emscripten/emscripten.h>
+int EMSCRIPTEN_KEEPALIVE sum(int a,int b){
+    int t1=a*a;
+    int t2=b*b;
+    return t1+t2;
+}
+
+#编译
+emcc test.c -s WASM=1 -s SIDE_MODULE=1 -o test.wasm
+
+#使用
+// test.html
+<html>
+    <script src="test.js"></script>
+    <script>
+    // 必须在js文件加载之后才能运行
+    var f=function() {
+        console.log(Module)
+        console.log(Module._sum(1,2))}
+  </script>
+    <body>
+        <button onclick="f()">exe</button>
+    </body>
+</html>
+
+####################################
+// test.cpp
+#include <emscripten/bind.h>
+using namespace emscripten;
+float lerp(float a, float b) {
+    return a+b;
+}
+EMSCRIPTEN_BINDINGS(my_module) {
+    function("lerp", &lerp);
+}
+
+#只生成wasm
+emcc --bind -o test.js test.cpp
+
+#使用
+// test.html
+<html>
+    <script src="test.js"></script>
+    <script>
+    // 必须在js文件加载之后才能运行
+    var f=function() {
+        console.log(Module)
+        console.log(Module.lerp(1,2,3))}
+  </script>
+    <body>
+        <button onclick="f()">exe</button>
+    </body>
+</html>
+
+
+#######################################################################
+#反编译 用于判断wasm文件
+wasm2wat test.wasm
+
+
+
+
+
+
+
