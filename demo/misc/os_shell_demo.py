@@ -12,9 +12,10 @@ p0.read()
 
 #以后使用代替
 import subprocess
-r=subprocess.Popen("ls",shell=True,stdout=subprocess.PIPE)
-print r.communicate()  #返回值
-
+r=subprocess.Popen("ls",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+print(r.communicate())  #返回值 stdout stderr
+#退出码
+r.returncode
 '''
 常用命令执行如果只是判断执行成功与否直接os.system
 如果需要拿到输出值 os.popen
