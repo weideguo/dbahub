@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>socketio test</title>
+</head>
+<style>
+    ul{
+        text-align: left;
+        margin-left: 10px;
+        list-style-type: none;
+    }
+    body{
+        text-align: center;
+        color:red;
+    }
+    #show, #bottom{
+        width: 600px;
+        background-color: Black;
+        padding: 15px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+    #show{
+        height: 400px;
+    }
+    #bottom{
+        height: 30px;
+    }
+    input{
+        width: 520px;
+    }
+</style>
+<body>
+<div id="show">
+    <ul>
+
+    </ul>
+</div>
+<div id="bottom">
+    <input id="text"><button id="submit">发送</button>
+</div>
+</body>
+<script src="/static/js/jquery.js"></script>  <!--jquery请自行下载-->
+<script src="/static/js/socket.io.js"></script>  <!--socket.io.js请自行下载-->
+<script>
+    $(function(){
+        var url = "http://" + document.domain + ":" + location.port;
+        console.log("connect:",url);
+        var io_client = io.connect(url);
+        // 主动向后端请求
+        // 请求的地址 url+"login"
+        io_client.emit("login", {data: "I am connected!"});
+        
+        io_client.on("login", function(res) {
+            // 接收后端 socket_io.emit的event="login"
+            console.log("websocket返回值",res)
+        });
+        
+        io_client.on("mes", function(res){
+            // 接收websocket返回值
+            // 对应后端socket_io.emit的event="mes"
+            console.log("websocket返回值",res)
+            $("#show ul").append(`<li>${res}</li>`);
+        });
+
+        // 发送按钮事件
+        $("#submit").click(function(){
+            var text = $.trim($("#text").val());
+            if(text == ""){
+                // nothing...
+            }
+            else{
+                $.post("/listen", {"data": text}, function(res){
+                    // 普通返回值跟websocket返回值不同
+                    // var res = JSON.parse(res);
+                    console.log("普通返回值",res);
+                });
+                // 异步不会被之前的操作阻塞
+                $("#text").val(""); 
+                console.log("已经发送",text)
+            }
+        });
+        // 回车键的操作
+        document.onkeydown = function (e) {
+            var theEvent = window.event || e;
+            var code = theEvent.keyCode || theEvent.which;
+            if (code == 13) {
+                $("#submit").click();
+            }
+        }
+    });
+</script>
+</html>
