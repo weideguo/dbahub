@@ -101,7 +101,7 @@ eval("x=10;y=20;console.log(x*y)")
 alert(string);        //浏览器中弹出对话框
 console.clear();      //chrome控制台中清屏
 
-var id = setTimeout("function",time)   // 只执行一次 时间单位我为毫秒
+var id = setTimeout("function",time)   // 只执行一次 时间单位为毫秒
 var id = setInterval("function",time)  // 重复执行
 
 clearTimeout(id);               //取消定时 为window对象可以加上前缀 window.clearTimeout(id)
