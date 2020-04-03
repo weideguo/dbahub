@@ -1,0 +1,42 @@
+###sphinx 文档生成
+
+#安装
+pip install sphinx
+
+
+#创建doc 在dic目录下执行
+
+#启动 会生成模板目录
+sphinx-quickstart
+
+#由python的注释生成rst文档
+sphinx-apidoc -o ./source ../src/
+
+#命令的使用说明
+sphinx-apidoc [OPTIONS] -o <OUTPUT_PATH> <MODULE_PATH> [EXCLUDE_PATTERN, ...]
+
+#由rst编译生成文档
+#实际调用 sphinx-build
+make html           
+            
+            
+         
+sphinx_test/
+├── doc
+│   ├── build
+│   │   ├── doctrees
+│   │   └── html
+│   ├── make.bat
+│   ├── Makefile
+│   └── source
+│       ├── conf.py
+│       ├── demo1.rst
+│       ├── demo2.rst
+│       ├── index.rst
+│       ├── modules.rst
+│       ├── _static
+│       └── _templates
+└── src
+    ├── demo1.py
+    └── demo2.py
+     

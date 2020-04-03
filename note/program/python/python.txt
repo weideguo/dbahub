@@ -34,7 +34,8 @@ python -m http.server         #python3中启动一个简单的http服务器
 python xxx.py          #sys.path多加载脚本所在的目录
 python -m xxx          #sys.path多加载执行命令时的目录
 
-
+#直接在命令行执行python代码
+python -c "import time;print(time.time())"
 
 ##查看模块安装路径
 import sys

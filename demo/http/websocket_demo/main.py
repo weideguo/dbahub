@@ -51,6 +51,7 @@ def quotations_func(mes):
 def test_func():
     """
     测试页面
+    web前端会自动循环向后端发起请求
     位于templates目录下
     """
     return render_template("test.html")
