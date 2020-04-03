@@ -89,3 +89,25 @@ django内部的session前端都通过cookie存储，后端存储格式
 
 
 
+
+Request Method: OPTIONS
+
+预检请求（preflight request），查看是否可以或者允许跨域请求
+
+
+当跨域请求是简单请求时不会进行preflight request,只有复杂请求才会进行preflight request。
+
+跨域请求分两种：简单请求、复杂请求
+
+符合以下任一情况的就是复杂请求
+
+1.使用方法put或者delete
+
+2.发送json格式的数据（content-type: application/json）
+
+3.请求中带有自定义头部
+
+
+浏览器限制发起跨域请求
+跨域请求可以正常发起，但是返回的结果被浏览器拦截了。（default）
+

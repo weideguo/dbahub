@@ -85,3 +85,5 @@ Pyrex
 Psyco
 
 
+GIL  global interpreter lock
+导致python即使在多线程只能使用单核cpu
