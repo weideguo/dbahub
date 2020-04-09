@@ -5,6 +5,8 @@
 redis dump and restore
 work if redis server has [dump] and [restore] command (Available since 2.6.0)
 dump file not suppose to readable
+python 2.7
+python 3.5
 by wdg@dba in 20190123
 """
 import re
@@ -18,9 +20,11 @@ absolute_time_tag="#"           #tag for absolute time
 default_dump_file="./redis.dump"
 
 
-def get_redis_client(host='127.0.0.1',port=6379,db=0,password=None):
-    print host,port,db,password
-    return redis.StrictRedis(host=host,port=port,db=db,password=password)
+def get_redis_client(host="127.0.0.1",port=6379,db=0,password=None):
+    print(host,port,db,password)
+    #latin1 单字节编码，不会丢失数据
+    return redis.StrictRedis(host=host,port=port,db=db,password=password,decode_responses=True,encoding="latin1")
+    #return redis.StrictRedis(host=host,port=port,db=db,password=password)
 
 
 def dumps(redis_client,absolute):
@@ -49,7 +53,9 @@ def dump(f="/tmp/redis.dump",redis_client=None,absolute=False):
     for l in dumps(redis_client,absolute):
         if not counter:
             fw=open(f,"ab")
-        fw.write(l)
+       
+        #unicode -> byte
+        fw.write(l.encode('latin1'))
         counter = (counter + 1) % 10000
         if not counter:
             fw.close()
@@ -61,6 +67,8 @@ def restores(f):
     f=open(f,"rb")
     l=f.readline()
     while l:
+        #byte -> unicode
+        l=l.decode('latin1')
         yield l
         l=f.readline()        
 
@@ -76,7 +84,7 @@ def restore(f,redis_client=None,replace=False):
            
             k=l.split(new_split_str)[0]
             t=new_split_str.strip(line_split_flag)
-            #print [k,t]
+            #print([k,t])
             v=l.lstrip("%s%s%s%s" % (k,line_split_flag,t,line_split_flag)).rstrip("\n")
 
             if re.search(absolute_time_tag+".*",t):
@@ -92,7 +100,7 @@ def restore(f,redis_client=None,replace=False):
             k=k.replace("\\\\r","\n")
             if not counter:
                 p = redis_client.pipeline(transaction=False)              
-            #print [k,t,v] 
+            #print([k,t,v])
             p.restore(k,t,v,replace)
             counter = (counter + 1) % 10000
             if not counter:
@@ -135,7 +143,7 @@ def main(parser):
         f=options.file
     else:
         f=default_dump_file
-    print f
+    print(f)
 
     if options.absolute=="True" or options.absolute=="true":
         absolute=True
