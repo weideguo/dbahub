@@ -15,3 +15,10 @@ class Student(object):
     @property 					### @property装饰器就是负责把一个方法变成属性调用。即可使用s.score=70调用函数以及获取返回值
     def score(self):
         return self._score
+    
+    """
+    不需初始化类即可直接调用 Student.read()
+    """
+    @staticmethod
+    def read(self):
+        return "aaaa"
