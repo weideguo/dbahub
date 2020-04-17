@@ -9,12 +9,14 @@ def exit_handler():
 atexit.register(exit_handler)
 
 
-#使用装饰器
-@atexit.register
-def xxx():
-    print("yes you will exit")    
-
 
 if __name__ == "__main__":
-    print("xxxx")
-    
+    #使用装饰器
+    @atexit.register
+    def xxx():
+        print("yes you will exit")   
+
+    import time
+    while True:
+        print("xxxx")
+        time.sleep(1)

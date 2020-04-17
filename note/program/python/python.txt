@@ -81,6 +81,17 @@ help("modules")    ###python查看已经安装的模块
 print sys.path     #查看模块的位置
 
 
+
+
+#python虚拟环境 >python3
+Python Virtual Environments 
+
+#相当于复制一份python，用于多个项目之间的隔离，使用新目录下的python
+python3 -m venv env
+python3 -m virtualenv env
+
+
+
 与C/C++交互的技术
 
 SWIG
