@@ -37,6 +37,6 @@ func write(i int) {
 读读 不互斥
 读写 互斥
 写写 互斥
-操作的锁定和解锁分别是func (*RWMutex) Lock和func (*RWMutex) Unlock；
+写操作的锁定和解锁分别是func (*RWMutex) Lock和func (*RWMutex) Unlock；
 读操作的锁定和解锁分别是func (*RWMutex) Rlock和func (*RWMutex) RUnlock
 */
