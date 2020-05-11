@@ -1,0 +1,108 @@
+透明隧道加密
+
+###################################demo
+openssl req -new -x509 -days 3650 -nodes -out stunnel.pem -keyout stunnel.pem
+
+
+###client###stunnel.conf
+output=stunnel.log
+[test]
+client=yes
+accept=127.0.0.1:2234 
+connect=192.168.253.129:2234
+
+###client
+telnet 127.0.0.1 2234
+
+
+
+###server###stunnel.conf
+output=stunnel.log
+[test]
+accept=2234 
+connect=127.0.0.1:1234
+cert=stunnel.pem
+
+
+###server
+nc -l 1234
+
+
+
+##################################配置说明
+
+accept      接受连接请求的端口
+connect     远程服务器的IP地址和端口
+
+verify      #不设置则不验证
+1   根据对方的cert设置选择校验或者不校验
+2   使用商业CA时使用
+3   本地证书校验。自签发时需要
+
+
+
+
+
+
+
+
+######防止MITM攻击的方法(中间人攻击)
+
+##############使用PSK
+
+[PSK server]
+accept = <server_port>
+connect = <dst_port>
+ciphers = PSK
+PSKsecrets = psk.txt
+
+
+#密码长度不限？
+#cat psk.txt
+test1:oaP4EishaeSaishei6rio6xeeph3aX
+test2:yah5uS4aijooxilier8iaphuwah1LX
+
+##############
+
+[PSK client 1]
+client = yes
+accept = 127.0.0.1:<src_port>
+connect = <server_host>:<server_port>
+PSKsecrets = psk1.txt
+
+
+#要跟服务端的设置完全一致
+#cat psk1.txt
+test1:oaP4EishaeSaishei6rio6xeeph3aX
+
+
+
+################使用CA
+
+[certificate-based server]
+accept = <server_port>
+connect = <dst_port>
+cert = cert.pem
+key = key.pem
+
+#The "key" option may be omitted if cert.pem also contains the private key.
+
+
+##############  PKI (Public Key Infrastructure)
+[PKI client]
+client = yes
+accept = 127.0.0.1:<src_port>
+connect = <server_host>:<server_port>
+verifyChain = yes
+CAfile = ca-certs.pem
+checkHost = <server_host>
+
+
+############## certificate pinning 
+[pinning client]
+client = yes
+accept = 127.0.0.1:<src_port>
+connect = <server_host>:<server_port>
+verifyPeer = yes
+CAfile = peer-certificate.pem
+

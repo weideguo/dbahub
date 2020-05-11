@@ -147,3 +147,35 @@ gtid_purged
 
 
 
+
+
+mysql> show slave status\G
+*************************** 1. row ***************************
+              Master_Log_File: mysql.000003                       #读取到的master的binlog文件                     master.info文件的第2行
+          Read_Master_Log_Pos: 120                                #读取到的master的pos                            master.info文件的第3行
+               Relay_Log_File: localhost-relay-bin.000001         #本地的正在被恢复relay文件                      relay-log.info文件的第2行
+                Relay_Log_Pos: 4                                  #本地的正在被恢复relay的pos                     relay-log.info文件的第3行
+        Relay_Master_Log_File: mysql.000003                       #本地的正在被恢复relay对应的master的binlog文件  relay-log.info文件的第4行
+                                                                  #
+          Exec_Master_Log_Pos: 120                                #已经执行master的pos                            relay-log.info文件的第5行
+
+
+
+
+
+################
+使用binlog伪装成relay log实现多线程导入
+
+1.复制master的binlog到本地的relay log目录，并重命名为relay log格式，将文件名添加到relay-bin.index
+2.修改relay-log.info 第2第3行，第4第5行，指定恢复的起始点。（可以通过change master to ... 命令设置）
+3.修改relay-log.info 第2第3行，指定恢复的结束点。
+
+
+##注意##
+#不要启用gtid
+set global gtid_mode=off
+#中继信息使用文件记录
+set global relay_log_info_repository =FILE;
+
+#通过设置复制并发数加快恢复过程
+set global slave_parallel_workers=100
