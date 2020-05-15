@@ -45,7 +45,14 @@ location / {
     auth_basic           "my site";
     auth_basic_user_file conf/htpasswd; 
     #使用htpasswd 创建格式为 user:user_encrypted_passwd 的用户密码对 
+    #htpasswd -nb admin a123456
 }
+
+#连接
+#curl --user "admin:a123456" $host:$port
+#curl -H "Authorization: Basic $user_passwd_base64" $host:$port
+#使用user参数即为将账号密码对进行base64编码后放入header的Authorization
+
 
 #直接返回客户端ip
 location /ip {

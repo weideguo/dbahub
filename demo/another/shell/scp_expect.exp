@@ -1,0 +1,44 @@
+#!/usr/bin/expect
+
+set IP [lindex $argv 0]
+set USER [lindex $argv 1]
+set PASSWD [lindex $argv 2]
+set LOCAL_FILE [lindex $argv 3]
+set REMOTE_PATH [lindex $argv 4]
+set TIMEOUT [lindex $argv 5]
+set PORT [lindex $argv 6]
+
+if { "X${TIMEOUT}X" == "XX" } {
+set TIMEOUT  4
+}
+
+if { "X${PORT}X" == "XX" } {
+set PORT  22
+}
+
+
+spawn -noecho scp -r -P $PORT -o ServerAliveInterval=$TIMEOUT -o ConnectTimeout=$TIMEOUT $LOCAL_FILE $USER@$IP:$REMOTE_PATH
+expect {
+        "(yes/no)" { send "yes\r"; exp_continue }
+        "*assword:" { send "$PASSWD\r" }
+        "Password for" { send "$PASSWD\r" }
+        "Name or service not known" { exit 1}
+        "No route to host" { exit 2 }
+        "Connection refused" { exit 9 }
+        "Last login:" { exit 3}
+        timeout { exit 4 }
+        eof { exit 0 }
+}
+
+expect {
+        "*assword:" { exit 5 }
+        "Password for" { exit 8 }
+        eof { exit 0 }
+}
+
+#非交互执行scp
+#useage
+#./scp_expect.exp $ip $user $passwd $local_file $remote_path 
+#./scp_expect.exp $ip $user $passwd $local_file $remote_path $timeout $ssh_port
+
+

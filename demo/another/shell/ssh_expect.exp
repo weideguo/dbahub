@@ -1,0 +1,51 @@
+#!/bin/env expect
+
+set IP [lindex $argv 0]
+set USER [lindex $argv 1]
+set PASSWD [lindex $argv 2]
+set CMD [lindex $argv 3]
+set TIMEOUT [lindex $argv 4]
+set PORT [lindex $argv 5]
+
+if { "X${TIMEOUT}X" == "XX" } {
+set TIMEOUT  4
+}
+
+if { "X${PORT}X" == "XX" } {
+set PORT  22
+}
+
+spawn -noecho ssh -o ServerAliveInterval=$TIMEOUT -o ConnectTimeout=$TIMEOUT -t -p $PORT $USER@$IP $CMD
+expect {
+        "(yes/no)" { send "yes\r"; exp_continue }
+        "*assword:" { send "$PASSWD\r" }
+        "Password for" { send "$PASSWD\r" }
+        "Name or service not known" { exit 1}
+        "No route to host" { exit 2 }
+        "Connection refused" { exit 9 }
+        "Connection reset by peer" {exit 9}
+        timeout { exit 4 }
+        eof { exit 10 }
+}
+
+expect {
+        "*assword:" { exit 5 }
+        "Password for" { exit 8 }
+        "uid=" { exit 100 }
+        "*]$" { exit 100 }
+        "*]#" { exit 100 }
+        "*$" { exit 100 }
+        "*#" { exit 100 }
+        "Last login:" { exit 100 }
+        eof { exit 7 }
+}
+
+#非交互执行ssh
+#useage
+#./ssh_expect.exp $ip $user $passwd $cmd
+#./ssh_expect.exp $ip $user $passwd $cmd $timeout $ssh_port
+
+
+
+
+

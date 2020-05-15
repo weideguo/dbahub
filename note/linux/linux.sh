@@ -190,6 +190,8 @@ X：可以直接访问压缩文件的内容。
 chattr +i dirname    #则不能对该文件夹进行任何修改
 + - =                #操作符
 
+lsattr  filename     #查看文件属性
+
 
 quota  				#磁盘使用限制
 edquota				#编辑数据文件
@@ -286,6 +288,9 @@ passwd testuser    ##给已创建的用户设置密码
 userdel testuser   ##删除用户
 rm -rf testuser    ##删除目录
 
+#非交互模式更改密码 只能在root账号使用
+echo 'new_passwd' | passwd --stdin auser
+
 groupadd group_name  ###添加组
 groupmod group_name  ###修改组
 groupdel group_name  ###删除组
@@ -306,6 +311,19 @@ userdel user_name ##删除用户   (加 -r 删除用户目录）
 /etc/passwd  ##保存用户信息  LOGNAME:PASSWORD:UID:GID:USERINFO:HOME:SHELL UID为0则为root账号同一用户级别
 /etc/shadow  ##保存用户密码
 /etc/group   ##保存组信息
+
+
+/etc/shadow 文件字段说明
+帐号名称 ：root 
+加密后的密码              （星号代表帐号被锁定，双叹号表示这个密码已经过期了，密码格式$id$salt$encrypted）
+上次修改密码的日期：      （ 1/1/1970 起的天数）
+最小修改时间间隔：        （0表示可在任何时间修改） 
+密码需要被重新变更的天数：（99999） 
+密码变更前提前几天警告：
+密码过期后的宽限天数：    
+账号失效时间：            （ 1/1/1970 起的天数）
+保留条目
+
 
 umask -S   	 ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002
@@ -373,7 +391,27 @@ sed 's/lintxt1/linetxt2/g'	filename		####替换字符 将文件中的linetxt1替
 sed 's|lintxt1|linetxt2|g'	filename
 sed '/linetxt/d' filename					####删除匹配的行  将配备linetxt的行删除 可以使用正则表达式
 
-echo "\e[1;33m ok !! \e[0m"   ##高亮
+
+##文字高亮
+i=33
+echo -e "\e[1;${i}m ok \e[0m"  
+#重置=0，黑色=30，红色=31，绿色=32，黄色=33，蓝色=34，洋红=35，青色=36，白色=37
+
+#背景高亮
+i=2     #行
+j=10    #列
+k=44    #颜色
+echo -e "\033[${i};${j}H\033[${k};31m \033[0m"
+#重置=0，黑色=40，红色=41，绿色=42，黄色=43，蓝色=44，洋红=45，青色=46，白色=47
+
+
+echo -en "\b\b\b\b""e"     #-n 不换行
+sleep 1
+echo -en "\b\b\b\b""f"     #\b 删除之前的字符
+
+printf #不换行输出
+
+
 
 echo "xxx" | xargs                          ##设置标准输出
 
@@ -780,13 +818,15 @@ service rsyslog restart                 ##sylog的增强版本，增加网络传
 service syslog start
 service crond restart
 
-
-logger 					##写日志进入/var/log/messages					
+cat /etc/syslog.conf    #查看各个日志的对应路径
 
 ##linux日志
 /var/log目录下
 
-cat /etc/syslog.conf    #查看各个日志的对应路径
+	
+/var/log/messages       ##系统日志，记录各种事件   也可以用 logger 命令手动写日志进入
+
+/var/log/secure         ##安全日志（记录账号的登陆断开信息，如果很大说明有人在试图破解密码？）
 
 
 											
@@ -1020,6 +1060,12 @@ exec 200>&-			###关闭绑定
 exec 200<$-
 
 
+exec 300<&200       ###拷贝200管道成300管道 即两个管道可以互用
+
+exec <$file         #将普通文件内容作为标准输入
+exec >$file         #将标准输出写入普通文件
+exec 3<$file        #将普通文件内容写入管道3
+
 
 read -u n			###从描述符号位n的文件中读取。缺省为0，即为stdin。
 
@@ -1213,10 +1259,13 @@ set  显示本地定义的shell变量
 unset 变量名  清除环境变量
 export 变量名=变量值  设置环境变量
 
-
+env 命令输出参数
 PATH 可执行命令路径
 PROMPT_COMMAND  用户执行后执行
+SSH_CONNECTION  当前SSH连接信息
 
+#查看当前主机ip（多网卡时显示当前连接所用的ip，复杂网络环境不适用）
+env|grep -i SSH_CONNECTION|awk '{print $3}'
 
 
 
@@ -1251,6 +1300,9 @@ trap '' 1 2 3 15 			###忽略信号，在脚本中使用
 trap 'commands' signals 	###接收到信号时执行commands
 
 trap "echo 'hello'" INT		###键盘ctrl+c，执行echo hello命令
+
+
+stty size       #查看终端的大小
 
 
 关闭ICMP回应(不能使用ping命令连接)
@@ -1448,33 +1500,36 @@ nc -lv  4567
  
  
 读写这个文件相当于使用socket建立连接
-/dev/tcp/target_ip/target_port
-/dev/udp/target_ip/target_port
-
-
-服务端
-/dev/tcp-server/target_ip/target_port
-/dev/udp-server/target_ip/target_port
+/dev/tcp/$target_ip/$target_port
+/dev/udp/$target_ip/$target_port
 
 
 客户端
-exec 100 > /dev/tcp/target_ip/target_port
+exec 100>/dev/tcp/$target_ip/$target_port
 
-echo -e "what you want to send" > &100
+#发送
+echo -e "what you want to send" >&100
 
-exec 100 > &-
-exec 100 < $-
+#接收
+cat <&100
+
+exec 100>&-
+exec 100<$-
 
 
+
+服务端？不可以用
+/dev/tcp-server/$listen_ip/$target_port
+/dev/udp-server/$listen_ip/$target_port
 
 服务端
 
-exec 100 > /dev/tcp-server/listen_ip/listen_port
+exec 100>/dev/tcp-server/$listen_ip/$listen_port
 
-cat < &100
+cat <&100
 
-exec 100 > &-
-exec 100 < $-
+exec 100>&-
+exec 100<$-
 
 
 
@@ -1551,11 +1606,6 @@ shc  将shell脚本编译成二进制二进制文件
 
 file -i file_name  查看文件的编码，但是否为utf8-bom查看不出
 
-echo -en "\b\b\b\b""e"     #-n 不换行
-sleep 1
-echo -en "\b\b\b\b""f"     #\b 删除之前的字符
-
-printf #不换行输出
 
 
 ssh实现端口转发

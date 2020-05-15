@@ -22,8 +22,8 @@ struct.unpack(format, buffer)             #转换成字符串   以tuple格式�
 Character   "Byte order" 
 @            native 
 =            native 
-<            little-endian          
->            big-endian             
+<            little-endian        小端  二进制格式从低位开始计算（即左边开始）
+>            big-endian           大端  二进制格式从高位开始计算（即右边开始）
 !            network (= big-endian) 
 
 

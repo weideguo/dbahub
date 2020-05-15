@@ -21,12 +21,15 @@ npm install -g package-name   #全局安装模块 安装在node目录的lib/node
 npm install package-name   #安装模块，默认只在当前项目的目录安装 安装在当前目录的node_modules
 npm install --production   #安装文件package.json中模块dependencies的包
 
+npm install vue-loader@14.2.4  #安装指定版本依赖包
+npm update vue-loader@14.2.4  #升级到指定版本
+
 npm uninstall -g vue-cli   #移除包
 
 npm info package-name      #查看模块的信息 如版本号
 
---save-dev                 #安装同时写入package.json 的 dependencies模块
---save                     #安装同时写入package.json 的 devDependencies模块
+--save-dev                 #安装同时写入package.json 的 devDependencies模块   
+--save                     #安装同时写入package.json 的 dependencies模块   编译后依赖的包需要存放于此
 
 npm ls --depth 0           #列出安装过的模块
 npm ls -g --depth 0
