@@ -646,6 +646,8 @@ find ./ -name "*test*" –type f -exec rm -rf {} \;   ###查找当前目录下�
 find ./ -name "*test*" –type d						###查找当前目录下指定的目录
 find ./ -type f -ctime +14 -exec rm -rf {} \;		##查找时间离现在大于14天的文件，删除
 
+find ./ ! -path "./aaa"                             #! 过滤
+
 -maxdepth   #目录深度指定
 
 
@@ -880,6 +882,9 @@ ps axjf
 
 pstree $pid				##查看进程、线程的层级
 tree                    ##展示目录的树状结构
+
+pstree -p $pid | awk -F"[()]" '{print $2}'| xargs kill -9            #杀死进程以及相关子进程
+
 
 top                     ##使用子命令H查看线程，Tasks数增多
 
@@ -1659,6 +1664,25 @@ GPU
 lspci | grep -i vga      #查看显卡信息
 
 
+#DNS设置
+/etc/resolv.conf
 
+
+#内核符号表
+#所有的内核函数以及已经装载的模块及符号的地址以及符号的类型信息
+cat /proc/kallsyms
+
+#动态可加载内核模块
+Loadable Kernel Module，LKM
+
+#内核模块
+insmod <module.ko> [module parameters]    #装载模块(install module)，只有超级用户才能使用该命令
+rmmod <module.ko>                         #卸载模块(remove module)，只有超级用户才能使用该命令
+modinfo <module.ko>                       #查看模块信息
+lsmod                                     #列表显示所有的内核模块(list  module),等价于cat /pro/modules命令
+modprobe [-r] <module name>               #载入指定的个别模块，或是载入一组相依赖的模块。modeprob可智能地添加和删除Linux内核模块实现依赖调用。
+
+#查看内核模块的文件
+find /lib/modules/ -name "*.so" -o -name "*.ko"  -o -name "*.ko.xz"
 
 

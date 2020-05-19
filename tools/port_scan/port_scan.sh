@@ -13,10 +13,12 @@ declare -a PORTS
 declare PORT_NUM=0
 #TCP超时则自动中断
 declare TCP_TIMEOUT=10
-#并发数
-declare MAX_SCAN_CONCURRENT=5
 #日志
 declare LOGFILE="./$0.log"
+
+
+#并发数
+declare MAX_SCAN_CONCURRENT=5
 
 
 init_concurrent()
@@ -152,11 +154,11 @@ parse_port()
 
 usage()
 {
-echo -e "usage: \n\t./$0 -p <port> [-n <concurrent_num> | -t <tcp_timeout> | -l <logfile>] <host>"
+echo -e "usage: \n\t$0 -p <port> [-n <concurrent_num> | -t <tcp_timeout> | -l <logfile>] <host>"
 echo "example:"
-echo -e "\t./$0 -p 22,23,8000-8080 192.168.1.128"
-echo -e "\t./$0 -p 22,23,8000-8080 -n 10 192.168.1.128"
-echo -e "\t./$0 -p 22,23,8000-8080 -n 10 -t 20 -l test.log 192.168.1.128"
+echo -e "\t$0 -p 22,23,8000-8080 192.168.1.128"
+echo -e "\t$0 -p 22,23,8000-8080 -n 10 192.168.1.128"
+echo -e "\t$0 -p 22,23,8000-8080 -n 10 -t 20 -l test.log 192.168.1.128"
 }
 
 main()
@@ -183,7 +185,7 @@ main()
 			exit 0
 			;;
 		?)
-			echo "unkown arguments."
+			usage
 			exit 1
 			;;
 		esac
