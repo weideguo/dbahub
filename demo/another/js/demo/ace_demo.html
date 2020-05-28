@@ -1,0 +1,126 @@
+<!DOCTYPE html lang="zh-CN">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!--ace-->
+    <script src="ace/ace.js"></script>
+    <script src="ace/ext-language_tools.js"></script>
+    <script src="ace/mode-mysql.js"></script>
+    <script src="ace/theme-github.js"></script>
+    <script src="ace/snippets/mysql.js"></script>
+    <!--sql-formatter-->
+    <script src="sql-formatter/sql-formatter.min.js"></script>
+</head>
+<body>
+    <div style="margin-left:10%">
+        <div id="editor" style="width: 80%;height: 400px;">--input sql in here 中文--</div>
+        <button onclick="buttonClick()" type="button">commit</button>
+        <button onclick="buttonClick1()" type="button">beautiful</button>
+        </div>
+    </body>
+<script>
+
+var editor = ace.edit("editor");
+ace.config.set('basePath', '/ace');
+ace.config.set('modePath', '/ace');
+ace.config.set('themePath', '/ace');
+
+//根据实际情况选择 
+//对应 theme- mode- 开头的js文件
+//textmate mysql 
+//textmate pgsql
+//textmate mongodb
+var theme = "textmate";
+var language = "mysql";
+editor.setTheme("ace/theme/" + theme);
+editor.session.setMode("ace/mode/" + language);
+editor.$blockScrolling = Infinity;
+
+//字体大小
+editor.setFontSize(18);
+
+//设置只读（true时只读，用于展示代码）
+editor.setReadOnly(false);
+
+//自动换行,设置为off关闭
+editor.setOption("wrap", "free");
+editor.getSession().setUseWrapMode(true);
+
+//启用提示菜单
+ace.require("ace/ext/language_tools");
+editor.setOptions({
+    enableBasicAutocompletion: true,
+    enableSnippets: true,
+    enableLiveAutocompletion: true
+});
+
+//绑定快捷键
+editor.commands.addCommand({
+    name: "alter",
+    bindKey: {win: "Ctrl-Enter", mac: "Command-Enter"},
+    exec: function (editor) {
+        let pathname = window.location.pathname;
+        console.log(pathname)
+    }
+});
+
+//设置自动提示代码
+var setComplete = function (data) {
+    var langTools = ace.require("ace/ext/language_tools");
+    langTools.addCompleter({
+        getCompletions: function (editor, session, pos, prefix, callback) {
+            if (prefix.length === 0) {
+                return callback(null, []);
+            } else {
+                return callback(null, data);
+            }
+        }
+    });
+};
+
+//自定义提示
+function setCompleteData(result,meta) {
+    var data = [];
+    for (var i = 0; i < result.length; i++) {
+        data.push({
+            name: result[i],
+            value: result[i],
+            caption: result[i],
+            meta: meta,
+            score: 100
+        });
+
+    }
+    setComplete(data);
+}
+/*
+result=["tb1","tb2"]
+meta="tablename"
+setCompleteData(result,meta)
+*/
+
+editor.setValue("-- 请在此输入SQL，以分号结尾。\n");
+editor.clearSelection();
+editor.focus(); 
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+function buttonClick() {
+    console.log(editor.getValue())
+}
+
+function buttonClick1() {
+    var select_sqlContent = editor.session.getTextRange(editor.getSelectionRange());
+    if (select_sqlContent) {
+        var sqlContent = select_sqlContent
+    } else {
+        var sqlContent = editor.getValue();
+
+    }
+    var sqlContent = window.sqlFormatter.format(sqlContent);
+    editor.setValue(sqlContent);
+    editor.clearSelection();
+}
+
+</script>
+</html>

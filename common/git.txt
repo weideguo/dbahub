@@ -198,20 +198,13 @@ git submodule add git://git.linphone.org/linphone.git ThirdParts/linphone
 
 git submodule add -b 3.10.x git://git.linphone.org/linphone.git ThirdParts/linphone
 
-.gitmodules 文件
-[submodule "ThirdParts/libpcap"]
-    path = ThirdParts/libpcap
-    url = https://github.com/the-tcpdump-group/libpcap.git
-    branch = libpcap-1.5
-[submodule "ThirdParts/sipp"]
-    path = ThirdParts/sipp
-    url = https://github.com/SIPp/sipp.git
+#更新
+#进入子模块git pull
+
+.gitmodules 文件(使用git submodule命令时自动生成)
 [submodule "ThirdParts/osip"]
     path = ThirdParts/osip
     url = git://git.savannah.gnu.org/osip.git
-[submodule "ThirdParts/linphone"]
-    path = ThirdParts/linphone
-    url = git://git.linphone.org/linphone.git
     branch = 3.10.x
 
     

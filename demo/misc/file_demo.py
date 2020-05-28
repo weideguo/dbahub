@@ -30,9 +30,23 @@ finally:
 #或者以读写方式打开，写文件后想读取，则需要先移动文件指针
 f.seek(0)  
 
+
+def read(f):
+    """同时兼容读路径与文件流"""
+    import _io
+    _str=""
+    if isinstance(f,_io.TextIOWrapper):
+        _str=f.read()
+    else:
+        with open(f) as fp:
+            _str=fp.read()
+    
+    return _str
+    
+
 """
 'r', 'w','a'  读 写 增加
-'b'  二进制形式打开
+'b'  二进制形式打开 不加这个默认会以utf8进行编码转换
 '+'  允许同时读写 
 
 全部模式

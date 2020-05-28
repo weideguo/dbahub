@@ -48,6 +48,10 @@ ALTER TABLE tbl_name FORCE
 #percona
 
 percona-toolkit(perl)
+yum install perl-DBI
+yum install perl-DBD-MySQL
+yum install perl-Time-HiRes
+yum install perl-IO-Socket-SSL
 #online ddl
 bin/pt-online-schema-change --alter="add key(c1,c2)" --execute u=root,p=,h=127.0.0.1,P=3306,D=test,t=aa2
 

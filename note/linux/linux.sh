@@ -830,6 +830,19 @@ cat /etc/syslog.conf    #查看各个日志的对应路径
 
 /var/log/secure         ##安全日志（记录账号的登陆断开信息，如果很大说明有人在试图破解密码？）
 
+/var/log/wtmp           ##二进制日志，记录每个用户的登录次数和持续时间等信息
+#查看
+who /var/log/wtmp
+last
+
+/var/log/btmp           #二进制日志，记录用户登陆失败的信息   
+#查看
+lastb
+
+/var/log/lastlog        #用于最后一次登陆的信息
+#查看
+lastlog
+
 
 											
 pidof ${command}		##查看当前命令的pid			
@@ -1684,5 +1697,9 @@ modprobe [-r] <module name>               #载入指定的个别模块，或�
 
 #查看内核模块的文件
 find /lib/modules/ -name "*.so" -o -name "*.ko"  -o -name "*.ko.xz"
+
+
+
+
 
 
