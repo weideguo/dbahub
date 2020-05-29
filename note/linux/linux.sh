@@ -917,11 +917,14 @@ free -m   			##内存与swap查看   ###SWAP用作虚存分区
 	shared  当前废弃不用的内存
 	buffer  buffer cache内存
 	cached  page cache内存
-
+    available 列显示还可以被应用程序使用的物理内存大小
+    
+    
 	-buffer/cache =used-buffers-cached  程序占用的内存
-	+buffer/cache =free+buffers+cached  可以挪用的内存
+	+buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
 
 
+/proc/meminfo  #free命令信息来自于此
 
 
 top  	  			###查看系统运行状态   AIX使用topas
