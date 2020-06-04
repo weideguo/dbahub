@@ -90,6 +90,8 @@ Python Virtual Environments
 python3 -m venv env
 python3 -m virtualenv env
 
+#进入虚拟环境（可选）
+source bin/activate
 
 
 与C/C++交互的技术
