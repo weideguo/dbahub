@@ -1,0 +1,29 @@
+AST 抽象语法树
+
+
+C++ 
+Lex/Yacc
+bison (yacc for gnu)
+
+将任何一种编程语言的所有语法翻译成针对此种语言的 Yacc 语 法解析器。
+用巴科斯范式(BNF, Backus Naur Form)来书写。
+
+java
+durid 
+    Calcite  
+        Calcite使用的语法解析器是JavaCC
+antlr
+
+
+
+go  goyacc
+git clone https://github.com/golang/tools.git
+cd cmd/goyacc
+go build yacc.go
+go install
+
+
+
+
+
+

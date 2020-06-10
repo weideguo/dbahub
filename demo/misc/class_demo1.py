@@ -1,42 +1,42 @@
-###¶¨ÒåÒ»¸ö¿ÕÀà£»Ò²¿ÉÖ±½Ó¶¨Òåº¯Êı
+###å®šä¹‰ä¸€ä¸ªç©ºç±»ï¼›ä¹Ÿå¯ç›´æ¥å®šä¹‰å‡½æ•°
 class Student0(object):     
 	pass
 
-###¶¨ÒåÒ»¸öº¯Êı×÷ÎªÊµÀı·½·¨
+###å®šä¹‰ä¸€ä¸ªå‡½æ•°ä½œä¸ºå®ä¾‹æ–¹æ³•
 def set_age(self, age):    
 	self.age = age
 
 from types import MethodType
-s.set_age = MethodType(set_age, s, Student)   		### ¸øÊµÀı°ó¶¨·½·¨
-Student.set_age = MethodType(set_age, s, Student) 	### ¸øÀà°ó¶¨·½·¨
+s.set_age = MethodType(set_age, s, Student)   		### ç»™å®ä¾‹ç»‘å®šæ–¹æ³•
+Student.set_age = MethodType(set_age, s, Student) 	### ç»™ç±»ç»‘å®šæ–¹æ³•
 
 class Student1(object):             
-	__slots__ = ("name", "age")     ###ÏŞÖÆÀàÖ»ÓĞÖ¸¶¨µÄÊôĞÔ£¬Ö»¶Ôµ±Ç°µÄÀàÓĞĞ§£¬¶Ô¼Ì³Ğ×ÓÀàÎŞÏŞÖÆ
+	__slots__ = ("name", "age")     ###é™åˆ¶ç±»åªæœ‰æŒ‡å®šçš„å±æ€§ï¼Œåªå¯¹å½“å‰çš„ç±»æœ‰æ•ˆï¼Œå¯¹ç»§æ‰¿å­ç±»æ— é™åˆ¶
 
 
 class Student2(object):
     """
-    ¸ºÔğ°ÑÒ»¸ö·½·¨±ä³ÉÊôĞÔµ÷ÓÃ¡£
-    s.score »ñÈ¡·µ»ØÖµ
+    è´Ÿè´£æŠŠä¸€ä¸ªæ–¹æ³•å˜æˆå±æ€§è°ƒç”¨ã€‚
+    s.score è·å–è¿”å›å€¼
     """
     @property 					
     def score(self):
         return "bbb"
     
     """
-    ²»Ğè³õÊ¼»¯Àà¼´¿ÉÖ±½Óµ÷ÓÃ Student.read()
+    ä¸éœ€åˆå§‹åŒ–ç±»å³å¯ç›´æ¥è°ƒç”¨ Student.read()
     """
     @staticmethod
     def read(self):
         return "aaaa"
         
     """
-    Ê¹ÓÃ
+    ä½¿ç”¨
     s=Student.my_init()
     s.score
     """
     @classmethod
     def my_init(cls,*args,**kwargs):
-        #Ïàµ±ÓÚµ÷ÓÃ¹¹Ôìº¯Êı
+        #ç›¸å½“äºè°ƒç”¨æ„é€ å‡½æ•°
         return cls(*args,**kwargs)
 

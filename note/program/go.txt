@@ -58,10 +58,11 @@ export GOPROXY=https://goproxy.cn             #只能用于linux
 
 #初始化当前文件夹，创建go.mod文件
 #之后源代码中依赖的第三方包不需要再提前下载到GOPATH，运行时自动从GOPROXY加载
-go mod init example.com/m/v2                  
+go mod init example.com/m/v2         #指定目录或者文件           
 
 go mod download	   根据go.mod文件下载依赖包到本地（默认为 GOPATH/pkg/mod 目录）
 go mod tidy        直接下载以来的包到本地（默认为 GOPATH/pkg/mod 目录）
 
-
+go.mod    #go mod init 生产文件
+go.sum    #go run/build 由 go.mod 生产，并下载对应依赖项
 

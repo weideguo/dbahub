@@ -1,61 +1,22 @@
 
 '''
 zabbix_api
-©À©¤©¤ workdir
-©¦   ©À©¤©¤ get_zabbbix_value.py
-©¦	©À©¤©¤ __init__.py
-©¦   ©¸©¤©¤ yyy.py					# import  get_zabbbix_value
-©¸©¤©¤  xxx.py        				# impoer workdir.get_zabbbix_value
+â”œâ”€â”€ workdir
+â”‚   â”œâ”€â”€ get_zabbbix_value.py
+â”‚	â”œâ”€â”€ __init__.py             # å½“æˆæ¨¡å—æ—¶éœ€è¦åˆ›å»ºè¯¥æ–‡ä»¶ å¯ä»¥ä¸ºç©ºæˆ–è€…é‡Œé¢çš„å¯¹è±¡å¯ä»¥ç›´æ¥è°ƒç”¨(ä¸éœ€è¦å†æŒ‡å®šæ–‡ä»¶å¯¹åº”çš„æ¨¡å—å)
+â”‚   â””â”€â”€ yyy.py					# import  get_zabbbix_value
+â””â”€â”€  xxx.py        				# impoer workdir.get_zabbbix_value
 '''
 
 
-#¼Ì³Ğ
+#ç»§æ‰¿
 class Mammal(Object):
 	pass
 
-class Dog(Mammal):				 #µ¥¼Ì³Ğ
+class Dog(Mammal):				 #å•ç»§æ‰¿
     pass
 	
-class Dog(Mammal, Runnable):     #¶àÖØ¼Ì³Ğ
+class Dog(Mammal, Runnable):     #å¤šé‡ç»§æ‰¿
     pass
 
 
-#¶¨ÖÆÀà
-
-class Student(object):
-	def __init__(self, name):		 #Àà¿ÉÒÔ´«²ÎÊı½øĞĞ³õÊ¼»¯	
-		self.name = name
-	def __str__(self):				 #¿ÉÒÔÊ¹ÓÃprint(Student("name"))
-		return 'Student object (name: %s)' % self.name	
-	__repr__ = __str__               
-	
-#Ö±½ÓÏÔÊ¾±äÁ¿µ÷ÓÃµÄ²»ÊÇ__str__()£¬¶øÊÇ__repr__()	
-#__str__()   ###·µ»ØÓÃ»§¿´µ½µÄ×Ö·û´®£¬
-#__repr__()  ###·µ»Ø³ÌĞò¿ª·¢Õß¿´µ½µÄ×Ö·û´®
-#__name__()  ###»ñÈ¡º¯ÊıÃû
-#_main_
-
-#Óï¾äÓÃÀ´ÔÚ½Å±¾ÖĞÅĞ¶ÏÊÇ·ñÔÚ¡¾Ö´ĞĞpythonÄ£¿é¡¿»òÕß¡¾µ¼ÈëpythonÄ£¿é¡¿
-#if __name__='__main__'			
-#Èç¹ûµ¼ÈëÄ£¿é(pythonÎÄ¼ş)£¬Ôò__name__²»Îª__main__;Èç¹ûÖ´ĞĞ£¬ÔòÎª__main__¡£
-
-
-
-class Fib(object):
-    def __init__(self):
-        self.a, self.b = 0, 1 	# ³õÊ¼»¯
-
-    def __iter__(self):
-        return self 			# µü´ú×Ô¼º£»  ÓÃÓÚ for n in Fib():
-
-    def __getitem__(self, n):   #ÓÃÓÚÀà¿ÉÒÔÏñÊı×éÒ»ÑùÊ¹ÓÃ£»ÈçFib()[0]
-        a, b = 1, 1
-        for x in range(n):
-            a, b = b, a + b
-        return a
-		
-	def next(self):
-        self.a, self.b = self.b, self.a + self.b 	# ¼ÆËãÏÂÒ»¸öÖµ
-        if self.a > 100000: 						# ÍË³öÑ­»·µÄÌõ¼ş
-            raise StopIteration();
-        return self.a 								# ·µ»ØÏÂÒ»¸öÖµ
