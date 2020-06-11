@@ -38,6 +38,7 @@ class A(object):
     def __new__(cls,*args,**kwargs):
         """
         控制生成一个新实例的过程。它是类级别的方法。先于__init__执行
+        新类才有(即继承于object)
         """
         print("__new__")
         return super(A, cls).__new__(cls,*args,**kwargs)
@@ -48,7 +49,7 @@ class PositiveInteger(int):
     #而是用__init__则起不到不同样效果
     def __new__(cls, value):
         return super(PositiveInteger, cls).__new__(cls, abs(value))
-            
+
 x=PositiveInteger(-10) 
  
 # 单例模式  

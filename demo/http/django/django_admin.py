@@ -89,9 +89,15 @@ class MyMiddleware(MiddlewareMixin):
             return HttpResponseRedirect('/login/')
     
     
-    #响应时的处理
+    #执行view函数前的处理，在process_request之后
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        print("will run function for view")
+    
+    
+    #响应时的处理，即为执行view函数后的处理（比如用于处理添加http头，如set-cookie）
     def process_response(self, request, response):
         
         return response
+    
     
     
