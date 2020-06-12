@@ -2,6 +2,8 @@
 """
 #需要额外于django启动
 python manage.py qcluster
+#启用django-admin
+#进入django-admin的页面可以管理
 """
 
 """

@@ -1,0 +1,15 @@
+#openssl
+openssl version   #查看版本
+
+yum install XXX
+#M2Crypto.SSL.SSLError: tlsv1 alert protocol version
+#可能是yum源存在问题（不是根本原因 但可以处理）
+
+
+传输层安全性协议（英语：Transport Layer Security，缩写作TLS）
+前身安全套接层（Secure Sockets Layer，缩写作SSL）
+
+
+
+
+
