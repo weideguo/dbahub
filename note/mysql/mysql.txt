@@ -418,6 +418,12 @@ innodb_force_recovery={0-6}
 	
 myisam-recover-options    #启动时恢复myisam表
 	
+
+重新更改配置文件再启动可能出现错误
+1.redo log文件大小不一致，移除现有redo log的文件（需要先安全关闭mysql）
+
+
+
 	
 使用密码文件登录
 #mysql5.6后支持

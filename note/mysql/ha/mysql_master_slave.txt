@@ -158,7 +158,7 @@ mysql> show slave status\G
         Relay_Master_Log_File: mysql.000003                       #本地的正在被恢复relay对应的master的binlog文件  relay-log.info文件的第4行
                                                                   #
           Exec_Master_Log_Pos: 120                                #已经执行master的pos                            relay-log.info文件的第5行
-
+              Relay_Log_Space: 20187680                           #本地relay log的大小，已经执行的会自动清理
 
 
 

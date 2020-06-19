@@ -39,6 +39,11 @@ iptables -t nat -A PREROUTING -d 10.19.1.1 -p tcp --dport 3306 -j DNAT --to 117.
 iptables -t nat -A POSTROUTING -d 117.121.1.1 -p tcp --dport 3306 -j SNAT --to 10.19.1.1
 
 
+#内网端口映射成外网端口
+iptables -t nat -A PREROUTING -s ${from_remote_ip} -d ${my_public_ip} -p tcp --dport ${my_port} -j DNAT --to-destination ${my_private_ip}:${my_port}
+
+
+
 DNAT：进来的时候改变目的地址(dnat)，出去的时候改变源地址 (un_dnat) 目的地址转换 外网访问内网
 SNAT：出去的时候改变源地址（snat），回来的时候改变目的地（un_snat) 源地址转换   内网访问外网
 
@@ -46,5 +51,15 @@ SNAT：出去的时候改变源地址（snat），回来的时候改变目的地
 iptables -t nat -nvL    #查询nat的规则
 iptables -nvL           #查询filter的规则 不指定测默认filter
 
+
+显示每条规则链的编号
+iptables -nL --line-number
+
+按编号删除规则
+iptables -D FORWARD 1
+
+
+#删除NAT
+iptables -t nat  -D POSTROUTING  1
 
 

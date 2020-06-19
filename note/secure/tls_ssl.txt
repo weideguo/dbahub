@@ -10,6 +10,11 @@ yum install XXX
 前身安全套接层（Secure Sockets Layer，缩写作SSL）
 
 
+#使用指定tls版本查看网站
+openssl s_client -connect www.python.com:443
+openssl s_client -connect www.python.com:443 -tls1
+openssl s_client -connect www.python.com:443 -tls1_1
+openssl s_client -connect www.python.com:443 -tls1_2
 
 
 
