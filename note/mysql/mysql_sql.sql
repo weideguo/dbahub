@@ -386,3 +386,29 @@ end
 delimiter ;
 
 
+
+
+// 一行拆分成多行
+create table c(c1 int,c2 varchar(20));
+insert into c values(1,'a,b');
+insert into c values(2,'c,d,e');
+insert into c values(3,'f,g');
+
+
+SELECT
+    a.c1,
+    substring_index(
+        substring_index(
+            a.c2,
+            ',',
+            b.help_topic_id + 1
+        ),
+        ',' ,- 1
+    ) AS c3
+FROM
+    c a
+JOIN mysql.help_topic b ON b.help_topic_id < (
+    length(a.c2) - length(
+        REPLACE (a.c2, ',', '')
+    ) + 1
+);

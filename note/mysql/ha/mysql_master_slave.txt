@@ -179,3 +179,20 @@ set global relay_log_info_repository =FILE;
 
 #通过设置复制并发数加快恢复过程
 set global slave_parallel_workers=100
+
+
+
+
+###############
+通过复制目录重新创建从库，可能因为主机名不同导致relay读取失败（默认relay log名由主机名确定）
+reset slave;             #清空主从信息（注意先保存已经同步好的信息）
+
+
+
+
+
+
+
+
+
+
