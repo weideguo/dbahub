@@ -1,14 +1,35 @@
+强制启动
+innodb_force_recovery={0-6}    
+	0 	--默认 正常启动，有crash recovery过程
+	1	
+	2
+	3
+	4
+	5
+	6
+
+跳过回滚
+杀死mysql，使用	innodb_force_recovery=3 启动
+	
+myisam-recover-options    #启动时恢复myisam表
+
+
+myisamcheck     ---检查myisam表
+	-o  ---修复myisam的表
+	-r  ---更快速修复，如失败，使用-o
+
+myisamchk -r table_name.myi
+
+######################################################################################
+使用程序
+percona-data-recovery-tool-for-innodb
+
 限制
 只能恢复delete语句的数据
 只能恢复innodb表
 表中存在主键
 表的Row_format为REDUNDANT(-4) or COMPACT (-5).
 使用独立表空间
-
-
-
-使用程序
-percona-data-recovery-tool-for-innodb
 
 
 ##假设使用mytest_db.mytest表

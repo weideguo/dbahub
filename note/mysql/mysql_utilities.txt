@@ -1,0 +1,2 @@
+mysql-utilities      #mysql提供的一些脚本工具集 以后可能集成到mysql shell？
+mysqldiff      #对比两个实例的表结构

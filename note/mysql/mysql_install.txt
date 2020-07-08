@@ -1,0 +1,127 @@
+linux下编译安装
+5.0/5.1
+./configure --prefix=instal_path
+make
+make install
+bin/mysql_install_db --basedir=/u05/mysql5172 --datadir=data
+
+
+(5.5/5.6)
+cmake   ---需要配置其他参数   									   
+make										 
+make install								   
+scripts/mysql_install_db --datadir=data_path    -----5.5/5.6初始化数据库，必须指定数据文件的路径  在mysql安装的根目录执行  默认读取/etc/my.cnf的配置
+scripts/mysql_install_db --defaults-file=where_you_my.cnf     ----如果有参数文件，直接用参数文件  
+
+cmake . -DCMAKE_INSTALL_PREFIX=/u01/mysql		     	
+		-DSYSCONFDIR=/u01/mysql/data
+		-DMYSQL_DATADIR=/u01/mysql/data
+		-DMYSQL_UNIX_ADDR=/u01/mysql/data/mysqld.sock
+		
+
+default_setting		
+
+-DCMAKE_INSTALL_PREFIX=$prefix			---安装目录，默认为/usr
+-DINSTALL_SBINDIR=$prefix/bin			---可执行文件路径
+-DSYSCONFDIR=/etc/my.cnf				----配置文件的目录
+-DMTSQL_DATADIR=/var/lib/mysql			----数据文件路径
+-DMYSQL_UNIX_ADDR=/tmp/mysqld.sock		----socket文件				
+-DMYSQL_USER=mysql						----默认用户
+-DEFAULT_CHARSET=utf-8
+-DEFAULT_COLLATION=utf8_general_ci
+-DEABLED_LOCAL_INFILE=ON				----本地文件导入支持
+-DWITH_INNOBASE_STROTAGE_ENGINE=1
+-DWITH_PARTION_STORAGE_ENEGINE=1
+-DWITH_PERFSCHEMA_STORAGE_ENGINE=1
+-DWITH_READLINE=ON
+-DWITH_SSL={ssl_type|path_name}			----启用SSL
+
+
+-DWITH_BOOST=xxx           --指定boost的目录
+
+-DWITH_SSL=system           --编译中加入ssl
+-DWITH_SSL=path_name
+
+
+
+5.7/5.8初始化数据库
+----随机生成密码存放在错误日志中
+mysqld --defaults-file=my.cnf --initialize
+
+
+cmake . -LH    ---查看cmake的选项
+
+
+
+	
+linux
+	启动mysql服务
+		mysqld或mysqld_safe或mysqld_multi
+		mysqld_safe --defaults-file=/etc/my.cnf   ----指定配置文件的位置，是【mysqld】的脚本封装，可以做到自动拉起，更安全
+	mysql命令行中运行系统命令
+		system {sys_command}    ----{sys_command}为系统命令
+		system clear   ---清屏 
+
+mysql命令	   
+	【-h hostname -P port_num】 --tcp连接  mysql -u root -p  
+	【-S socket_file】          --socket文件连接 等同于tcp连接中的localhost形式登录
+	多个账号规则匹配时，以最精确配备优先。如以sock文件连接时，以localhost优先，其次%，最后127.0.0.1
+
+
+
+windows下
+	启动mysql服务
+		运行mysqld命令，命令位于bin目录下  mysqld 
+	关闭mysql
+		mysqladmin -u root -p shutdowmn ---root可以为其他有关闭权限的mysql用户
+
+
+
+mysqld --ship-grant-tables     -----安全模式启动  可用于在忘记密码时进行修改
+	
+mysqld_multi --defualts-extra-file=my.cnf start 1,2,3
+---	启动对个实例，需要使用不同端口、数据文件等
+1,2,3 对应配置文件my.cnf中[server1] [server2] [server3]
+
+		
+my.cnf文件 --windows下为my.ini  
+---启动参数文件，默认设置端口号为3306
+
+---linux下查看使用的启动参数文件
+mysql --help | grep my.cnf
+---查看启动参数文件使用优先级
+mysqld --verbose --help |grep -A 1 'Default options'    
+
+
+
+ssl
+Server-Side
+[mysqld]
+ssl-ca=ca.pem
+ssl-cert=server-cert.pem
+ssl-key=server-key.pem  
+
+Client-Side
+mysql --ssl-ca=ca.pem \
+       --ssl-cert=client-cert.pem \
+       --ssl-key=client-key.pem
+
+--ssl-mode
+	PREFERRED             默认，根据情况确定是否使用ssl连接
+	REQUIRED              必须使用ssl连接
+	VERIFY_CA             必须使用ssl连接，同时验证CA
+	VERIFY_IDENTITY       必须使用ssl连接，同时验证CA，同时验证客户端的主机host name？
+	DISABLED              不使用ssl连接
+
+5.7以及以下 如果不启动ssl，则连接后的传输以明文传输
+8.0 默认都以ssl加密传输  
+如果修改密码加密为mysql_native_password并且不使用配备的mysql客户端，则不会默认加密；如果使用匹配的mysql客户端，则依旧加密传输
+ 
+ 
+create user ... require ssl;
+	
+mysql_ssl_rsa_setup 命令可以快速生成密钥对
+
+
+
+     

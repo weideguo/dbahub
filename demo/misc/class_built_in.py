@@ -110,6 +110,14 @@ class A(object):
         """
         return n*n 
     
+    def __missing__(self, key):
+        """
+        A()['aaa']  
+        调用 __getitem__ 失败时 调用 __missing__
+        """
+        self[key]="xxx"
+        return "xxx"
+    
     
     def __len__(self)：
         """

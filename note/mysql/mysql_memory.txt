@@ -1,0 +1,107 @@
+mysql mem = 
+  key_buffer_size 						--缓存MyISAM的Index block		   
++ innodb_buffer_pool_size               --innodb的缓冲，缓冲数据和索引      
++ innodb_additional_mem_pool_size       --用于存放数据字典等的内存池        
++ innodb_log_buffer_size                --日志的缓冲（ ib_logfile files that make up the redo log）       
+
++ query_cache_size                      --The amount of memory allocated for caching query results       
++ tmp_table_size                        --maximum size of internal in-memory temporary tables 
+
++
+  max_connections 						--最大连接数
+* (read_buffer_size 					--顺序读取数据缓存区 
++ read_rnd_buffer_size         			--随机读取数据
++ sort_buffer_size                      --
++ join_buffer_size                      --
++ binlog_cache_size                     --
++ thread_stack           				--存放线程的信息   
+)
+
+
+
+使用的内存 show status
+Innodb_buffer_pool_bytes_data 
+Innodb_buffer_pool_pages_misc=Innodb_buffer_pool_pages_total ? Innodb_buffer_pool_pages_free ? Innodb_buffer_pool_pages_data
+
+当使用压缩表的时候Innodb_buffer_pool_pages_data大于Innodb_buffer_pool_pages_total    （bug）
+
+压缩表
+create table (...) row_format=compressed 
+
+
+show engine innodb status\G
+缓存命中率Buffer pool hit rate
+
+innodb命中
+=innodb_buffer_pool_read_requests/(innodb_buffer_pool_read_requests+innodb_buffer_pool_read_ahead+innodb_buffer_pool_reads)
+
+Innodb_buffer_pool_read_ahead_rnd          --The number of "random" read-aheads initiated by InnoDB. This happens when a query scans a large portion of a table but in random order.
+Innodb_buffer_pool_read_ahead              --The number of pages read into the InnoDB buffer pool by the read-ahead background thread
+Innodb_buffer_pool_read_ahead_evicted      --The number of pages read into the InnoDB buffer pool by the read-ahead background thread that were subsequently evicted without having been accessed by queries.
+Innodb_buffer_pool_read_requests           --从innodb buffer中读数据
+Innodb_buffer_pool_reads                   --从磁盘读数据到innodb buffer
+
+myisam不命中率
+=Key_reads/Key_read_requests.
+
+
+
+Key_reads/Key_read_requests 
+--ratio should normally be less than 0.01
+
+Key_writes/Key_write_requests 
+--near 1 if you are using mostly updates and deletes, 
+--but might be much smaller if you tend to do updates that affectmany rows at the same time 
+--or if you are using the DELAY_KEY_WRITE table option.
+
+
+myisam正在使用的内存
+1 - ((Key_blocks_unused * key_cache_block_size) / key_buffer_size)
+
+Key_blocks_used    #使用block的高水位线(hight-water mark)
+
+
+
+参数优化
+myisam
+key_buffer_size 	--缓存MyISAM的Index block	
+open_table_cache    --可以由状态Opened_tables确定，
+myisam_sort_buffer_size   --加快myisam的插入速度
+
+innodb
+innodb_buffer_pool_instances            --buffer pool个数，innodb_buffer_pool_size超过G时可以提高并发性能
+
+
+
+--warm up
+--mysql5.6.3以后 
+--快速预热Buffer_Pool缓冲池 防止重启时因内存数据重新加载导致的性能下降
+--加载时后台运行 不会延缓启动
+--只存储 tablespace ID / page ID
+
+
+--关闭实例时dump出内存数据 >=5.6.3
+innodb_buffer_pool_dump_at_shutdown 
+innodb_buffer_pool_dump_now           --手动dump 完成后回自动重置 可以在运行时手动设置导出  如在运行非常规任务时导致内存被刷新 可以先导出然后再导入以避免导致性能下降 
+innodb_buffer_pool_dump_pct         
+
+--启动时从磁盘文件load到内存 ib_buffer_pool
+--即使在导出与导入期间有数据变更也会不导致数据被污染
+innodb_buffer_pool_load_abort         
+innodb_buffer_pool_load_at_startup
+innodb_buffer_pool_load_now           --手动load 可以在运行时手动设置导入 
+innodb_force_load_corrupted           --允许load到内存 即使表被标记为损坏
+
+
+
+--状态查看
+Innodb_buffer_pool_load_status
+Innodb_buffer_pool_dump_status
+
+
+
+
+
+
+
+

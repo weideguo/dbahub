@@ -1,0 +1,10 @@
+CREATE TABLE (......) 
+ENGINE =FEDERATED CONNECTION='mysql://username:password@hostname:port/database/tablename'
+
+CREATE TABLE test_table (
+......
+)
+ENGINE=FEDERATED
+CONNECTION='fedlink/test_table';
+--fedlink为server名 test_table为表名
+

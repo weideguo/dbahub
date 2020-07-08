@@ -190,44 +190,23 @@ innoDB 存储引擎
 	
 	---启动后更改只对更改后的表生效
 	
-	---使用独立的undo表空间，必须在数据库创建前指定
-	innodb_undo_directory     ---指定undo日志的目录
-	innodb_undo_tablespaces   ---指定undo表空间数量
-	
-	innodb_log_group_home_dir ---指定redo日志文件的目录 默认为data目录
-	innodb_log_file_size	  ---指定redo日志文件的大小	
-	innodb_log_file_in_group  ---指定redo日志文件组的数量 
-	
 	---不启用多重表空间时，可以选择设置如下
 	innodb_data_home_dir      ---指定系统表空间数据文件保存的目录
 	innodb_data_file_path=datafile_spec[;datafile_spec1...]  	  ---系统表空间的数据文件  datafile_spec=file_name:file_size[:autoextend[:max:max_file_size]]
 	
-	innodb_flush_log_at_trx_commit={0|1|2}   ---默认为1
-	0 每秒刷新log buffer
-	1 每次事务提交时log buffer写入log file，并刷新到磁盘
-	2 每次事务提交后或者每秒刷新log buffer
-	
-	sync_binlog=n  ---0~4294967295为数字
-	在n次提交后binlog刷新到磁盘
-	0 提交时binlog不同步到磁盘
-	1 每次提交写将binglog写到磁盘
-	
-	innodb_fast_shutdown={0 | 1 | 2}    ---默认为 1
-	0 中止新的连接，等待会话关闭、事务结束，将缓冲区的数据写入磁盘。		对应oracle: shutdown normal
-	1 中止新的连接，关闭会话，将提交的数据写入数据文件，未提交的事务回滚。  对应oracle: shutdown immediate
-	2 中止新的连接，关闭会话，忽略当前所有操作。重启需要执行故障恢复，重新读取日志文件，回滚未提交的事务等。 	对应oracle: shutdown abort
-	
-	sync_binlog=1 
-	innodb_flush_log_at_trx_commit=1
-	双1设置增强可用性
-	
-	
+
+
 	可移植表空间
 		--启用多重表空间
 		--创建相同结构的表，抛弃表空间
 		ALTER TABLE tbl_name DISCARD TABLESPACE;
 		--使用原有的数据文件导入表空间
 		ALTER TABLE tbl_name IMPORT TABLESPACE;
+	
+    innodb_fast_shutdown={0 | 1 | 2}    ---默认为 1
+	0 中止新的连接，等待会话关闭、事务结束，将缓冲区的数据写入磁盘。		对应oracle: shutdown normal
+	1 中止新的连接，关闭会话，将提交的数据写入数据文件，未提交的事务回滚。  对应oracle: shutdown immediate
+	2 中止新的连接，关闭会话，忽略当前所有操作。重启需要执行故障恢复，重新读取日志文件，回滚未提交的事务等。 	对应oracle: shutdown abort
 	
 	
 	
@@ -274,6 +253,7 @@ MyISAM
 只有表锁
 不支持外键
 内存只加载索引的数据（叶子页和非叶子页），表的数据不加载
+myisam只有表级锁
 
 If a MyISAM table has no holes in the data file (deleted rows in the middle), an INSERT statement can be executed to add rows to the end of the table at the same time that SELECT statements are reading rows from the table. 
 If there are multiple INSERT statements, they are queued and performed in sequence, concurrently with the SELECT statements. 
@@ -285,6 +265,7 @@ concurrent_insert=2时，不管表有没有洞洞，都允许在数据文件结�
 堆表
 索引的叶子几点记录表的地址（逻辑地址，移动文件之后索引依旧可以使用），由此实现回表查询。
 
+
 innodb
 支持事务	
 行锁、表锁	
@@ -294,137 +275,10 @@ innodb
 索引组织表
 二级索引的叶子节点记录主键，由此查询clustr索引（即主键索引，innodb由主键组织存放）实现回表查询。
 
-
-checkpoint   --将内存的数据写回磁盘，从而实现跟日志的记录一致
-
-innodb 采用 Fuzzy Checkpoint
-
-During crash recovery, InnoDB looks for a checkpoint label written to the log files. 
-It knows that all modifications to the database before the label are present in the disk image of the database. 
-Then InnoDB scans the log files forward from the checkpoint, applying the logged modifications to the database.
-
-1.MasterThread Checkpoint
-2.FLUSH_LRU_LIST Checkpoint
-3.Async/Sync Flush Checkpoint      --redo日志不够的时候
-4.Dirty Page too much Checkpoint
-
-Sharp Checkpoint   --关闭数据库的时候
-
-
-写入日志的LSN:redo_lsn
-刷新回磁盘的最新页LSN:checkpoint_lsn
-
-
-Innodb的一条事务日志共经历4个阶段：
-
-创建阶段：事务创建一条日志
-日志刷盘：日志写入到磁盘上的日志文件
-数据刷盘：日志对应的脏页数据写入到磁盘上的数据文件
-写CKP：   日志被当作Checkpoint写入日志文件
-
- 
-对应这4个阶段，系统记录了4个日志相关的信息：
-
-Log sequence number（LSN1）：当前系统LSN最大值，新的事务日志LSN将在此基础上生成（LSN1+新日志的大小）
-Log flushed up to  （LSN2）：当前已经写入日志文件的LSN
-Pages flushed up to（LSN3）：当前最旧的脏页数据对应的LSN，写Checkpoint的时候直接将此LSN写入到日志文件
-Last checkpoint at （LSN4）：当前已经写入Checkpoint的LSN
-
-LSN1>=LSN2>=LSN3>=LSN4
-
-
-索引
-fulltext索引   ----只有myisam使用
-CREATE TABLE fulltext_sample(name TEXT,FULLTEXT(name)) ENGINE=MyISAM;
-ALTER TABLE fulltext_sample ADD FULLTEXT(name);   ----改表结构添加全文索引
-create fulltext index index_name on fulltext_sample(name);   
-
-alter table table_name drop index index_name;
-
-show index from table_name;
-
-show keys from table_name;
-
-前缀索引
-alter table table_name add key(column_name(prefix_length))
-create index index_name on table_name(column_name(prefix_length))
 	
-create index index_name USING {BTREE | HASH} on tbl_name (index_col_name,...) ...
-
-b树索引
-	 用于=, >, >=, <, <=, or BETWEEN
-	 LIKE比较不能以通配符开始
-	 IS NULL可以使用索引
-	 Any index that does not span all AND levels in the WHERE clause is not used to optimize the query. In other words, to be able to use an index, a prefix of the index must be used in every AND group.
-
-	 最左原则
-	 if you have a three-column index on (col1, col2, col3), you have indexed search capabilities on (col1), (col1, col2), and (col1, col2, col3). 
-	 
-hash索引
-	只能用于= or <=> ,返回单条记录
-	不能用于加快ORDER BY
-	Only whole keys can be used to search for a row
-	
-	
-windows下
-	启动mysql服务
-		运行mysqld命令，命令位于bin目录下  mysqld 
-	关闭mysql
-		mysqladmin -u root -p shutdowmn ---root可以为其他有关闭权限的mysql用户
-	
-linux
-	启动mysql服务
-		mysqld或mysqld_safe或mysqld_multi
-		mysqld_safe --defaults-file=/etc/my.cnf   ----指定配置文件的位置，是【mysqld】的脚本封装，可以做到自动拉起，更安全
-	mysql命令行中运行系统命令
-		system {sys_command}    ----{sys_command}为系统命令
-		system clear   ---清屏 
-
-mysql命令	   
-	【-h hostname -P port_num】 --tcp连接  mysql -u root -p  
-	【-S socket_file】          --socket文件连接 等同于tcp连接中的localhost形式登录
-	多个账号规则匹配时，以最精确配备优先。如以sock文件连接时，以localhost优先，其次%，最后127.0.0.1					  
-						  
-						  
-mysqld --ship-grant-tables     -----安全模式启动  可用于在忘记密码时进行修改
-	
-mysqld_multi --defualts-extra-file=my.cnf start 1,2,3
----	启动对个实例，需要使用不同端口、数据文件等
-1,2,3 对应配置文件my.cnf中[server1] [server2] [server3]
-
-		
-my.cnf文件 --windows下为my.ini  
----启动参数文件，默认设置端口号为3306
-
----linux下查看使用的启动参数文件
-mysql --help | grep my.cnf
----查看启动参数文件使用优先级
-mysqld --verbose --help |grep -A 1 'Default options' 
+				  
 
 
-
-强制启动
-innodb_force_recovery={0-6}    
-	0 	--默认 正常启动，有crash recovery过程
-	1	
-	2
-	3
-	4
-	5
-	6
-
-跳过回滚
-杀死mysql，使用	innodb_force_recovery=3 启动
-	
-myisam-recover-options    #启动时恢复myisam表
-	
-
-重新更改配置文件再启动可能出现错误
-1.redo log文件大小不一致，移除现有redo log的文件（需要先安全关闭mysql）
-
-
-
-	
 使用密码文件登录
 #mysql5.6后支持
 mysql_config_editor set --help		
@@ -446,72 +300,6 @@ perror err_code   ----查询错误代码的解释
 help contents  #由此提示逐层查看相关命令
 
 
-
-----参数
-prompt		设置命令行的提示符，可以在使用mysql命令你时加入，也可以再配置文件中[mysql]块下加入
-
-
-MySQL用户管理
-用户信息保存在 mysql.user表中
-	mysql.user的host字段
-	所有主机：%
-	精确的主机或IP地址：www.weideguocom 或 192.168.1.1
-	使用"*"通配符：*.weideugo.com
-	指定同一网段： 192.168.1.0/255.255.255
-	
-mysql.uesr			---实例的权限
-mysql.db 			---存储数据库的权限
-mysql.tables_priv	---表的权限
-	
-	
----创建用户
-create user user_name identified by user_password;
-create user user_name identified by password 'encrypt_password';   --使用密码的加密串创建账号 
-create user user_name@'host_ip' identified by user_password;  --设置用户并限定登陆ip或主机名，
-RENAME USER old_name TO new_name;   ----更改用户名
-
----role使用 mysql8.0以上支持
-create role ...                     ---角色可以授权给用户
-
----更改密码
-set password [for user_name]=password('user_password');
-update mysql.user set password=password('user_password') where user='user_name';
-
-GRANT	授予权限
-REVOKE	撤销权限
-
-GRANT ALL PRIVILEGES ON *.* to 'weideguo'@'%' identified by 'weideguo' [with grant option] 
-REVOKE ALL PRIVILEGES on *.* FROM weideguo;
-
---不要直接更改mysql.user表，因为更改的命令会被明文保存到日志 
-
---密码会被修改保存到日志的语句
-CREATE USER ... IDENTIFIED BY ...
-ALTER USER ... IDENTIFIED BY ...  				--5.7之后才有
-GRANT ... IDENTIFIED BY ...
-SET PASSWORD ...
-SLAVE START ... PASSWORD = ...
-CREATE SERVER ... OPTIONS(... PASSWORD ...)
-ALTER SERVER ... OPTIONS(... PASSWORD ...)
-
-##修改账号密码加密方式 8.0版本加密认证修改以兼容之前的连接程序
-ALTER USER 'root'@'localhost' IDENTIFIED with mysql_native_password BY '123456';
-##创建旧的密码加密账号
-CREATE USER 'root'@'localhost' IDENTIFIED with mysql_native_password BY '123456';
-
-#8.0默认使用的密码加密
-caching_sha2_password
-
-
-grant usage on ...       --usage 代表无权限，用于在创建用户时使用
-
-flush privileges	---使修改的权限生效
-show grants			---查看当前用户被授予的权限
-show grants for db_user;
-
-show privileges     ---查看所有的权限
-
-mysql.db			---数据库的权限
 
 时区
 system_time_zone                  --服务器的时区，，默认由操作系统确定，不可以动态修改						  
@@ -549,259 +337,7 @@ tee file_name.txt
 ...
 notee
 
-修改系统参数
-set global var_name=var_value;    ---var_name参数名  var_value参数值
-set var_name=var_value;     ----重启失效
 
-                                                                                                                      
-
-隔离级别
-
-SET [GLOBAL | SESSION] TRANSACTION
-    transaction_characteristic [, transaction_characteristic] ...
-
-transaction_characteristic:
-    ISOLATION LEVEL tx_level
-  | READ WRITE
-  | READ ONLY
-
-tx_level:
-     REPEATABLE READ
-   | READ COMMITTED
-   | READ UNCOMMITTED
-   | SERIALIZABLE
-
-
-select @@tx_isolation;    ---查询隔离级别
-SET GLOBAL tx_isolation='READ-UNCOMMITTED';   -----设置隔离级别
-READ-UNCOMMITTED     ---未提交读。幻想读、不可重复读和脏读都允许。
-READ-COMMITTED		 ---已提交读。允许幻想读、不可重复读，不允许脏读
-REPEATABLE-READ		 ---可重复读。允许幻想读，不允许不可重复读和脏读
-SERIALIZABLE		 ---可串行化。幻想读、不可重复读和脏读都不允许。读加共享锁，写加排他锁，读写互斥，使用的悲观锁的理论
-
-
-1.幻想读：
-	事务T1读取一条指定where条件的语句，返回结果集。
-	事务T2插入一行新记录，恰好满足T1的where条件。
-	然后T1使用相同的条件再次查询，结果集中可以看到T2插入的记录，这条新纪录就是幻想读。
-2.不可重复读取：
-	事务T1读取一行记录，
-	紧接着事务T2修改了T1刚刚读取的记录，
-	然后T1再次查询，发现与第一次读取的记录不同，这称为不可重复读。
-3.脏读：
-	事务T1更新了一行记录，还未提交所做的修改，
-	这个T2读取了更新后的数据，
-	然后T1执行回滚操作，取消刚才的修改，
-	所以T2所读取的行就无效，也就是脏数据。
-
-
-MVCC(Multi-Version Concurrency Control) 多版本并发控制
-read没有阻塞write, 使用MVCC的技术解决了write/read相互阻塞的问题
-
-而对开启MVCC机制的锁，叫做乐观锁，大多基于数据版本(Version)记录机制实现
-
-MVCC的一种简单实现是基于CAS(Compare-and-swap)思想的有条件更新(Conditional Update)
-
-
-					  					  
-						  
-mysql mem = 
-  key_buffer_size 						--缓存MyISAM的Index block		   
-+ innodb_buffer_pool_size               --innodb的缓冲，缓冲数据和索引      
-+ innodb_additional_mem_pool_size       --用于存放数据字典等的内存池        
-+ innodb_log_buffer_size                --日志的缓冲（ ib_logfile files that make up the redo log）       
-
-+ query_cache_size                      --The amount of memory allocated for caching query results       
-+ tmp_table_size                        --maximum size of internal in-memory temporary tables 
-
-+
-  max_connections 						--最大连接数
-* (read_buffer_size 					--顺序读取数据缓存区 
-+ read_rnd_buffer_size         			--随机读取数据
-+ sort_buffer_size                      --
-+ join_buffer_size                      --
-+ binlog_cache_size                     --
-+ thread_stack           				--存放线程的信息   
-)
-
-
-
-使用的内存 show status
-Innodb_buffer_pool_bytes_data 
-Innodb_buffer_pool_pages_misc=Innodb_buffer_pool_pages_total ? Innodb_buffer_pool_pages_free ? Innodb_buffer_pool_pages_data
-
-当使用压缩表的时候Innodb_buffer_pool_pages_data大于Innodb_buffer_pool_pages_total    （bug）
-
-压缩表
-create table (...) row_format=compressed 
-
-
-innodb命中
-=innodb_buffer_pool_read_requests/(innodb_buffer_pool_read_requests+innodb_buffer_pool_read_ahead+innodb_buffer_pool_reads)
-
-Innodb_buffer_pool_read_ahead_rnd          --The number of "random" read-aheads initiated by InnoDB. This happens when a query scans a large portion of a table but in random order.
-Innodb_buffer_pool_read_ahead              --The number of pages read into the InnoDB buffer pool by the read-ahead background thread
-Innodb_buffer_pool_read_ahead_evicted      --The number of pages read into the InnoDB buffer pool by the read-ahead background thread that were subsequently evicted without having been accessed by queries.
-Innodb_buffer_pool_read_requests           --从innodb buffer中读数据
-Innodb_buffer_pool_reads                   --从磁盘读数据到innodb buffer
-
-myisam不命中率
-=Key_reads/Key_read_requests.
-
-
-
-Key_reads/Key_read_requests 
---ratio should normally be less than 0.01
-
-Key_writes/Key_write_requests 
---near 1 if you are using mostly updates and deletes, 
---but might be much smaller if you tend to do updates that affectmany rows at the same time 
---or if you are using the DELAY_KEY_WRITE table option.
-
-
-myisam正在使用的内存
-1 - ((Key_blocks_unused * key_cache_block_size) / key_buffer_size)
-
-Key_blocks_used    #使用block的高水位线(hight-water mark)
-
-
-
-参数优化
-myisam
-key_buffer_size 	--缓存MyISAM的Index block	
-open_table_cache    --可以由状态Opened_tables确定，
-
-
-innodb
-innodb_buffer_pool_instances            --buffer pool个数，innodb_buffer_pool_size超过G时可以提高并发性能
-
-
-随机读取 如无法使用索引时的全表扫描
-顺序读取 数据块的读取需要满足一定的顺序，如根据索引信息读取数据
-
-mysql定位过程：
-打开索引->根据索引键值逐层找B+树branch节点->定位到叶子节点，将cursor定位到满足条件的rec上
-
-
-adaptive hash index(自适应哈希索引)
-	engine取数据后，将cursor的位置保存起来，取下一条数据时，先恢复cursor的位置，成功则直接取数，不成功则重新定位cursor的位置。存储于hash_table的内存中，位于buffer pool。
-	the hash index is always built based on an existing B-tree index on the table. 
-	innodb_adaptive_hash_index={on|off}  --默认启用
-
-	大量多表jion、模糊查询不建议使用AHI
-
-
-
-linux下编译安装
-5.0/5.1
-./configure --prefix=instal_path
-make
-make install
-bin/mysql_install_db --basedir=/u05/mysql5172 --datadir=data
-
-
-(5.5/5.6)
-cmake   ---需要配置其他参数   									   
-make										 
-make install								   
-scripts/mysql_install_db --datadir=data_path    -----5.5/5.6初始化数据库，必须指定数据文件的路径  在mysql安装的根目录执行  默认读取/etc/my.cnf的配置
-scripts/mysql_install_db --defaults-file=where_you_my.cnf     ----如果有参数文件，直接用参数文件  
-
-cmake . -DCMAKE_INSTALL_PREFIX=/u01/mysql		     	
-		-DSYSCONFDIR=/u01/mysql/data
-		-DMYSQL_DATADIR=/u01/mysql/data
-		-DMYSQL_UNIX_ADDR=/u01/mysql/data/mysqld.sock
-		
-
-default_setting		
-
--DCMAKE_INSTALL_PREFIX=$prefix			---安装目录，默认为/usr
--DINSTALL_SBINDIR=$prefix/bin			---可执行文件路径
--DSYSCONFDIR=/etc/my.cnf				----配置文件的目录
--DMTSQL_DATADIR=/var/lib/mysql			----数据文件路径
--DMYSQL_UNIX_ADDR=/tmp/mysqld.sock		----socket文件				
--DMYSQL_USER=mysql						----默认用户
--DEFAULT_CHARSET=utf-8
--DEFAULT_COLLATION=utf8_general_ci
--DEABLED_LOCAL_INFILE=ON				----本地文件导入支持
--DWITH_INNOBASE_STROTAGE_ENGINE=1
--DWITH_PARTION_STORAGE_ENEGINE=1
--DWITH_PERFSCHEMA_STORAGE_ENGINE=1
--DWITH_READLINE=ON
--DWITH_SSL={ssl_type|path_name}			----启用SSL
-
-
--DWITH_BOOST=xxx           --指定boost的目录
-
--DWITH_SSL=system           --编译中加入ssl
--DWITH_SSL=path_name
-
-
-
-5.7/5.8初始化数据库
-----随机生成密码存放在错误日志中
-mysqld --defaults-file=my.cnf --initialize
-
-
-cmake . -LH    ---查看cmake的选项
-
-
-备份 
-mysqlhotcopy    ----只能用于MyISAM、ARCHIVE引擎的联机热备份
-mysqldump   	----导出成SQL文件或平面文件备份   --执行SQL脚本命令【source】【 mysql < filename.sql 】
-mysqlbinlog		----查看二进制文件以供备份
-xtrabackup/innobackupex      ----使用第三方开源软件进行备份和恢复
-
-
---账户需要有select、lock tables权限
-mysqldump -u root -pyy123456 -h 10.104.220.123 -P 3306 nwebauth -R > nwebauth.sql   ----【-R】配备存储、函数过程
-
-
-	--master-data[=1|2]		----导出中带有change master to... 语句
-	-t					---不导出建表语句
-	-d					---不导出插入数据语句
-	-T	--tab=name		---将表以分割文件导出
-	-X					---导出成xml结构
-	--add-drop-table=false  ---不导出drop table if exist语句
-	--single-transaction              	
-		一致性导出，以单事务导出
-		ALTER TABLE, DROP TABLE, RENAME TABLE,TRUNCATE TABLE 会对导出有影响
-		This option sets the transaction isolation mode to REPEATABLE READ and 
-		sends a START TRANSACTION SQL statement to the server before dumping data. 
-		
-	--quick
-		 It forces mysqldump to retrieve rows for a table from the server a row at a time rather than 
-		 retrieving the entire row set and buffering it in memory before writing it out.
-	
-	To dump large tables, combine the --single-transaction option with the --quick option.
-	
-	--lock-all-tables					
-		Locks all tables across all databases.  锁定实例所有库的表
-		
-	--lock-tables
-		Lock all tables for read. 锁定单个库的所有表
-		For each dumped database, lock all tables to be dumped before dumping them.
-		
-	--add-locks         
-		Add locks around INSERT statements. 导出sql中带有lock语句
-	
-	--set-gtid-purged={on|off|auto}     -----SET @@GLOBAL.GTID_PURGED是否导出，5.6新增以兼容低版本
-	
-	--where="column>x"				    -----导出表的时候进行表记录的选择
-	
-	--ignore-table                      -----排除某张表
-	
-	
-	
-	
-	
-mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
-
---ingore-table=dbname.tb_name  导出时排出某张表，多张表时重复使用这个参数，精确匹配
-
-
-
-	
 
 gtid(global transaction identifier)
 
@@ -811,41 +347,16 @@ gtid-mode={on|off}    				--设置是否启动gtid
 
 
 
-
-
-mysql -u root -p -h 127.0.0.1 -P 3306 my_database < my_database.sql
-
-全量冷备份，复制整个data文件夹
-
-selct ... from ... into outfile "file_name" [export_options];     --导出数据文件
---目录在【secure_file_priv】指定
-
-----导入分割文件  
-mysqlimport											
-load data infile 'file_name' into table 'table_name' [export_options];     --账号需要有file权限 并且设置secure_file_priv正确  文件在mysql所在的服务器上
-
-load data local infile ...;               --导入不需要额外设置 文件在执行命令的当前客户机上
-
-
----export_options
-[{FIELDS | COLUMNS} [TERMINATED BY 'string']   --字段分割符
-[[OPTIONALLY] ENCLOSED BY 'char']			   --字段包围符
-[ESCAPED BY 'char']							   --换行符
-
-
-
-xml
-mysql --xml -e 'select ...' > filename;   ----导出xml
-load xml infile 'file_name' into table 'table_name';
-
-
 mysqlshow [options] [db_name [table_name [col_name]]]		---显示数据库、表、字段的信息
 mysqlslap		---模拟对mysql服务器发出请求
-nysqlcheck		---检查数据库、表、字段的存在、可访问情况，以及修复【repair】、分析【analyze】、优化【optimize】
 
-myisamcheck     ---检查myisam表
-	-o  ---修复myisam的表
-	-r  ---更快速修复，如失败，使用-o
+压测
+mysqlslap -u root -p -c 100 -i 10 -e innodb --create-schema='test' --query='select * from ddd' --number-of-queries=100
+
+
+mysqlcheck		---检查数据库、表、字段的存在、可访问情况，以及修复【repair】、分析【analyze】、优化【optimize】
+
+
 
 #自动统计参数
 innodb_stats_*
@@ -882,9 +393,6 @@ ALTER TABLE tbl_name ENGINE=InnoDB;
 ALTER TABLE tbl_name FORCE, ALGORITHM=INPLACE, LOCK=NONE;    
 ALTER TABLE tbl_name ENGINE=InnoDB, ALGORITHM=INPLACE, LOCK=NONE;
 
-#recover myisam table
-myisamchk -r table_name.myi
-
 
 
 文件
@@ -901,8 +409,7 @@ auto.cnf
 数据文件的根目录下，设置server_uuid
 
 
-
-mysql使用localhost登陆时是通过socket登陆？
+mysql使用localhost登陆时是通过socket登陆
 
 
 日志
@@ -911,13 +418,6 @@ mysql使用localhost登陆时是通过socket登陆？
 ---TABLE  对应general_log和slow_log两个表
 ---FILE   
 
-LSN(Log Sequence Number)
-
-查看lsn
-show engine innodb status\G   ----在LOG的部分查看
-
-
-缓存命中率Buffer pool hit rate
 
 log_output='table'   ---'file' 'table,file'
 
@@ -933,79 +433,8 @@ mysqldumpslow   ---解析分析慢查询日志
 【general_log】    		----指定是否开启通用查询日志
 【general_log_file】    ----通用查询日志的路径及文件名
 
-二进制日志
---用于复制
---用于恢复
-【sync_binlog】设置二进制日志同步到磁盘的频率，默认二进制日志不是实时同步到磁盘
-log_bin 	 		---my.cnf设置二进制文件路径并启用二进制日志【log_bin=path_name】，设置后即启用
-binlog_format   	---my.cnf设置二进制日志的记录格式【基于语句记录(Statement-Based Logging,SBL)、基于行格式记录(Row-Bbased Logging,RBL)、混合模式记录(Mixed-Based Logging,MBL)】
-expire_logs_days	---保存时间（天）
-
-binlog-ignore-db=db1[,db2]    ---指定库不使用binlog
-binlog-do-db=db1[,db2]		  ---指定库使用binlog
-
---从库设置不复制，需要在启动命令行中添加					  
-replicate-ignore-db			  
-replicate-do-db1			  
-replicate-wild-do-table                   --可以使用通配符
-replicate-wild-ignore			  --		  
+	  
 					  
---mysql5.7
---可以实现不重启设置过滤以及库名转换
---mysql5.1不持支这个语法
-CHANGE REPLICATION FILTER filte
-filter:
-    REPLICATE_DO_DB = (db_list)
-  | REPLICATE_IGNORE_DB = (db_list)
-  | REPLICATE_DO_TABLE = (tbl_list)
-  | REPLICATE_IGNORE_TABLE = (tbl_list)
-  | REPLICATE_WILD_DO_TABLE = (wild_tbl_list)
-  | REPLICATE_WILD_IGNORE_TABLE = (wild_tbl_list)
-  | REPLICATE_REWRITE_DB = (db_pair_list)					  
-					  
-					  
-					  
---强制写日志
-flush logs;
-flush binary logs;
-
---手动删除二进制日志
-PURGE BINARY LOGS TO 'mysql-bin.010';
-PURGE BINARY LOGS BEFORE '2008-04-02 22:46:26';
-
-SHOW BINARY LOGS;   ---查看二进制日志
- 
----修改二进制日志记录格式
-SET GLOBAL binlog_format = 'STATEMENT';
-SET GLOBAL binlog_format = 'ROW';
-SET GLOBAL binlog_format = 'MIXED';
-
-show variables like 'log_bin';   			----查看是否启用二进制日志
-show binlog events in 'mysql-bin.000025';  	---查看二进制日志的事件
-show binlog events;
-show binlog events in 'log_name' from pos_number limit 2
-show binary logs;		---查看二进制日志的信息
-
-show relaylog events [in 'relay_log_name'] [from pos_number] [limit 2];  
-
-mysqlbinlog  log_name    ----查看二进制日志的内容
-	--start-datetime
-	--stop-datetime
-	--short-form
-
-	--start-position
-	--stop-position
-	--base64-output=decode-rows        ##导出row格式   只能用于查看，恢复的时候不要加这个参数
-	-v    				   ##导出成sql格式  与--base64-output一同使用
-	
---从远端读取二进制日志并保存
-mysqlbinlog -u root -p -P 3306 -h host_name -R -r save_as_text_file_name remote_binlog_name
-	--stop-never   ----持续获取不中断
-	
-	
-	
-
-在执行操作前【set sql_log_bin=0(或者off)】可禁止执行的语句生成二进制日志
 
 
 
@@ -1037,21 +466,6 @@ checksum table table_name;
 
 
 
-
-压测
-mysqlslap -u root -p -c 100 -i 10 -e innodb --create-schema='test' --query='select * from ddd' --number-of-queries=100
-
-
-
-审计audit
-安装插件 server_audit.so
-设置参数(可以动态设置)       ---所有参数 show variables like '%audit%'
-server_audit_events="connect,query,table,query_ddl,query_dml,query_dcl"     ---设置审计的事件，可以选择一种或多种
-server_audit_incl_users=root 												---设置审计包含的对象   或者使用【server_audit_excl_users】审计不包含的对象
-server_audit_logging=on														---启动审计
-
-
-
 profile            --显示当前会话执行的资源占用，使information_schema库代替
 
 --信息存储于information_schema.profiling
@@ -1061,116 +475,13 @@ show profile [all|...];
 show profiles;
 
 
-
-event   --类似于oracle中的job,定时调度
---mysql.event
---information_schema.events
-
-trigger   --触发器
---information_schema.trigger
-
-#routine
-function  ---函数
-procedure ---存储过程
---information_schema.routines 
---mysql.proc
-
-#查看创建语句
-show create procedure `procedure_name`;    --不是definer时 需要select on mysql.proc权限
-show create trigger `trigger_name`;
-show create event `myevent`;
-
-
-select * from mysql.proc        		 ---查看存储过程的信息
-show procedure core procedure_name		 
-
-show procedure status [like 'patten']    ---查看存储过程的状态
-
-
-
-show events;
-show triggers;
-
---调用
-call procedure_name(p1,p1,...);
-select function_name(p1,p1,...);
-
-#执行权限
-Execute  --To execute stored routines
-
-#创建权限
-Event    --To create, alter, drop and execute events
-Trigger  --To use triggers      
-
-
-
-
-ssl
-Server-Side
-[mysqld]
-ssl-ca=ca.pem
-ssl-cert=server-cert.pem
-ssl-key=server-key.pem  
-
-Client-Side
-mysql --ssl-ca=ca.pem \
-       --ssl-cert=client-cert.pem \
-       --ssl-key=client-key.pem
-
---ssl-mode
-	PREFERRED             默认，根据情况确定是否使用ssl连接
-	REQUIRED              必须使用ssl连接
-	VERIFY_CA             必须使用ssl连接，同时验证CA
-	VERIFY_IDENTITY       必须使用ssl连接，同时验证CA，同时验证客户端的主机host name？
-	DISABLED              不使用ssl连接
-
-5.7以及以下 如果不启动ssl，则连接后的传输以明文传输
-8.0 默认都以ssl加密传输  
-如果修改密码加密为mysql_native_password并且不使用配备的mysql客户端，则不会默认加密；如果使用匹配的mysql客户端，则依旧加密传输
- 
- 
-create user ... require ssl;
-	
-mysql_ssl_rsa_setup 命令可以快速生成密钥对
-	
 	
 排序
 指定主键时，不加order by语句则按照主键排序
 不指定主键，但unqiue键在为第一个字段，按unique键排序。
 不指定主键，按照插入顺序排序。	
 	
-FEDERATED
-CREATE TABLE (......) 
-ENGINE =FEDERATED CONNECTION='mysql://username:password@hostname:port/database/tablename'
 
-CREATE TABLE test_table (
-......
-)
-ENGINE=FEDERATED
-CONNECTION='fedlink/test_table';
---fedlink为server名 test_table为表名
-
-MRG_MYISAM
---MYISAM的分区表 比较老的版本使用 5.5以上MyISAM以及支持分区表
-CREATE TABLE `article_0` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE = MYISAM ;
-CREATE TABLE `article_1` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE = MYISAM ;
-
-CREATE TABLE `article_merge` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE=MRG_MyISAM DEFAULT CHARSET=utf8 UNION=(article_0,article_1);
-
-插入数据只能往后端的表操作
-更新 删除可以在前端表操作
-
-
-分区表
-SELECT * FROM p1 PARTITION (p0[,p1])；     							#从指定分区查询
-EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10；			#查看从分区表的执行信息
-ALTER TABLE tr DROP PARTITION p2;	                              	#删除分区，针对RANGE/LIST分区
-ALTER TABLE tr ADD PARTITION (PARTITION p_name …);   				#增加分区，针对RANGE/LIST分区
-ALTER TABLE members REORGANIZE PARTITION p0,p1,p2,p3 INTO (
-    	PARTITION m0 …,
-   	PARTITION m1 …);       						#调整RANGE/LIST分区
-ALTER TABLE tr COALESCE PARTITION 4;   			#减小HASH/KEY分区
-ALTER TABLE tr ADD PARTITION PARTITIONS 6;      #增多HASH/KEY分区
 
 
 --信息查看
@@ -1178,46 +489,6 @@ information_schema.partitions;
 information_schema.tables;	
 	
 select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的字符转换实现去掉字段中的中文
-
-myisam_sort_buffer_size   #加快myisam的插入速度
-myisam只有表级锁
-
-	
---warm up
---mysql5.6.3以后 
---快速预热Buffer_Pool缓冲池 防止重启时因内存数据重新加载导致的性能下降
---加载时后台运行 不会延缓启动
---只存储 tablespace ID / page ID
-
-
---关闭实例时dump出内存数据 >=5.6.3
-innodb_buffer_pool_dump_at_shutdown 
-innodb_buffer_pool_dump_now           --手动dump 完成后回自动重置 可以在运行时手动设置导出  如在运行非常规任务时导致内存被刷新 可以先导出然后再导入以避免导致性能下降 
-innodb_buffer_pool_dump_pct         
-
---启动时从磁盘文件load到内存 ib_buffer_pool
---即使在导出与导入期间有数据变更也会不导致数据被污染
-innodb_buffer_pool_load_abort         
-innodb_buffer_pool_load_at_startup
-innodb_buffer_pool_load_now           --手动load 可以在运行时手动设置导入 
-innodb_force_load_corrupted           --允许load到内存 即使表被标记为损坏
-
-
-
---状态查看
-Innodb_buffer_pool_load_status
-Innodb_buffer_pool_dump_status
-
-
-
-mysql-utilities      #mysql提供的一些脚本工具集 以后可能集成到mysql shell？
-mysqldiff      #对比两个实例的表结构
-
-
-
-binlog
-文件开头前4字节（MagicNumber）
-\xfe\x62\x69\x6e
 
 
 

@@ -412,3 +412,29 @@ JOIN mysql.help_topic b ON b.help_topic_id < (
         REPLACE (a.c2, ',', '')
     ) + 1
 );
+
+
+分区表
+SELECT * FROM p1 PARTITION (p0[,p1])；     							#从指定分区查询
+EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10；			#查看从分区表的执行信息
+ALTER TABLE tr DROP PARTITION p2;	                              	#删除分区，针对RANGE/LIST分区
+ALTER TABLE tr ADD PARTITION (PARTITION p_name …);   				#增加分区，针对RANGE/LIST分区
+ALTER TABLE members REORGANIZE PARTITION p0,p1,p2,p3 INTO (
+    	PARTITION m0 …,
+   	PARTITION m1 …);       						#调整RANGE/LIST分区
+ALTER TABLE tr COALESCE PARTITION 4;   			#减小HASH/KEY分区
+ALTER TABLE tr ADD PARTITION PARTITIONS 6;      #增多HASH/KEY分区
+
+
+MRG_MYISAM
+--MYISAM的分区表 比较老的版本使用 5.5以上MyISAM以及支持分区表
+CREATE TABLE `article_0` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE = MYISAM ;
+CREATE TABLE `article_1` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE = MYISAM ;
+
+CREATE TABLE `article_merge` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 200 ) NOT NULL , PRIMARY KEY ( `id` ) ) ENGINE=MRG_MyISAM DEFAULT CHARSET=utf8 UNION=(article_0,article_1);
+
+--插入数据只能往后端的表操作
+--更新 删除可以在前端表操作
+
+
+

@@ -22,3 +22,11 @@ offset=@PAGE_NO*@@innodb_page_size+64                 #PAGE_LEVEL在每个root�
 hexdump -s offset -n 02 /path_to_data/test_table.ibd 
 
 获得root页的PAGE_LEVEL，树的高度为PAGE_LEVEL+1
+
+
+
+
+
+#页的大小
+show variables like '%page%';
+innodb_page_size

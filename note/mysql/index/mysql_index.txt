@@ -12,3 +12,62 @@ count(*)/count(1)  --没有where子句时，使用最小的索引进行查询；
 count(*)           --所有行都计算
 count(colume)      --字段的值为空时不计算
 
+
+
+索引
+fulltext索引   ----只有myisam使用
+CREATE TABLE fulltext_sample(name TEXT,FULLTEXT(name)) ENGINE=MyISAM;
+ALTER TABLE fulltext_sample ADD FULLTEXT(name);   ----改表结构添加全文索引
+create fulltext index index_name on fulltext_sample(name);   
+
+alter table table_name drop index index_name;
+
+show index from table_name;
+
+show keys from table_name;
+
+前缀索引
+alter table table_name add key(column_name(prefix_length))
+create index index_name on table_name(column_name(prefix_length))
+	
+create index index_name USING {BTREE | HASH} on tbl_name (index_col_name,...) ...
+
+b+树索引
+	 用于=, >, >=, <, <=, or BETWEEN
+	 LIKE比较不能以通配符开始
+	 IS NULL可以使用索引
+	 Any index that does not span all AND levels in the WHERE clause is not used to optimize the query. In other words, to be able to use an index, a prefix of the index must be used in every AND group.
+
+	 最左原则
+	 if you have a three-column index on (col1, col2, col3), you have indexed search capabilities on (col1), (col1, col2), and (col1, col2, col3). 
+	 
+hash索引
+	只能用于= or <=> ,返回单条记录
+	不能用于加快ORDER BY
+	Only whole keys can be used to search for a row
+    
+
+
+随机读取 如无法使用索引时的全表扫描
+顺序读取 数据块的读取需要满足一定的顺序，如根据索引信息读取数据
+
+mysql定位过程：
+打开索引->根据索引键值逐层找B+树branch节点->定位到叶子节点，将cursor定位到满足条件的rec上
+
+
+adaptive hash index(自适应哈希索引)
+	engine取数据后，将cursor的位置保存起来，取下一条数据时，先恢复cursor的位置，成功则直接取数，不成功则重新定位cursor的位置。存储于hash_table的内存中，位于buffer pool。
+	the hash index is always built based on an existing B-tree index on the table. 
+	innodb_adaptive_hash_index={on|off}  --默认启用
+
+	大量多表jion、模糊查询不建议使用AHI
+
+
+
+
+
+
+
+
+
+

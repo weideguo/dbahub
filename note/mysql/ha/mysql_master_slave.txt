@@ -107,6 +107,19 @@ change master to master_host='127.0.0.1'
 for channel 'master_2';
 
 
+--mysql5.7
+--可以实现不重启设置过滤以及库名转换
+--mysql5.1不持支这个语法
+CHANGE REPLICATION FILTER filte
+filter:
+    REPLICATE_DO_DB = (db_list)
+  | REPLICATE_IGNORE_DB = (db_list)
+  | REPLICATE_DO_TABLE = (tbl_list)
+  | REPLICATE_IGNORE_TABLE = (tbl_list)
+  | REPLICATE_WILD_DO_TABLE = (wild_tbl_list)
+  | REPLICATE_WILD_IGNORE_TABLE = (wild_tbl_list)
+  | REPLICATE_REWRITE_DB = (db_pair_list)					  
+					  
 
 	
 使用 master_log_file/master_log_pos复制跳过

@@ -74,5 +74,50 @@ xa commit '1111';   --或 xa rollback '1111';
 
 
 
+隔离级别
 
+SET [GLOBAL | SESSION] TRANSACTION
+    transaction_characteristic [, transaction_characteristic] ...
+
+transaction_characteristic:
+    ISOLATION LEVEL tx_level
+  | READ WRITE
+  | READ ONLY
+
+tx_level:
+     REPEATABLE READ
+   | READ COMMITTED
+   | READ UNCOMMITTED
+   | SERIALIZABLE
+
+
+select @@tx_isolation;    ---查询隔离级别
+SET GLOBAL tx_isolation='READ-UNCOMMITTED';   -----设置隔离级别
+READ-UNCOMMITTED     ---未提交读。幻想读、不可重复读和脏读都允许。
+READ-COMMITTED		 ---已提交读。允许幻想读、不可重复读，不允许脏读
+REPEATABLE-READ		 ---可重复读。允许幻想读，不允许不可重复读和脏读
+SERIALIZABLE		 ---可串行化。幻想读、不可重复读和脏读都不允许。读加共享锁，写加排他锁，读写互斥，使用的悲观锁的理论
+
+
+1.幻想读：
+	事务T1读取一条指定where条件的语句，返回结果集。
+	事务T2插入一行新记录，恰好满足T1的where条件。
+	然后T1使用相同的条件再次查询，结果集中可以看到T2插入的记录，这条新纪录就是幻想读。
+2.不可重复读取：
+	事务T1读取一行记录，
+	紧接着事务T2修改了T1刚刚读取的记录，
+	然后T1再次查询，发现与第一次读取的记录不同，这称为不可重复读。
+3.脏读：
+	事务T1更新了一行记录，还未提交所做的修改，
+	这个T2读取了更新后的数据，
+	然后T1执行回滚操作，取消刚才的修改，
+	所以T2所读取的行就无效，也就是脏数据。
+
+
+MVCC(Multi-Version Concurrency Control) 多版本并发控制
+read没有阻塞write, 使用MVCC的技术解决了write/read相互阻塞的问题
+
+而对开启MVCC机制的锁，叫做乐观锁，大多基于数据版本(Version)记录机制实现
+
+MVCC的一种简单实现是基于CAS(Compare-and-swap)思想的有条件更新(Conditional Update)
 

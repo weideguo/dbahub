@@ -5,15 +5,15 @@ import threading
 import time
 
 def tcplink(sock,addr):
-	print 'Accept new connection from %s:%s...' % addr
+	print('Accept new connection from %s:%s...' % addr)
     sock.send('Welcome!')
     while True:
        	data=sock.recv(1024)
        	if data=='exit' or not data:
-           		break
+           	break
        	sock.send('Hello,%s'%data)
     sock.close()
-    print 'Connection from %s:%s closed.'%addr
+    print('Connection from %s:%s closed.' % addr)
 
 
 s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -25,7 +25,7 @@ s.listen(5)
 it specifies the number of unaccepted connections that the system will allow before refusing new
     connections.
 """
-print 'Waiting for connection...'
+print('Waiting for connection...')
 
 threads=[]
 while True:   
@@ -37,14 +37,14 @@ while True:
 for t in threads:
 	t.join()
 
-print "all exit"
+print("all exit")
 
 
 
 
 
 #######################################################################
-socket([family[, type[, proto]]])
+#socket([family[, type[, proto]]])
 
 #family
 """
