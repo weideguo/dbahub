@@ -88,10 +88,11 @@ for(let i of f()){}   // for...of语句迭代
 
 
 //匿名函数直接调用
-!function(){console.log('xxxx');}()        // true
+!function(){console.log('xxxx');}()        // true  运行函数，返回值即为函数的返回值的!操作(即取反操作)
 +function(){console.log('xxxx');}()        // NaN
 -function(){console.log('xxxx');}()        // NaN
 ~function(){console.log('xxxx');}()        // -1
+(function(){console.log('xxxx');})()       //只是运行 返回值即为函数的返回值
 
 
 eval(string)   //以js命令执行字符串

@@ -188,6 +188,7 @@ replace into table(id, update_time) values(1, now());
 选择表的特定几行
 --MySQL
 select * from table_name limit 2,5;  --从第3行开始选5行
+select * from table_name limit 5 offset 2;  --从第3行开始选5行
 select * from table_name limit 3;    --选择前3行
 
 
