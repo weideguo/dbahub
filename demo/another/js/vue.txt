@@ -81,7 +81,7 @@ new Vue({
 npm install -g vue-cli
 
 #新建项目
-vue init webpack Vue-Project
+vue init webpack my-project
 
 
 main.js 为主脚本
@@ -96,4 +96,32 @@ v-bind:
 
 v-on:
 @
+
+
+
+########################################################################################################################
+SSR Server-Side Rendering（single page application，SPA 在服务端渲染）
+
+nuxt.js 基于vue的ssr框架
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

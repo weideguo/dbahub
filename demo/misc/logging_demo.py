@@ -5,10 +5,10 @@ logging.basicConfig(
     format = "[%(asctime)s] %(levelname)-8s %(message)s"
 )
 
-logger=logging
+log=logging
 
 log.info('this is info')
-log.def=debug('this is info')
+log.debug('this is info')
 log.warn('this is warn')
 log.warning('this is warn')
 log.critical('this is info')
@@ -20,6 +20,7 @@ log.log('this is info')
 
 
 log2 = logging.getLogger()
+#handler = logging.StreamHandler(stream=sys.stdout) 
 handler = handlers.TimedRotatingFileHandler(filename="./mylog.log",
 	when="D",
 	interval=1)

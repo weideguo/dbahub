@@ -108,3 +108,21 @@ def decorator5(x=None):
 def x(t):
 	print t
     
+
+
+##############################################################################
+
+
+from functools import wraps
+def decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+            func(*args, **kwargs)
+    return wrapper
+
+
+@decorator
+def f():
+    """使用wraps在装饰器中，函数的的说明在使用装饰器时才可以依然查看"""
+    print(111)
+

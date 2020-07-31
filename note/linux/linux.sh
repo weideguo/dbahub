@@ -1376,6 +1376,8 @@ echo "QUFBQCMkCg==" | base64 -d
 随机生成密码
 date |md5sum
 
+cat /dev/urandom | head -1 | md5sum 
+
 
 
 
