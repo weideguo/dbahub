@@ -364,12 +364,16 @@ chmod
 
 chroot $NEWROOT $COMMAND   ####run command or interactive shell with special root directory
 
-ACL（access control list）
+ACL（access control list）      ###现对与chmod管理粒度更细
 mount -o acl /dev/sda5 /mnt     ###ACL需要在挂载文件的时候打开ACL功能
 getfacl file_name   					###查看一个文件的ACL设置
 setfacl -m u:username:rwx file_name   	###设置用户权限
 setfacl -m g:groupname:--x file_name 	###设置组权限
 setfacl -x u:username file_name   		####删除ACL设置
+
+
+tune2fs -o +acl /dev/sda        ###ext2/ext3/ext4文件系统增加acl功能
+
 
 文件管理
 tar –xvf file.tar        ##解压 tar包
@@ -963,6 +967,7 @@ iostat -d -x -k 1 10    ##查看io信息间隔一秒查询，查10次
 
 	%util  #在统计时间内（所有处理io的时间/总时间）
 
+cat /proc/$pid/io      #查看进程的io的情况
 	
 pidstat -r -p PID      #查看进程的内存使用	
 	

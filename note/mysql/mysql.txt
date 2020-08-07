@@ -501,9 +501,9 @@ select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的
 
 
 
+~/.mysql_history        #mysql命令行默认将命令行执行的命令记录于该文件
 
-
-
+ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防止sql泄露
 
 
 
