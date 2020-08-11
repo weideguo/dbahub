@@ -17,3 +17,11 @@ str = os.read(fd2, 100)
 print(str)
 
 os.close( fd )
+
+
+#列出目录下匹配的文件名
+import glob
+glob.glob("/tmp/python*")
+
+
+
