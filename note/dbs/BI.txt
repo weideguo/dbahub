@@ -1,0 +1,16 @@
+BI 商业智能
+
+产品
+Tableau
+ 
+PowerBI
+ 
+
+MSTR
+
+QlikSense
+
+Hue 
+
+SuperSet
+

@@ -69,5 +69,45 @@ scan 'test'
 
 
 
+MapReduce
+
+
+
+yarn
+hadoop集群资源管理器系统
+
+
+
+
+spark
+基于内存计算的大数据并行计算框架 
+比Hadoop MapReduce快，MR基于磁盘
+
+
+Spark可运行于独立的集群模式中，或者运行于Hadoop中
+
+Spark SQL
+
+
+
+
+
+storm
+流式计算框架（单独部署）
+分布式实时计算系统
+
+
+
+
+计算速度
+storm > spark > hadoop
+
+
+
+Apache Kylin
+Hadoop/Spark 之上的 SQL 查询接口及多维分析
+
+
+
 
 

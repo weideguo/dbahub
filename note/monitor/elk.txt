@@ -1,0 +1,5 @@
+Elasticsearch   ##数据存储
+Logstash        ##数据传输
+Kibana          ##图形展示
+
+

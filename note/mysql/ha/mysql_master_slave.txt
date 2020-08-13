@@ -10,8 +10,13 @@
 	设置唯一的server_id的值；
 	必须启用二进制日志（设置【log_bin】参数）。
 	
-show master status\G;	-----查看主节点的状态
-show slave hosts;		-----差看slave节点
+show master status\G;	---查看主节点的状态
+show slave hosts;		---在主节点查看从节点的信息 
+  从节点启动时需要加 
+  report_host         --必须，其他则可选。从节点的ip，只是用于标识，并不实际使用该网络
+  report_port         --从节点的端口
+  report_user         --只是用于作为user的标识，并不需要跟从节点的账号相同
+  report_password 
 	
 	
 【SLAVE】
@@ -28,7 +33,6 @@ master_log_pos=master_position;			-----在master中使用【show master status�
 
 show slave status\G;    ---查看从节点的状态
 
-show slave hosts;		---在主节点查看从节点的信息
 
 start slave sql_thread;  ---启动从节点sql线程
 start slave io_thread;   ---启动从节点io线程

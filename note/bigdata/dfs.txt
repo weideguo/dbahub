@@ -1,9 +1,21 @@
 Distributed file system 分布式文件系统
 
 
-1.对象存储，也就是通常意义的键值存储，其接口就是简单的GET、PUT、DEL 和其他扩展。
-2.块存储，这种接口通常以 QEMU Driver 或者 Kernel Module 的方式存在，这种接口需要实现 Linux 的 Block Device 的接口或者 QEMU 提供的 Block Driver 接口。
-3.文件存储，通常意义是支持 POSIX 接口，它跟传统的文件系统如 Ext4 是一个类型的，但区别在于分布式存储提供了并行化的能力。
+#块存储
+即块设备，可用用于安装文件系统等
+这种接口通常以 QEMU Driver 或者 Kernel Module 的方式存在，这种接口需要实现 Linux 的 Block Device 的接口或者 QEMU 提供的 Block Driver 接口。
+
+
+
+#对象存储
+介于块存储与文件存储之间，扁平的存储结，无需树状结构组织
+也就是通常意义的键值存储，其接口就是简单的GET、PUT、DEL 和其他扩展。
+
+
+
+#文件存储
+使用文件系统组织，树状目录结构组织
+通常意义是支持 POSIX 接口，它跟传统的文件系统如 Ext4 是一个类型的，但区别在于分布式存储提供了并行化的能力。
 
 
 

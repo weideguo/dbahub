@@ -1,0 +1,20 @@
+列式数据库
+数据在磁盘大的存放采用列示存储 
+利于olap，但更新速度较慢
+
+一些列示数据库产品
+Vertica
+Paraccel (Actian Matrix and Amazon Redshift)
+Sybase IQ
+Exasol
+Infobright
+InfiniDB
+MonetDB (VectorWise and Actian Vector)
+LucidDB
+SAP HANA
+Google Dremel
+Google PowerDrill
+Druid
+kdb+
+
+

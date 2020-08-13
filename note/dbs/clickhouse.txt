@@ -1,0 +1,17 @@
+列式数据库 用于olap
+
+类sql语句
+
+
+单节点
+clickhouse-client package contains clickhouse-client application, interactive ClickHouse console client.
+clickhouse-common package contains a ClickHouse executable file.
+clickhouse-server package contains configuration files to run ClickHouse as a server.
+
+
+集群
+Install ClickHouse server on all machines of the cluster
+Set up cluster configs in configuration files
+Create local tables on each instance
+Create a Distributed table
+

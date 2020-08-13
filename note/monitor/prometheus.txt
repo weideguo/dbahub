@@ -1,0 +1,10 @@
+服务监控系统和时间序列数据库
+
+prometheus  数据存储
+ 基于HTTP采用pull方式收集数据 
+   输出被监控组件信息的HTTP接口被叫做exporter。可以自行实现或者已提供的，在被监控的机器运行，已提供的支持监控如Nginx、MySQL、Linux系统信息。
+ pushgateway 接受push服务，Prometheus稍后再pull，相当于缓存
+
+Grafana  图形展示
+
+
