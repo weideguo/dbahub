@@ -91,7 +91,6 @@ Spark SQL
 
 
 
-
 storm
 流式计算框架（单独部署）
 分布式实时计算系统
@@ -109,5 +108,6 @@ Hadoop/Spark 之上的 SQL 查询接口及多维分析
 
 
 
+Presto 基于hdfs的sql查询引擎
 
-
+impala 基于hadoop的SQL查询引擎
