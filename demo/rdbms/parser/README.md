@@ -12,14 +12,14 @@
 Another Tool for Language Recognition
 
 
-词法分析器（Lexer）
-语法分析器（Parser）
-树分析器 （tree parser）
+词法分析器（Lexer）  
+语法分析器（Parser）  
+树分析器 （tree parser）  
 
 
-antlr 主工程   主工程可以输入目标语言的语法描述grammer，生成对应运行时的parser。
-antlr 语法描述 grammer
-antlr 运行时 runtime  支持如Java，JavaScript，Python，C#
+antlr 主工程   主工程可以输入目标语言的语法描述grammer，生成对应运行时的parser。  
+antlr 语法描述 grammer  
+antlr 运行时 runtime  支持如Java，JavaScript，Python，C#  
 
 
 #g4文件定义规则 grammer
@@ -32,7 +32,6 @@ https://github.com/antlr/grammars-v4/blob/master/sql/mysql/Positive-Technologies
 mysql官方的文件解析存在冲突？type unicode object  
 https://github.com/mysql/mysql-workbench/blob/8.0/library/parsers/grammars/MySQLLexer.g4  
 https://github.com/mysql/mysql-workbench/blob/8.0/library/parsers/grammars/MySQLParser.g4  
-
 https://github.com/mysql/mysql-workbench/blob/8.0/library/parsers/grammars/predefined.tokens  
 
 
