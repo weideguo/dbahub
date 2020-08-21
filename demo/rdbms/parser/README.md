@@ -22,7 +22,7 @@ antlr 语法描述 grammer
 antlr 运行时 runtime  支持如Java，JavaScript，Python，C#  
 
 
-#g4文件定义规则 grammer
+# g4文件定义规则 grammer
 ### mysql
 https://github.com/antlr/grammars-v4/blob/master/sql/mysql/Positive-Technologies/MySqlLexer.g4  
 https://github.com/antlr/grammars-v4/blob/master/sql/mysql/Positive-Technologies/MySqlParser.g4  
