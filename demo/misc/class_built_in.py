@@ -102,13 +102,29 @@ class A(object):
         for i in A():
             print(i)
         """
-        
-        
-    def __getitem__(self, n):    
+    
+    def __setitem__(self, key, value):
         """
-        调用 A()[3] 
+        增加元素
+        a=A()
+        a["a"]="aaa"
         """
-        return n*n 
+        print(key, value)
+      
+    def __delitem__(self, key):
+        """
+        删除元素
+        a=A()
+        del a["a"]
+        """
+        print(key)
+        
+    def __getitem__(self, key):    
+        """
+        查询元素 
+        A()["a"] 
+        """
+        return "ccc"+key
     
     def __missing__(self, key):
         """
@@ -192,11 +208,22 @@ class A(object):
     __lt__(slef,other)				判断self对象是否小于other对象
     __ge__(slef,other)				判断self对象是否大于或者等于other对象
     __le__(slef,other)				判断self对象是否小于或者等于other对象
+    __ne__(slef,other)              !=
+    __and__(slef,other)             与 &
+    __or__(slef,other)              或 |
+    __invert__(self)                ~ 
+    __pos__(self)                   +
+    __neg__(self)                   -
     """
     
     
 A("aaa")==A("bbb")
-A("aaa")==A("aaa")
+A("aaa") !=A ("bbb")
+A("aaa") & A("aaa")
+A("aaa") | A("aaa")
+~A("aaa")
++A("aaa")
+-A("aaa")
 
 
 class A(object):  
@@ -226,15 +253,36 @@ class A(object):
         print("del attr: "+name)
         object.__delattr__(self,name)    
 
+    def __contains__(self,key):
+        """
+        "xxx" in A()  判断key是否存在时调用 即python2的 A().has_key("xxx")
+        """
+        return True
 
 
-class A(object):
-    pass
 
 a=A()
 #为对象 增加/查询/删除 属性
 setattr(a,"a","aaa")
 getattr(a,"a")
 delattr(a,"a")
-      
+a.b
+
+
+
+class A(object):
+    
+    def __hash__(self):
+        """
+        生成对象的 hash
+        用于 __eq__ 比较？
+        """
+        return hash((1,2,3))
+    
+    
+a=A()    
+hash(a)    
+    
+    
+#set, frozenset, dict    #要求为可hash
       

@@ -12,5 +12,5 @@ QlikSense
 
 Hue 
 
-SuperSet
+SuperSet （开源 后端python 前端D3.js）
 
