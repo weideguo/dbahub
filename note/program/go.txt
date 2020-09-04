@@ -19,7 +19,15 @@ go -n clean
 go get -u github.com/go-sql-driver/mysql
 
 运行测试 *_test.go文件的TestXXX函数
+#运行当前文件夹下所有*_test.go
 go test -v
+#运行指定*_test.go
+go test -v user_test.go  user.go
+#文件夹里还包含文件夹
+go test -v ./...
+
+#测试代码覆盖率 当前文件夹
+go test -v -coverprofile cover.out
 
 格式化代码文件，统一风格
 go fmt

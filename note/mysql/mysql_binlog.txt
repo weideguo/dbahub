@@ -58,8 +58,12 @@ mysqlbinlog  log_name    ----查看二进制日志的内容
 mysqlbinlog -u root -p -P 3306 -h host_name -R -r save_as_text_file_name remote_binlog_name
 	--stop-never   ----持续获取不中断
 	
+binlog通配符
+binlog.1282{20..32}	
 	
-	
+#允许混合使用start-position和stop-datetime 但binlog的顺序不能乱
+mysqlbinlog --start-position=6147873 --stop-datetime="2020-09-02 05:20:00"  binlog.1282{19..32} > x.sql
+
 
 在执行操作前【set sql_log_bin=0(或者off)】可禁止执行的语句生成二进制日志
 
