@@ -8,8 +8,8 @@ encode是将unicode转换成其他编码
 直接输入的string常量会用系统缺省的编码方式来编码
 
 r raw
-u 字符串是unicode编码的字符串
-
+u 字符串是unicode编码的字符串  python3的字符串默认以此存储，即a="中文"则a为unicode类型
+b 十六进制  python2的字符串默认以此存储，即a="中文"则a为byte类型
 
 string object
 unicode object

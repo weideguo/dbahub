@@ -122,5 +122,20 @@ script.src = "https://cdn.bootcss.com/jquery/2.1.2/jquery.min.js";
 document.getElementsByTagName('head')[0].appendChild(script)
 
 
-
-
+// 查看当前页的对象 可用通过 window.xxx 调用
+(function(){
+    const keys=[]
+    const iframe = document.createElement("iframe");
+    iframe.src="about:blank"
+    iframe.onload=function(){
+        const subKeys = Object.keys(iframe.contentWindow)
+        Object.keys(window).forEach(function(key){
+          if(!subKeys.includes(key)) {
+              keys.push(key)
+          }              
+        })
+        console.log(keys)
+    }
+    document.body.appendChild(iframe)
+    
+})();

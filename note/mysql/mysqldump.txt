@@ -7,6 +7,8 @@ mysqldump -u root -pyy123456 -h 10.104.220.123 -P 3306 nwebauth -R > nwebauth.sq
 
 
 	--master-data[=1|2]		----导出中带有change master to... 语句
+                            show master status 不具备事务性，因此加--master-data参数时需要 FLUSH TABLES WITH READ LOCK ，然后查询binlog的pos，然后释放锁，然后再通过查询导出数据。
+                            Percona Server 可以通过 SHOW STATUS LIKE 'binlog_snapshot_%' 查询binlog的pos，无需加锁。？
 	-t					---不导出建表语句
 	-d					---不导出插入数据语句
 	-T	--tab=name		---将表以分割文件导出
