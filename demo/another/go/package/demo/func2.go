@@ -1,4 +1,4 @@
-package demox
+package demo
 
 import "fmt"
 

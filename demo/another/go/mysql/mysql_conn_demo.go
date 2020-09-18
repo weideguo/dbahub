@@ -1,11 +1,6 @@
 package main
 
-/*
-下载mysql的驱动到 /data/gopath/src
-设置环境变量 export GOPATH=/data/gopath
 
-import _ 匿名导入包——只导入包但不使用包内类型和数值
-*/
 import _ "github.com/go-sql-driver/mysql"
 import "fmt"
 import "database/sql"

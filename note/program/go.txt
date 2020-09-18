@@ -64,13 +64,80 @@ go env        #列出go的环境变量
 go env -w GOPROXY=https://goproxy.cn,direct   
 export GOPROXY=https://goproxy.cn             #只能用于linux
 
-#初始化当前文件夹，创建go.mod文件
-#之后源代码中依赖的第三方包不需要再提前下载到GOPATH，运行时自动从GOPROXY加载
-go mod init example.com/m/v2         #指定目录或者文件           
 
+
+
+
+#go mod管理依赖包 项目创建样例（项目可以在任意位置创建）
+#之后源代码中依赖的第三方包不需要再提前下载到GOPATH，运行时如果缺失会自动从GOPROXY下载
+export GOPATH=XXX    #依然需要先设置GOPATH变量
+go env GOPATH        #查看GOPATH
+
+mkdir myGoProject 
+cd myGoProject 
+
+go mod init github.com/zouzhicun/myGoProject  #初始化当前文件夹，go.mod文件
+
+#在代码中通过 import 引入依赖包
+```go
+import (
+    "fmt"                                              #引入标准库
+    
+    "github.com/gin-gonic/gin"                         #依赖第三方包 ，运行时自动下载
+    
+    "github.com/zouzhicun/myGoProject/myutils"         #引入自己的包，即当前目录下存在myutils，import时需要在目录前加上完整项目名（go.mod中指定）
+)
+
+```
+
+go build main.go          #第一次编译运行时生成go.sum，记录下载的模块（下载到$GOPATH/pkg/mod目录）
+#go build main.go         
+
+
+
+#####没有 go.mod 整个项目需要放在 $GOPATH/src 目录下（否则引用可能会出现路径问题）
+
+
+###################################################
+import 引用的位置
+
+1.$GOROOT/src                 //标准库   默认为安装go的根目录，安装go时自带
+2.$GOPATH/src                 //第三方库 需要自己下载  
+3.$GOPATH/pkg/mod             //第三方库 编译时自动下载    （所有目录不存在时才下载，go1.13之后）
+4.当前目录下的目录            //自己的模块 旧版支持使用相对位置引用；新版本使用go.mod管理引用
+5.当前目录下的vendor目录      //第三方库 当前目录需要处于$GOPATH/src目录下（可以处于任意深度） 
+
+
+##########################
 go mod download	   根据go.mod文件下载依赖包到本地（默认为 GOPATH/pkg/mod 目录）
-go mod tidy        直接下载以来的包到本地（默认为 GOPATH/pkg/mod 目录）
+go mod tidy        直接下载依赖的包到本地（默认为 GOPATH/pkg/mod 目录）
 
 go.mod    #go mod init 生产文件
 go.sum    #go run/build 由 go.mod 生产，并下载对应依赖项
+
+
+
+go mod download    下载依赖的module到本地cache（默认为$GOPATH/pkg/mod目录）
+go mod edit        编辑go.mod文件
+go mod graph       打印模块依赖图
+go mod init        初始化当前文件夹, 创建go.mod文件
+go mod tidy        增加缺少的module，删除无用的module
+go mod vendor      将依赖复制到当前的vendor目录下
+go mod verify      校验依赖
+go mod why         解释为什么需要依赖
+
+
+
+
+####godep来管理目录  #旧版本go使用 新项目使用go mod代替（go1.13之后）
+godep save     将依赖项输出并复制到Godeps.json文件中
+godep go       使用保存的依赖项运行go工具
+godep get      下载并安装具有指定依赖项的包
+godep path     打印依赖的GOPATH路径
+godep restore  在GOPATH中拉取依赖的版本
+godep update   更新选定的包或go版本
+godep diff     显示当前和以前保存的依赖项集之间的差异
+godep version  查看版本信息
+
+
 

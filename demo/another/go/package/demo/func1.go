@@ -1,4 +1,4 @@
-package demox
+package demo
 
 /*
 一个目录下的同级文件归属一个包。

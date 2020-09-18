@@ -267,20 +267,6 @@ enforing=0
 传统的Linux系统安全，采用的是 DAC（自主访问控制方式），对应用户是否拥有某个资源的权限（读、写、执行）
 SELinux是部署在Linux系统中的安全增强功能模块，对进程和文件资源采用 MAC（强制访问控制方式）
 
-
-##iptables
-service iptables status
-service iptables stop
-
-/etc/init.d/iptables status  
-/etc/init.d/iptables stop 
-
-配置文件 修改配置文件实现规则修改
-/etc/sysconfig/iptables 
-
-##保存现有iptables规则
-service iptables save
-iptables-save > /etc/sysconfig/iptables
  
  
 用户管理、权限管理
@@ -595,6 +581,58 @@ ssh-add -d /root/.ssh/id_rsa      #移除ssh-agent中的指定密钥文件
 
 ssh-agent -k             #关闭ssh-agent   
 ssh-agent 重启后信息丢失 只能对单一会话生效
+
+
+#SSH使用代理
+#1.直接命令行通过代理129登陆128  需要分别输入129、128的密码
+#低版本ssh 当前主机的ssh不支持-W参数，代理机安装nc
+ssh -o "ProxyCommand ssh -p 22 root@192.168.253.129 nc %h %p" -p 22 root@192.168.253.128
+#高版本ssh 当前主机的ssh支持-W参数
+ssh -o "ProxyCommand ssh -p 22 root@192.168.253.129 -W %h:%p" -p 22 root@192.168.253.128
+
+
+
+#2.通过设置配置文件实现代理
+#设置ssh配置文件
+cat ~/.ssh/config
+"""
+Host B
+    HostName %h
+    User root
+    Port 22
+    IdentityFile ~/.ssh/id_dsa          #使用免密登陆
+
+Host C
+    HostName %h
+    User root 
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    ProxyCommand ssh -W %h:%p B
+"""
+#通过B代理连接C
+ssh C 
+
+
+#低版本ssh时
+"""
+Host B
+    HostName %h
+    User root
+    Port 22
+    IdentityFile ~/.ssh/id_dsa                        #使用免密登陆
+
+Host C
+    HostName %h
+    User root 
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    ProxyCommand ssh B exec nc %h %p 2>/dev/null      #低版本的ssh没有-W参数 使用该方式代替
+    #ProxyCommand ssh B nc %h %p 2>/dev/null          #低版本的ssh没有-W参数 使用该方式代替 ？
+"""
+
+#通过B代理连接C
+ssh C 
+
 
 
 重启ssh
