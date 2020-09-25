@@ -1,0 +1,160 @@
+python py_innodb_page_info.py /data/mysql2/data/test2/t.ibd -v
+#page offset 00000000, page type <File Space Header>
+#page offset 00000001, page type <Insert Buffer Bitmap>
+#page offset 00000002, page type <File Segment inode>
+#page offset 00000003, page type <B-tree Node>, page level <0000>
+
+
+#######################################管理页############################################################
+第一个页Extent描述页（XDES PAGE） File Space Header（FIL_PAGE_TYPE_FSP_HDR）
+该页用于跟踪随后的256个Extent(约256MB文件大小)的空间管理，所以每隔256MB就要创建一个类似的数据页
+
+
+
+0000000: 2ee5 1e02 0000 0000 0000 0000 0000 0000  ................
+0000010: 0000 0000 0453 e7de 0008 0000 0000 0000  .....S..........
+0000020: 0000 0000 020a 0000 020a 0000 0000 0000  ................
+0000030: 000b 0000 0040 0000 0000 0000 000a 0000  .....@..........
+0000040: 0000 ffff ffff 0000 ffff ffff 0000 0000  ................
+0000050: 0001 0000 0000 009e 0000 0000 009e 0000  ................
+0000000: 2ee5 1e02 0000 0000 0000 0000 0000 0000  ................
+0000010: 0000 0000 0453 e7de 0008 0000 0000 0000  .....S..........
+0000020: 0000 0000 020a 0000 020a 0000 0000 0000  ................
+0000030: 000b 0000 0040 0000 0000 0000 000a 0000  .....@..........
+0000040: 0000 ffff ffff 0000 ffff ffff 0000 0000  ................
+0000050: 0001 0000 0000 009e 0000 0000 009e 0000  ................
+0000060: 0000 ffff ffff 0000 ffff ffff 0000 0000  ................
+0000070: 0000 0000 0005 0000 0000 ffff ffff 0000  ................
+0000080: ffff ffff 0000 0000 0001 0000 0002 0026  ...............&
+0000090: 0000 0002 0026 0000 0000 0000 0000 ffff  .....&..........
+00000a0: ffff 0000 ffff ffff 0000 0000 0002 aaaa  ................
+00000b0: faff ffff ffff ffff ffff ffff ffff 0000  ................
+...
+0003ff0: 0000 0000 0000 0000 2ee5 1e02 0453 e7de  .............S..
+
+
+
+                                                  #file header 38字节
+2ee5 1e02                                         #
+0000 0000                                         #
+0000 0000                                         #
+0000 0000                                         #
+0000 0000 0453 e7de                               #
+0008                                              #
+0000 0000 0000 0000                               #
+0000 020a                                         #
+                                                  
+                                                  #fsp_header  38字节
+                                                  #除了第一个Extent描述页，其他fsp_header置0
+                                                  #这个结构保存了这个表空间的大小，以及完全没有被使用的extents，fragment的使用情况，以及inode使用情况
+0000 020a                                         #FSP_SPACE_ID        4   该文件对应的space id
+0000 0000                                         #FSP_NOT_USED        4   保留字节，当前未使用
+0000 000b                                         #FSP_SIZE            4   当前表空间总的PAGE个数，扩展文件时需要更新该值（fsp_try_extend_data_file_with_pages）
+0000 0040                                         #FSP_FREE_LIMIT      4   当前尚未初始化的最小Page No。从该Page往后的都尚未加入到表空间的FREE LIST上。
+0000 0000                                         #FSP_SPACE_FLAGS     4   当前表空间的FLAG信息
+0000 000a                                         #FSP_FRAG_N_USED     4   FSP_FREE_FRAG链表上已被使用的Page数，用于快速计算该链表上可用空闲Page数
+0000 0000 ffff ffff 0000 ffff ffff 0000           #FSP_FREE            16  当一个Extent中所有page都未被使用时，放到该链表上，可以用于随后的分配
+0000 0001 0000 0000 009e 0000 0000 009e           #FSP_FREE_FRAG       16  FREE_FRAG链表的Base Node，通常这样的Extent中的Page可能归属于不同的segment，用于segment frag array page的分配（见下文）
+0000 2ee5 1e02 0000 0000 0000 0000 0000           #FSP_FULL_FRAG       16  Extent中所有的page都被使用掉时，会放到该链表上，当有Page从该Extent释放时，则移回FREE_FRAG链表
+0000 0000 0000 0453                               #FSP_SEG_ID          8   当前文件中最大Segment ID + 1，用于段分配时的seg id计数器
+e7de 0008 0000 0000 0000 0000 0000 020a           #FSP_SEG_INODES_FULL 16  已被完全用满的Inode页链表
+0000 020a 0000 0000 0000 000b 0000 0040           #FSP_SEG_INODE_FREE  16  至少存在一个空闲Inode Entry的Inode页被放到该链表上
+                                                  
+                                                  
+                                                  #XDES Entry  40个字节
+                                                  #最多存储256个
+                                                  #每个描述64个Page的使用情况（即一个Extent，即1M） 
+                                                  #
+                                                  #0 XDES Entry 
+0000 0000 0000 000a                               #XDES_ID        8  如果该Extent归属某个segment的话，则记录其ID
+0000 0000 ffff ffff 0000 ffff                     #XDES_FLST_NODE 12 上一个和下一个extent的 page no 、offset
+ffff 0000                                         #XDES_STATE     4  该Extent的状态信息，包括：XDES_FREE（存在于FREE链表上），XDES_FREE_FRAG（存在于FREE_FRAG链表上），XDES_FULL_FRAG（存在于FULL_FRAG链表上），XDES_FSEG（该Extent归属于ID为XDES_ID记录的值的SEGMENT）
+0000 0001 0000 0000 009e 0000 0000 009e           #XDES_BITMAP    16 总共16*8 = 128个bit，用2个bit表示Extent中的一个page。一个bit表示该page是否是空闲的（XDES_FREE_BIT）；另一个保留位，尚未使用（XDES_CLEAN_BIT）
+
+                                                  
+                                                  #1 XDES Entry   
+                                                  #...
+                                                  #255 XDES Entry 
+                                                  
+                                                  #file trailer   8字节
+
+
+
+
+
+###########################################################################################################
+第二个页缓存bitmap页 IBUF_BITMAP （FIL_PAGE_IBUF_BITMAP）
+每隔256个extent后，也会在extent描述页之后创建一个缓存bitmap页
+用于记录插入缓冲区的一些信息，主要用于跟踪随后的每个page的change buffer信息插入
+
+
+0004000: e620 d825 0000 0001 0000 0000 0000 0000  . .%............
+0004010: 0000 0000 0452 5a17 0005 0000 0000 0000  .....RZ.........
+...
+0007ff0: 0000 0000 0000 0000 e620 d825 0452 5a17  ......... .%.RZ.
+
+
+#####file header    38字节
+##### 256个extent，每个extent有64个page，每个page用4位描述 总占用 256*64*4/8=8192字节
+#0extend  0  page  4位 2位表示该page的空闲空间范围：0（0 bytes）、1（512 bytes）、2（1024 bytes）、3（2048 bytes）；1位表示该page是否有ibuf操作缓存；1位表示该Page本身是否是ibuf B+Tree的节点？
+#0extend  1  page
+#...         
+#0extend  63 page
+#1extend  0  page
+#1extend  1  page
+#...      
+#1extend  63 page
+##...
+#255extend 63 page
+#255extend 0  page
+#255extend 1  page
+#...
+#255extend 63 page
+
+#####emptyspace     8146字节
+#####file trailer   8字节
+
+
+###########################################################################################################
+第三个页是inode页（FIL_PAGE_INODE）
+
+
+#####file header 38字节
+#####list note 12字节 记录前后Inode Page的位置，BaseNode记录在头Page的FSP_SEG_INODES_FULL或者FSP_SEG_INODES_FREE字段。
+#prev page no 4
+#prev offset  2
+#next page no 4
+#next offset  2
+
+#####Inode Entry 192字节
+#每个inode页可以存储FSP_SEG_INODES_PER_PAGE（默认为85）个记录，一个INODE页最多可以保存42个索引信息（一个索引使用两个段，分别用于管理叶子节点和非叶子节点）。
+#如果表空间有超过42个索引，则必须再分配一个INODE页
+#
+#####0 Inode Entry   (fragment array entry 0)
+#fseg_id               8  该Inode归属的Segment ID，若值为0表示该slot未被使用
+#fseg_not_full_n_used  4  FSEG_NOT_FULL链表上被使用的Page数量
+#fseg_free             16 完全没有被使用并分配给该Segment的Extent链表 list length(4) + prev page no(4) + page offset(2) + next page no(4) + next offset(2)
+#fseg_not_full         16 至少有一个page分配给当前Segment的Extent链表。全部用完时，转移到FSEG_FULL上；全部释放时，则归还给当前表空间FSP_FREE链表。
+#fseg_full             16 分配给当前segment且Page完全使用完的Extent链表
+#fseg_magic_n          4  Magic Number 97937874
+#fseg_frag_arr 0       4  属于该Segment的Page。总是先从全局分配独立的Page，一个page占用一个fseg_frag_arr，当填满32个数组项时，之后每次分配时都分配一个完整的Extent（64个page），并在XDES PAGE中将其Segment ID设置为当前值？用于实现初始分配文件大小为96k，然后逐渐page增加到1M（即逐16k增加），之后的逐1M增加（即1extent=64page）？
+#fseg_frag_arr 1       
+#...               
+#fseg_frag_arr 31       
+
+
+
+#####1 Inode Entry 
+#####2 Inode Entry 
+#####3 Inode Entry 
+#####...
+#####84 Inode Entry 
+
+
+#####emptyspace 6字节
+#####file trailer 8字节
+
+
+参考
+#https://blog.51cto.com/59090939/1955122
+

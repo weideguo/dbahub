@@ -17,16 +17,426 @@ WHERE a.table_id = b.table_id AND a.space <> 0;
 SPACE对应每个表空间ID号，PAGE_NO对应每个页的ID号
 
 
-offset=@PAGE_NO*@@innodb_page_size+64                 #PAGE_LEVEL在每个root页的偏移量64位置初，占用两个字节
-
-hexdump -s offset -n 02 /path_to_data/test_table.ibd 
-
 获得root页的PAGE_LEVEL，树的高度为PAGE_LEVEL+1
-
-
 
 
 
 #页的大小
 show variables like '%page%';
 innodb_page_size
+
+
+
+
+Compact行记录格式  
+1. 变长字段长度列表：每个变长字段（如varchar）的长度用零字节/一字节/二字节表示（通过创表元数据确定？）。因而MySQL数据库varcahr类型的最大长度限制为65535=2^16
+2. NULL标识位：指示该行数据中NULL列。（通过创表元数据确定使用多少字节表示，没有则为00）
+3. 记录头信息：固定占用5字节（40位）
+    ()             1        未知
+    ()             1        未知
+    deleted_flag   1        该行是否已经删除
+    min_rec_flag   1        如果该行记录是预定义为最小的记录，为1？
+    n_owned        4        即同Slot中的记录数，只有有slot指向时该值不为0
+    heap_no        13       索引堆中该记录的排序记录
+    recored_type   3        记录类型，000 普通；001 B+树非叶子节点；010 表示infimum；011 表示supremum；1XX 表示保留？
+    next_record    16       该记录下的一记录的相对位置
+
+4. 列数据：实际存储每列的数据。
+    ROWID             隐藏列 
+    Transaction ID    隐藏列 
+    Roll Pointer      隐藏列 
+    实际列1
+    实际列2
+    ...
+    实际列n
+   
+
+使用隐藏列实现MVCC 
+
+
+默认页大小为16KB，因此行记录最大长度应该略小于8KB ，一个B+Tree叶子节点最少有2个行记录
+
+
+
+页结构
+file header                https://dev.mysql.com/doc/internals/en/innodb-fil-header.html
+
+page header                https://dev.mysql.com/doc/internals/en/innodb-fil-header.html
+
+infimum+supremum records   https://dev.mysql.com/doc/internals/en/innodb-infimum-and-supremum-records.html
+        
+
+user records               https://dev.mysql.com/doc/internals/en/innodb-user-records.html
+        存储实际插入的行记录
+        InnoDB不都依据B+Tree键的顺序来插入新行，因为这可能需要移动大量的数据，因此InnoDB插入新行时，通常是插入到当前行的后面（Free Space的顶部）或者是已删除行留下来的空间
+        为了保证访问B+Tree记录的顺序性，在每个记录中都有一个指向下一条记录的相对位置（记录头的next_record），以此构成了一条单向有序链表
+
+
+freespace
+        空闲空间，数据结构是链表，在一个记录被删除后，该空间会被加入到空闲链表中
+
+
+page directory  https://dev.mysql.com/doc/internals/en/innodb-page-directory.html
+
+
+file trailer    https://dev.mysql.com/doc/internals/en/innodb-fil-trailer.html                   
+        
+
+
+系统表空间文件/独立表空间文件 都可以按照页的格式分析
+
+
+CREATE TABLE t (
+a VARCHAR(10),
+b VARCHAR(10),
+c CHAR(10),
+d VARCHAR(10)
+) ENGINE=INNODB CHARSET=LATIN1 ROW_FORMAT=compact;
+    
+insert into t values('1','22','22','333'),('4',NULL,NULL,'555');   
+
+#python查看页类型
+INNODB_PAGE_SIZE = 16*1024
+f=open('/data/mariadb1039/data/test/t.ibd','rb')
+page = f.read(INNODB_PAGE_SIZE)
+page[24:24+2].encode('hex')
+
+python py_innodb_page_info.py /data/mysql2/data/test2/t.ibd -v
+#page offset 00000000, page type <File Space Header>
+#page offset 00000001, page type <Insert Buffer Bitmap>
+#page offset 00000002, page type <File Segment inode>
+#page offset 00000003, page type <B-tree Node>, page level <0000>
+
+
+分析可以知道数据页偏移量为00000003，一页的大小为16k
+页的分布 
+0x0000~0x3fff
+0x4000~0x7fff
+0x8000~0xbfff
+0xc000~0xffff
+
+
+
+#十六进制查看innodb数据文件  vim %!xxd 可能会出现转码
+#xxd input_file output_file
+
+000c000: 2805 4911 0000 0003 ffff ffff ffff ffff  (.I.............
+000c010: 0000 0000 011e 1cfa 45bf 0000 0000 0000  ........E.......
+000c020: 0000 0000 0202 0002 00c3 8004 0000 0000  ................
+000c030: 00ac 0002 0001 0002 0000 0000 0000 0000  ................
+000c040: 0000 0000 0000 0000 0323 0000 0202 0000  .........#......
+000c050: 0002 00f2 0000 0202 0000 0002 0032 0100  .............2..
+000c060: 0200 1e69 6e66 696d 756d 0003 000b 0000  ...infimum......
+000c070: 7375 7072 656d 756d 0302 0100 0000 1000  supremum........
+000c080: 2b00 0000 0006 0200 0000 0000 0080 0000  +...............
+000c090: 0000 0000 3132 3232 3220 2020 2020 2020  ....12222       
+000c0a0: 2033 3333 0301 0600 0018 ffc4 0000 0000   333............
+000c0b0: 0603 0000 0000 0000 8000 0000 0000 0034  ...............4
+000c0c0: 3535 3500 0000 0000 0000 0000 0000 0000  555.............
+
+...
+
+000ffe0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+000fff0: 0000 0000 0070 0063 2805 4911 011e 1cfa  .....p.c(.I.....
+
+
+
+
+                             #该页的位置为 0xc000~0xffff = 16K  
+                             #file header 38字节
+2805 4911                    #FIL_PAGE_SPACE	        该页的checksum值             
+0000 0003                    #FIL_PAGE_OFFSET           该页在表空间中的页偏移量                    
+ffff ffff                    #FIL_PAGE_PREV	            上一个数据页的偏移量，在此为无上一页    
+ffff ffff                    #FIL_PAGE_NEXT	            下一个数据页的偏移量，在此为无下一页
+000 0000 011e 1cfa           #FIL_PAGE_LSN	            该页最后被修改的LSN    
+45bf                         #FIL_PAGE_TYPE	            类型为数据页   类型：FIL_PAGE_INDEX, FIL_PAGE_UNDO_LOG, FIL_PAGE_INODE, FIL_PAGE_IBUF_FREE_LIST
+0000 0000 0000 0000          #FIL_PAGE_FILE_FLUSH_LSN   独立表空间中为0
+0000 0202                    #FIL_PAGE_ARCH_LOG_NO	   	该页属于哪一个表空间
+
+
+                             #page header  56字节
+0002                         #PAGE_N_DIR_SLOTS	 Page Directory有2个Slot，每个Slot占用2Byte，因此范围为0xfff4~0xfff7
+00c3                         #PAGE_HEAP_TOP	     Free Space开始位置的偏移量，0xc000+00c3=0xc0c3
+8004                         #PAGE_N_HEAP	     Compact时，初始值为0x8002，该页拥有行记录数为0x8004-0x8002=0x02
+0000                         #PAGE_FREE	         指向可重用空间的首指针，无可重用空间，该值为0
+0000                         #PAGE_GARBAGE	     已标记为删除（deleted_flag）的记录的字节数
+00ac                         #PAGE_LAST_INSERT	 最后插入记录的位置 0xc000+0x00ac=0xc0ac  直接指向最后个记录ROWID
+0002                         #PAGE_DIRECTION   	 插入的方向，PAGE_LEFT(0x01)，PAGE_RIGHT(0x02)，PAGE_NO_DIRECTION(0x05) PAGE_RIGHT，通过自增主键的方式插入行记录
+0001                         #PAGE_N_DIRECTION	 一个方向上连续插入记录的数量
+0002                         #PAGE_N_RECS        该页中记录（User Record）的数量
+0000 0000 0000 0000          #PAGE_MAX_TRX_ID	 修改该页的最大事务ID（仅在辅助索引中定义）              
+0000                         #PAGE_LEVEL	     该页在索引树中位置 0000代表叶子节点  否则为非叶子节点 最大值为根节点
+0000 0000 0000 0323          #PAGE_INDEX_ID	     索引ID 表示该页属于哪个索引
+0000 0202 0000 0002 00f2     #PAGE_BTR_SEG_LEAF	 B+Tree叶子节点所在Leaf Node Segment的Segment Header    （space id 4字节；page no 4字节；页内偏移量 2字节）
+0000 0202 0000 0002 0032     #PAGE_BTR_SEG_TOP	 B+Tree非叶子节点所在Non-Leaf Node Segment的Segment Header         
+                                                  	        
+                                                      
+                             # 每个数据页中都有两个虚拟的行记录，用来限定记录（User Record）的边界（Infimum为下界，Supremum为上界）
+                             #Infimum 虚拟的行记录 
+01 00 0200 1e                #记录头 n_owned=0x1=1 （在此该值恒定）； 最后两字节 00le 0xc05e+0x00le=0xc07c，指向第的下一记录的记录头（在此为第一行记录的记录头）
+69 6e66 696d 756d 00         #该值恒定？ "infimum "字符串的ascii码
+                             #
+                             #Supremum 虚拟的行记录                           
+03 000b 0000                 #记录头 n_owned=0x3=3 该虚拟记录同一slot下有3个记录（包括自己）； 最后两字节 0000 无下一个行记录？
+7375 7072 656d 756d          #该值恒定？ "supremum"字符串的ascii码
+                             
+                             
+                             #第一行记录
+                             #
+0302 01                      #变长字段长度列表 逆序表示，即第一个变长列长度01，第二个变成列长度02，第三个变长列03，没有变长字段则为空
+00                           #NULL标识位       00表示没有空值
+0000 1000 2b                 #记录头           最后俩字节 2b 0xc07c+0x002b=0xc0a7，指向下一记录的记录头
+
+00 0000 0006 02              #隐藏列 ROWID            （没有主键则自动生成值则为6字节，有主键则存放主键值）
+00 0000 0000 00              #隐藏列 Transaction ID   （6字节）
+80 0000 0000 0000            #隐藏列 Roll Pointer     （7字节）指向写到rollback segment（回滚段）的一条undo log记录
+31                           #列01  数字与字符存储格式不一样  1(int)存为 8000 0001 ；'1'(char)存为 31
+32 32                        #列02
+32 3220 2020 2020 2020 20    #列03
+33 3333                      #列04
+                             #
+                             #第二行记录
+                             #
+0301                         #变长字段长度列表
+06                           #NULL标识位  Ox06 = 0000 0110 即第二第三列为空
+00 0018 ffc4                 #记录头
+
+0000 0000 0603               #隐藏列 ROWID          
+0000 0000 0000               #隐藏列 Transaction ID 
+8000 0000 0000 00            #隐藏列 Roll Pointer   
+34                           #列01
+3535 35                      #列04
+
+                             
+                             #Page Directory
+                             #PAGE_N_DIR_SLOTS	Page Directory有2个Slot，每个Slot占用2Byte，因此Page Directory范围为0xfff4~0xfff7 
+0070 0063                    #指针称为Slot或Directory Slot，每个Slot占用2Byte
+                             #0xc000+0x0063=0xc063   最后两字节  指向的是Infimum Record
+                             #0xc000+0x0070=0xc070   最初两字节  指向的是Supremum Record
+                             #一个slot指向一个记录数据的开始（普通的数据页即指向rowid，索引页直接指向索引的数据，反推可以获取记录头），但并不是每个记录都有一个slot，行记录中n_owned字段标识同一slot的记录数
+                             #逆序存储
+                             #
+                             #B+Tree索引本身并不能直接找到具体的一行记录，只能找到该行记录所在的页
+                             #    数据库把页载入到内存中，然后通过Page Directory再进行二分查找定位一个粗略的结果，然后再通过记录头的next_record进行精确查找
+                             #    二分查找时间复杂度很低，且在内存中进行查找，这部分的时间基本开销可以忽略
+                             #
+                             #如根据rowid查对应的行数据，根据索引获取对应页，加载页到内存，二分查找具体的slot，由slot指向的记录的记录头的next_record精确查找
+                             #
+         
+                             #file trailer  8字节  检测页是否已经完整地写入磁盘
+2805 4911 011e 1cfa          #前4Bytes与File Header中的FIL_PAGE_SPACE一致，后4Bytes与File Header中的FIL_PAGE_LSN的后4Bytes一致
+
+
+
+
+
+ibd数据文件初始大小为96K，每16K增加到1M，然后每1M增加（即1extent=1M）
+
+
+
+FIL_PAGE_TYPE:
+0000 Freshly Allocated Page    数据全部为0
+0002 Undo Log Page
+0003 File Segment inode
+0004 Insert Buffer Free List
+0005 Insert Buffer Bitmap
+0006 System Page
+0007 Transaction system Page
+0008 File Space Header
+0009 扩展描述页
+000a Uncompressed BLOB Page
+000b 1st compressed BLOB Page
+000c Subsequent compressed BLOB Page
+45bf B-tree Node
+
+
+PAGE_DIRECTION:
+0000 Unknown(0x0000)
+0001 Page Left
+0002 Page Right
+0003 Page Same Rec
+0004 Page Same Page
+0005 Page No Direction
+ffff Unkown2(0xffff)
+
+
+
+
+
+
+#############################################################索引页###############################
+
+CREATE TABLE t1 (
+a INT NOT NULL PRIMARY KEY,
+b VARCHAR(3500)
+) ENGINE=INNODB CHARSET=LATIN1 ROW_FORMAT=COMPACT;
+
+
+INSERT INTO t SELECT 10,REPEAT('a',3500);
+INSERT INTO t SELECT 20,REPEAT('b',3500);
+INSERT INTO t SELECT 30,REPEAT('c',3500);
+INSERT INTO t SELECT 40,REPEAT('d',3500);
+INSERT INTO t SELECT 50,REPEAT('e',3500);
+
+
+python py_innodb_page_info.py -v /data/mariadb1039/data/test/t1.ibd 
+#page offset 00000000, page type <File Space Header>
+#page offset 00000001, page type <Insert Buffer Bitmap>
+#page offset 00000002, page type <File Segment inode>
+#page offset 00000003, page type <B-tree Node>, page level <0001>
+#page offset 00000004, page type <B-tree Node>, page level <0000>
+#page offset 00000005, page type <B-tree Node>, page level <0000>
+
+
+00000003 page level 不是0000，为非叶子页，即为索引页，范围为 000c000~000ffff
+00000004 00000005 是数据页
+
+
+
+#十六进制查看innodb数据文件
+#xxd input_file output_file
+
+
+000c000: e9fb 8048 0000 0003 ffff ffff ffff ffff  ...H............
+000c010: 0000 0000 0452 2e2d 45bf 0000 0000 0000  .....R.-E.......
+000c020: 0000 0000 0209 0002 0094 8004 0000 0000  ................
+000c030: 008c 0002 0001 0002 0000 0000 0000 0000  ................
+000c040: 0001 0000 0000 0000 032b 0000 0209 0000  .........+......
+000c050: 0002 00f2 0000 0209 0000 0002 0032 0100  .............2..
+000c060: 0200 1b69 6e66 696d 756d 0003 000b 0000  ...infimum......
+000c070: 7375 7072 656d 756d 0010 0011 000e 8000  supremum........
+000c080: 000a 0000 0004 0000 0019 ffe4 8000 001e  ................
+000c090: 0000 0005 0000 0000 0000 0000 0000 0000  ................
+...
+000ffe0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+000fff0: 0000 0000 0070 0063 e9fb 8048 0452 2e2d  .....p.c...H.R.-
+
+
+
+                                 #file header 38字节
+e9fb 8048                        #
+0000 0003                        #
+ffff ffff                        #
+ffff ffff                        #
+0000 0000 0452 2e2d              #
+45bf                             #
+0000 0000 0000 0000              #
+0000 0209                        #
+                                 #
+                                 #page header  56字节
+0002                             #
+0094                             #
+8004                             #
+0000                             #
+0000                             #
+008c                             #
+0002                             #
+0001                             #
+0002                             #
+0000 0000 0000 0000              #
+0001                             #
+0000 0000 0000 032b              #
+0000 0209 0000 0002 00f2         #B+Tree叶子节点所在Leaf Node Segment的Segment Header        （space id 4字节；page no 4字节；页内偏移量 2字节）
+0000 0209 0000 0002 0032         #B+Tree非叶子节点所在Non-Leaf Node Segment的Segment Header         
+                                 #B+Tree使用两个Segment来管理数据页，一个管理叶子节点，一个管理非叶子节点
+                                 #每个segment在inode page中存在一个记录项，
+                                 #只有B+Tree的root page 这两个有意义？
+
+0100 0200 1b                     #Infimum Records 
+69 6e66 696d 756d 00             # 
+03 000b 0000                     #Supremum Records
+7375 7072 656d 756d              # 
+                                 #
+                                 #变长字段长度列表 没有变长字段 为空
+00                               #NULL标识位  00表示没有空值    
+10 0011 000e                     #记录头         
+8000 000a 0000 0004              #索引数据 所在页的偏移量 在此为 0x0a=10 在页 0000 0004 （80表示为INT）
+00                               #
+00 0019 ffe4                     #记录头
+8000 001e 0000 0005              #索引数据 所在页的偏移量 在此为 0x1e=30 在页 0000 0005
+
+
+
+########################################二级索引
+二级索引使用单独的page存储
+
+CREATE TABLE t (
+a INT NOT NULL,
+b INT NOT NULL,
+c VARCHAR(3500),
+PRIMARY KEY (a),
+KEY (b)
+) ENGINE=INNODB CHARSET=LATIN1 ROW_FORMAT=COMPACT;
+
+
+INSERT INTO t SELECT 0x10,0x100,REPEAT('a',3500);
+INSERT INTO t SELECT 0x20,0x200,REPEAT('b',3500);
+INSERT INTO t SELECT 0x30,0x300,REPEAT('c',3500);
+INSERT INTO t SELECT 0x40,0x400,REPEAT('d',3500);
+INSERT INTO t SELECT 0x50,0x500,REPEAT('e',3500);
+
+
+
+python py_innodb_page_info.py -v /data/mariadb1039/data/test/t.ibd  
+#page offset 00000000, page type <File Space Header>
+#page offset 00000001, page type <Insert Buffer Bitmap>
+#page offset 00000002, page type <File Segment inode>
+#page offset 00000003, page type <B-tree Node>, page level <0001>
+#page offset 00000004, page type <B-tree Node>, page level <0000>
+#page offset 00000005, page type <B-tree Node>, page level <0000>
+#page offset 00000006, page type <B-tree Node>, page level <0000>
+
+
+00000003 page level 不是0000，为非叶子页，即为索引页，范围为 000c000~000ffff
+
+000c000: 5173 6738 0000 0003 ffff ffff ffff ffff  Qsg8............
+000c010: 0000 0000 0453 1485 45bf 0000 0000 0000  .....S..E.......
+000c020: 0000 0000 020a 0002 0094 8004 0000 0000  ................
+000c030: 008c 0002 0001 0002 0000 0000 0000 0000  ................
+000c040: 0001 0000 0000 0000 032c 0000 020a 0000  .........,......
+000c050: 0002 00f2 0000 020a 0000 0002 0032 0100  .............2..
+000c060: 0200 1b69 6e66 696d 756d 0003 000b 0000  ...infimum......
+000c070: 7375 7072 656d 756d 0010 0011 000e 8000  supremum........
+000c080: 0010 0000 0005 0000 0019 ffe4 8000 0030  ...............0
+000c090: 0000 0006 0000 0000 0000 0000 0000 0000  ................
+
+
+最高索引页只指向页 0000 0005 / 0000 0006 
+
+因而剩余的为二级索引（在此即为 0000 0004 ，范围为 0010000~0013fff）
+从ibdata的数据字典表中加载元数据信息，其中SYS_INDEXES系统表中记录了表，索引，及索引根页对应的page no（确定哪个索引对应哪个页）
+
+0010000: 5e41 b432 0000 0004 ffff ffff ffff ffff  ^A.2............
+0010010: 0000 0000 0453 14a6 45bf 0000 0000 0000  .....S..E.......
+0010020: 0000 0000 020a 0002 00b9 8007 0000 0000  ................
+0010030: 00b1 0002 0004 0005 0000 0000 0003 dd05  ................
+0010040: 0000 0000 0000 0000 032d 0000 020a 0000  .........-......
+0010050: 0002 0272 0000 020a 0000 0002 01b2 0100  ...r............
+0010060: 0200 1a69 6e66 696d 756d 0006 000b 0000  ...infimum......
+0010070: 7375 7072 656d 756d 0000 1000 0d80 0001  supremum........
+0010080: 0080 0000 1000 0018 000d 8000 0200 8000  ................
+0010090: 0020 0000 2000 0d80 0003 0080 0000 3000  . .. .........0.
+00100a0: 0028 000d 8000 0400 8000 0040 0000 30ff  .(.........@..0.
+00100b0: bf80 0005 0080 0000 5000 0000 0000 0000  ........P.......
+...
+0013ff0: 0000 0000 0070 0063 5e41 b432 0453 14a6  .....p.c^A.2.S..
+
+
+
+0100 0200 1a               #Infimum Records 
+69 6e66 696d 756d 00       # 
+06 000b 0000               #Supremum Records
+7375 7072 656d 756d        # 
+                           #  
+0000 1000 0d               #记录头         
+80 0001 0080 0000 10       #索引数据 主键数据 在此为 0x0100 在对应主键 0x0010 （80表示为INT） 
+00 0018 000d               #记录头
+8000 0200 8000 0020        #索引数据
+0000 2000 0d               #记录头
+80 0003 0080 0000 30       #索引数据
+00 0028 000d               #记录头 
+8000 0400 8000 0040        #索引数据
+0000 30ff bf               #记录头
+80 0005 0080 0000 50       #索引数据
+
+

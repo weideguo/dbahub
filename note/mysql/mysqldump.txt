@@ -52,6 +52,15 @@ mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
 
 
 selcet ... from ... into outfile "file_name" [export_options];     --导出数据文件
+
+select * from t
+into outfile "/db/test2.csv" 
+fields terminated by ',' 
+optionally enclosed by '"' 
+escaped by '"' 
+lines terminated by "\r\n";
+
+
 --目录在【secure_file_priv】指定
 
 ----导入分割文件  
@@ -64,7 +73,7 @@ load data local infile ...;               --导入不需要额外设置 文件�
 ---export_options
 [{FIELDS | COLUMNS} [TERMINATED BY 'string']   --字段分割符
 [[OPTIONALLY] ENCLOSED BY 'char']			   --字段包围符
-[ESCAPED BY 'char']							   --换行符
+[ESCAPED BY 'char']							   --转义
 
 
 

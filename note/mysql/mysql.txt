@@ -146,12 +146,13 @@ innoDB 存储引擎
 	
 	show table status like 'table_name'  ---查看表的状态 等同于查询information_schema.tables
 	
-	COMPACT    默认，性能瓶颈不在CPU时性能可以提高
-	REDUNDANT  兼容旧版本
-	DYNAMIC    COMPACT的衍生，变长存储
-	COMPRESSED COMPACT的衍生，压缩存储
+	COMPACT    默认，性能瓶颈不在CPU时性能可以提高  Fixed-length columns greater than or equal to 768 bytes are encoded as variable-length columns, which can be stored off-page
+	REDUNDANT  兼容旧版本  如 FIXED
+	DYNAMIC    COMPACT的衍生，变长存储   can store long variable-length column values (for VARCHAR, VARBINARY, and BLOB and TEXT types) fully off-page，数据页中只存放20个字节的指针，实际的数据存放在Off Page中
+	COMPRESSED COMPACT的衍生，压缩存储   
 	
-	
+    
+    
 	innodb使用系统表空间存储内部数据字典及undo日志，所以使用多重表空间时数据文件(.ibd)不能随意移动
 	
 	rename table db1.table_name db2.table_name;    ---将表从一个数据库移动到另外一个数据库，只是修改数据字典中的定义而已
@@ -251,10 +252,9 @@ MyISAM和innodb区别
 MyISAM
 不支持事务
 查询、写入比innodb快
-只有表锁
 不支持外键
 内存只加载索引的数据（叶子页和非叶子页），表的数据不加载
-myisam只有表级锁
+只有表级锁
 
 If a MyISAM table has no holes in the data file (deleted rows in the middle), an INSERT statement can be executed to add rows to the end of the table at the same time that SELECT statements are reading rows from the table. 
 If there are multiple INSERT statements, they are queued and performed in sequence, concurrently with the SELECT statements. 
@@ -505,6 +505,7 @@ select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的
 ~/.mysql_history        #mysql命令行默认将命令行执行的命令记录于该文件
 
 ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防止sql泄露
+
 
 
 
