@@ -666,6 +666,12 @@ nc --udp -l 65500    		###新版 默认使用TCP协议
 nc -lp 65500  &				##后台运行
 nc -l -w 10000 6500 &		##
 
+
+#使用不同网卡/ip监听  同一主机中相同端口不同ip之间不互相冲突，即可以同时监听  ipA:portX ipB:portX
+nc -l 192.168.253.128  12345
+nc -lv 192.168.253.128  12345
+nc -lv 127.0.0.1 12345
+
 ###远程复制 host2到host1
 ##1234为端口，没有限制;操作步骤有要求
 host1: nc -l 1234 > text.txt
@@ -859,6 +865,8 @@ service vsftpd stop   	##结束进程
 crontab -l           	##让使用者在固定时间或固定间隔执行程序之用
 						## -l 查看 、-e 编辑
 /var/log/cron			##crontab日志
+/var/spool/cron/        ##crontab 的信息，每个账号的调度对应一个文件，文件可以热加载（因而可能会被恶意利用，如通过写文件实现反弹shell）
+
 
 ##重启crond
 service syslog stop                     ##系统的日志守护进程
@@ -1751,7 +1759,12 @@ modprobe [-r] <module name>               #载入指定的个别模块，或�
 find /lib/modules/ -name "*.so" -o -name "*.ko"  -o -name "*.ko.xz"
 
 
+#########################################
+ELF  类Unix操作系统的二进制文件标准格式
 
+00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF............|
+
+头部恒为“.ELF”
 
 
 

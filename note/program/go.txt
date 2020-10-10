@@ -141,3 +141,11 @@ godep version  查看版本信息
 
 
 
+
+
+#设置CPU核心使用数量
+func main(){
+runtime.GOMAXPROCS(3)
+}
+
+
