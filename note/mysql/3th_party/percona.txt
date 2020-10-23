@@ -14,6 +14,9 @@
 ./innobackupex --defaults-file=/u05/mysql5634/my.cnf --copy-back /u03/xb_backup_dir/2017-01-16_13-12-43
 
 
+##手动mv文件到对应目录更快 程序使用copy比较慢
+
+
 
 增量备份(只对innodb有效，其他类型的全备)
 #需要连接到数据库实例
@@ -94,4 +97,23 @@ pt–table-checksum
 
 pt-table-sync
 #用来修复多个实例之间数据的不一致。内部集成了pt-table-checksum的校验功能
+
+
+
+
+
+
+增量备份
+    上一次 完全备份/增量备份之后 变化的部分的备份
+
+
+差异备份
+    上一次 完全备份之后 变化的部分的备份（相当于第一次增量备份）
+
+
+
+
+
+
+
 

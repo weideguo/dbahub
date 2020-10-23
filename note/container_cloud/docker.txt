@@ -101,8 +101,8 @@ Dockerfile命令
 	COPY <src> <dest>                      #复制<src>的目录、文件添加到镜像中的dest
 	ADD <src> <dest>                       #与COPY类似
 	RUN <command>                          #创建容器，执行命令，命令结束后提交容器为新镜像，新镜像被下一条指令使用
-	CMD	<command>	                       #执行命令
-	ENTRYPOINT  <command>                  #与CMD类似          
+	CMD	<command>	                       #执行命令    启动参数会覆盖CMD的值
+	ENTRYPOINT  <command>                  #与CMD类似   让镜像变成像命令一样使用（启动时参数传给ENTRYPOINT指定的命令）  应用运行前的准备工作
 	ONBUILD	<INSTRUCTION>                  #该镜像被作为FROM引用时执行docker指令
 	EXPOSE  <port> 		                   #端口暴露
 	EXPOSE  <container_port>:<host_port>   #端口映射 
@@ -117,6 +117,56 @@ docker build -t image_name:TAG_name .   				            ##创建镜像，使用�
 docker build - < Dockfile                                           #使用Dockerfile创建镜像                  
 docker build - -f <dockerfile name>                                 
 docker build - -f Dockerfile 		
+
+
+```Dockfile
+# This my first nginx Dockerfile
+# Version 1.0
+
+# Base images 基础镜像
+FROM centos
+
+#MAINTAINER 维护者信息
+MAINTAINER wwwwdddddggggg 
+
+#ENV 设置环境变量
+ENV PATH /usr/local/nginx/sbin:$PATH
+
+#ADD  文件放在当前目录下，拷过去会自动解压
+ADD nginx-1.8.0.tar.gz /usr/local/  
+ADD epel-release-latest-7.noarch.rpm /usr/local/  
+
+#RUN 执行以下命令 
+RUN rpm -ivh /usr/local/epel-release-latest-7.noarch.rpm
+RUN yum install -y wget lftp gcc gcc-c++ make openssl-devel pcre-devel pcre && yum clean all
+RUN useradd -s /sbin/nologin -M www
+
+#WORKDIR 相当于cd
+WORKDIR /usr/local/nginx-1.8.0 
+
+RUN ./configure --prefix=/usr/local/nginx --user=www --group=www --with-http_ssl_module --with-pcre && make && make install
+
+RUN echo "daemon off;" >> /etc/nginx.conf
+
+#EXPOSE 映射端口
+EXPOSE 80
+
+#CMD 运行以下命令
+CMD ["nginx"]
+```
+
+```Dockfile
+FROM alpine:3.4
+...
+RUN addgroup -S redis && adduser -S -G redis redis
+...
+#即为执行 docker-entrypoint.sh $CMD
+ENTRYPOINT ["docker-entrypoint.sh"]                     
+EXPOSE 6379
+#docker run覆盖的参数可以覆盖CMD 即整体目的为组装成 redis-server 或者run时的ARG参数 当成参数传给 docker-entrypoint.sh
+CMD [ "redis-server" ]
+
+```
 
 
 
@@ -508,15 +558,35 @@ kubernates
 
 
 
-
+##################################################
 docker-compose
 多个容器管理
 yaml文件定义和运行多个容器
 
+#查看命令说明
+docker-compose --help
 
 
+#默认使用当前目录的配置文件运行 docker-compose.yml
+#自定义配置文件运行 -f my-docker.yml
 
 
+#使用yaml配置文件运行容器（自动下载/构建镜像）
+docker-compose up -d
 
+
+```yaml                     #
+version: '2'                #
+services:                   #
+  web:                      #定义一个镜像
+    build: .                #构建镜像使用的Dockfile的路径
+    depends_on:             #依赖的镜像
+      - db                  #
+      - redis               #
+  redis:                    #
+    image: redis            #对应镜像名称或镜像ID，本地不存在，则自动从仓库拉取（默认为dockhub）
+  db:                       #
+    image: postgres         #
+```
 
 

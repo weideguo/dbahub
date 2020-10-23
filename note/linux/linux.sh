@@ -569,7 +569,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到�
 
 
 ##如果生成密钥对时设置密码，则远程连接需要输入该密码  
-##可以使用ssh-agent保存该密码 实现免密登录
+##可以使用ssh-agent保存该密码 实现免密登录 用于管理多个私钥文件
 ssh-agent bash          #启动ssh-agent
 ssh-add ~/.ssh/id_rsa   #将密钥文件添加到ssh-agent  #需要输入生成密钥对时的密码 
 
@@ -581,6 +581,19 @@ ssh-add -d /root/.ssh/id_rsa      #移除ssh-agent中的指定密钥文件
 
 ssh-agent -k             #关闭ssh-agent   
 ssh-agent 重启后信息丢失 只能对单一会话生效
+
+
+##ssh-agent 代理转发
+#当前节点 A
+cat /etc/ssh/ssh_config
+ForwardAgent yes
+
+#下一节点B
+cat /etc/ssh/sshd_config
+AllowAgentForwarding yes
+
+可以实现从A登陆B之后，B可以使用A中设置的ssh-agent
+
 
 
 #SSH使用代理
