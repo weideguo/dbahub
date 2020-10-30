@@ -502,7 +502,17 @@ ssh remote_user@remote_host gzip -c filename > filenme.gz				#传输后不解压
 
 scp -C filename remote_user@remote_host:remote_path
 
+scp -oStrictHostKeyChecking=no -P 16333 -Cr filename remote_user@remote_host:remote_path
+
+#带压缩
 rsync -zav --rsh='ssh -p 22' filename remote_user@remote_host:remote_path
+
+#非交互传输
+rsync -av dirname --rsh='sshpass -p ssh_password ssh -p 22'  root@172.16.2.150:/root/test
+
+#非交互传输 自动接受未知的主机
+rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no -p 22'  root@172.16.2.150:/root/test
+
 
 -z 压缩
 
@@ -526,7 +536,7 @@ C/S
 	client
 		rsync -azvrP path_to_send rsync://remote_user@remote_host:port/block_name		##block_name为server端配置文件中的块名
 		
-命令行
+命令行（使用ssh协议）
 		rsync [OPTION]... SRC [SRC]... [USER@]HOST::DEST             ##从源端（SRC，可以多个）同步文件到目的端（DEST）
 
 ssh -p 3600 10.0.0.1
@@ -534,7 +544,7 @@ ssh -p 3600 10.0.0.1
 客户端	
 rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_host:port/block_name	
 	
-使用密码文件权限必须其他账号不能访问	
+使用密码文件权限必须其他账号不能访问（只是对于rsync模式有效，ssh模式不能使用密码文件）	
 	
 #进入stfp交互模式
 sftp -o Port=22  root@10.10.1.10
@@ -1007,12 +1017,17 @@ h	##帮助说明
 	%st steal time (% CPU time in involuntary wait by virtual while hypervisor is servicing another processor)
 
 	
-	VIRT virtual memory usage  进程"需要"虚拟内存大小，包括进程使用的库、代码、数据
+	VIRT virtual memory usage  
 	RES resident memory usage
 	SHR shared memory 
 	DATA 数据占用的内存
 	
 	RES-SHR  计算进程占用物理内存
+    
+    
+    VIRT:
+    It includes all code, data and shared libraries plus pages that have been swapped out and pages that have been mapped but not used.
+    进程"需要"虚拟内存大小，包括进程使用的库、代码、数据。是一个假象的内存空间，在程序运行过程中虚拟内存空间中需要被访问的部分会被映射到物理内存空间中。虚拟内存空间大只能表示程序运行过程中可访问的空间比较大，不代表物理内存空间占用也大。
 
 f 选择显示的内容	
 	

@@ -115,8 +115,8 @@ docker build github.com/creack/docker-firefox     	                ##创建镜�
 docker build -t image_name:TAG_name - < Dockerfile   	            ##创建镜像，从STDIN导入Dockerfile，ADD只能使用URL	
 docker build -t image_name:TAG_name .   				            ##创建镜像，使用当前目录下的Dockerfile,Dockerfile指定的主机路径为相对路径
 docker build - < Dockfile                                           #使用Dockerfile创建镜像                  
-docker build - -f <dockerfile name>                                 
-docker build - -f Dockerfile 		
+docker build -f <dockerfile name>  .                               
+docker build -f Dockerfile .		  
 
 
 ```Dockfile
@@ -170,7 +170,7 @@ CMD [ "redis-server" ]
 
 
 
-数据卷volume 将宿主机的文件、文件夹挂载到容器
+数据卷volume 将宿主机的文件、文件夹挂载到容器 容器或宿主机的修改可以彼此查看到
 
 docker run
 	-v vol_name:/container_dir		#指定名字创建volume		创建目录在/var/lib/docker/volumes
@@ -589,4 +589,6 @@ services:                   #
     image: postgres         #
 ```
 
+docker-compose build             #根据配置文件构建所有镜像
+docker-compose build <SERVICE>   #根据配置文件构建单个镜像
 
