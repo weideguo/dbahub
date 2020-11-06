@@ -518,6 +518,12 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 
 --bwlimit 限制带宽
 
+#断点续传 中断时再次启动默认会删除传输到一半的文件 可以选择以下参数实现断点续传
+--partial
+--partial-dir=DIR         #指定一个目录缓存传到一半的文件
+-P
+
+
 nc传输
 host2传输到host1
 host1: nc -l 1234 | tar zxvf -
@@ -559,6 +565,10 @@ sftp -o Port=22  root@10.10.1.10
  #上传下载
  get remote_file local_path
  put local_file remote_path
+
+
+#实时文件同步
+inotify-tools 监听文件然后使用rsync推送文件
 
 
 

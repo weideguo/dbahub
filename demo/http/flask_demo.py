@@ -2,7 +2,7 @@
 import os
 import datetime
 from datetime import timedelta
-from flask import Flask,session,request,Response,make_response
+from flask import Flask,session,request,Response,make_response,redirect
 
 
 app = Flask(__name__)
@@ -94,6 +94,23 @@ def test4():
     file = request.files.get('filename')
     file.save('/tmp/aaa.txt')
     return "uploal success"
+
+
+
+#重定向
+@app.route("/redirect", methods=['get'])
+def redirect_func():
+    response=make_response('Hello World',302)
+    response.headers['Location'] = 'http://www.baidu.com'   
+    return response
+    
+    #return redirect('http://www.baidu.com')
+
+@app.route("/redirect2", methods=['get'])
+def redirect2_func():
+    
+    return redirect('http://www.baidu.com')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000)

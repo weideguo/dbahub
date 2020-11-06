@@ -1,6 +1,8 @@
 
 browser对象
 // Window 对象表示浏览器中打开的窗口。 如果文档包含框架（<frame> 或 <iframe> 标签），浏览器会为 HTML 文档创建一个 window 对象，并为每个框架创建一个额外的 window 对象。
+// 浏览器对象可以通过window.XXX形式调用 或者直接调用
+
 // Navigator 对象包含有关浏览器的信息
 // Screen 对象包含有关客户端显示屏幕的信息
 // History 对象包含用户（在浏览器窗口中）访问过的 URL。 History 对象是 window 对象的一部分，可通过 window.history 属性对其进行访问。
@@ -18,3 +20,12 @@ window.location.protocol; 	//返回url 的协议部分，例如： http:，ftp:�
 window.location.port 		//url 的端口部分，如果采用默认的80端口，那么返回值并不是默认的80而是空字符
 
 window.open("http://www.weideguo.com")   //浏览器新开一个页面访问url
+
+
+//当存在iframe/frame载入其他页面时
+window.top      //顶层窗口
+window.self     //前窗口自身
+window.parent   //父窗口
+
+
+
