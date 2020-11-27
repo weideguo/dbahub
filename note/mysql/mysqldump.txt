@@ -96,9 +96,16 @@ mysql -u root -p -h 127.0.0.1 -P 3306 my_database < my_database.sql
 
 
 
+-- 启用独立表空间时 单表的备份
+FLUSH TABLES ...FOR EXPORT       --innodb 可以复制文件 .ibd  .cfg（执行时生成，包含元数据） 获取备份，其他操作会被阻塞           
 
 
-
+可移植表空间
+	--启用多重表空间
+	--创建相同结构的表，抛弃表空间  可以不相同，可以通过.cfg还原
+	ALTER TABLE tbl_name DISCARD TABLESPACE;
+	--使用原有的数据文件导入表空间 复制 .ibd  .cfg 文件到数据目录
+	ALTER TABLE tbl_name IMPORT TABLESPACE;
 
 
 

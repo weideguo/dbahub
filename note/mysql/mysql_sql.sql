@@ -60,6 +60,14 @@ SET('value1','value2',...)      A string object that can have zero or more value
 
 --一行记录所有字符相加不大于65536,最大可存varchar(65532)
 
+create table test20201124(
+id int auto_increment,          --自增
+opt_date  datetime,
+primary key(id)
+);
+
+
+
 select * from mysql.proc        ---查看存储过程的信息
 DROP PROCEDURE procedure_name   ---删除存储过程
 
@@ -241,12 +249,6 @@ select testadd(1,2);
 github.com/mysqludf
 
 
-event
---用于定期执行sql语句
-create event event_name ...
-
-
-
 
 ----空间占用查询
 ----所有数据的大小：
@@ -359,12 +361,38 @@ delimiter ;
 自增虚拟列
 select (@i:=@i+1) as v_id,tb_name.* from tb_name,(select @i:=0) vt
 
+
+event
+--用于定期执行sql语句
+create event event_name ...
+
+
 set global event_scheduler=on; 
 
 CREATE EVENT myevent
 ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 HOUR
 DO
 UPDATE mytable SET mycol = mycol + 1;
+
+
+delimiter ;;
+CREATE EVENT `myevent_test` 
+ON SCHEDULE EVERY 1 minute 
+ON COMPLETION PRESERVE ENABLE 
+DO 
+BEGIN
+insert into test20201124(opt_date) values(now());
+END
+;;
+delimiter ;
+
+select db,name,status from mysql.event;
+--修改状态
+-- update mysql.event set status='DISABLED' where name='myevent_test';   
+-- update mysql.event set status='ENABLED' where name='myevent_test';   flush tables mysql.events;  --不能立即生效 需要重启？
+alter event myevent_test disable;
+alter event myevent_test enable;
+
 
 
 CREATE FUNCTION f1(s CHAR(20))

@@ -90,7 +90,8 @@ set global read_only=1;   	    ----1为只读；0为读写；super用户依然�
 unlock tables;     				---开启事务先前有【lock tables】时，解锁时隐式提交事务
 
 
-flush tables;   --刷数据到磁盘
+flush tables;   --刷数据到磁盘  Closes all open tables, forces all tables in use to be closed, and flushes the query cache. 
+FLUSH TABLES tbl_name [， tbl_name];      --细粒度flush
 
 ---加锁
 flush tables with read lock;    						----全局锁。锁住所有的表。加锁实现super用户也不能写入

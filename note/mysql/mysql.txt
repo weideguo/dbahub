@@ -197,13 +197,6 @@ innoDB 存储引擎
 	innodb_data_file_path=datafile_spec[;datafile_spec1...]  	  ---系统表空间的数据文件  datafile_spec=file_name:file_size[:autoextend[:max:max_file_size]]
 	
 
-
-	可移植表空间
-		--启用多重表空间
-		--创建相同结构的表，抛弃表空间
-		ALTER TABLE tbl_name DISCARD TABLESPACE;
-		--使用原有的数据文件导入表空间
-		ALTER TABLE tbl_name IMPORT TABLESPACE;
 	
     innodb_fast_shutdown={0 | 1 | 2}    ---默认为 1
 	0 中止新的连接，等待会话关闭、事务结束，将缓冲区的数据写入磁盘。		对应oracle: shutdown normal

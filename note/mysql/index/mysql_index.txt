@@ -20,6 +20,12 @@ CREATE TABLE fulltext_sample(name TEXT,FULLTEXT(name)) ENGINE=MyISAM;
 ALTER TABLE fulltext_sample ADD FULLTEXT(name);   ----改表结构添加全文索引
 create fulltext index index_name on fulltext_sample(name);   
 
+
+alter table table_name add key (col1,col2);
+alter table table_name add unique key (col1,col2);
+alter table table_name add key key_name (col1,col2);
+
+
 alter table table_name drop index index_name;
 
 show index from table_name;
@@ -66,8 +72,6 @@ adaptive hash index(自适应哈希索引)
 
 
 
-
-
-
-
+null值对索引的影响
+where column_name is not null  --不走索引
 

@@ -111,6 +111,45 @@ clearInterval()
 js 的执行顺序为异步模式 即如果执行多个函数，执行的顺序不是逐一顺序运行。如果需要实现这个目的，可以通过回调函数实现，或者使用jQuery中的控制方案
 
 
+//异步
+let f =()=>new Promise(resolve=>{
+        //进行一些耗时操作
+        resolve( "aaa" )   // then获取的返回值
+    })
+
+f().then(
+    //运行耗时操作后的操作 result为定义中resolve的返回值 
+    //result不是关键字 即提供回调函数处理
+    result=>{
+        
+    }
+)
+
+
+let f1 =(flag)=>new Promise((resolve,reject)=>{
+        //进行一些耗时操作
+        if (flag) {
+            resolve( "aaa" )   // then获取的返回值
+        }else{
+           reject( "bbb" )     // catch
+        }
+    })
+
+f1(1).then(
+    //运行耗时操作后的操作 result为定义中resolve的返回值 result不是关键字
+    result=>{
+        // 正确返回的回调函数
+    }
+).catch(
+    result1=>{
+        // 错误返回的回调函数
+    }
+)
+
+//then可以有多个 
+f().then().then().then()....then.catch()
+
+
 headers
 Connection: keep-alive       #请求网页一次之后tcp连接没有关闭 连接依旧保持
 

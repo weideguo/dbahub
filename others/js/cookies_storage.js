@@ -7,6 +7,7 @@ document.cookie="mykey_name=xxx;expires="+exp.toGMTString()+";path=/"
 //max-age 保存的时间 优先级高于expires 秒
 //path 如果不设置，只能在当前页面获取
 //httponly=true 不允许js获取 只允许通过http传输到服务端
+//secure   只允许通过https传输到服务端
 
 //获取
 cookie_lenght=document.cookie.length
@@ -45,3 +46,5 @@ localStorage.getItem(key);          // 读取数据
 localStorage.removeItem(key);       // 删除单个数据 
 localStorage.clear();               // 删除所有数据 
 localStorage.key(index);            // 得到某个索引的key
+
+

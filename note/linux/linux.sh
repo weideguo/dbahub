@@ -376,6 +376,14 @@ awk -F":" '{print $1}' filename
 awk -F":" '/exp/{print $1}'			###查找符合exp的行并进行分割，可以使用正则表达式
 awk '/exp/'
 
+awk '{sum += $1};END {print sum}'   ##计算数字总和
+
+ls -altr * | awk '{print $5}' | awk '{sum += $1};END {print sum/1024/1014/1014}'    #汇总计算文件大小
+
+awk '{x[$1]+=1} END{for( i in x ){print x[i]"    "i}}'                              #聚合
+
+
+
 sed [-nefri] 'command' filename     		####编辑文字  删除、替换  
 sed 's/lintxt1/linetxt2/g'	filename		####替换字符 将文件中的linetxt1替换成linetxt2 可以使用正则表达式
 sed 's|lintxt1|linetxt2|g'	filename
@@ -1460,6 +1468,13 @@ sha256sum
 base64编码
 echo "AAA@#$" | base64
 echo "QUFBQCMkCg==" | base64 -d
+
+
+#编码转换 原utf8文件file1 转成gbk的file2
+iconv -c -f utf-8 -t gbk file1 -o file2
+
+#命令行中utf8转成gbk 需要预先设置好命令行的输入格式
+echo -n "中文" | iconv -c -f utf-8 -t gbk
 
 
 随机生成密码
