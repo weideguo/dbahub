@@ -1,0 +1,12 @@
+#安装
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+#创建项目
+cargo new rust_demo
+
+#编译
+cd rust_demo
+cargo build
+
+ 
+

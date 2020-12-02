@@ -1,0 +1,29 @@
+汇编语言结构：
+指令集、工作模式
+.386
+.model flat
+包含文件
+函数声明
+堆栈段
+.stack
+数据段
+.data
+代码段
+.code
+
+
+
+
+linux下
+
+#32位机器                           
+as exit.asm -o exit.o       #汇编        
+ld exit.o -o exit           #链接 生成可执行文件        
+
+##64位机器
+as -32 exit.asm -o exit.o          
+ld -melf_i386 exit.o -o exitls   
+
+
+
+

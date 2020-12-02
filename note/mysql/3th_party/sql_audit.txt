@@ -5,23 +5,34 @@ goinception(由inception发展)
 
 
 
+----------------------------------------------------------------------------------------------------------
+审计audit 
 
-审计audit
-安装插件 server_audit.so
-设置参数(可以动态设置)       ---所有参数 show variables like '%audit%'
+#安装插件 server_audit.so    mariadb自带以及mysql5.6（自己下载server_audit.so）
+
+INSTALL SONAME 'server_audit';
+
+#安装插件后设置参数(可以动态设置)     
+SHOW GLOBAL VARIABLES LIKE '%server_audit%';                                -- 查看审计相关参数
+
 server_audit_events="connect,query,table,query_ddl,query_dml,query_dcl"     ---设置审计的事件，可以选择一种或多种
 server_audit_incl_users=root 												---设置审计包含的对象   或者使用【server_audit_excl_users】审计不包含的对象
-server_audit_logging=on														---启动审计
+server_audit_logging=on														---启动审计 如果不设置其他参数，默认记录所有操作
 
 
 
 
 
 
+#配置文件设置实现启动时自动安装
+[mariadb]
+...
+plugin_load_add = server_audit
 
 
-
-
+-----------------
+#mysql  5.1不行  5.5/5.6可以
+INSTALL PLUGIN server_audit SONAME 'server_audit.so';
 
 
 
