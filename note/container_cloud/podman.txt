@@ -1,0 +1,13 @@
+#类似于docker 但无需守护进行进行管理，可以直接创建容器
+
+
+#大部分命令格式与docker相似，可以通过别名更改
+alias docker=podman
+
+
+#安装
+yum install podman
+
+
+podman pull registry.fedoraproject.org/f31/redis
+
