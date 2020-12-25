@@ -2,7 +2,17 @@
 yum install salt-master
 yum install salt-minion
 
+#master修改配置
+/etc/salt/master
 
+#minion修改配置文件
+/etc/salt/minion
+/etc/salt/minion_id 
+
+
+#启动
+service salt-master start
+service salt-minion start
 
 
 #对master操作

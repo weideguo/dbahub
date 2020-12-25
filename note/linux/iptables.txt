@@ -40,8 +40,11 @@ iptables -t filter -A INPUT -s 192.168.1.1 -j DROP
  -j 匹配后的动作：放行、丢弃、记录 【ACCEPT、DROP、REJECT】
  -p tcp 匹配tcp协议
 
- 
 
+#_2的内网_3端口3306开放给_1  
+[{{_2}}]
+iptables -I INPUT -s {{_1}} -p tcp --dport 2433 -j ACCEPT  
+iptables -t nat -A PREROUTING -s {{_1}} -d {{_2}} -p tcp --dport 3306 -j DNAT --to-destination {{_3}}:3306
  
  
 iptables -I INPUT -p tcp --dport 4005 -j ACCEPT											##开放端口

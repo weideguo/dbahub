@@ -98,6 +98,12 @@ mvn install	    安装	    安装打包的项目到本地仓库，以供其他�
 mvn deploy	    部署	    拷贝最终的工程包到远程仓库中，以共享给其他开发人员和工程
 
 
+#镜像源 优先级
+conf/setting.xml       #maven安装目录
+~/.m2/setting.xml      #用户家目录
+.mvn/                  #工程目录
+
+
 
 
 REST/RESTful

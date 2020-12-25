@@ -84,7 +84,8 @@ git fetch [remote-name]
   
 #推送到远端仓库指定分支
 git push [remote-name] [branch-name]  
-#git push origin master    #默认的推送    
+#git push origin master         #默认的推送    
+git push origin master:0.13     #推送master到origin的0.13分支
   
 #远程仓库的更多信息
 git remote show [remote-name]

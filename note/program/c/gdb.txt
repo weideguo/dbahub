@@ -30,3 +30,16 @@ gdb executable-file process-id    #分析正在运行的进程
 如
 gdb mysqld $mysqld_pid
 
+
+
+
+
+#print a stack trace of a running process
+pstack $pid
+gstack $pid      #两者相同
+
+
+
+
+
+

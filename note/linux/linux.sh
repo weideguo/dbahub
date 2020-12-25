@@ -1424,6 +1424,18 @@ trap 'commands' signals 	###接收到信号时执行commands
 trap "echo 'hello'" INT		###键盘ctrl+c，执行echo hello命令
 
 
+set -Eeuo pipefail          ##脚本头部使用 当运行出现错误时结束脚本（默认会继续运行）
+
+
+trap cleanup SIGINT SIGTERM ERR EXIT        #发起ctrl+c/运行出现错误/运行结束 执行特定操作，如脚本的清理操作
+
+cleanup() {
+  trap - SIGINT SIGTERM ERR EXIT
+  # script cleanup here
+}
+
+
+
 stty size       #查看终端的大小
 
 
