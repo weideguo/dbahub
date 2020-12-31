@@ -1,5 +1,8 @@
 // AJAX  Asynchronous  JavaScript And XML  //js服务器交换数据
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var xmlhttp;
 
 xmlhttp=new XMLHttpRequest();                    //window.XMLHttpRequest
@@ -34,3 +37,65 @@ xmlhttp.onreadystatechange=function(){
 
 //responseText	获得字符串形式的响应数据。
 //responseXML	  获得 XML 形式的响应数据
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+fetch api 新的后端请求接口，用于替代XMLHttpRequest
+url="https://www.baidu.com"
+fetch(url)
+.then((res)=>{
+    console.log(res)
+})
+.catch((err)=>{
+   console.log(err) 
+})
+
+
+
+var form = new FormData(document.getElementById('login-form'));
+fetch("/login", {
+  method: "POST",
+  body: form
+});
+
+
+// json 上传
+var url = 'https://example.com/profile';
+var data = {username: 'example'};
+
+fetch(url, {
+  method: 'POST',                   // or 'PUT'
+  body: JSON.stringify(data), 
+  headers: new Headers({
+    'Content-Type': 'application/json'
+  })
+}).then(res => res.json())
+.catch(error => {console.error('Error:', error)})
+.then(response => {console.log('Success:', response)});
+
+
+
+// 文件上传
+var formData = new FormData();
+var fileField = document.getElementById("inputForm");  // 通过input获取文件
+file = fileField.files[0]
+
+formData.append('username', 'abc123');
+formData.append('file', file);
+
+fetch('https://example.com/profile/avatar', {
+  method: 'PUT',
+  body: formData
+})
+.then(response => response.json())
+.catch(error => console.error('Error:', error))
+.then(response => console.log('Success:', response));
+
+
+// header
+var myHeaders = new Headers();
+myHeaders.append("Content-Type", "text/plain");
+

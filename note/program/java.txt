@@ -33,8 +33,15 @@ javac命令
 -d 输出文件的根位置 不必加入package之后的路径
 javac -d x:\root\bin -cp x:\root\lib x:\root\src\com\carnation\wdg\HelloEx.java x:\root\src\com\carnation\wdg\Function.java
 
+
 java命令
 java -Djava.ext.dirs=x:\root\lib -cp x:\root\bin\ com.carnation.wdg.HelloEx
+
+java -Djava.ext.dirs=/data/lib -cp /data/xxx.jar com.carnation.wdg.HelloEx
+
+
+-D.java.ext.dirs中配置多个目录。使用冒号分隔（windows下使用分号）
+-cp只能指定一个固定jar/class文件
 
 
 运行jar中的类

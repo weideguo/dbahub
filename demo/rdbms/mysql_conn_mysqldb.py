@@ -11,6 +11,7 @@ cursor.execute("insert into a123123 values(101)")
 #cursor.execute("select * from a123123")
 #cursor.fetchall()        #获取结果
 
+
 conn.commit()             #对应mysql的commit
 #conn.rollback()          #rollback
 cursor.close()

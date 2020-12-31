@@ -1126,10 +1126,17 @@ rc.local是在完成所有初始化之后执行的
 
 /usr/lib/systemd/system   #centos7 service文件位置
 
-通过服务设置自启动
+通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
 chmod +x /etc/rc.d/init.d/simpleTest	使之可直接执行
 chkconfig --add simpleTest    			把该服务添加到配置当中
-chkconfig --list simpleTest    			可以查看该服务进程的状态
+chkconfig --list simpleTest    			可以查看该服务进程的状态   显示不同级别的状态
+chkconfig --del httpd                   删除
+chkconfig --level httpd 2345 on         设置在哪些级别运行
+chkconfig --level httpd 2345 off        设置在哪些级别关闭
+
+/etc/rc.d/rc0.d                #运行级别为0的启动项 通过链接到/etc/rc.d/init.d/下的文件设置
+/etc/rc.d/rc1.d                #运行级别为1的启动项
+
 
 ##linux与window的文件传输 使用ZModem协议
 sz  将选定的文件发送到本地

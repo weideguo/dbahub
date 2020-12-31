@@ -89,3 +89,30 @@ diff yh_rpt_hjlr_zyy_5634.sql ../5530/yh_rpt_hjlr_zyy_5530.sql
 diff hive_5634.sql ../5530/hive_5530.sql 
 
 
+
+
+
+
+mysql_upgrade 操作
+1 mysqlcheck --no-defaults --databases --fix-db-names --fix-table-names mysql
+2 mysqlcheck --no-defaults --check-upgrade --databases --auto-repair mysql
+3 mysql < fix_priv_tables                                                                            #用于mysql库的表
+4 mysqlcheck --no-defaults --all-databases --skip-database=mysql --fix-db-names --fix-table-names
+5 mysqlcheck --no-defaults --check-upgrade --all-databases --skip-database=mysql --auto-repair
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
