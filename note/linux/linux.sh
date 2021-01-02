@@ -674,6 +674,12 @@ Host C
 #通过B代理连接C
 ssh C 
 
+#多级代理？
+本地 -> A -> B -> C -> D
+
+本地设置 通过A连接D
+A设置    通过B连接D
+B设置    通过C连接D
 
 
 重启ssh
@@ -765,6 +771,11 @@ create ...
 EOF
 
 #EOF并不是关键字 可以使用任意字符代替
+
+- 可看成特殊的文件？
+echo "aaa" | cat -
+echo "aaa" | cat --
+echo "aaa" | cat 
 
 
 
