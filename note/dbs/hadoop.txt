@@ -35,7 +35,7 @@ hive
 元数据存储库使用mysql，默认端口3306
 hiveServer默认端口10000
 
-hive sell   ###进入hive
+hive   ###进入hive
 
 使用方式与mysql类似
 hive不支持行级插入，支持【insert into ... select ...】

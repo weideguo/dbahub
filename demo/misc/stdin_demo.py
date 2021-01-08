@@ -25,3 +25,18 @@ while x:
 for k in r:
     print(k.strip())
 """
+
+
+print("xxxx")
+sys.stdout.flush()
+
+
+while True:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    sys.stdout.write(line)
+    sys.stdout.flush()
+    
+    
+

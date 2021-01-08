@@ -41,6 +41,10 @@ git diff
 #.gitignore 设置要忽视的文件，对所有命令都生效  格式模板https://github.com/github/gitignore 
 
 
+git update-index --skip-worktree  $file            #不跟踪文件更新，但文件可以存在 使用.gitignore则会删除已经提交的
+git update-index --no-skip-worktree  $file         #重新跟踪文件
+
+
 #跟踪新文件 文件依然保存在本地仓库 文件每次要commit前都要执行
 git add xxx.txt  
 #跟踪删除

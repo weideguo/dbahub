@@ -286,3 +286,26 @@ hash(a)
     
 #set, frozenset, dict    #要求为可hash
       
+      
+      
+#test.py  
+#通过在模块中指定__all__，控制外部可以引用的属性，否则所有公共属性都可以引用
+#放入__all__中所有属性均可导入，即使是以下划线开头
+__all__=('A','C','func1')     
+class A():
+    pass
+class B():
+    pass    
+class C():
+    pass      
+def func1():
+    pass      
+def func2():
+    pass      
+      
+      
+      
+      
+      
+      
+      

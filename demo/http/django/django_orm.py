@@ -50,3 +50,9 @@ SqlWorkflow.objects.filter(id=35).values('is_manual').first()
 #先select * from from SqlWorkflow; 然后再在python中过滤
 SqlWorkflow.objects.get(id=35).is_manual
 
+
+#手动切换使用非default数据库
+my_object.objects.using('other_db')
+my_object.save(using='other_db')
+
+

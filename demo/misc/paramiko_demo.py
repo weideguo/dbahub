@@ -8,6 +8,7 @@ client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 client.connect(hostname=host_info["ip"],port=int(host_info["ssh_port"]), username=host_info["user"],\
                         password=host_info["passwd"])
 
+#多线程并发使用时也只有一个ssh连接，即只有一个tcp连接
 ssh_client=client
 ftp_client=ssh_client.open_sftp()
 
@@ -77,6 +78,8 @@ if os.path.isfile(f):
     if "proxycommand" in host:
         proxy = paramiko.ProxyCommand(host["proxycommand"])
 
+#ssh -W hostB hostA       
+#相当于执行该命令，ssh连接hostA，将tcp信息转发给hostB
 proxy = paramiko.ProxyCommand(host["proxycommand"])
 
 
