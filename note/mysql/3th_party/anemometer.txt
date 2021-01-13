@@ -14,3 +14,7 @@ $ pt-query-digest --user=anemometer --password=superSecurePass \
 
 
 anemometer系统设置连接数据库，即可在前台分析
+
+
+https://github.com/box/Anemometer
+

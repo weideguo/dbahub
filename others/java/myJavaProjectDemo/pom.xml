@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
+  <modelVersion>4.0.0</modelVersion>  
+  <groupId>com.wdg.test.MyTest</groupId>  
+  <artifactId>javatest</artifactId>  
+  <version>1.0-SNAPSHOT</version>  
+  <packaging>jar</packaging>  
+  
+  <!-- 依赖包 --> 
+  <dependencies>      
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
+  </dependencies>  
+
+  <!-- 编译 --> 
+  <build>
+    <!-- 源码目录 --> 
+    <sourceDirectory>src</sourceDirectory>
+    <!-- 资源目录，编译时需要复制到编译后的目录 --> 
+    <resources>
+      <resource>
+        <directory>src</directory>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <!-- 用于在mvn package打包生成jar包时设置Main-Class以便直接用java -jar xxx.jar 运行 --> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.wdg.test.MyTest</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>  

@@ -1,9 +1,19 @@
-启动php
+启动php-fpm（FastCGI Process Manager，启动之后才可以在web服务器执行php）
 php-fpm -c /etc/php.ini -y /usr/local/etc/php-fpm.conf
 
 
+#直接运行（不需要启动php-fpm）
+php test.php
+
+
+
+#依赖包管理
+composer install                          #使用文件composer.json安装
+composer require monolog/monolog          #直接安装依赖包
+
 
 ######################################################################
+#db_conn_test.php
 <?php
 $con = mysqli_connect('127.0.0.1','weideguo','weideguo','test',5722);
 if (!$con) { 
@@ -11,6 +21,8 @@ if (!$con) {
 }
 ?>
 
+
+#test.php
 <?php
   echo phpinfo();
 ?>

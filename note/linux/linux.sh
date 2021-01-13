@@ -897,6 +897,9 @@ s套接文件，如mysql启动时生成的mysql.sock
 ln existingfile newfil       ###硬链接(hard link)  ##源文件删除后链接文件还可以读取e
 ln -s existingfile newfile   ###软链接(soft link)   ###源文件删除后链接文件同时失效
 
+if [ -h $newfile ];then echo 111; fi       #判断是否是链接
+readlink $newfile                          #读取链接的指向
+
 linux文件夹
 bin 	可执行文件（命令）所有用户
 boot 	引导目录，内核保存于其中  

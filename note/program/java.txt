@@ -27,6 +27,15 @@ J2SE
 			orm
 			DB			
 
+
+
+#环境变量
+export JAVA_HOME=/data/jdk1.8.0_191
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
+
+
 命令行编译和使用
 javac命令 
 如果依赖多项java文件，一起放入即可
@@ -39,7 +48,7 @@ java -Djava.ext.dirs=x:\root\lib -cp x:\root\bin\ com.carnation.wdg.HelloEx
 
 java -Djava.ext.dirs=/data/lib -cp /data/xxx.jar com.carnation.wdg.HelloEx
 
-
+#javac java
 -D.java.ext.dirs中配置多个目录。使用冒号分隔（windows下使用分号）
 -cp只能指定一个固定jar/class文件
 
@@ -48,8 +57,7 @@ java -Djava.ext.dirs=/data/lib -cp /data/xxx.jar com.carnation.wdg.HelloEx
 java -cp App.jar com.amar.Main
 
 
-直接运行jar
-java -jar path_name/file_name.jar
+直接运行jar 需要 在 MANIFEST.MF 中指定 Main-Class
 java -jar path_name/file_name.jar
 
 
@@ -110,6 +118,9 @@ conf/setting.xml       #maven安装目录
 ~/.m2/setting.xml      #用户家目录
 .mvn/                  #工程目录
 
+
+#maven仓库
+https://mvnrepository.com/
 
 
 

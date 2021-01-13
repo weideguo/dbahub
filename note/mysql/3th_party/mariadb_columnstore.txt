@@ -1,0 +1,27 @@
+列式存储数据库
+
+
+MariaDB 10.5.4 之后集成，之前的版本需要额外安装
+
+
+
+用户模块（UM）将客户端发出的SQL请求进行分配，分配到后端性能模块（PM），
+PM进行数据查询分析，将处理的结果返回给UM，UM再把PM分析的结果进行聚合，最后返回给客户端最终的查询结果。
+
+
+create table ... ENGINE=Columnstore 
+
+
+通过load命令导入
+    load data infile '/path/to/file' into table tb_name ...
+
+通过自带的命令导入cpimport
+    cpimport  db_name    tb_name    /path/to/file  ...
+
+
+查询并导入
+mariadb --quick \
+   --skip-column-names \
+   --execute="SELECT * FROM db_name.tb_name" \
+   | cpimport -s '\t' db_name tb_name
+

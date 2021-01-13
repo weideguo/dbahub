@@ -2,3 +2,4 @@
 sshpass
 *.pyc
 *.log
+*.class

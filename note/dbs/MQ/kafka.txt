@@ -3,3 +3,32 @@
 
 分布式流式处理 如日志收集
 
+每条发布到Kafka集群的消息都有一个类别，这个类别被称为Topic。
+
+topic中的数据分割为一个或多个partition。在需要严格保证消息的消费顺序的场景下，需要将partition数目设为1。
+每个partition有多个副本，其中有且仅有一个作为Leader，Leader是当前负责数据的读写的partition。Follower跟随Leader。
+
+Kafka 集群包含一个或多个服务器，服务器节点称为broker。broker存储topic的数据。
+
+
+
+
+# 启用删除主题
+delete.topic.enable=true
+# 检查日志段文件的间隔时间，以确定是否文件属性是否到达删除要求。
+log.retention.check.interval.ms=1000
+
+
+
+kafka保存消费者消费的进度，即offset
+
+当offset不存在时，根据auto.offset.reset配置的值，会有几种不同策略
+earliest
+无指定的offset时，从头开始消费
+
+latest
+无提交的offset时，消费该分区下最新产生的消息
+
+none
+topic不存在指定的offset，则抛出异常
+
