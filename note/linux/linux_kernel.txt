@@ -1,15 +1,4 @@
 
-lsmod显示Linux内核中modules 的状态
-
-Module：  模块的名称。 这通常是模块文件的名称，减去扩展名（.o或.ko），但它可能有一个自定义名称，可以在使用insmod命令插入模块时将其指定为选项。
-Size：    驻留模块使用的内存量，以字节为单位。
-Used by： 此列包含一个数字，表示正在使用的模块实例数。 如果该数字为零，则当前未使用该模块。 数字后面的文本表示有关使用模块的内容的任何可用信息：这通常是设备名称，文件系统标识符或另一个模块的名称。
-
-cat /proc/modules  #对应的文件映射
-
-#内核文件的路径
-/lib/modules/`uname -r`/
-
 //#############################################################vim hello_module.c
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -53,4 +42,53 @@ modinfo hello_module.ko #通过文件查看内核模块的信息
 
 在Intel x86架构上中，有四种模式，也叫ring 0 - ring 3，模式之间的权限不同，这里的权限指的是对硬件设备的操作，如读写内存，读写硬盘等。
 Linux使用其中两种模式，即内核模式/特权模式/supervisor mode/ring 0，以及用户模式/非特权模式/user mode/ring 3。
+
+
+
+#内核符号表
+#所有的内核函数以及已经装载的模块及符号的地址以及符号的类型信息
+cat /proc/kallsyms
+
+#动态可加载内核模块
+Loadable Kernel Module，LKM
+
+#内核模块
+insmod <module.ko> [module parameters]    #装载模块(install module)，只有超级用户才能使用该命令
+rmmod <module.ko>                         #卸载模块(remove module)，只有超级用户才能使用该命令
+modinfo <module.ko>                       #查看模块信息
+lsmod                                     #列表显示所有的内核模块(list  module),等价于cat /pro/modules命令
+modprobe [-r] <module name>               #载入指定的个别模块，或是载入一组相依赖的模块。modeprob可智能地添加和删除Linux内核模块实现依赖调用。
+
+#查看内核模块的文件
+find /lib/modules/ -name "*.so" -o -name "*.ko"  -o -name "*.ko.xz"
+cat /proc/modules  #对应的文件映射
+
+lsmod显示Linux内核中modules 的状态
+
+Module：  模块的名称。 这通常是模块文件的名称，减去扩展名（.o或.ko），但它可能有一个自定义名称，可以在使用insmod命令插入模块时将其指定为选项。
+Size：    驻留模块使用的内存量，以字节为单位。
+Used by： 此列包含一个数字，表示正在使用的模块实例数。 如果该数字为零，则当前未使用该模块。 数字后面的文本表示有关使用模块的内容的任何可用信息：这通常是设备名称，文件系统标识符或另一个模块的名称。
+
+
+#内核文件的路径
+/lib/modules/`uname -r`/
+
+
+
+
+rpm -qa | grep kernel   			###rpm安装时查看已经安装的内核
+yum list kernel		
+rpm -e kernel_name      			###删除内核
+uname -r 	            			###查看使用的内核
+
+
+#内核参数
+/etc/sysctl.conf  			        ##修改该文件中对应的值
+sysctl -p  		  		            ##使修改生效
+sysctl vm.overcommit_memory=1		###直接使内核参数生效
+
+
+
+
+
 

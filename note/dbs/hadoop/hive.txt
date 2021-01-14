@@ -1,0 +1,102 @@
+hive
+关系型分布式数据库，数据文件存储于hdfs上。默认在/user/hive/
+
+export HIVE_HOME=/opt/cloudera/parcels/CDH 
+
+Hive只需在一个节点上安装即可，即在master节点安装？
+
+
+元数据存储库使用derby，可以选择mysql
+hiveServer默认端口10000
+
+hive   ###进入hive
+
+使用方式与mysql类似
+hive不支持行级插入，支持【insert into ... select ...】
+
+导数据到本地
+hive -e "select * from test" >> res.csv     ####执行sql命令
+hive -f sql.q >> res.csv    ####执行sql文件
+
+查看文件，也可以执行其他命令，如get、put
+dfs -ls /;
+
+
+#创建表
+create table ...
+
+内部表数据由Hive自身管理，外部表数据由HDFS管理
+
+分区表 
+CREATE EXTERNAL TABLE `tb_name`(
+  `c1` string,
+  `c2` string)
+  )
+PARTITIONED BY ( 
+  `p1` string, 
+  `p2` string);
+  
+
+
+LOAD DATA inpath '/path/to/file' 
+INTO TABLE tb_name
+partition(p1=xxx,p2=yyy)
+
+
+特殊数据类型
+如：
+CREATE EXTERNAL TABLE `tb_name`(
+a  ARRAY<STRING>
+,m MAP<STRING,INT>
+,s STRUCT<stree:STRING,city:STRING,zip:INT>
+)
+
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',';           -- 双引号逗号分隔符格式的文件load
+
+
+
+
+查看表结构信息
+desc formatted table_name;
+desc table_name;
+
+show create table table_name;
+
+查看分区信息
+show partitions table_name;
+
+
+
+数据插入
+load data local inpath 'wyp.txt' into table wyp;       ###从本地文件导入
+load data inpath '/home/wyp/add.txt' into table wyp;   ###从hdfs文件导入
+insert into ... select ...;
+create table ... as select ...;
+
+
+
+删除分区
+alter table table_name drop partition(p_key='2014-03-01');
+
+
+
+-- 创建es外部表
+--加载jar 
+add jar /data/soft/elasticsearch-hadoop-7.6.2/dist/elasticsearch-hadoop-7.6.2.jar; 
+-- 创表  使用的方法由jar中实现
+create EXTERNAL table tb_name_es ( ... ) 
+stored by 'org.elasticsearch.hadoop.hive.EsStorageHandler' 
+tblproperties('es.resource' = 'tb_name', 'es.nodes' = '10.10.167.190', 'es.port' = '9200', 'es.index.auto.create' = 'true'); 
+
+
+
+
+
+
+
+
+
+
+
+

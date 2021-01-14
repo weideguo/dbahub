@@ -1,0 +1,85 @@
+构建工具
+make					#依赖Makefile
+cmake					#依赖CMakeLists.txt
+autoconf/autoreconf     #依赖configure.ac
+
+
+编译安装
+cmake  
+###【cmkae . -DCMAKE_INSTALL_PREFIX=path_name】,【.】代表当前目录
+###由CMakeLists.txt生成Makefile文件。同时生成Cmakecache.txt文件，再次全新执行cmake需要先删除这个文件。
+
+###有些程序使用如configure的脚本配置makefile文件
+make  			###默认由Makefile文件执行相应操作，可用于编译，可以由【-f make_filename】指定规则文件
+make install  	###默认由Makefile文件执行install操作(以【install:】开头的块)
+
+
+
+#预加载so包并执行命令
+LD_PRELOAD=libc-2.5.so rm xxx 
+
+
+http://www.gnu.org/software/libc/libc.html
+glibc 版本查询        glibc是linux系统中最底层的api
+ldd --version
+
+
+编译安装时新创建单独的文件夹存放解压的源代码，而且在上一级目录编译
+
+LD_LIBRARY_PATH 环境变量不应该以 : 开头
+
+指定安装目录，编译安装后将目录加入环境变量LD_LIBRARY_PATH
+
+
+
+
+
+
+https://www.boost.org/
+boost 一组 C++ 库的集合，提供了线性代数、伪随机数生成、多线程、图像处理、正则表达式、单元测试等功能
+
+
+
+
+
+####demo
+linux C++
+newcpp.h     ###头文件，包含类的声明，函数的声明
+newcpp.cpp	 ###主函数文件，通过头文件使用类、函数
+func.cpp     ###类函数的实现，包含头文件
+
+#编译成动态链接库
+g++ func.cpp -fPIC -shared -o libcall_func.so                 
+#使用动态链接库
+g++ newcpp.cpp -o newcpp  –L/root/src/lib –lcall_func_so    
+
+#指定使用的头文件编译
+g++ -shared -fPIC -I /usr/include/mysql -o call_func_add.so call_func_add.cpp
+
+
+
+
+/usr/include            ##CentOS头文件目录
+
+gcc/g++         
+-I                      ##指定头文件位置
+-L                      ##指定动态链接库的目录
+
+
+
+动态链接 运行时需要外部库
+静态链接 运行时不再依赖外部库
+
+
+#动态链接库加载顺序
+
+编译目标代码时指定的动态库搜索路径              在编译时通过gcc 的链接选项-I,-l,-L,-Wl:rpath指定
+环境变量LD_LIBRARY_PATH指定的动态库搜索路径
+配置文档/etc/ld.so.conf中指定的动态库搜索路径
+默认的动态库搜索路径/lib
+默认的动态库搜索路径/usr/lib
+
+
+ldconfig     #/etc/ld.so.conf 更该生效
+
+

@@ -1,7 +1,4 @@
 cloudera下
-
-	hadoop启动关闭脚本	/usr/lib/hadoop/sbin
-	hbase启动关闭脚本	/usr/lib/hbase/bin
 	
 	配置文件路径
 	/etc/hadoop/conf
@@ -11,12 +8,20 @@ cloudera下
 	mysql安装路径
 	/var/lib/mysql
 	
-hdfs
-HDFS基本命令:
-hadoop fs -cmd
-cmd: 具体的操作，基本上与UNIX的命令行相同
-args:参数
-示例：hadoop fs -ls
+    
+    
+
+每个几点有以下服务？
+JobTracker   管理job
+NameNode     管理hdfs
+TaskTracker  管理 job task （一个job会有多个task？）
+DataNode     管理分布式文件系统在节点中的文件块
+
+
+
+
+
+
 HDFS资源URI格式：scheme://authority/path
 scheme：协议名，file或hdfs
 authority：namenode主机名
@@ -25,39 +30,38 @@ path：路径
 
 在core-site.xml里配置了 fs.default.name=hdfs://localhost:9000，则仅使用/user/chunk/test.txt即可。
 
+#查看帮助
+hadoop -h
+
 hadoop fs -put local_path hdfs_path   ###将本地文件上传到hdfs
 hadoop fs -get hdfs_path local_path	  ###将hdfs文件下载到本地
 
 
-hive
-关系型分布式数据库，数据文件存储于hdfs上。默认在/user/hive/
 
-元数据存储库使用mysql，默认端口3306
-hiveServer默认端口10000
+#构建测试的文件
+echo "a aa aaa"     > wc-in/a.txt
+echo "b cc eee ddd" > wc-in/a.txt
 
-hive   ###进入hive
+#查看hdfs的目录
+hadoop fs -ls /
 
-使用方式与mysql类似
-hive不支持行级插入，支持【insert into ... select ...】
+#上传目录到hdfs
+hadoop fs -put wc-in wc-in  
 
-导数据到本地
-hive -e "select * from test" >> res.csv     ####执行sql命令
-hive -f sql.q >> res.csv    ####执行sql文件
+#使用自带的样例测试计算字符数
+export HADOOP_HOME=/opt/cloudera/parcels/CDH           #通过查看hadoop命令确定（shell格式）
+hadoop jar $HADOOP_HOME/jars/hadoop-examples.jar wordcount wc-in wc-out
+#下载到本地
+hadoop fs -get wc-out wc-out
+#查看结果	 
+cat wc-out/*
 
-查看文件，也可以执行其他命令，如get、put
-dfs -ls /;
 
 
 
-hive数据插入
-load data local inpath 'wyp.txt' into table wyp;       ###从本地文件导入
-load data inpath '/home/wyp/add.txt' into table wyp;   ###从hdfs文件导入
-insert into ... select ...;
-create table ... as select ...;
 
 hbase
 非关系型分布式数据库，数据文件存储于hdfs上
-
 
 create 'test', 'cf'
 put 'test', 'row2', 'cf:d', 'value2'

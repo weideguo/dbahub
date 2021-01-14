@@ -25,12 +25,27 @@ from kafka import KafkaConsumer
 addrs=['192.168.0.1:9092']
 topic="test"
 
+"""
+group_id (str or None): The name of the consumer group to join for dynamic
+    partition assignment (if enabled), and to use for fetching and
+    committing offsets. If None, auto-partition assignment (via
+    group coordinator) and offset commits are disabled.
+    Default: None
+
+通过 group_id 实现一条消息是否可以被多个消费者消费？
+"""
 consumer = KafkaConsumer(topic, bootstrap_servers=addrs)
+
+#由kafka push
 for msg in consumer:
     #(msg.topic, msg.partition, msg.offset, msg.key, msg.value)
     print(msg)
     
     
+while True:
+    msg = consumer.poll(timeout_ms=5)    # 从kafka获取消息  没有数据，则拉取到的为空 
+    
+ 
  
 ###################################################################################
 

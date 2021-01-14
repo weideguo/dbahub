@@ -154,5 +154,5 @@ Cygwin
 可以用于在windows安装linux命令 相对于mingw更完善？
 
 
-
-
+hosts
+C:\Windows\System32\drivers\etc

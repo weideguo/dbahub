@@ -137,14 +137,6 @@ dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建�
 
 
 
-
-rpm -qa | grep kernel   			###rpm安装时查看已经安装的内核
-yum list kernel		
-rpm -e kernel_name      			###删除内核
-uname -r 	            			###查看使用的内核
-
-
-
 资源限制
 ulimit
 cgroups
@@ -1493,16 +1485,6 @@ sysctl -w net.ipv4.ip_forward=1
 
 
 
-编译安装
-cmake  
-###【cmkae . -DCMAKE_INSTALL_PREFIX=path_name】,【.】代表当前目录
-###由CMakeLists.txt生成Makefile文件。同时生成Cmakecache.txt文件，再次全新执行cmake需要先删除这个文件。
-
-###有些程序使用如configure的脚本配置makefile文件
-make  			###默认由Makefile文件执行相应操作，可用于编译，可以由【-f make_filename】指定规则文件
-make install  	###默认由Makefile文件执行install操作(以【install:】开头的块)
-
-
 md5sum 			##计算文件的MD5
 
 sha1sum
@@ -1720,36 +1702,6 @@ qrencode -o qr.png "string_seen_by_scan_qr"
 nice #调整进程优先级别
 
 
-glibc 版本查询
-ldd --version
-
-
-编译安装时新创建单独的文件夹存放解压的源代码，而且在上一级目录编译
-
-LD_LIBRARY_PATH 环境变量不应该以 : 开头
-
-指定安装目录，编译安装后将目录加入环境变量LD_LIBRARY_PATH
-
-#预加载so包并执行命令
-LD_PRELOAD=libc-2.5.so rm xxx 
-
-
-
-
-
-
-
-
-构建工具
-make					#依赖Makefile
-cmake					#依赖CMakeLists.txt
-autoconf/autoreconf     #依赖configure.ac
-
-
-
-
-
-
 https
 curl -k    #忽略https未信任证书错误
 
@@ -1806,19 +1758,7 @@ fuser -m -u /u01            #identify processes using files or sockets  查看�
 umount /dev/sdb1
 extundelete /dev/sdb1 --restore-all
 
-######centos7#########################################################################################################
-firewall-cmd --state  防火墙状态
 
-systemctl start firewalld    #启动
-systemctl stop firewalld     #关闭
-systemctl status firewalld   #查看状态
-systemctl disable firewalld  #开机禁用
-systemctl enable firewalld   #开机启用
-
-firewall-cmd --list-all
-
-
-##################安全################################################################################################
 tcpdump 导出后的文件可以使用wireshark打开
 
 
@@ -1836,24 +1776,6 @@ lspci | grep -i vga      #查看显卡信息
 
 #DNS设置
 /etc/resolv.conf
-
-
-#内核符号表
-#所有的内核函数以及已经装载的模块及符号的地址以及符号的类型信息
-cat /proc/kallsyms
-
-#动态可加载内核模块
-Loadable Kernel Module，LKM
-
-#内核模块
-insmod <module.ko> [module parameters]    #装载模块(install module)，只有超级用户才能使用该命令
-rmmod <module.ko>                         #卸载模块(remove module)，只有超级用户才能使用该命令
-modinfo <module.ko>                       #查看模块信息
-lsmod                                     #列表显示所有的内核模块(list  module),等价于cat /pro/modules命令
-modprobe [-r] <module name>               #载入指定的个别模块，或是载入一组相依赖的模块。modeprob可智能地添加和删除Linux内核模块实现依赖调用。
-
-#查看内核模块的文件
-find /lib/modules/ -name "*.so" -o -name "*.ko"  -o -name "*.ko.xz"
 
 
 #########################################

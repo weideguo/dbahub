@@ -81,7 +81,7 @@ jar {c t x u f }[ v m e 0 M i ][-C 目录] 文件名
 -i 为指定的jar文件创建索引文件
 -C 表示转到相应的目录下执行jar命令，相当于cd到那个目录，然后执行jar命令
 
-mainfest.mf
+manifest.mf
 冒号后要有空格，最后一行为空
 指定java运行jar包时的主类及其他
 

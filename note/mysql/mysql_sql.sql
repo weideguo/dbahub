@@ -66,7 +66,11 @@ opt_date  datetime,
 primary key(id)
 );
 
+delete a from xx a, yy b  where...
+DELETE FROM a USING xx  a , yy b WHERE ...; 
 
+delete a,b from xx a, yy b  where ...
+DELETE FROM a,b USING xx  a , yy b WHERE ...; 
 
 select * from mysql.proc        ---查看存储过程的信息
 DROP PROCEDURE procedure_name   ---删除存储过程
@@ -473,6 +477,69 @@ ALTER TABLE members REORGANIZE PARTITION p0,p1,p2,p3 INTO (
    	PARTITION m1 …);       						#调整RANGE/LIST分区
 ALTER TABLE tr COALESCE PARTITION 4;   			#减小HASH/KEY分区
 ALTER TABLE tr ADD PARTITION PARTITIONS 6;      #增多HASH/KEY分区
+
+
+
+CREATE TABLE tb_name ...
+PARTITION BY RANGE  ...
+
+
+CREATE TABLE employees (
+    id INT NOT NULL,
+    fname VARCHAR(30),
+    lname VARCHAR(30),
+    hired DATE NOT NULL DEFAULT '1970-01-01',
+    separated DATE NOT NULL DEFAULT '9999-12-31',
+    job_code INT NOT NULL,
+    store_id INT NOT NULL
+)
+PARTITION BY RANGE (store_id) (
+    PARTITION p0 VALUES LESS THAN (6),
+    PARTITION p1 VALUES LESS THAN (11),
+    PARTITION p2 VALUES LESS THAN (16),
+    PARTITION p3 VALUES LESS THAN (21)
+);
+
+
+PARTITION BY RANGE COLUMNS(a,d,c) (
+    PARTITION p0 VALUES LESS THAN (5,10,'ggg'),
+    PARTITION p1 VALUES LESS THAN (10,20,'mmm'),
+    PARTITION p2 VALUES LESS THAN (15,30,'sss'),
+    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE,MAXVALUE)
+);
+
+
+PARTITION BY LIST(store_id) (
+    PARTITION pNorth VALUES IN (3,5,6,9,17),
+    PARTITION pEast VALUES IN (1,2,10,11,19,20),
+    PARTITION pWest VALUES IN (4,12,13,14,18),
+    PARTITION pCentral VALUES IN (7,8,15,16)
+);
+
+
+PARTITION BY HASH(store_id)
+PARTITIONS 4;
+
+
+PARTITION BY HASH( YEAR(hired) )
+PARTITIONS 4;
+
+
+-- 类似hash 但使用主键 或者NOT NULL唯一键  使用hash函数 PASSWORD()
+PARTITION BY KEY()
+PARTITIONS 2;
+
+
+-- 复合分区 分区数 3 * 2 = 6 
+PARTITION BY RANGE( YEAR(purchased) )
+SUBPARTITION BY HASH( TO_DAYS(purchased) )
+SUBPARTITIONS 2 (
+    PARTITION p0 VALUES LESS THAN (1990),
+    PARTITION p1 VALUES LESS THAN (2000),
+    PARTITION p2 VALUES LESS THAN MAXVALUE
+);
+
+
 
 
 MRG_MYISAM
