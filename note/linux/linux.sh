@@ -56,16 +56,6 @@ initrd   初始化RAM磁盘，文件系统可用之前的一个初始化文件�
 tty  #查看当前的tty
 
 
-sshd
-root@notty            #scp sftp连接时的标识
-
-
-#tty  teletypes、teletypewriters  终端
-#pty  pseudo tty  虚拟终端
-
-
-
-
 
 OOM out-of memory   				##系统会杀掉一些进程以释放内存
 OOM内核参数设置
@@ -476,7 +466,7 @@ curl  ##运行url，如下载文件
 
 curl -d "p1=v1&p2=v2" "http://example"  #post
 
-
+curl -k    #忽略https未信任证书错误
 
 
 wget  ##通过url下载
@@ -499,11 +489,6 @@ ssh [user@]hostname [command]   #远程执行
 
 
 压缩传输
-tar czf - filename | ssh remote_user@remote_host tar xzf - -C remote_path
-tar czf - filename | ssh -p 222 remote_user@remote_host tar xzf - -C remote_path  #ssh不是使用默认22端口时指定端口
-gzip -c filename | ssh remote_user@remote_host gunzip > filename		#本地传到远端
-ssh remote_user@remote_host gzip -c filename | gunzip -c > filenme      #远端传到本地
-ssh remote_user@remote_host gzip -c filename > filenme.gz				#传输后不解压
 
 scp -C filename remote_user@remote_host:remote_path
 
@@ -550,7 +535,6 @@ C/S
 命令行（使用ssh协议）
 		rsync [OPTION]... SRC [SRC]... [USER@]HOST::DEST             ##从源端（SRC，可以多个）同步文件到目的端（DEST）
 
-ssh -p 3600 10.0.0.1
 
 客户端	
 rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_host:port/block_name	
@@ -575,129 +559,6 @@ sftp -o Port=22  root@10.10.1.10
 #实时文件同步
 inotify-tools 监听文件然后使用rsync推送文件
 
-
-
-
-	
-ssh (secure shell)   	###远程登录
-ssh信息保存在/home/user_name目录下.ssh隐藏文件夹内
-
-
-#host1免密登录host2
-#host1
-ssh-keygen -t rsa -b 2048			###生成ssh密钥对 ~/.ssh/id_rsa.pub ~/.ssh/id_rsa
-#host2
-ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到远程主机  可以直接复制host1的 ~/.ssh/id_rsa.pub 到host2的 ~/.ssh/authorized_keys
-
-###远程主机生成一个在~/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
-##设置完毕即可由本地使用私钥无密码登陆到远程主机 如果生成密钥对时没有设置密码
-
-
-##如果生成密钥对时设置密码，则远程连接需要输入该密码  
-##可以使用ssh-agent保存该密码 实现免密登录 用于管理多个私钥文件
-ssh-agent bash          #启动ssh-agent
-ssh-add ~/.ssh/id_rsa   #将密钥文件添加到ssh-agent  #需要输入生成密钥对时的密码 
-
-ssh -A host2            #免密登录host2 host2必须先设置~/.ssh/authorized_keys
-ssh host2              
-
-ssh-add -l                        #查看
-ssh-add -d /root/.ssh/id_rsa      #移除ssh-agent中的指定密钥文件
-
-ssh-agent -k             #关闭ssh-agent   
-ssh-agent 重启后信息丢失 只能对单一会话生效
-
-
-##ssh-agent 代理转发
-#当前节点 A
-cat /etc/ssh/ssh_config
-ForwardAgent yes
-
-#下一节点B
-cat /etc/ssh/sshd_config
-AllowAgentForwarding yes
-
-可以实现从A登陆B之后，B可以使用A中设置的ssh-agent
-
-
-
-#SSH使用代理
-#1.直接命令行通过代理129登陆128  需要分别输入129、128的密码
-#低版本ssh 当前主机的ssh不支持-W参数，代理机安装nc
-ssh -o "ProxyCommand ssh -p 22 root@192.168.253.129 nc %h %p" -p 22 root@192.168.253.128
-#高版本ssh 当前主机的ssh支持-W参数
-ssh -o "ProxyCommand ssh -p 22 root@192.168.253.129 -W %h:%p" -p 22 root@192.168.253.128
-
-
-ssh -W 192.168.253.128:22 192.168.253.129
-#ssh连接192.168.253.129，并将tcp信息转发给192.168.253.128:22
-
-
-
-#2.通过设置配置文件实现代理
-#设置ssh配置文件
-cat ~/.ssh/config
-"""
-Host B
-    HostName %h
-    User root
-    Port 22
-    IdentityFile ~/.ssh/id_dsa          #使用免密登陆
-
-Host C
-    HostName %h
-    User root 
-    Port 22
-    IdentityFile ~/.ssh/id_rsa
-    ProxyCommand ssh -W %h:%p B
-"""
-#通过B代理连接C
-ssh C 
-
-
-#低版本ssh时
-"""
-Host B
-    HostName %h
-    User root
-    Port 22
-    IdentityFile ~/.ssh/id_dsa                        #使用免密登陆
-
-Host C
-    HostName %h
-    User root 
-    Port 22
-    IdentityFile ~/.ssh/id_rsa
-    ProxyCommand ssh B exec nc %h %p 2>/dev/null      #低版本的ssh没有-W参数 使用该方式代替
-    #ProxyCommand ssh B nc %h %p 2>/dev/null          #低版本的ssh没有-W参数 使用该方式代替 ？
-"""
-
-#通过B代理连接C
-ssh C 
-
-#多级代理？
-本地 -> A -> B -> C -> D
-
-本地设置 通过C连接D
-本地设置 通过B连接C
-本地设置 通过A连接B
-#不分顺序 只需要设置即可
-
-
-
-重启ssh
-service sshd restart
-/etc/init.d/sshd restart
-
-secureCRT密钥连接linux
-使用secureCRT创建密钥 tool->create public key
-将生成的公钥Identity.pub复制到linux的/home/user_name/.ssh/authorized_keys   
-
-在linux下配置/etc/ssh/sshd_config			##默认已经设置，无需更改
-RSAAuthentication yes						##启用RSA认证登陆
-PubkeyAuthentication yes					##启用RSA公钥
-AuthorizedKeysFile .ssh/authorized_keys		###文件名称对应.ssh下的公钥
-PasswordAuthentication no					###禁用密码登陆
 
 
 nc
@@ -1702,10 +1563,6 @@ qrencode -o qr.png "string_seen_by_scan_qr"
 nice #调整进程优先级别
 
 
-https
-curl -k    #忽略https未信任证书错误
-
-
 #分割压缩文件
 tar -zcvf ABCD.tar.gz ABCD | split -b 2000M -d -a 1 - ABCD.tar.gz
 
@@ -1732,19 +1589,6 @@ expect ...
 shc  将shell脚本编译成二进制二进制文件
 
 file -i file_name  查看文件的编码，但是否为utf8-bom查看不出
-
-
-
-ssh实现端口转发
-ssh -L <local port>:<remote host>:<remote port> <SSH hostname>   ##远端端口转发给本地
-ssh -p 22 -l root -L 3306:127.0.0.1:5640 -CNfg 192.168.59.128    #将远端主机192.168.59.128的5640端口转发到3306  实现本地访问3306端口，并且访问ip为127.0.0.1ip 
-
-ssh -R <local port>:<remote host>:<remote port> <SSH hostname>   ##本地端口转发给远端
-ssh -R 3306:127.0.0.1:5640 -CNfg 192.168.59.129
-
-数据通过ssh传输，转发同时实现加密
-
-
 
 
 
