@@ -149,7 +149,7 @@ curl http://localhost:2121                                       #通过跳板�
 
 
 ssh -R <local port>:<remote host>:<remote port> <SSH hostname>   ##本地端口转发给远端
-ssh -R 3306:127.0.0.1:5640 -CNfg 192.168.59.129
+ssh -R 3306:127.0.0.1:5640 -CNfg 192.168.59.129                  ##192.168.59.129上可以通过 127.0.0.1:3306 访问
 
 ssh -R 2121:www.example.com:80 local -N                          ##在跳板机上执行
 curl http://localhost:2121                                       ##通过跳板机访问www.example.com
