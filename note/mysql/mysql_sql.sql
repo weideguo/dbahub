@@ -467,6 +467,46 @@ JOIN mysql.help_topic b ON b.help_topic_id < (
 );
 
 
+--结果集 都是条件谓词的结果 即a.id=b.id  ...
+select * from a a1 join b b1 on a.id=b.id  ...
+select * from a a1 , b b1 where a.id=b.id  ...            --sql优化器自动优化成join
+
+--结果集 如果不满足条件谓词，b显示空值
+select * from a a1 left join b b1 on a.id=b.id  ...
+
+--结果集 如果不满足条件谓词，a显示空值
+select * from a a1 right join b b1 on a.id=b.id  ...
+
+
+--sql优化器会自动选择驱动表（小表驱动大表，因为join的操作是表1逐个值跟表2全部值匹配，聚合成结果集，小表驱动大表可以减少随机读）
+
+inner join: 默认
+outer join: left join / right join / full join
+笛卡尔积:  不加任何连接条件
+
+--mysql 不支持 full join  需要使用union曲线替代
+select ... from a left join b on ...
+union
+select ... from a right join b on ...;
+
+
+--重复的结果集只会显示一个
+select ... from ...
+union
+select ... from ...;
+
+
+--重复的结果集都显示，不进行结果集过滤
+select ... from ...
+union all
+select ... from ...;
+
+
+--子查询
+select .. from a where c in ( select a1.c from a1 ... )
+select .. from a where c1,c2 in ( select a1.c1,a1.c2 from a1 ... )         #mysql不支持 
+
+
 分区表
 SELECT * FROM p1 PARTITION (p0[,p1])；     							#从指定分区查询
 EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10；			#查看从分区表的执行信息
