@@ -3,3 +3,5 @@ sshpass
 *.pyc
 *.log
 *.class
+
+.ipynb_checkpoints
