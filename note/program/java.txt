@@ -49,8 +49,12 @@ java -Djava.ext.dirs=x:\root\lib -cp x:\root\bin\ com.carnation.wdg.HelloEx
 java -Djava.ext.dirs=/data/lib -cp /data/xxx.jar com.carnation.wdg.HelloEx
 
 #javac java
--D.java.ext.dirs中配置多个目录。使用冒号分隔（windows下使用分号）
+-Djava.ext.dirs中配置多个目录。使用冒号分隔（windows下使用分号）
 -cp只能指定一个固定jar/class文件
+
+-D<name>=<value>
+System.getProperty(<name>);         //java中获取执行时-D传入的参数
+
 
 
 运行jar中的类
@@ -175,6 +179,26 @@ java字节码(编译后的class文件)由即时编译器(JIT complier, just in t
 不会给变量指定类型，而是在赋值时得到数据类型。
 
 静态类型语言(Statically Typed Language)
+
+
+
+
+反射 reflect
+可以实现
+1、反编译：.class-->.java
+2、通过反射机制访问java对象的属性，方法，构造方法等
+3、运行时动态加载需要的加载的对象
+
+例子：
+实例化一个 person()对象， 不使用反射， new person(); 如果想变成 实例化 其他类， 那么必须修改源代码，并重新编译。
+使用反射： Class.forName("person").newInstance()； 而且这个类描述可以写到配置文件中，如 **.xml， 这样如果想实例化其他类，只要修改配置文件的“类描述”就可以了，不需要重新修改代码并编译。
+
+Class.forName("com.mysql.jdbc.Driver");      // 数据库连接驱动加载  如果直接使用new创建，则不便于在编译后通过配置文件动态设置加载哪个
+
+
+
+工程实践
+分模块编译成jar包，主模块通过jar包引用其他模块，实现模块编写/编译解耦
 
 
 

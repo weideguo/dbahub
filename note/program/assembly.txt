@@ -26,4 +26,12 @@ ld -melf_i386 exit.o -o exitls
 
 
 
+#nasm
+yum install nasm
+nasm -f bin boot_sect_simple.asm -o boot_sect_simple.bin
+
+
+
+
+
 

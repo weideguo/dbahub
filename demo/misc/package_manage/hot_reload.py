@@ -26,7 +26,7 @@ a0=getattr(A,'a')
 监听文件的时间 时间改变 即时加载
 """
 
-module = sys.modules['model_name']          #模块名 即时为文件名去除后缀
+module = sys.modules['model_name']          #模块名 即为文件名去除后缀
 reload(module)                              #重新加载模块 实现热加载    
 
 

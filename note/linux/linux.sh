@@ -1631,3 +1631,47 @@ ELF  类Unix操作系统的二进制文件标准格式
 
 
 
+
+##第一个进程执行
+flock -n /tmp/.my.lock -c 'sleep 10 && echo 111'     
+
+##另外一个进程执行 获取锁失败 直接退出
+flock -n /tmp/.my.lock -c 'sleep 10 && echo 111'  
+
+
+##第一个进程执行
+flock -s /tmp/.my.lock -c 'sleep 10 && echo 111'     
+
+##另外一个进程执行，同时获取到锁
+flock -s /tmp/.my.lock -c 'sleep 10 && echo 111'  
+
+
+
+##第一个进程执行
+flock -x /tmp/.my.lock -c 'sleep 10 && echo 111'     
+
+##另外一个进程执行 需要等待第一个进程直接结束才能获取到锁
+flock -x /tmp/.my.lock -c 'sleep 10 && echo 111'  
+
+      
+#共享锁和排它锁不能同时存在 
+#如果出现，则跟两个排它锁情况一致
+
+
+
+#使用文件描述符实现锁
+lock() {
+  exec 7<>.lock
+  flock -n 7 || {
+    echo "Waiting for lock to release..."
+    flock 7
+  }
+}
+
+#加锁
+lock
+
+#释放锁
+flock -u 7
+
+

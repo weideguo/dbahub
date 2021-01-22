@@ -73,24 +73,33 @@ domains
 一个database下有多个schema
 不能同时访问不同database下的对象
 
-select * from schema_name.table_name;
 
 
-系统表
+创建表默认在public schema下
+特殊schema 系统自动创建
+    pg_catalog
+    information_schema
+    
+系统表 在 pg_catalog 下 ，可以不指定schema进行查询
 pg_user
 pg_roles
 pg_tablespace
 pg_database
-pg_tables
+pg_tables    
 
+
+
+select * from pg_catalog.pg_tables;
+select * from pg_tables;                       #查看表信息 如 schema tablespace
 SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT LIKE 'sql_%' ORDER BY tablename;   ###查询数据库的非系统表
-
-创建表默认在pubic schema下
-
-select * from pg_tables;   #查看表信息 如 schema tablespace
 
 
 select * from information_schema.tables;   ##查看所有的表
+
+
+#普通查询需要指定schema
+select * from schema_name.table_name;
+
 
 
 ###用户权限

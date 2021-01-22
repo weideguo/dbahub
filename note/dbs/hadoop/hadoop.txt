@@ -1,22 +1,28 @@
-cloudera下
-	
-	配置文件路径
-	/etc/hadoop/conf
-	/etc/hive/conf
-	/etc/hbase/conf
+cloudera hadoop 配置文件路径
+/etc/hadoop/conf
+/etc/hive/conf
+/etc/hbase/conf
 
-	mysql安装路径
-	/var/lib/mysql
-	
-    
-    
 
-每个几点有以下服务？
-JobTracker   管理job
-NameNode     管理hdfs
-TaskTracker  管理 job task （一个job会有多个task？）
-DataNode     管理分布式文件系统在节点中的文件块
+   
 
+每个节点有多个服务
+
+HDFS NameNode            管理hdfs master节点
+HDFS DataNode            管理分布式文件系统在节点中的文件块
+
+YARN ResourceManager     master节点
+YARN NodeManager
+#以下已经被yarn取代？
+#JobTracker   管理job
+#TaskTracker  管理 job task （一个job会有多个task？）
+
+
+yarn hadoop集群资源管理器系统，旧版本为MapReduce，控制各个节点的CPU、内存、带宽
+
+Yarn 将CPU核数，内存这些计算资源都封装成为一个个的容器（Container）
+容器由 NodeManager 启动和管理，并被它所监控。
+容器被 ResourceManager 进行调度。
 
 
 
@@ -26,9 +32,9 @@ HDFS资源URI格式：scheme://authority/path
 scheme：协议名，file或hdfs
 authority：namenode主机名
 path：路径
-示例：hdfs://localhost:9000/user/chunk/test.txt
+示例：hdfs://<namenode>:8020/user/chunk/test.txt
 
-在core-site.xml里配置了 fs.default.name=hdfs://localhost:9000，则仅使用/user/chunk/test.txt即可。
+在core-site.xml里配置了 fs.default.name=hdfs://namenode:8020，则仅使用/user/chunk/test.txt即可。
 
 #查看帮助
 hadoop -h
@@ -49,6 +55,7 @@ hadoop fs -ls /
 hadoop fs -put wc-in wc-in  
 
 #使用自带的样例测试计算字符数
+#https://github.com/apache/hadoop/tree/trunk/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples
 export HADOOP_HOME=/opt/cloudera/parcels/CDH           #通过查看hadoop命令确定（shell格式）
 hadoop jar $HADOOP_HOME/jars/hadoop-examples.jar wordcount wc-in wc-out
 #下载到本地
@@ -57,61 +64,27 @@ hadoop fs -get wc-out wc-out
 cat wc-out/*
 
 
-
-
-
-hbase
-非关系型分布式数据库，数据文件存储于hdfs上
-
-create 'test', 'cf'
-put 'test', 'row2', 'cf:d', 'value2'
-get 'test', 'row2', {COLUMN=>'cf:d'}
-scan 'test'       
+#自定义map/reduce程序的执行
+hadoop jar /path_to_jar/name.jar         #以jar格式运行 可以在之后加参数
+hadoop path.to.ClassName                 #以.class文件运行 可以在之后加参数
 
 
 
 
 
-
-MapReduce
-
-
-
-yarn
-hadoop集群资源管理器系统
+#重新加载配置文件 
+#用于配置更改时 如增加节点/删除节点
+hdfs dfsadmin -refreshNodes
+yarn rmadmin –refreshNodes
 
 
 
-
-spark
-基于内存计算的大数据并行计算框架 
-比Hadoop MapReduce快，MR基于磁盘
-
-
-Spark可运行于独立的集群模式中，或者运行于Hadoop中
-
-Spark SQL
+#集群间复制
+hadoop distcp hdfs://nn1:8020/foo/bar   hdfs://nn2:8020/bar/foo
 
 
 
 
-storm
-流式计算框架（单独部署）
-分布式实时计算系统
 
 
 
-
-计算速度
-storm > spark > hadoop
-
-
-
-Apache Kylin
-Hadoop/Spark 之上的 SQL 查询接口及多维分析
-
-
-
-Presto 基于hdfs的sql查询引擎
-
-impala 基于hadoop的SQL查询引擎

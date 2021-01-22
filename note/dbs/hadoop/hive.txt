@@ -1,15 +1,69 @@
 hive
-关系型分布式数据库，数据文件存储于hdfs上。默认在/user/hive/
-
-export HIVE_HOME=/opt/cloudera/parcels/CDH 
-
-Hive只需在一个节点上安装即可，即在master节点安装？
+关系型分布式数据库，数据文件存储于hdfs上。数据文件默认在/user/hive/
 
 
-元数据存储库使用derby，可以选择mysql
-hiveServer默认端口10000
+可以在任意节点通过命令 hive 访问
+本地需要hive的所有组件（元数据组件）及配置，hadoop客户端及配置
 
-hive   ###进入hive
+
+或者启动进程以支持远程连接（任意节点？）
+HiveServer2                #默认端口10000 连接HiveMetaStore 获取元数据   脚本命令 hiveserver2   对外提供JDBC连接以操作hive
+HiveMetaStore              #默认端口9083  连接元数据数据库 元数据存储库默认使用derby，可以选择mysql等 
+
+可以启动多个HiveServer2连接多个HiveMetaStore（不需要一一匹配），实现高可用
+#jdbc高可用架构连接
+jdbc:hive2://<zookeeper quorum>/<dbName>;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2
+#jdbc直连
+jdbc:hive2://10.0.0.11:10000
+
+
+/etc/hive/conf/                       #配置目录
+/etc/hive/conf/hive-site.xml          #主配置文件
+
+
+hive 执行引擎 
+    mapreduce 
+    spark（新版本默认）
+    
+Hive on MapReduce
+Hive on Spark  / SparkSQL  都是一个翻译层，把一个SQL翻译成分布式可执行的Spark程序
+
+
+
+#远程连接
+hive> !connect jdbc:hive2://10.0.0.11:10000
+beeline -u jdbc:hive2://10.0.0.11:10000 -n root
+!quit   --退出命令beeline行
+!help   --查看帮助
+
+
+
+###本地连接hive
+hive> !pwd;     ###在hive中执行外部命令
+
+
+--参数设置
+set hive.spark.client.future.timeout=200;
+--参数查看
+set hive.spark.client.future.timeout;
+
+
+--权限管理
+set hive.security.authorization.enabled;
+set hive.security.authorization.enabled=true;         --开启授权
+
+--hive的用户为系统的用户  通过配置文件设置用户以及密码 hive.jdbc_passwd.auth.user_name
+-- 支持user group role的权限管理
+set system:user.name;
+
+grant ...
+revoke ...
+
+--查看权限
+SHOW GRANT USER user_name;
+
+
+
 
 使用方式与mysql类似
 hive不支持行级插入，支持【insert into ... select ...】
@@ -22,8 +76,84 @@ hive -f sql.q >> res.csv    ####执行sql文件
 dfs -ls /;
 
 
+ADD FILE ...   --将数据加载到分布式缓存中 之后UDF可以通过文件名访问该文件
+ADD JAR  ...   --加载jar到分布式缓存和类路径中
+
+
 #创建表
 create table ...
+
+
+--InputFormat  定义如何读取划分以及如何将划分分割成记录
+--OutputFormat 定义如何将这些划分写回
+create table tb_name ...
+STORED AS TEXTFILE;   
+
+
+行存储 
+    TEXTFILE         不指定时默认
+    SEQUENCEFILE
+列存储 
+    ORC 
+    PARQUET
+    
+--可以自定义存储格式
+add jar /path/to/name.jar;                  --编码实现使用的类 编译打包成jar 使用前需要先加载
+
+create table ...  
+stored as  
+inputformat 'org.apache.hadoop.hive.contrib.fileformat.base64.Base64TextInputFormat'            
+outputformat 'org.apache.hadoop.hive.contrib.fileformat.base64.Base64TextOutputFormat';    
+--参考实现 https://github.com/apache/hive/tree/master/contrib/src/java/org/apache/hadoop/hive/contrib/fileformat/base64     
+-- 从表读数据 inputformat 向表写数据 outputformat
+
+
+--使用STORED BY 不能存在STORED AS和ROW FORMAT
+create table ... 
+STORED BY 
+  'org.elasticsearch.hadoop.hive.EsStorageHandler' 
+
+
+-- 创建es外部表
+--加载jar 
+add jar /data/soft/elasticsearch-hadoop-7.6.2/dist/elasticsearch-hadoop-7.6.2.jar; 
+-- 创表  使用的方法由jar中实现
+create EXTERNAL table tb_name_es ( ... ) 
+stored by 'org.elasticsearch.hadoop.hive.EsStorageHandler' 
+tblproperties('es.resource' = 'tb_name', 'es.nodes' = '10.10.167.190', 'es.port' = '9200', 'es.index.auto.create' = 'true'); 
+
+
+
+--SERDE 指定序列化以及反序列化使用的类
+create table ... 
+ROW FORMAT DELIMITED                -- 指定数据切分格式
+FIELDS TERMINATED BY ',';           -- 逗号分隔符格式的文件load
+
+
+create table ...
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+  [WITH SERDEPROPERTIES( k1=v1, k2=v2 ...)]
+
+
+
+
+
+--特殊数据类型
+CREATE EXTERNAL TABLE `tb_name`(
+a  ARRAY<STRING>
+,m MAP<STRING,INT>
+,s STRUCT<stree:STRING,city:STRING,zip:INT>
+)
+
+
+create table tb_name ...
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','                   --普通字段
+COLLECTION ITEMS TERMINATED BY '-'         --ARRAY字段
+MAP KEYS TERMINATED BY ':';                --MAP字段
+
+
 
 内部表数据由Hive自身管理，外部表数据由HDFS管理
 
@@ -43,17 +173,8 @@ INTO TABLE tb_name
 partition(p1=xxx,p2=yyy)
 
 
-特殊数据类型
-如：
-CREATE EXTERNAL TABLE `tb_name`(
-a  ARRAY<STRING>
-,m MAP<STRING,INT>
-,s STRUCT<stree:STRING,city:STRING,zip:INT>
-)
 
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ',';           -- 双引号逗号分隔符格式的文件load
-
+alter table tb_name ... archive partition(...);   --将分区打包成归档文件，当很少查询时，用于减轻namenode压力
 
 
 
@@ -82,16 +203,6 @@ alter table table_name drop partition(p_key='2014-03-01');
 
 
 
--- 创建es外部表
---加载jar 
-add jar /data/soft/elasticsearch-hadoop-7.6.2/dist/elasticsearch-hadoop-7.6.2.jar; 
--- 创表  使用的方法由jar中实现
-create EXTERNAL table tb_name_es ( ... ) 
-stored by 'org.elasticsearch.hadoop.hive.EsStorageHandler' 
-tblproperties('es.resource' = 'tb_name', 'es.nodes' = '10.10.167.190', 'es.port' = '9200', 'es.index.auto.create' = 'true'); 
-
-
-
 
 只支持等值join
 支持
@@ -112,6 +223,54 @@ create index index_name on table table_name(column_name) ...
 
 
 
+模式设计
+
+反范式
+分区表
+
+
+
+
+--内置函数查看
+show functions;
+desc function sin;
+
+用户定义函数UDF
+--继承 org.apache.hadoop.hive.ql.exec.UDF 编写实现类，编译成jar
+add jar '/path/to/name.jar';
+create temporary function func_name as 'path.to.MainClass';         
+select func_name(...) ...                                         --使用udf
+
+
+--streaming格式实现udf
+select transform(column_name1,column_name2...)                -- 表数据预先转换 当成一行传给管道
+using '/path/to/executable_file'                              -- 将数据通过管道传给系统的命令处理，需要每个tasktracker都预先安装使用的可执行文件，如 /bin/cat；如果不存在，可以通过add file加载然后直接使用。每个出输出对应一行，可以一行输出多行，多行聚合成一行输出（通过一直readline直到为空实现）
+as new_column_name1,new_column_name2                          -- as (new_column_name1 int,new_column_name2 int)    输出值为也可以转换
+from ...
+
+
+from (
+  from tb_name
+  map v,k
+  using '/path/to/name.jar path.to.MapMainClass'
+  as k,v cluster by k
+) map_output
+  reduce k,v
+  using '/path/to/name.jar path.to.ReduceMainClass'
+  as k,v
+
+
+
+--锁
+show locks;
+--显式使用锁
+lock table tb_name exclusive;
+unlock table tb_name;
+
+
+
+--HCatalog 提供hive的元数据  HCatalog构建于Hive metastore？
+hcat -e "show databases"           --命令行使用 不能执行mapreduce任务 只能执行一些元数据操作
 
 
 

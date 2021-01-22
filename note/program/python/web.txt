@@ -16,7 +16,9 @@ BaseHTTPServer ##http服务模块
 SimpleHTTPServer
 
 
-
+python -m       #将库中的python模块用作脚本去运行
+python -m SimpleHTTPServer    #python2中启动一个简单的http服务器 python -m SimpleHTTPServer 9090
+python -m http.server         #python3中启动一个简单的http服务器
 
 
 oauth
@@ -48,27 +50,6 @@ query {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

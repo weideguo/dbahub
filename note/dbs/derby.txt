@@ -8,7 +8,7 @@ derby
 
 
 
-#启动  默认端口1527
+#启动  默认端口1527   网络模式运行网络连接
 bin/NetworkServerControl --help  
 bin/NetworkServerControl start 
 
@@ -20,7 +20,7 @@ bin/startNetworkServer
 bin/ij
 
 --连接
-connect 'jdbc:derby:/path_to_derby/derby;create=True';
+connect 'jdbc:derby:/path_to_derby/derby;create=True';        #内嵌模式连接，无需网络
 connect 'jdbc:derby://localhost:1527/dbname;create=true' ;      
 
 

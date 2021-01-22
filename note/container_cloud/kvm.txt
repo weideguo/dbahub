@@ -12,18 +12,15 @@ PaaS(Platform-as-a-Service) 平台即服务。
 SaaS(Software-as-a-Service)：软件即服务
 提供软件服务，如邮箱，面向普通用户。
 
+virtualbox
+vmware
+
+openvz
+操作系统级别的虚拟化技术，是底层操作系统上的一层应用。
 
 
 虚拟化
 VPS(virtual private server) 虚拟专用服务器
-
-
-kvm
-Kernel-based Virtual Machine
-完全虚拟
-QEMU
-
-
 xen
     Xen pv
     Xen hvm
@@ -34,18 +31,6 @@ hvm可以虚拟所有常见操作系统hvm可以虚拟所有常见操作系统(�
 hvm需要cpu虚拟化指令支持(CPU必须开启Intel VT or AMD -V)，pv无此要求。
 
 
-openvz
-操作系统级别的虚拟化技术，是底层操作系统上的一层应用。
-
-
-
-
-virtualbox
-vmware
-
-
-
-
 OpenStack
 
 Nova        计算服务
@@ -53,3 +38,35 @@ Swift       存储服务
 Glance      镜像服务
 Keystone    认证服务
 Horizon     UI服务
+
+
+
+
+kvm Kernel-based Virtual Machine
+
+##预先操作
+egrep 'vmx|svm' /proc/cpuinfo                       #判断母机对虚拟化的支持
+yum install -y qemu-kvm libvirt virt-install        #母机安装依赖包
+lsmod | grep kvm                                    #看出内核是否已经安装kvm
+
+#创建虚拟机磁盘
+qemu-img create -f raw /data/centos7.raw 10G
+
+#安装虚拟机 在此启动vnc，可以通过查看母机使用的端口通过vnc连接
+virt-install --virt-type kvm --name centos7 --ram 1024 --cdrom=/data/iso/CentOS-7-x86_64-Everything-1804.iso --disk path=/data/centos7.raw --network network=default --graphics vnc,listen=0.0.0.0 --noautoconsole
+
+#管理
+virsh list --all                #查看所有虚拟机     
+virsh start [虚拟机名]          #启动虚拟机     
+virsh shutdown [虚拟机名]       #关闭虚拟机     
+virsh destory [虚拟机名]        #强制关机     
+virsh undefine [虚拟机名]       #取消定义虚拟机     
+virsh define [虚拟机配置文件]   #定义虚拟机(修改配置时使用)
+
+
+
+
+
+
+
+
