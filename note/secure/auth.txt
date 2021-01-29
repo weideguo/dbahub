@@ -1,0 +1,42 @@
+SASL  Simple Authentication and Security Layer.  C/S模式验证
+
+机制
+plain
+login
+otp
+digest-md5
+kerberos
+anonymous
+
+
+
+
+
+
+
+
+CAS  Central Authentication Service. WEB单点登陆
+产品 
+  JAVA: jasig
+  Python: django-mama-cas
+
+
+
+
+
+LDAP Lightweight Directory Access Protocol (AD Active Directory  windows的实现)  
+CS模式
+LDAP树形数据库如下：
+dn ：一条记录的详细位置
+dc ：一条记录所属区域      
+ou ：一条记录所属组织      
+cn/uid：一条记录的名字/ID  
+dn:cn=L20,ou=L13,ou=L12,ou=L11,dc=L0
+
+
+
+Pluggable Authentication Modules
+Linux-PAM + OpenLDAP 实现统一的linux账号管理
+
+yum install openldap openldap-clients openldap-servers
+

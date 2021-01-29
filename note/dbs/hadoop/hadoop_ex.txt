@@ -1,5 +1,10 @@
 hbase
-非关系型分布式数据库，数据文件存储于hdfs上。用于存动态数据。
+非关系型分布式数据库，数据文件存储于hdfs上。分布式，列格式。用于存动态数据。
+
+配置文件目录
+/etc/hbase/conf
+
+
 
 create 'test', 'cf'
 put 'test', 'row2', 'cf:d', 'value2'

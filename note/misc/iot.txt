@@ -1,0 +1,15 @@
+internet of thing
+
+通信协议
+
+CoAP (Constrained Application Protocol,受限应用协议)
+基于UDP 
+一个在Client和Server之间传递状态信息的单对单协议。
+ 
+ 
+ 
+MQTT (Message Queuing Telemetry Transport,消息队列遥测传输协议)
+基于TCP
+MQTT是多个客户端通过一个中央代理传递消息的多对多协议。
+
+ 

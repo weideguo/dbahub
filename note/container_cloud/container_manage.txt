@@ -1,0 +1,29 @@
+
+flannel  实现docker容器跨主机通信
+
+
+
+
+kubernates(K8s)  容器管理平台
+
+pod   原子单位，一个或多个容器组成的容器组，容器间资源共享
+
+node  物理机或虚拟机
+
+
+
+
+
+rancher kubernates管理平台
+
+
+
+
+
+OpenShift (redhat paas, 基于k8s)
+
+
+
+
+
+

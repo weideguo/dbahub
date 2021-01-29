@@ -1,0 +1,67 @@
+异步复制连接自动故障转移 mysql >= 8.0.23
+在副本中设置，以实现当主1发生故障时，自动转移复制主2（正常情况下主2为主1的从，当主1不可用时主2为全局的主）
+From MySQL 8.0.23, use CHANGE REPLICATION SOURCE TO in place of CHANGE MASTER TO, which is deprecated from that release. 
+
+
+普通主从复制架构
+-- 设置
+CHANGE MASTER TO MASTER_USER='rpl_user', MASTER_PASSWORD='password', MASTER_HOST='node1', MASTER_PORT=3306, MASTER_RETRY_COUNT=2 FOR CHANNEL 'ch1';
+--MASTER_RETRY_COUNT=86400 MASTER_CONNECT_RETRY=60  默认值不适合自动故障转移
+
+-- 权重最大源服务器优先
+-- SELECT asynchronous_connection_failover_add_source(channel, host, port, network_namespace, weight);
+SELECT asynchronous_connection_failover_add_source('ch1', 'node1', 3306, '', 80);
+SELECT asynchronous_connection_failover_add_source('ch1', 'node2', 3306, '', 70);
+
+-- 查看设置结果
+SELECT * FROM performance_schema.replication_asynchronous_connection_failover;
+
+
+-- 启用
+CHANGE MASTER TO SOURCE_CONNECTION_AUTO_FAILOVER=1 FOR CHANNEL 'ch1';
+
+START REPLICA FOR CHANNEL 'ch1';
+
+
+SELECT * FROM performance_schema.replication_connection_configuration;
+SELECT * FROM performance_schema.replication_connection_status\G
+
+
+-- 删除源
+SELECT asynchronous_connection_failover_delete_source('ch1', 'node1', 3306, '');
+
+
+
+
+
+
+MGR 异步复制连接自动故障转移
+
+-- 设置对Master连接故障转移列表
+SELECT asynchronous_connection_failover_add_managed('ch1', 'GroupReplication', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1', 'mysql-02', 3306, '', 80, 60);
+-- ch1：chanel名称
+-- GroupReplication：强制写死的参数，目前支持MGR集群
+-- aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1：MGR组名（参数 group_replication_group_name）
+-- mysql-02：MGR成员之一
+-- 80：Primary节点的优先级（0-100），多主相同优先级则随机选择节点充当master。
+-- 60：Second节点的优先级（0-100），基本就是给Single模式准备的
+
+-- 指定复制通道信息
+CHANGE REPLICATION SOURCE TO SOURCE_USER='rpl_user', SOURCE_PASSWORD='password', SOURCE_HOST='mysql-02',SOURCE_PORT=3306,SOURCE_RETRY_COUNT=2,SOURCE_CONNECTION_AUTO_FAILOVER=1,SOURCE_AUTO_POSITION=1 For CHANNEL 'ch1';
+
+-- 启动复制
+start slave;
+SELECT * FROM performance_schema.replication_asynchronous_connection_failover;
+
+
+
+-- 删除配置
+SELECT asynchronous_connection_failover_delete_managed('ch1', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1');
+
+-- 重新添加，调整Second优先级高于Primary
+SELECT asynchronous_connection_failover_add_managed('ch1', 'GroupReplication', 'aaaaaaaaaaaa-aaaa-aaaa-aaaaaaaaaaa1', 'mysql-03', 3306, '', 60, 80);
+
+
+
+
+

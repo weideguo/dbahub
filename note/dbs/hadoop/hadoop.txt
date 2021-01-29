@@ -1,26 +1,23 @@
 cloudera hadoop 配置文件路径
 /etc/hadoop/conf
-/etc/hive/conf
-/etc/hbase/conf
 
 
-   
-
-每个节点有多个服务
-
-HDFS NameNode            管理hdfs master节点
+HDFS NameNode            管理hdfs master节点，维护文件系统树以及树内的文件和索引目录  SecondaryNameNode节点备份NameNode数据，用于在故障时转移
 HDFS DataNode            管理分布式文件系统在节点中的文件块
 
 YARN ResourceManager     master节点
 YARN NodeManager
 #以下已经被yarn取代？
 #JobTracker   管理job
-#TaskTracker  管理 job task （一个job会有多个task？）
+#TaskTracker  管理 job task （一个job会有多个task）
+
+${dfs.namenode.name.dir}     hdfs在操作系统实际使用的数据目录
+
 
 
 yarn hadoop集群资源管理器系统，旧版本为MapReduce，控制各个节点的CPU、内存、带宽
 
-Yarn 将CPU核数，内存这些计算资源都封装成为一个个的容器（Container）
+yarn 将CPU核数，内存这些计算资源都封装成为一个个的容器（Container）
 容器由 NodeManager 启动和管理，并被它所监控。
 容器被 ResourceManager 进行调度。
 
@@ -35,6 +32,16 @@ path：路径
 示例：hdfs://<namenode>:8020/user/chunk/test.txt
 
 在core-site.xml里配置了 fs.default.name=hdfs://namenode:8020，则仅使用/user/chunk/test.txt即可。
+
+
+
+
+#列出本地的文件
+hadoop fs -ls file:///
+
+#列出hdfs的文件 默认
+hadoop fs -ls hdfs:///
+
 
 #查看帮助
 hadoop -h
@@ -58,10 +65,12 @@ hadoop fs -put wc-in wc-in
 #https://github.com/apache/hadoop/tree/trunk/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples
 export HADOOP_HOME=/opt/cloudera/parcels/CDH           #通过查看hadoop命令确定（shell格式）
 hadoop jar $HADOOP_HOME/jars/hadoop-examples.jar wordcount wc-in wc-out
-#下载到本地
+#下载到本地 查看结果	
 hadoop fs -get wc-out wc-out
-#查看结果	 
 cat wc-out/*
+#直接查看结果
+hadoop fs -cat wc-out/*
+
 
 
 #自定义map/reduce程序的执行
@@ -69,6 +78,44 @@ hadoop jar /path_to_jar/name.jar         #以jar格式运行 可以在之后加�
 hadoop path.to.ClassName                 #以.class文件运行 可以在之后加参数
 
 
+map      输入数据划分成多个分片，每个分片创建一个map任务
+reduce   输入为map任务的输出（每个map输出结果为一个或多个分区，每个分区对应全局的一个reduce）
+
+hadoop通过unix标准流提供对外结口，因此支持非java写map/reduce
+c++程序可以通过管道交互，管道使用的是sockets
+
+
+
+hdfs文件以块存储，一个块对应一个操作系统的文件，块的大小由hdfs-site.xml ${dfs.blocksize}指定
+块的元数据存放到内存（即每个datanode节点都用内存存储该节点的块的元数据），因而hdfs文件的数量需要控制
+hadoop archive -archiveName files.har /path_to_archive  /new_path              #创建归档文件
+haddop fs -ls har:///new_path/files.har                                        #查看归档文件
+
+
+
+安全模式 
+启动hdfs时可能先处于安全节点用于检查整个文件系统，此时不允许对文件系统进行修改
+加载镜像文件（fsimage）到内存，应用编辑日志（edits）的编辑记录
+edits    执行修改操作时，先记录在编辑日志
+fsimage  包含文件系统中所有目录和文件inode的序列化形式，在编辑日志更改后更改（文件：复制等级，修改和访问时间，访问权限，块的大小以及组成文件的块。目录：修改时间，权限，配额）
+
+
+hadoop dfsadmin -safemode get     #查看是否处于安全模式
+hadoop dfsadmin -safemode wait    #等待直到安全模式退出
+hadoop dfsadmin -safemode enter   #进入安全模式
+hadoop dfsadmin -safemode leave   #退出安全模式
+
+
+备份机制
+1.备份namenode节点的数据目录 即master节点中备份 ${dfs.namenode.name.dir}
+2.复制重要目录到另一个备份集群
+hadoop distcp hdfs://nn1:8020/foo/bar   hdfs://nn2:8020/bar/foo
+3.导出文件并存到其他位置
+hadoop fs -get ...
+
+
+#文件系统检查
+hadoop fsck ...
 
 
 
@@ -79,12 +126,8 @@ yarn rmadmin –refreshNodes
 
 
 
-#集群间复制
-hadoop distcp hdfs://nn1:8020/foo/bar   hdfs://nn2:8020/bar/foo
 
-
-
-
-
+流处理   数据实时流入，前端的查询实时从原数据处理
+批处理   数据分批次处理，计算结果存储，前端查询从结果集获取
 
 

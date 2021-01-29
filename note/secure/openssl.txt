@@ -1,4 +1,4 @@
-###RSA非堆成加密
+###RSA非对称加密
 
 #生成私钥
 openssl genrsa -out rsa_private_key.pem 2048

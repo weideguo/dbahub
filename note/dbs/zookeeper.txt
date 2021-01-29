@@ -1,4 +1,5 @@
-配置共享和服务发现系统
+维护一个目录结构的数据，类似文件系统的树结构，上面的节点为znode
+用于配置共享和服务发现系统
 
 安装zookeeper
 ###下载二进制文件，解压并复制到/u02
@@ -6,37 +7,57 @@
 
 启动
 /u02/zookeeper/bin/zkServer.sh start
+
+
+echo ruok | nc 127.0.0.1 2181   #验证服务
+echo dump | nc 127.0.0.1 2181   #列出会话列表以及当前znode
+echo envi | nc 127.0.0.1 2181   #列出服务器属性
+echo reqs | nc 127.0.0.1 2181   #列出未响应请求
+echo stat | nc 127.0.0.1 2181   #列出服务数据以及连接的客户端  可以查看节点角色
+echo srst | nc 127.0.0.1 2181   #重新设置服务数据
+
+
 连接
 /u02/zookeeper/bin/zkCli.sh -server 127.0.0.1:2181
 ###命令
+help
 create /app "app_string"		###创建目录并关联字符串
 ls /							###查看目录下的znode
 get /app
 delete /app
 
+create [-s] [-e] path [data] [acl]      
+#-s  创建顺序节点，自动在路径后加顺序标识
+#-e  临时节点，临时节点在客户端会话结束后自动删除
+
+get [-s] [-w] path
+get -w /path     #监听删除或更新
+
+
+
 
 权限控制
-zookeeper5种操作
+zookeeper5种操作（ACL Permissions）
 create read write delete admin 
 
-增加用户/进行认证
-addauth digest user_name:user_password
+ACL Schemes
+world      id / anyone
+auth       ignores any provided expression and instead uses the current user, credentials, and scheme.
+digest     username:password  string to generate MD5 hash which is then used as an ACL ID identity
+ip         client host IP as an ACL ID identity
+x509       client X500 Principal as an ACL ID identity
 
-设置权限
+
+
+对每个节点设置acl，cdrwa代表所有权限（权限的首字母）
 #明文密码
-setAcl /path_to_access auth:user_name:user_password:cdrwa             ##cdrwa代表所有权限，权限的首字母
-
+setAcl /path_to_access auth:user_name:user_password:cdrwa             
 #密文密码
-setAcl /path_to_access digest:user_name:user_password_digest:cdrwa  		  ##创建用户并授权
-
-setAcl /weideguo ip:127.0.0.1:cdrwa
-
-
-world
-auth
-digest
-ip
-
+#增加用户/进行认证
+addauth digest user_name:user_password
+setAcl /path_to_access digest:user_name:user_password_digest:cdrwa  		  
+#ip
+setAcl /path_to_access ip:127.0.0.1:cdrwa
 
 
 
@@ -55,7 +76,10 @@ server.0=127.0.0.1:8800:7700	##单节点不需要这个，多个节点每个节�
 ##C	选举leader所使用的端口
 
 
+zab协议实现分布一致性
 
-###zookeeper维护一个类似文件系统的树结构，上面的节点为znode
+#客户端只连一个zookeeper节点，可能获取到过时的数据，如果需要确保获取最新数据需要先sync
+sync path
+
 
 
