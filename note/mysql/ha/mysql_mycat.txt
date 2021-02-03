@@ -1,0 +1,20 @@
+#水平扩展 中间件  基于表字段进行拆分
+
+
+cd conf
+server.xml   mycat服务器参数、连接mycat的账号
+schema.xml   逻辑库、表、分片定义的配置文件，与后端数据库连接的配置
+rule.xml     分片规则，设置分片使用的java类，对应不同的分片方法
+
+
+cd bin
+./mycat start  #启动服务
+
+
+端口使用 支持mysql协议，因此可以直接用mysql客户端连接
+8066 数据操作，命令会传给后端
+
+
+9066 管理端口，如修改mycat运行参数
+show @@help;       --
+reload @@config;   --重新加载配置文件

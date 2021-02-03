@@ -1,0 +1,67 @@
+数据库（database）	索引（indices）
+表（tables）	    types
+行（rows）	        documents            一个文档是一个可被索引的基础信息单元
+字段（columns）	    fields               
+
+
+
+分片和复制（shards & replicas） 
+
+
+
+#kibana console中操作
+完整查询路径
+GET _search
+
+#查看indices的数据 只返回部分
+GET ${indice}/_search
+
+#使用id查询indices的数据
+GET ${indice}/_doc/${_id}
+
+#全文搜索
+GET ${indice}/_search?q=${condition}
+
+#指定字段搜索
+GET ${indice}/_search
+{
+    "query": {
+        "multi_match" : {
+            "query" : "${condition}",
+            "fields": ["${field1}", "${field2}"]
+        }
+    }
+}
+
+
+#创建一篇文档
+PUT test/_doc/2
+{
+  "name":"aaa",
+  "age":27,
+  "desc":"AAA"
+}
+
+#查询索引
+GET test/_search
+
+
+
+
+
+#http操作
+curl -XGET "http://localhost:9200/_cat/health"
+curl -XGET "http://localhost:9200/_cat/health?v"
+
+
+#列出所有索引
+curl "localhost:9200/_cat/indices?v=true"
+
+
+
+
+
+
+
+
+

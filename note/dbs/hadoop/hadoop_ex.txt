@@ -1,19 +1,67 @@
 hbase
-非关系型分布式数据库，数据文件存储于hdfs上。分布式，列格式。用于存动态数据。
+非关系型分布式数据库，数据文件存储于hdfs上。分布式，列格式。用于存动态数据，更好的读写单条记录。
 
 配置文件目录
 /etc/hbase/conf
 
+表横向切片成不同区域
+
+使用zookeeper为hbase集群状态提供授权
+
+主节点(Master)           分配区域给区域节点，回复区域节点的故障
+区域节点(RegionServer)   响应客户端读写请求
+HBase Thrift Server      提供Thrift接口以利于非java程序交互  （Thrift接口描述语言和二进制通讯协议，类似于gRPC）
 
 
-create 'test', 'cf'
-put 'test', 'row2', 'cf:d', 'value2'
-get 'test', 'row2', {COLUMN=>'cf:d'}
-scan 'test'       
+hbase shell          #进入hbase命令行界面 可以在hadoop任意节点
+
+list                                             #列出表
+create 'test', 'data'                            #创建表以及设置列族
+put 'test', 'row1', 'data:a1', 'aaa1'            #
+put 'test', 'row2', 'data:a2', 'aaa2'            #
+put 'test', 'row3', 'data:a3', 'aaa3'            #
+
+scan 'test'                                      #
+                                                 #
+get 'test', 'row2', {COLUMN=>'data:d'}           #
 
 
+########################################################################################################
+pig   
+客户端应用程序，操作hadoop的轻量级脚本语言，可以直接用pig latin直接读取hdfs的数据并进行处理
+单JVM中的本地执行环境和Hadoop集群上的分布式执行环境
+#pig -x, -exectype - Set execution mode: local|mapreduce|tez
+
+     
+pig                             #进入pig命令行交互式操作
+pig -f my_scripts.pig           #直接运行pig脚本
+
+A = LOAD 'path_2_file/sample.txt' AS (col1:int, col2:charray);                    #加载逗号分隔符文件                                                                              
+DUMP A                                                                            #查看数据
+
+#可以使用java实现udf
+#继承实现pig的类 FilterFunc/EvalFunc/LoadFunc/...
+#编译成jar
+REGISTER my_pig_udf.jar;                                                           #加载jar
+path_2_main.MyMainClassName(input_vars);                                           #调用java实现的udf
+                                                                                                                                                    
+#通过流可以使用外部程序                                                             
+B = STREAM A through `cut -f 2`;                                                   #将A逐行传给外部程序处理
+DEFINE my_udf_demo `my_udf_demo.py` SHIP ('path_2_udf_file/my_udf_demo.py') ;      #使用外部进程通过流实现udf
 
 
+#脚本参数传递
+pig -param v1=xxx param v2=yyy my_simple.pig        #脚本内可以通过 $v1 $v2 获取执行时指定的参数
+
+cat > test.param <<EOF
+v1=xxx
+v2=yyy
+EOF
+
+pig -param_file test.param  my_simple.pig           #通过文件传入参数
+
+
+########################################################################################################
 
 spark
 基于内存计算的大数据并行计算框架 
@@ -27,7 +75,7 @@ Spark SQL 使用sperk的类sql语法
 
 
 
-
+########################################################################################################
 storm
 流式计算框架（单独部署）
 分布式实时计算系统
@@ -38,7 +86,7 @@ storm
 计算速度
 storm > spark > hadoop
 
-
+########################################################################################################
 
 flink  取代spark？
 
@@ -55,13 +103,12 @@ Presto 基于hdfs的sql查询引擎
 
 impala 基于hadoop的SQL查询引擎
 
-
-pig   操作hadoop的轻量级脚本语言，类似于hive的作用？
-
 sqoop 与其他数据库连接的工具 用于导入/导出
 
+kudu  且于hbase和hive
 
 
+########################################################################################################
 
 ##部署与管理 
 #提供web界面操作

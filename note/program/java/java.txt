@@ -50,11 +50,14 @@ java -Djava.ext.dirs=/data/lib -cp /data/xxx.jar com.carnation.wdg.HelloEx
 
 #javac java
 -Djava.ext.dirs中配置多个目录。使用冒号分隔（windows下使用分号）
--cp只能指定一个固定jar/class文件
+
+-cp -classpath
+java -classpath $dir $classname
+指定运行时使用的jar/class文件的目录，多个使用":"分隔，类名只要在任意一个jar/class文件中即可
+跟CLASSPATH环境变量指定方式一致，-classpath会覆盖环境变量
 
 -D<name>=<value>
 System.getProperty(<name>);         //java中获取执行时-D传入的参数
-
 
 
 运行jar中的类
@@ -64,6 +67,15 @@ java -cp App.jar com.amar.Main
 直接运行jar 需要 在 MANIFEST.MF 中指定 Main-Class
 java -jar path_name/file_name.jar
 
+
+三个系统类加载器，加载类的顺序：
+Bootstrap CLassloder                     加载$JAVA_HOME/jre/lib 目录下的jar、class        可以在运行时 -Xbootclasspath 覆盖指定
+Extention ClassLoader（ExtClassLoader）  加载$JAVA_HOME/jre/lib/ext 目录下的jar、class    可以在运行时 -Djava.ext.dirs 覆盖指定
+AppClassLoader                           加载$CLASSPATH 目录下的jar、class                可以在运行时 -Djava.class.path -cp -classpath 覆盖指定
+
+
+-java.library.path
+加载链接库文件的路径
 
 
 jar命令
