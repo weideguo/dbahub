@@ -201,7 +201,7 @@ create table ... as select ...;
 删除分区
 alter table table_name drop partition(p_key='2014-03-01');
 
-
+不支持delete update ，只能truncate
 
 
 只支持等值join

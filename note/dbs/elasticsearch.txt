@@ -4,14 +4,26 @@
 字段（columns）	    fields               
 
 
+文档的内部字段
+_index      索引名
+_type       恒为_doc
+_id         id，创建时不指定则自动生产
+_score      查询的匹配值（如 词频/逆向文档频率（TF/IDF）），用于排序结果集
+_source     文档实际值
+        
+        
 
 分片和复制（shards & replicas） 
 
 
 
 #kibana console中操作
-完整查询路径
-GET _search
+
+#列出所有字段
+GET _cat/indices
+
+#查看indices的信息
+GET ${indice}
 
 #查看indices的数据 只返回部分
 GET ${indice}/_search
@@ -34,7 +46,97 @@ GET ${indice}/_search
 }
 
 
-#创建一篇文档
+
+#单字段
+{
+  "query":{
+    "term":{
+      "_id": 100000100
+    }
+  }
+}
+
+#单字段
+{
+  "query":{
+    "match":{
+      "_id": 100000100
+    }
+  }
+}
+
+#term是不分词（不拆分搜索字）查找目标字段中是否有要查找的文字
+#match是分词（拆分搜索字）查找目标字段
+
+#多字段
+{ 
+  "query": { 
+    "bool":{ 
+      "should":{
+        "match":{ "count_date":"2021-02-04" } 
+      }, 
+      "must": {
+        "term":{ "channel_name": "xxx" } 
+      }
+    } 
+  } 
+}
+
+#多字段
+{ 
+  "query": { 
+    "bool":{ 
+      "should":[
+        { "match": { "count_date": "2021-02-04" }}
+      ],
+      "must":[
+        { "match": { "channel_name": "xxx" }}
+      ]
+    } 
+  } 
+}
+
+
+#多字段
+{ 
+  "query": { 
+    "bool":{ 
+      "must":[ 
+        {"term":{ "count_date":"2021-02-04" } },
+        {"term":{ "channel_name": "xxx" } }
+      ]
+    } 
+  } 
+}
+
+# must      返回的文档必须满足must子句的条件，并且参与计算分词
+# filter    返回的文档必须满足filter子句的条件，不参与计算分词
+# should    返回的文档可能满足should子句的条件。在一个Bool查询中，如果没有must或者filter，有一个或者多个should子句，那么只要满足一个就可以返回。minimum_should_match参数定义了至少满足几个子句。
+# must_not  返回的文档必须不满足must_not定义的条件。
+
+
+#正则
+{
+  "query": {
+    "regexp": {
+      "postcode": "W[0-9].+" 
+    }
+  }
+}
+
+#范围
+{
+  "query":{
+    "range" : {
+      "age" : {"gte" : 10,"lt" : 20 }
+    }
+  }
+}
+
+
+
+########创建
+#创建一篇文档，同时指定_id
 PUT test/_doc/2
 {
   "name":"aaa",
@@ -42,10 +144,81 @@ PUT test/_doc/2
   "desc":"AAA"
 }
 
-#查询索引
-GET test/_search
+#创建一篇文档，不指定_id会自动生成
+POST test/_doc
+{
+  "name":"bbb",
+  "age":27,
+  "desc":"AAA"
+}
 
 
+
+#######删除
+DELETE test
+
+
+#按条件删除
+POST test/_delete_by_query   
+{
+  "query":{
+    "term":{
+      "_id": 100000100
+    }
+  }
+}
+
+
+
+#分词器 收索引擎的倒排索引依赖分词器
+
+#查看分词
+GET _analyze
+{
+  "analyzer": "standard",
+  "text": "live long and prosperous, long long time a ago"
+}
+
+
+#mapping 数据类型
+
+#查看所有文档的数据类型
+GET _mapping
+
+#查看文档的数据类型
+GET test/_mapping
+
+
+#创建文档并设置数据类型，如果不创建，则在插入时创建并自动设置数据类型
+PUT test
+{
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text"
+      },
+      "name": {
+        "type": "keyword"
+      },
+      "age": {
+        "type": "integer"
+      }
+    }
+  }
+}
+
+#增加mapping
+PUT test/_mapping
+{
+  "properties": {
+    "agex": {
+      "type": "text"
+    }
+  }
+}
+
+
+#不能修改mapping
 
 
 
@@ -56,11 +229,6 @@ curl -XGET "http://localhost:9200/_cat/health?v"
 
 #列出所有索引
 curl "localhost:9200/_cat/indices?v=true"
-
-
-
-
-
 
 
 

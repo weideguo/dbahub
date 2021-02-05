@@ -10,7 +10,8 @@ MSTR
 
 QlikSense
 
-Hue 
+Hue      （hadoop，用于查询hive以及设置流程、计划调度）
 
 SuperSet （开源 后端python 前端D3.js）
 
+redash   （开源 后端python）
