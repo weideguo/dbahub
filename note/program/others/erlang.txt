@@ -1,0 +1,27 @@
+#需要编译 也可以直接在交互模式运行
+
+#erlang shell
+erl
+
+
+#
+cat > test.erl <<EOF
+-module(test).
+-export([start/0]).
+
+start()->
+        io:format("hello world\n").
+EOF        
+
+#编译成beam文件
+erlc test.erl
+#使用beam文件运行
+erl --noshell -s test start -s init stop
+
+
+
+#######################语法
+io:format("hello world\n").
+
+#
+halt().

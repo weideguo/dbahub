@@ -1,0 +1,22 @@
+rvm  ruby版本管理
+
+#查看版本
+rvm list
+
+#设置使用的版本
+rvm use 2.6.3  
+
+
+gem 包管理器
+
+#安装jekyll
+gem install jekyll
+
+
+cat > test.rb <<EOF
+puts "Hello, Ruby!";
+EOF
+
+#运行
+ruby test.rb 
+

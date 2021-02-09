@@ -1,0 +1,40 @@
+#脚本型
+
+#源码包安装
+perl Makefile.PL
+make install
+
+
+
+CPAN  Comprehensive Perl Archive Network  perl的包管理器
+
+#源
+https://metacpan.org/
+
+#安装cpan
+yum install perl-CPAN
+
+#进入cpan命令行
+perl　-MCPAN　-e　shell　
+
+#查找
+cpan> i /DBI/  
+
+#安装
+cpan> install DBI
+cpan> install DBD::mysql
+
+#设置cpan
+capn>o conf urllist push https://metacpan.org/
+cpan>o conf commit
+
+
+##############################################
+cat > test.pl <<EOF
+print "Hello, world\n";
+EOF
+
+
+perl test.pl
+##############################################
+

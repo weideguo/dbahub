@@ -1,0 +1,37 @@
+#脚本型 可以直接运行或者编译成字节码再运行
+
+cat > test.lua <<EOF
+print("Hello World！")
+EOF
+
+#直接运行
+lua test.lua
+
+#编译成字节码
+luac test.lua
+#使用字节码运行
+lua luac.out
+
+
+#包管理
+luarocks
+
+#安装
+luarocks install luabox
+
+#源
+https://luarocks.org/
+
+
+
+lua 数据类型
+
+nil	        空置
+boolean	    布尔值 false和true
+number	    表示双精度类型的实浮点数
+string	    字符串 "xxx" 'xxx'
+function	由 C 或 Lua 编写的函数
+userdata	C数据结构
+thread	    协程
+table	    用于存储 函数/数组/字典
+

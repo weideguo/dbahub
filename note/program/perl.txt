@@ -1,3 +1,0 @@
-#源码包安装
-perl Makefile.PL
-make install
