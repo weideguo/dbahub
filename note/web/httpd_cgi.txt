@@ -1,0 +1,33 @@
+#查看配置设置的cgi路径
+cat /etc/httpd/conf/httpd.conf | grep ScriptAlias | grep cgi
+
+#在cgi路径设置可执行的文件，可以为脚本或者编译后的文件，以cgi结尾
+cat > test.cgi <<EOF
+#!/bin/sh
+echo "Content-Type: text/html"
+echo ""
+echo "Hello CGI"
+EOF
+
+chmod 755 test.cgi
+
+#启动httpd 
+service httpd start
+
+#之后可访问cgi提供的url
+curl http://127.0.0.1/cgi-bin/test.cgi
+
+
+
+####################################
+cat > test.c <<EOF
+#include <stdio.h>
+int main(void)
+{
+   printf("Content-Type: text/html\n\n");
+   printf("Hello CGI\n");
+   return 0;
+}
+EOF
+
+gcc test.c -o test.cgi

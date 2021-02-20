@@ -11,3 +11,13 @@ end
 
 print(max(10,30))
 
+
+
+
+f=function()
+print("xxxx")
+end
+ 
+f()
+
+
