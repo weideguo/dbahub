@@ -460,16 +460,7 @@ checksum table table_name;
 
 
 
-profile            --显示当前会话执行的资源占用，使information_schema库代替
-
---信息存储于information_schema.profiling
-
-set profiling=1    --启用profile
-show profile [all|...];
-show profiles;
-
-
-	
+    
 排序
 指定主键时，不加order by语句则按照主键排序
 不指定主键，但unqiue键在为第一个字段，按unique键排序。
@@ -483,14 +474,6 @@ information_schema.partitions;
 information_schema.tables;	
 	
 select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的字符转换实现去掉字段中的中文
-
-
-
-
-
---分页优化
-使用 limit ... offset ... 语句并不能优化数据库的查询，offset之前的记录依旧先被数据库遍历然后返回结果集。
-可以通过转换成使用主键（优先选择）或者唯一键（数据库需要先查询对应主键再回表查询，性能更低）查询一个范围段（对应键需要能对比大小，如为int/timestamp等，再加limit但不再设置offset），实现查询性能不会随着 offset 的增大而下降
 
 
 

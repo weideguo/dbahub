@@ -154,5 +154,22 @@ Cygwin
 可以用于在windows安装linux命令 相对于mingw更完善？
 
 
+
+
+
 hosts
 C:\Windows\System32\drivers\etc
+
+
+
+
+
+
+AD： Active Directory（活动目录）存储了有关网络对象的信息，例如用户、组、计算机、共享资源、打印机和联系人等。 
+   
+工作组 局域网，对等网络
+
+
+域 集中式管理，可以跨局域网，依赖于DNS，通过AD实现管理
+域控制器
+域成员加入域

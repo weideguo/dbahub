@@ -1,0 +1,35 @@
+
+explain <sql>       --执行计划 分析sql语句的执行过程
+
+explain select * from test1 where id=1
+
+
+输出集从下往上看
+
+
+
+
+
+
+
+
+profile            --显示当前会话执行的资源占用，使information_schema库代替
+
+--信息存储于information_schema.profiling
+
+set profiling=1    --启用profile
+show profiles;     --查看记录的语句
+show profile all;  --查看所有的语句的执行性能分析
+show profile for query <query_id>;   --查看指定语句的执行性能分析
+	
+    
+    
+
+
+
+--分页优化
+使用 limit ... offset ... 语句并不能优化数据库的查询，offset之前的记录依旧先被数据库遍历然后返回结果集。
+可以通过转换成使用主键（优先选择）或者唯一键（数据库需要先查询对应主键再回表查询，性能更低）查询一个范围段（对应键需要能对比大小，如为int/timestamp等，再加limit但不再设置offset），实现查询性能不会随着 offset 的增大而下降
+
+
+
