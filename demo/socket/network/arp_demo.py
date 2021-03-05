@@ -39,11 +39,11 @@ Ether()/IP()/TCP()
 
 ##询问对应IP的的mac
 #res=sr(ARP(pdst="192.168.59.128")) 
-res[0].show()
+#res[0].show()
 res=sr1(ARP(pdst="192.168.59.128")) 
 res.summary()                       
 res.show()
-es.hwdst 
+res.hwdst 
 
 
 ##广播询问全网段的ip对应mac  可以选择只查询指定ip

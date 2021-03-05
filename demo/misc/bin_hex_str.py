@@ -1,5 +1,6 @@
 #coding:utf8
 #字符串与十六进制、二进制之间的转换
+#python2
 
 def str_to_hex(s):
     return r"\x"+r'\x'.join([hex(ord(c)).replace('0x', '') for c in s])

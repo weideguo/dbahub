@@ -483,6 +483,7 @@ select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的
 ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防止sql泄露
 
 
-
-
+--password函数的实现
+SELECT PASSWORD('password');
+SELECT SHA1(UNHEX(SHA1('password')));
 

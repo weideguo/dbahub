@@ -399,6 +399,17 @@ alter event myevent_test enable;
 
 
 
+delimiter ;;                                                 -- 
+CREATE EVENT `myevent_test`                                  -- 
+ON SCHEDULE EVERY 1 DAY                                      --
+starts '2011-03-21 03:30:00'                                 -- 开始时间 
+ON COMPLETION PRESERVE ENABLE                                -- 
+DO                                                           -- 
+...                                                          -- 
+;;                                                           -- 
+delimiter ;                                                  -- 
+
+
 CREATE FUNCTION f1(s CHAR(20))
 RETURNS CHAR(50) DETERMINISTIC
 RETURN CONCAT('Hello, ',s,'!');

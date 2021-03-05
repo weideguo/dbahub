@@ -426,7 +426,23 @@ diff										###逐行比
 basename $path/filename						###从全录路径中提取文件名
 basename $path/filename.txt	.txt			###从全录路径中提取文件名并去掉后缀
  
+
+
+diff  file_old file_new > file_update.patch   #生成补丁文件
+patch -p0 file_old 	file_update.patch         #应用补丁文件
+
+
+diff -Naru test test_new  > test.patch        #对比目录  使用git时 git diff > my.patch
+
+mv test
+patch -p1 < test.patch                        #因为对比时是在目录外对比，因此打补丁时要忽略一级目录
  
+
+#二进制对比
+xdelta3 -s SOURCE TARGET > OUT                #生成补丁
+xdelta3 -d -s SOURCE OUT TARGET_NEW           #打补丁成新文件
+ 
+
 ##正则表达
 "sinosy_${DATE}_*.log"	双引号可以禁止通配符扩展，但是允许变量扩展。
 'sinosy_${DATE}_*.log'	同时禁止通配符扩展与变量扩展。

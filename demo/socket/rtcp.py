@@ -51,7 +51,7 @@ def _transfer_stream(num, s1, s2):
                 print(num,"closing...")
                 break
             print(num,"recv")
-            #print(buff)
+            print(repr(buff))          #实际传输的数据
             s2.sendall(buff)
             print(num,"resend")
     except :

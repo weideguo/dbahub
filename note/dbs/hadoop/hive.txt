@@ -274,3 +274,24 @@ hcat -e "show databases"           --命令行使用 不能执行mapreduce任务
 
 
 
+--样本数据
+
+SELECT * FROM tb_name TABLESAMPLE(10 ROWS);
+
+SELECT * FROM tb_name TABLESAMPLE(100M) s;
+
+TABLESAMPLE(0.1 PERCENT)
+TABLESAMPLE(100M)
+TABLESAMPLE (BUCKET x OUT OF y [ON colname])
+TABLESAMPLE (BUCKET 3 OUT OF 32 ON rand())         --colname=rand()含义是替代特定的列来抽样所有的数据行  也可以是非分区字段
+
+
+
+
+
+
+
+
+
+
+

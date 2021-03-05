@@ -1,0 +1,46 @@
+###RAID
+/opt/MegaRAID/MegaCli/MegaCli64 -LDInfo -Lall -aALL     #查raid级别
+/opt/MegaRAID/MegaCli/MegaCli64 -PDList -aALL           #查看硬盘信息  
+
+
+RAID Level        : Primary-1, Secondary-0, RAID Level Qualifier-0″) echo “Raid Level        :Raid 1″;;
+RAID Level        : Primary-0, Secondary-0, RAID Level Qualifier-0″) echo “Raid Level        :Raid 0″;;
+RAID Level        : Primary-5, Secondary-0, RAID Level Qualifier-3″) echo “Raid Level        :Raid 5″;;
+RAID Level        : Primary-1, Secondary-3, RAID Level Qualifier-0″) echo “Raid Level        :Raid 10″;;
+
+
+
+dell raid卡信息
+
+Megacli -LDInfo -Lall -aALL                                            查raid级别
+                                                                      
+Megacli -AdpAllInfo -aALL                                              查raid卡信息
+                                                                     
+Megacli -PDList -aALL                                                  查看硬盘信息
+                                                                      
+Megacli -AdpBbuCmd -aAll                                               查看电池信息
+                                                                      
+Megacli -FwTermLog -Dsply -aALL                                        查看raid卡日志
+                                                                     
+Megacli -adpCount                                                      显示适配器个数
+                                                                      
+Megacli -AdpGetTime –aALL                                              显示适配器时间
+                                                                      
+Megacli -AdpAllInfo -aAll                                              显示所有适配器信息
+                                                                     
+Megacli -LDInfo -LALL -aAll                                            显示所有逻辑磁盘组信息
+                                                                      
+Megacli -PDList -aAll                                                  显示所有的物理信息
+                                                                      
+Megacli -AdpBbuCmd -GetBbuStatus -aALL |grep ‘Charger Status’          查看充电状态
+                                                                     
+Megacli -AdpBbuCmd -GetBbuStatus -aALL                                 显示BBU状态信息
+                                                                     
+Megacli -AdpBbuCmd -GetBbuCapacityInfo -aALL                           显示BBU容量信息
+                                                                     
+Megacli -AdpBbuCmd -GetBbuDesignInfo -aALL                             显示BBU设计参数
+                                                                    
+Megacli -AdpBbuCmd -GetBbuProperties -aALL                             显示当前BBU属性
+                                                                   
+Megacli -cfgdsply -aALL                                                显示Raid卡型号，Raid设置，Disk相关信息
+

