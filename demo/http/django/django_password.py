@@ -79,5 +79,20 @@ def pbkdf2(password, salt, iterations, dklen=0, digest=None):
     return hashlib.pbkdf2_hmac(digest().name, password, salt, iterations, dklen)
 
 
+####################################################################################
+
+from django.contrib.auth.hashers import make_password, check_password
+
+from django.contrib.auth.hashers import PBKDF2PasswordHasher
+
+PBKDF2PasswordHasher.iterations=150000
+
+password="my_password"
+salt=""                                               #任意长度 为空则自动生成
+hasher="pbkdf2_sha256"
+password_hash=make_password(password,salt,hasher)     #存储于数据库的实际值
+
+
+check_password(password,password_hash)                #校验
 
    

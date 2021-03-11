@@ -1,0 +1,26 @@
+##XXE  XML ExternalEntity Injection
+
+伪造XML内容，在服务端序列化时进行攻击
+
+防御 
+使用DTD（document type definition）约束参数实体和内部实体
+
+
+
+
+
+##SSRF(Server-side Request Forge, 服务端请求伪造)。
+##由攻击者构造的攻击链接传给服务端执行造成的漏洞，一般用来在外网探测或攻击内网服务。
+
+
+# file protocol (任意文件读取)
+curl -vvv 'file:///etc/passwd'
+
+#gopher协议 第一个字符"_"保留 其余为tcp字符
+curl -vvv 'gopher://127.0.0.1:6379/_auth%20my_redis_passwd%0Ainfo%0A'
+
+#dict协议
+curl -vvv 'dict://127.0.0.1:6379/info'
+
+
+

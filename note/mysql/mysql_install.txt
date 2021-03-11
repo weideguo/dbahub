@@ -116,7 +116,9 @@ mysql --ssl-ca=ca.pem \
 5.7以及以下 如果不启动ssl，则连接后的传输以明文传输
 8.0 默认都以ssl加密传输  
 如果修改密码加密为mysql_native_password并且不使用配备的mysql客户端，则不会默认加密；如果使用匹配的mysql客户端，则依旧加密传输
- 
+默认自动动服务端获取公钥？
+mysql --ssl-mode=DISABLED ...    --指定不使用ssl进行连接 
+
  
 create user ... require ssl;
 	

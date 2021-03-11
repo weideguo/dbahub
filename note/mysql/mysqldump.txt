@@ -73,6 +73,20 @@ load data infile 'file_name' into table 'table_name' [export_options];     --账
 load data local infile ...;               --导入不需要额外设置 文件在执行命令的当前客户机上
 
 
+set global local_infile=on;              --设置允许load data local...
+
+
+--精心伪造的客户端可以读mysql server的文件
+向 MySQL Client 发送Server Greeting （load data local ... 请求）
+等待 Client 端发送一个Query Package
+回复一个file transfer请求           （load data infile ... 实际内容 是否可行？）
+
+
+create table aaa(a varchar(100));
+LOAD DATA LOCAL INFILE '/etc/passwd' INTO TABLE aaa;
+
+
+
 ---export_options
 [{FIELDS | COLUMNS} [TERMINATED BY 'string']   --字段分割符
 [[OPTIONALLY] ENCLOSED BY 'char']			   --字段包围符
