@@ -58,10 +58,10 @@ class BloomFilter(object):
 
 
 if __name__ == '__main__':
-""" 第一次运行时会显示 not exists!，之后再运行会显示 exists! """
+    """ 第一次运行时会显示 not exists!，之后再运行会显示 exists! """
     bf = BloomFilter()
     if bf.isContains('http://www.baidu.com'):   # 判断字符串是否存在
-        print 'exists!'
+        print('exists!')
     else:
-        print 'not exists!'
+        print('not exists!')
         bf.insert('http://www.baidu.com')

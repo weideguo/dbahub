@@ -45,6 +45,9 @@ insert into tb_name(column_name) values(b'101');
 	select conv(hex(column_name),16,2) from tb_name   以二进制格式查询
     select bin(column_name) from tb_name;
 
+select 0x21;
+select unhex('21');
+
 select CONV('10000', 2, 16);   #任意进制之间转换 如二进制转16进制
 select b'10'<<2;   #左移
 select b'10'>>2;   #右移

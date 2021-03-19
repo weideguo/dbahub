@@ -1,0 +1,32 @@
+// seata 具体实现
+// 分布式事务
+@Override
+@GlobalTransactional(name = "create-order", rollbackFor = Exception.class)
+public void create(Order order) {
+ 
+    String xid = RootContext.getXID();
+ 
+    LOGGER.info("------->交易开始");
+    
+    //本地方法
+    orderDao.create(order);
+ 
+    //远程方法 扣减库存
+    storageApi.decrease(order.getProductId(), order.getCount());
+ 
+    //远程方法 扣减账户余额
+    LOGGER.info("------->扣减账户开始order中");
+    accountApi.decrease(order.getUserId(), order.getMoney());
+ 
+    LOGGER.info("------->交易结束");
+    LOGGER.info("全局事务 xid： {}", xid);
+}
+
+
+分布式事务 
+AT     业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。提交异步化，非常快速地完成；回滚通过一阶段的回滚日志进行反向补偿。
+TCC    Try-Confirm-Cancel   TCC是业务层面的分布式事务，最终一致性，不会一直持有资源的锁。
+SAGA   恢复策略  backward recovery，向后恢复，补偿所有已完成的事务，如果任一子事务失败；forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。
+XA     外部事务  XA是资源层面的分布式事务，强一致性，在两阶段提交的整个过程中，一直会持有资源的锁。性能（阻塞性协议，增加响应时间、锁时间、死锁）
+ 
+ 

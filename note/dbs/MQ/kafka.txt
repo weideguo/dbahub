@@ -13,13 +13,6 @@ Kafka 集群包含一个或多个服务器，服务器节点称为broker。broke
 
 
 
-# 启用删除主题
-delete.topic.enable=true
-# 检查日志段文件的间隔时间，以确定是否文件属性是否到达删除要求。
-log.retention.check.interval.ms=1000
-
-
-
 kafka保存消费者消费的进度，即offset
 
 当offset不存在时，根据auto.offset.reset配置的值，会有几种不同策略
@@ -37,3 +30,24 @@ topic不存在指定的offset，则抛出异常
 
 点对点消息传递模式           一条消息只能被消费一次
 发布-订阅消息传递模式       同一条数据可以被多个消费者消费
+
+
+
+
+
+#集群配置
+#config/server.properties
+
+broker.id=1              #唯一即可，连接共同的zookeeper即成为一个集群
+log.dirs                 #日志路径 实际存储topic数据
+zookeeper.connect        #连接的zookeeper集群
+
+
+
+# 启用删除主题
+delete.topic.enable=true
+# 检查日志段文件的间隔时间，以确定是否文件属性是否到达删除要求。
+log.retention.check.interval.ms=1000
+
+
+

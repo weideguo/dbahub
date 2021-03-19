@@ -173,8 +173,13 @@ INTO TABLE tb_name
 partition(p1=xxx,p2=yyy)
 
 
+--自动删除已经存在的分区（不涉及的分区不会影响）
+insert overwrite table table_name partition(k1, k2) select ...                  --静态分区插入数据
+insert overwrite table table_name partition(k1='v1', k2='v2') select ...        --动态分区插入数据
+insert overwrite table table_name partition(k1='v1', k2) select ...             --动静混合分区插入数
 
-alter table tb_name ... archive partition(...);   --将分区打包成归档文件，当很少查询时，用于减轻namenode压力
+
+alter table table_name ... archive partition(...);   --将分区打包成归档文件，当很少查询时，用于减轻namenode压力
 
 
 

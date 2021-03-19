@@ -109,6 +109,8 @@ show variables like '%plugin_dir%';          --查看plugin的路径
 select unhex('so文件的16进制编码') into dumpfile '/usr/lib64/mysql/plugin/xxx.so';          --写文件到plugin路径
 
 
+SELECT hex(load_file('xxx.so'));   
+
 
 备份 
 mysqlhotcopy    ----只能用于MyISAM、ARCHIVE引擎的联机热备份
