@@ -763,7 +763,7 @@ c是字符设备文件，鼠标，键盘
 b是块设备，如硬盘
 s套接文件，如mysql启动时生成的mysql.sock
 
-ln existingfile newfil       ###硬链接(hard link)  ##源文件删除后链接文件还可以读取e
+ln existingfile newfil       ###硬链接(hard link)  ##源文件删除后链接文件还可以读取
 ln -s existingfile newfile   ###软链接(soft link)   ###源文件删除后链接文件同时失效
 
 if [ -h $newfile ];then echo 111; fi       #判断是否是链接

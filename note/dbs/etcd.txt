@@ -1,4 +1,8 @@
 安装etcd
+单节点   
+./etcd &       #存储目录default.etcd
+
+
 
 ###与zookeeper类似
 ###也可以使用集群
@@ -31,7 +35,7 @@ curl http://${etcd_ip_address}:${etcd_port}/v2/keys/${key_name}
 
 
 
-etcdctl set /key_name "key_value"
+etcdctl put /key_name "key_value"
 etcdctl get /key_name 
 etcdctl mk /key_name "key_value"	
 etcdctl update /key_name "key_value"

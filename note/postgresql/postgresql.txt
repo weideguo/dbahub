@@ -75,7 +75,8 @@ domains
 
 
 
-创建表默认在public schema下
+创建表默认在public schema下，public下的表可以不指定schema
+
 特殊schema 系统自动创建
     pg_catalog
     information_schema
