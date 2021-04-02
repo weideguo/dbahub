@@ -1,0 +1,9 @@
+第三方逻辑备份
+备份
+./mydumper -u root -p weideguo -h 127.0.0.1 -R -B test -o /u03/mydumper_dir
+还原
+./myloader -u root -p weideguo -h 127.0.0.1 -B wdg -d /u03/mydumper_dir
+
+	-t 					--线程数
+    
+    

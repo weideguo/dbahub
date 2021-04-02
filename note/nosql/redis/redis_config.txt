@@ -1,0 +1,24 @@
+##慢查询配置设置
+slowlog-slower-than		    #慢查询时间
+slowlog-max-len			    #慢查询日志长度
+
+#危险命令重命名 防止连接者使用
+rename-command flushAll ""
+rename-command flushDB ""
+rename-command keys ""
+
+#RDB持久化
+#该机制是指在指定的时间间隔内将内存中的数据集快照写入磁盘。    
+#配置文件中设置
+#save <seconds> <changes>
+save 900 1         #900秒内有一个修改就保存
+save 300 10
+save 60 1000
+appendonly on      #不启用aof持久化
+
+#AOF持久化
+#该机制将以日志的形式记录服务器所处理的每一个写操作，在Redis服务器启动之初会读取该文件来重新构建数据库，以保证启动后数据库中的数据是完整的。
+appendonly yes
+
+#无持久化：配置文件中注释save
+#同时应用AOF和RDB

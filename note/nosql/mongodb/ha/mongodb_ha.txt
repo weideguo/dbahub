@@ -1,0 +1,26 @@
+集群安全，通过设置keyFile设置节点建的认证   #6 and 1024 characters 
+--keyFile arg      //private key for cluster authentication
+
+
+
+openssl rand -base64 756 > <path-to-keyfile>
+chmod 400 <path-to-keyfile>
+
+
+
+
+主节点操作修改到数据库，然后记录到oplog，从节点复制oplog。
+
+
+db.printReplicationInfo()    	//查看主节点信息
+db.printSlaveReplicationInfo()	//查看从库信息
+
+
+//默认只允许主节点写数据，副本节点不允许连接查询。
+//设置副本节点可以连接与查询，在每个副本集中设置 
+//设置从库可以连接，选择一个操作(3.4.2) 低版本不需要进行这样的操作(2.8.19)   只可以查询 不能改数据
+rs.secondaryOk()              //在从库中操作 rs.slaveOk() //旧的  每次连接都要操作
+db.getMongo().setSlaveOk()    //在主库中操作
+
+
+

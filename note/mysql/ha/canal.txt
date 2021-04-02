@@ -1,0 +1,10 @@
+基于mysql binlog增量数据订阅和消费
+模拟成mysql slave从源mysql抽取binlog，可以同步到不同类型的数据库
+可用于实现mysql的异地同步（主集群 -> 从集群）
+
+
+
+
+
+
+

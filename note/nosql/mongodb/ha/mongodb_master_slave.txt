@@ -1,0 +1,11 @@
+主从 最小配置
+主primary
+master=yes
+
+从secondary   #中途重建主从 可以清除从的数据 重新启动即可
+slave=yes
+source=<master ip>:<master port>
+
+
+
+

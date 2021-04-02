@@ -1,0 +1,28 @@
+#sentinel的连接没有密码？
+#提供自动切换 实现高可用
+#建立在主从模式上（slaveof会被sentinel动态修改） 或者 单纯启动多个redis，通过known-slave设置主从
+#节点可以动态加入，退出
+
+./redis-server ./sentinel.conf --sentinel        ##启动sentinel
+./redis-sentinel ./sentinel.conf
+
+###用于实现master/slave自动切换，由runid判定下一个master。
+###每个master或sentinel启动一个sentinel
+port 26379												 ##sentinel的端口
+dir /tmp                                                 ##工作目录 相当于chroot？
+sentinel monitor mymaster 192.168.200.129 6379 2		 ##ip及port为master redis的信息 sentinel可以复用？多个集群使用同一套sentinel，通过service_name隔离
+
+sentinel auth-pass mymaster master_password              ##使用密码时
+
+sentinel known-slave mymaster 127.0.0.1 6480             ##自动识别从 可以不用设置slaveof 会子自动根据状态改变
+
+
+###查看从状态
+redis-cli -h 127.0.0.1 -p 6379 info Replication		  
+
+###sentinel信息查看
+###使用sentinel的ip及port进入命令行
+info Sentinel							         ###查看sentinel状态
+sentinel slaves mymaster				         ###查看slaves的状态 mymaster为sentinel配置文件的参数
+sentinel get-master-addr-by-name mymaster        ##获取主节点的ip以及端口
+

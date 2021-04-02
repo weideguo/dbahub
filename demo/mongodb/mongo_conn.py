@@ -1,9 +1,5 @@
 #--encoding=utf-8
-'''
-import pymongo
-conn=pymongo.Connection("mongodb://192.168.1.1:27017")
-#没有？
-'''
+
 
 from pymongo import MongoClient
 
@@ -28,8 +24,25 @@ is_primary
 client=pymongo.MongoClient('mongodb://m_user:m_password@127.0.0.1:27017/admin')
 client.admin.command('ismaster')
 '''
+
+
 '''
 MongoReplicaSetClient
 '''
+mongo_replset=[
+"127.0.0.1:27017",
+"127.0.0.2:27017",
+"127.0.0.3:27017"
+]
 
+
+mongdb_auth=("my_mongo_user","my_mongo_password")
+
+mongdb_auth_db="admin"
+mongo_replset_name="my_mongo_replset_name"
+
+mongo_uri="mongodb://%s:%s@%s/%s?replicaSet=%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mongo_replset), mongdb_auth_db, mongo_replset_name)
+
+
+conn = pymongo.MongoClient(mongo_uri)
 

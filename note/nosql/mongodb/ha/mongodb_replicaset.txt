@@ -1,0 +1,81 @@
+replica set (副本集)
+副本集在主节点宕机后，副本接管主节点
+默认是主节点写数据，副本节点不允许连接。
+
+
+
+mongod --port 27071 --dbpath "../data" --replSet "mongo_repl"
+
+在命令行中
+rs.initiate()    			//启动一个新的副本集		//只在主节点启动
+rs.conf()		 			//查看副本集配置
+rs.status()		 			//查看配置
+rs.add("hostname:port")  	//添加副本集成员
+rs.addArb()					//添加仲裁节点
+rs.remove("hostname:port")	//移除副本节点
+db.isMaster()				//查看当前节点是否为主节点
+rs.isMaster()
+rs.stepDown()				//将主库降为从库
+
+
+##reconfig重新修改副本集节点
+cfg=rs.conf()
+cfg.members[1].priority=2;
+rs.reconfig(cfg);
+
+
+
+##使用配置变量设置
+config={_id:"mongo_repl",members:[
+	{_id:0,host:"hostname0:port0"},
+	{_id:1,host:"hostname1:port1"},
+	{_id:2,host:"hostname2:port2"},
+	...
+]	
+}
+rs.inititate(config)				//在任意一个节点操作即可
+
+
+config={_id:"mongo_repl",members:[
+	{_id:0,host:"hostname0:port0"},
+	{_id:1,host:"hostname1:port1"},
+	{_id:2,host:"hostname2:port2",arbiterOnly:true},			
+	...
+]	
+}
+
+##仲裁节点为可选
+##仲裁节点只能参与投票，不能升级为主节点
+
+
+#################################################################
+
+
+secondary1
+27072
+
+./mongod --port 27072 --replSet "my_mong" --dbpath "../data"
+./mongo --port 27072
+
+
+
+secondary2
+
+./mongod --port 27073 --replSet "my_mong" --dbpath "../data"
+./mongo --port 27073
+
+ 
+primary
+###启动节点
+./mongod --port 27071 --replSet "my_mong" --dbpath "../data"
+###登陆
+./mongo --port 27071
+
+##初始化primary节点
+rs.initiate()
+###添加副本集。副本节点应该先启动
+rs.add("192.168.200.140:27072")  	
+rs.add("192.168.200.140:27073")  
+
+###仲裁节点添加，rs.addArb("192.168.200.140:27074")
+

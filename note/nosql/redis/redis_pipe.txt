@@ -1,0 +1,26 @@
+#将原始命令转换
+#cat transfer_redis_command.sh
+#!/bin/bash
+
+while read CMD; do
+  # each command begins with *{number arguments in command}\r\n
+  XS=($CMD); printf "*${#XS[@]}\r\n"
+  # for each argument, we append ${length}\r\n{argument}\r\n
+  for X in $CMD; do printf "\$${#X}\r\n$X\r\n"; done
+done < redis_commands.txt 
+
+
+cat redis_commands.txt
+set n1 nnnn
+set n2 n222
+
+
+sh transfer_redis_command.sh > redis_commands_pipe.txt
+cat redis_commands_pipe.txt |  redis-cli --pipe
+
+#管道技术(pipeline)
+#客户端将多个命令以pipelie方式发出，redis服务处理完毕多个命令后将结果一同返回客户端 
+redis-cli --pipe   #插入效率更高 
+
+
+

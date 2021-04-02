@@ -1,11 +1,12 @@
 cloudera hadoop 配置文件路径
 /etc/hadoop/conf
 
+一个角色对应一个进程
 
 HDFS NameNode            管理hdfs master节点，维护文件系统树以及树内的文件和索引目录  SecondaryNameNode节点备份NameNode数据，用于在故障时转移
-HDFS DataNode            管理分布式文件系统在节点中的文件块
+HDFS DataNode            管理分布式文件系统在节点中的文件块  大文件会被分割成多个block进行存储，block大小默认为128MB( ${dfs.blocksize} )。每一个block会在多个datanode上存储多份副本，默认是3份( ${dfs.replication} )。
 
-YARN ResourceManager     master节点
+YARN ResourceManager     master节点 可以存在多个以实现高可用
 YARN NodeManager
 #以下已经被yarn取代？
 #JobTracker   管理job

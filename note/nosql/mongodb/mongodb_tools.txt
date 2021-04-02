@@ -1,0 +1,36 @@
+//导出与恢复
+mongodump  -u weideguo -p weideguo -d test -o ../backup_dir   							//将数据库备份，备份成文件格式
+./mongodump -h 127.0.0.1 --port 27017 -d mongodb_gs_sklr -o /data/db_user00/mongo_bak
+		
+		-u, --username=<username>
+		-p, --password=<password>	
+		--authenticationDatabase=admin
+
+
+mongorestore
+mongorestore <options> <directory or file to restore>
+
+
+mongoexport -u weideguo -p weideguo -d test -c col -o ../collection_name  //将表导出成标准的json文件
+mongoimport -u weideguo -p weideguo -d test -c col --file=../col.json	  //导入，可以选择使用json, csv, tsv
+
+//监控
+mongostat 查看内存映射情况
+mongotop
+
+bsondump   //查看使用mongodump导出生成的.bson文件
+
+//操纵大文件
+mongofiles -d put gridfs file_name     //插入大文件
+mongofiles -d delete gridfs file_name  //删除
+
+
+
+mongos     //用于sharding集群 router
+
+
+//废弃
+mongooplog  //Poll operations from the replication oplog of one server, and apply them to another.
+mongoperf   //a performance testing tool
+
+

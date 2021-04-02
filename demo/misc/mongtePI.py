@@ -4,7 +4,6 @@
 import random
 
 
-
 def montePI(n=100):
 	s=0
 	for i in range(n):
@@ -12,4 +11,7 @@ def montePI(n=100):
 		y=random.random()
 		if (x*x+y*y)<1 :
 			s=s+1
-	return 4*s/n
+	return 4.0*s/n
+
+
+montePI()

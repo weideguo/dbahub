@@ -15,7 +15,7 @@ while True:
 
 
 from shlex import split as shlsplit
-from subprocessess import *
+from subprocess import *
 
 command_line='python  read_per_line.py'
 cmd=shlsplit(command_line)
@@ -37,7 +37,7 @@ process.stdout.flush()               #???
 #使用redis测试
 
 from shlex import split as shlsplit
-from subprocessess import *
+from subprocess import *
 
 command_line='telnet 127.0.0.1 6479'
 cmd=shlsplit(command_line)

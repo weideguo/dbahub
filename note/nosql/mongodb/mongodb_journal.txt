@@ -1,0 +1,13 @@
+journal
+--journal    //启用，默认
+--nojournal  //不启用
+类似于redo日志
+
+启动时date file映射到shared view（不是加载），mongodb需要时再加载数据
+shared view映射到private view，读写操作使用private view
+private view变脏后根据journalCommitInterval将操作写往journal file，称为group commit
+
+journal file记录原生的操作（raw operation）
+journal file记录的操作应用在shared view上，shared view刷新输出到data file
+
+

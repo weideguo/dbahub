@@ -1,0 +1,89 @@
+sharding
+
+以下角色都可以多个
+Shard:
+用于存储实际的数据块，实际生产环境中一个shard server角色可由几台机器组个一个relica set承担，防止主机单点故障
+Config Server:
+mongod实例，存储了整个 ClusterMetadata，其中包括 chunk信息。
+Router:
+前端路由，客户端由此接入，且让整个集群看上去像单一数据库，前端应用可以透明使用。
+
+
+
+db.runCommand({removeshard:"shard_name/host_ip:host_port[,...]"})  移除shard
+
+
+###将draining状态的shard启用，draining不能用于存数据
+use config
+db.shards.update({},{$unset:{draining:true}},false,true)
+
+
+
+#################################################################################################
+
+###数据分布在shard节点中
+
+###由于以下都使用同一个可执行文件运行，所以使用【--fork】参数
+
+
+shard
+###一个shard对应单个mongod实例，也可以是mongod副本集
+
+###启动三个shard
+./mongod --shardsvr --port 27081 --dbpath "../data/shard1" --logpath "../data/shard1/shard1.log" --fork
+./mongod --shardsvr --port 27082 --dbpath "../data/shard2" --logpath "../data/shard2/shard2.log" --fork
+./mongod --shardsvr --port 27083 --dbpath "../data/shard3" --logpath "../data/shard3/shard3.log" --fork
+
+
+
+config server
+###必须设置成副本集
+./mongod --configsvr --replSet "my_config" --port 27071 --dbpath "../data/config1" --logpath "../data/config1/config1.log" --fork
+./mongod --configsvr --replSet "my_config" --port 27072 --dbpath "../data/config2" --logpath "../data/config2/config2.log" --fork
+./mongod --configsvr --replSet "my_config" --port 27073 --dbpath "../data/config3" --logpath "../data/config3/config3.log" --fork
+
+./mongo --port 27071
+##在命令行中设置副本集信息
+rs.initiate()
+rs.add("192.168.200.140:27072")  	
+rs.add("192.168.200.140:27073")  
+
+
+###使用副本集作为shard
+config={_id:"shared1",members:[
+	{_id:0,host:"hostname0:port0"},
+	{_id:1,host:"hostname1:port1"},
+	{_id:2,host:"hostname2:port2"},
+	...
+]	
+}
+rs.inititate(config)				
+
+
+
+Router  ##可以有多个
+###客户端由此接入
+##启动
+./mongos --port 40000 --configdb my_config/192.168.200.140:27071,192.168.200.140:27072,192.168.200.140:27073 --logpath "../data/mongos/mongos.log" --fork
+
+
+##连接roter节点
+./mongo --port 40000										
+
+use admin													
+
+db.runCommand({addshard:"localhost:27081"})												###副本集添加 db.runCommand({addshard:"shard_name/host_ip:host_port[,...]"})
+db.runCommand({addshard:"localhost:27082"})					
+
+	
+db.runCommand({enablesharding:"db_name"})												###对db_name数据库进行分片	
+db.runCommand({shardcollection:"db_name.collection_name",key:{id:hashed}})				###collectiion_name的键id以hashed进行分片
+
+sh.addShard("db_name.collection_name",key_name)
+
+
+db.runCommand({listshards:1})  	###查看分片服务器的配置
+db.col_name.stats()				##查看collection的分片等信息
+sh.status()
+
+

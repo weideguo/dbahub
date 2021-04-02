@@ -1,0 +1,316 @@
+增加
+use db_name   								//切换数据库，如果不存在则创建
+db.createCollection("collection_name")    	//创建集合
+
+db.collection_name.insert({column_name:"column_value"[,...]})   //插入，集合不存在则创建
+db.collection_name.insert({title: 'MongoDB 教程', 
+    description: 'MongoDB 是一个 Nosql 数据库',
+    by: '菜鸟教程',
+    url: 'http://www.runoob.com',
+    tags: ['mongodb', 'database', 'NoSQL'],
+    likes: 100
+})
+
+document=({column_name:"column_value"[,...]});
+db.collection_name.insert(document)               //通过定义变量执行插入  
+
+
+视图
+db.createView(view_name,collection_name,)
+
+
+
+
+
+删除delete
+db.collection_name.remove({'title':'MongoDB 教程'})     //删除文档
+db.collection_name.drop()    		 					//删除集合
+db.dropDatabase()   									//删除数据库，先切换到指定数据库
+db.runcommand()
+
+	{drop:"collection_name"}    //删除collection
+	{"dropIndexes":"collection_name","index":"index_name"}
+	{ping:1}
+	{collStats:"collection_name"}
+	{buildInfo:1}
+	{getLastError:1}
+	{listCommand:1}			//显示可以执行的命令
+	
+	{setParameter:1,<option>:<value>}
+	
+	db.runCommand({getParameter:1,logLevel:1})    //查询参数 logLevel
+	db.runCommand({getParameter:"*"})
+
+	
+	--setParamster <option>=<value>				  //启动时设置参数
+	
+	
+	
+	
+	
+	
+修改
+//更新文档
+db.collection_name.update({"title":"MongoDB 教程"},{$set:{"title":"MongoDB"}})   
+db.collection_name.update({"title":"MongoDB 教程"},{$set:{"title":"MongoDB"}},{multi:true})   //修改多条
+db.counters.findAndModify({query:{_id: sequenceName},update:{$inc:{sequence_value:1}}})
+db.counters.update({_id: sequenceName},{$inc:{sequence_value:1}})
+db.counters.update({...},1})   //upset操作，不存在则插入
+
+mongodb不支持事务
+//update操作
+{ $set : { field : value } }   						//更新键值
+{ $unset : { field : 1} }      						//删除键值
+{ $inc : { field : value } 	   						//数字键值自增减
+{ $push : { field : value } }  						//把value添加到field中  field必须为数组
+{ $pushAll : { field : [value1,vlue2...] } }  		//添加多个value
+{ $pull : { field : value } }  						//从数组field内删除一个等于value值
+{ $ddToSet:{field : value }}   						//增加一个值到数组 不存在才添加
+{ $pop : { field : 1 } }       						//删除数组的第一个或最后一个元素
+{ $rename : { old_field_name : new_field_name } }   //修改字段名称
+{ $bit : { field : {and : 5}}}   					//位操作
+
+
+
+//通过传入更新文档
+db.col.save({
+	"_id" : ObjectId("58049b78703abc953641af3c"),
+    "title" : "MongoDB",
+    "description" : "MongoDB 是一个 Nosql 数据库",
+    "by" : "Runoob",
+    "url" : "http://www.runoob.com",
+    "tags" : [
+            "mongodb",
+            "NoSQL"
+    ],
+    "likes" : 110
+})
+
+ObjectId 是一个12字节 BSON 类型数据：
+前4个字节表示时间戳
+接下来的3个字节是机器标识码
+紧接的两个字节由进程id组成（PID）
+最后三个字节是随机数。
+
+
+查询
+show dbs
+show databases									//显示所有数据库
+show collections									
+db.getCollectionNames()							//显示所有文档
+
+db.collection_name.find()  
+db.collection_name.find().pretty()  			//易读的格式显示 
+db.collection_name.findOne() 					//只返回一个文档。
+db.collection_name.find().count()				//select count(*) from ...
+db.test.find({},{name:1,n1:1})                  //select name,n1 from ...
+
+db.t.find({},{})                                //第一个{}为查询条件 第二个{}为选择的字段
+//条件查询 
+db.collection_name.find({title:"mongo"[,...]})  
+db.col.find({$or:[{key1: value1}, {key2: value2}]})   			//or条件查询
+db.col.find({"likes" : {$gt : 100}})                    		//
+db.col.find({"likes" : {$lt :200, $gt : 100}})          		//
+db.col.find({"title" : {$type : 2}})      						//指定获取的数据类型  1 double 2 string 
+db.collection_name.find().limit(NUMBER)   						//指定获取document数量
+db.collection_name.find().limit(NUMBER).skip(NUMBER)   			//skip跳过指定数量的document
+db.pay_3.find({},{ftime:1,server_id:1,_id:0})					//selct ftime,server_id from pay_3
+//使用正则表达式
+db.collection_name.find({"title":{$regex:"^mongo.*$"}})     	//也可直接写入字符串查询包含字符串的document  
+db.collection_name.find({"title":/^mongo.*$/})
+db.collection_name.find({"title":{$regex:"^mongo.*$",$options:"$i"}})   //[$options:"$i"] 不区分大小写，默认区分大小写
+
+db.collection_name.find().sort({"like":1})    					//1升序 -1降序  select ... order by like 
+
+//索引
+db.collection_name.ensureIndex({"title":1})   				//建立索引	3.0.0后不推荐使用
+db.collection_name.createIndex({"title":1})					//使用这个代替ensureIndex
+db.collection_name.ensureIndex({"field1":1,"field2":1})     //复合索引
+db.collection_name.getIndexes()
+db.collection_name.dropIndexes()							//删除所有索引
+db.w2.dropIndex("index_name")								//删除索引
+db.collection_name.ensureIndex({"title":1},"unique":true)	//唯一索引
+db.colletiion_name.explain().find()							//查看执行计划
+db.colletiion_name.find().explain()
+
+db.collection_name.ensureIndex({"title":1},{"background":true})   //在后台创建索引，创建时不会阻塞其他的操作
+db.collection_name.ensureIndex({"title":1},{"name":"index_name"})
+
+db.abc.reIndex()		//重建索引
+db.imei_1.find({"account" : "1320210189"}).explain({"all":true})
+db.collection_name.explain().find({"field_name":"value1"})		//查看是否使用索引
+db.collection_name.totalIndexSize()  //索引大小
+
+db.pay_3.totalSize()                 //表的大小
+
+db.abc.getIndexes()					//查看表的索引
+db.abc.totalIndexSize()				//查看索引大小
+db.system.indexes.find()                                    //查看当前库的索引
+
+db.abc.dataSize()                   //查看数据的大小
+db.abc.storageSize() 				includes free space allocated to this collection
+db.abc.totalSize() 					storage allocated for all data and indexes
+
+db.collection_name.aggregate(AGGREGATE_OPERATION)
+//聚合
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$sum:1}}}])   		//select by_user,count(*) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$sum:"$likes"}}}])  	//select by_user,sum(likes) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$avg:"$likes"}}}])	//select by_user,avg(likes) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$min:"$likes"}}}])	//select by_user,min(likes) from mycol group by by_user 
+db.mycol.aggregate([{$group:{_id:"$by_user",num_tutorial:{$max:"$likes"}}}])	//select by_user,max(likes) from mycol group by by_user 	
+db.mycol.aggregate([{$group:{_id:"$by_user",url:{$push:"$url"}}}])				//分组，组内结果以数组的形式展示 url[v1,v2]
+db.mycol.aggregate([{$group:{_id:"$by_user",url:{$addToSet:"$url"}}}])  		//与push类似
+db.mycol.aggregate([{$group:{_id:"$by_user",first_url:{$first:"$url"}}}])		//分组，取每个组的第一个值
+db.mycol.aggregate([{$group:{_id:"$by_user",last_url:{$last:"$url"}}}])			//分组，取每个组的最后一个值
+
+
+// select server_id,sum(day_income) from table1 where xxx group by server_id
+
+db.table1.aggregate([
+{$match:{"date":{$gt:ISODate("2018-05-01T00:00:00Z"),$lte:ISODate("2018-05-01T23:00:00Z")}}},
+{$group:{_id:"$server_id",num_tutorial:{$sum:"$day_income"}}}
+])
+
+
+// select sum(day_income) from table1 where xxx 
+db.table1.aggregate([
+{$match:{"date":{$gt:ISODate("2018-05-01T00:00:00Z"),$lte:ISODate("2018-05-01T23:00:00Z")}}},
+{$group:{_id:"",num_tutorial:{$sum:"$day_income"}}}
+])
+
+host_log
+{"key_list":[...]}
+//查看list字段的长度
+db.host_log.aggregate([{ $project : {len: {$size:"$key_list"} }} ])
+
+//修改表名
+db.vars.renameCollection('vars_tmp')
+
+//管道
+//将MongoDB文档在一个管道处理完毕后将结果传递给下一个管道处理
+db.mycol.aggregate([{$match:{score:{$gt:70,$lte:90}}},{$group:{ _id:null,count:{$sum: 1}}}])    //$match用于获取分数大于70小于或等于90记录，然后将符合条件的记录送到下一阶段$group管道操作符进行处理
+db.mycol.aggregate({$skip:2})  																	//过滤前2个文档   
+
+
+$project	修改输入文档的结构。可以用来重命名、增加或删除域，也可以用于创建计算结果以及嵌套文档。
+$match		用于过滤数据，只输出符合条件的文档。$match使用MongoDB的标准查询操作。
+$limit		用来限制MongoDB聚合管道返回的文档数。
+$skip		在聚合管道中跳过指定数量的文档，并返回余下的文档。
+$unwind		将文档中的某一个数组类型字段拆分成多条，每条包含数组中的一个值。
+$group		将集合中的文档分组，可用于统计结果。
+$sort		将输入文档排序后输出。
+$geoNear	输出接近某一地理位置的有序文档。
+
+//mapReduce
+db.collection.mapReduce(                           
+   function() {emit(key,value);},  					//map 函数
+   function(key,values) {return reduceFunction;},   //reduce 函数
+   {
+      out: collection,
+      query: document,
+      sort: document,
+      limit: number
+   }
+)
+
+db.posts.mapReduce( 
+	function() { emit(this.user_name,1); }, 			  
+	function(key, values) {return Array.sum(values);},     
+	{  
+		query:{status:"active"},      //摘选条件
+        out:"post_total"              //返回结果插入到collection中
+    }
+)
+
+db.posts.mapReduce(...).find()    //使用MapReduce并显示结果
+
+
+
+var map=function(){...}
+var reduce=function(){...}
+
+db.collection_name.mapReduce(map,reduce,{out:"output_document"})
+
+
+//demo1
+//求每个班级的平均分
+var map_1=function(){emit(this.Class,this.Score);}
+var reduce_1=function(key,value){return Array.avg(value)}
+db.students.mapReduce(map_1,reduce_1,{out:"new_students"})
+//
+
+
+
+使用 MapReduce 要实现两个函数 Map 函数和 Reduce 函数,
+Map 函数调用 emit(key, value), 遍历 collection 中所有的记录, 将key 与 value 传递给 Reduce 函数进行处理。
+Map 函数必须调用 emit(key, value) 返回键值对
+map 	映射函数 (生成键值对序列,作为 reduce 函数参数)。
+reduce 	统计函数，reduce函数的任务就是将key-values变成key-value，也就是把values数组变成一个单一的值value。
+
+out 	统计结果存放集合 (不指定则使用临时集合,在客户端断开后自动删除)。
+query 	筛选条件，只有满足条件的文档才会调用map函数。（query，limit，sort可以随意组合）
+sort 	和limit结合的sort排序参数（也是在发往map函数前给文档排序），可以优化分组机制
+limit 	发往map函数的文档数量的上限（要是没有limit，单独使用sort的用处不大）
+
+db.posts.mapReduce(...)
+result		储存结果的collection的名字,这是个临时集合，MapReduce的连接关闭后自动就被删除了。
+timeMillis	执行花费的时间，毫秒为单位
+input		满足条件被发送到map函数的文档个数
+emit		在map函数中emit被调用的次数，也就是所有集合中的数据总量
+ouput		结果集合中的文档个数（count对调试非常有帮助）
+ok			是否成功，成功为1
+
+
+大于		$gt
+小于		$lt
+大于等于	$gte
+小于等于	$lte
+
+游标
+var c=db.collection_name.find()
+while(c.hasNext()) printjson(c.next())
+
+
+printjson(c[1])
+
+
+
+for(i=0;i<100;i++){db.collection_name...}
+
+
+
+//上限集合
+Capped Collection，一种固定大小的集合，当集合的大小达到指定大小时，新数据覆盖老数据。
+db.createCollection("cappedLogCollection",{capped:true,size:10000,max:300})  //创建capped collection   size:字节限制 max:文档数量限制
+
+
+
+
+//递增序列
+//初始化counters
+db.createCollection("counters")
+db.counters.insert({_id:"productId",sequence_value:0})
+//创建函数
+function getNextSequenceValue(sequenceName){
+   var sequenceDocument = db.counters.findAndModify(
+      {
+         query:{_id: sequenceName },
+         update:{$inc:{sequence_value:1}},
+         new:true
+      });
+   return sequenceDocument.sequence_value;
+}
+db.collection_name.insert({_id:getNextSequenceValue("productId")})   //使用递增序列
+
+
+
+GridFS
+GridFS是MongoDB规范用于存储和检索大文件，文档最大16MB限制，而GridFS存储文件不受限制。(默认一个记录不能大于16M)
+GridFS的划分一个文件分成块存储数据，每个块在一个单独的文件，每个最大尺寸255K。
+GridFS默认使用两个集合 fs.files 和 fs.chunks 存储该文件的元数据和块。
+
+
+
+
+
+

@@ -1,0 +1,23 @@
+redis cluster
+
+每个节点最少选项配置
+port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf   ###节点配置文件 无需人为修改
+cluster-node-timeout 5000
+appendonly yes
+
+正常启动单个节点后再创建集群
+
+创建集群，命令在源代码文件的src目录下
+/redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
+
+--replicas 1 表示为集群中的每个主节点创建一个从节点。
+
+集群中的每个节点都有 1 个至 N 个复制品（replica）， 其中一个复制品为主节点（master）， 而其余的 N-1 个复制品为从节点（slave）。
+
+redis-cli -c -p 7000   ###连接单个节点验证集群,客户端会自动切换连接点
+
+
+
+

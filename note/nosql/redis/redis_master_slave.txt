@@ -1,0 +1,15 @@
+master:
+slave:
+slaveof 127.0.0.1 6379		          ###配置slave的master
+masterauth master_password	          ###如果master启用requirepass参数，则添加这个参数
+
+master：
+redis-server $config_file			  ###使用master的配置文件启动
+slave:
+redis-server $slave_config_file		  ###使用slave的配置文件启动
+
+全量同步 slave初始化阶段，使用主库的rdb文件
+增量同步 稳定运行时
+
+SLAVEOF NO ONE                        ##提升当前节点为主
+

@@ -35,3 +35,15 @@ bin/mongorestore --host=127.0.0.1:27017 --oplogReplay --oplogLimit=1504721747 fu
 在mongodb服务的根目录执行以上操作。
 暂时只能实现但个实例的PITR，单库、单表的PIRT通过整个实例PITR实现。
 
+
+
+mongodump  通过oplog实现备份的一致性
+
+
+#复制文件实现备份
+db.fsyncLock()      //加锁
+                    //复制data目录
+db.fsyncUnlock()    //释放锁
+
+
+

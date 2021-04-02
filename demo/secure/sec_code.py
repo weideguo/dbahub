@@ -28,3 +28,59 @@ def make_secure():
 __builtins__.__dict__['file']=().__class__.__bases__[0].__subclasses__()[40]
 
 
+
+"".__class__.__mro__[-1].__subclasses__()
+
+
+#引入open
+my_open="".__class__.__mro__[-1].__subclasses__()[40]
+filename="/tmp/x.txt"
+my_open(filename).read()
+
+
+#可以通过查看不同模块继承的父类实现限制模块的引入
+
+
+
+import sys
+
+sys.modules['os']=None
+import os       #失败 os模块已经不能引入
+
+#sys.modules['os']
+
+
+
+
+
+
+class A():
+    __a = 1
+    b = 2
+    def __c(self):
+        print("asd")
+    def d(self):
+        print('dsa')
+
+
+x=A()
+
+#查看对象的属性
+dir(x)
+
+#可以通过 下划线+类名+函数名 实现访问私有属性
+x._A__a
+
+#正常格式的私有属性不可访问
+x.__a
+
+
+
+
+
+
+
+
+
+
+
