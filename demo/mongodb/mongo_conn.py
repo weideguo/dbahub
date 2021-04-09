@@ -17,7 +17,6 @@ col.update({"name":"wwwwwwww"},{"set":{"name":"sysuuuuu"}})
 col.remove({"name":"sysuuuuu"})
 
 
-is_primary
 
 '''
 #使用SCRAM-SHA-1认证时
@@ -39,10 +38,12 @@ mongo_replset=[
 mongdb_auth=("my_mongo_user","my_mongo_password")
 
 mongdb_auth_db="admin"
-mongo_replset_name="my_mongo_replset_name"
 
-mongo_uri="mongodb://%s:%s@%s/%s?replicaSet=%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mongo_replset), mongdb_auth_db, mongo_replset_name)
+#mongo_replset_name="my_mongo_replset_name"
+#mongo_uri="mongodb://%s:%s@%s/%s?replicaSet=%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mongo_replset), mongdb_auth_db, mongo_replset_name)
 
+
+mongo_uri="mongodb://%s:%s@%s/%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mongo_replset), mongdb_auth_db)
 
 conn = pymongo.MongoClient(mongo_uri)
 

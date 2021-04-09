@@ -1,0 +1,43 @@
+#安装
+#下载解压 可以在github下载
+cd ansible-2.7.4
+python setup.py install
+
+
+cat /etc/ansible/hosts #只有加入这个文件的主机才能被操作
+
+[test1]
+#ip及ssh端口/账号/密码等参数
+192.168.59.129:22 ansible_ssh_user=root ansible_ssh_pass=root_passwd
+
+[test2]
+192.168.59.132        #也可以使用ssh免密登录
+192.168.59.129
+
+
+
+#ad-hoc模式
+
+#分发文件
+ansible 192.168.59.129 -m copy -a "src=/path_in_local/file_name dest=/path_in_remote" 
+
+#分发命令 不支持管道
+ansible 192.168.59.129 -a "ls -l chdir=/tmp creates=kel.conf"
+
+#分发命令 支持管道操作
+ansible 192.168.59.129 -m shell -a "ps -ef | grep mysql"
+
+
+
+#playbook模式
+
+cat playbook.yml   #playbook为yaml格式
+
+---
+- hosts: test2
+  tasks:
+    - name: create file test
+      command: touch /tmp/abcdef
+
+#使用playbook执行分发文件与命令
+ansible-playbook  playbook.yml

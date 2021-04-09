@@ -96,6 +96,8 @@ db.killOp({op:opid})			    //杀死操作
 
 
 
+db._adminCommand( {getCmdLineOpts: 1})   //查看启动参数
+
 
 日志
 错误日志

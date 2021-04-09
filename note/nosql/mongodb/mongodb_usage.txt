@@ -57,7 +57,7 @@ db.counters.findAndModify({query:{_id: sequenceName},update:{$inc:{sequence_valu
 db.counters.update({_id: sequenceName},{$inc:{sequence_value:1}})
 db.counters.update({...},1})   //upset操作，不存在则插入
 
-mongodb不支持事务
+
 //update操作
 { $set : { field : value } }   						//更新键值
 { $unset : { field : 1} }      						//删除键值
@@ -308,6 +308,29 @@ GridFS
 GridFS是MongoDB规范用于存储和检索大文件，文档最大16MB限制，而GridFS存储文件不受限制。(默认一个记录不能大于16M)
 GridFS的划分一个文件分成块存储数据，每个块在一个单独的文件，每个最大尺寸255K。
 GridFS默认使用两个集合 fs.files 和 fs.chunks 存储该文件的元数据和块。
+
+
+
+事务 >=4.0
+4.0 支持副本集多文档事务，4.2 版本支持分片集群事务功能
+
+s = db.getMongo().startSession()
+s.startTransaction()
+
+// do something
+// s.getDatabase("mytest").coll02.insert({x: 1, y: 1})      //插入后在提交前普通的查询当前session也看不到新增的数据 
+// s.getDatabase("mytest").coll02.find()                    //需要事务的查询才能看到变化 
+
+// db.coll02.insert({x: 4, y: 4})                           //非事务语句直接生效
+
+s.commitTransaction()
+
+//s.abortTransaction()
+
+
+
+
+
 
 
 

@@ -1,0 +1,37 @@
+基于oplog同步mongodb的全量与增量数据
+
+可用于实现mongodb的异地同步（主集群 -> 从集群）
+
+
+https://github.com/alibaba/MongoShake
+
+
+
+
+
+
+
+
+mongoshake 增量同步的信息记录于 mongoshake ckpt_default，即为checkpoint，是记录增量同步的位点情况，对应oplog的同步情况。
+
+
+
+修改 mongoshake ckpt_default，需要先关闭mongoshake。
+
+重新全量同步
+删掉目的端的库的数据，删除源端的 mongoshake ckpt_default
+
+
+跳过某个时间段的事件
+进入增量同步时，修改源端的 mongoshake ckpt_default 的 ckpt 
+
+
+
+
+明文传输
+
+
+可以从从节点复制数据
+
+
+
