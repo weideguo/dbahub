@@ -28,6 +28,12 @@ db.oplog.$main.find({ts:{$gt:Timestamp(1499877345, 1),$lt:Timestamp(1499877395, 
 mongodump --host 127.0.0.1:27017 -d local -c 'oplog.$main' -q '{ts:{$gt:Timestamp(1499877345, 1),$lt:Timestamp(1499877395, 1)}}' -o path_op
 
 
+#高版本的使用以下代替
+'{"ts":{"$gte":{"$timestamp":{"t":1617778028,"i":1}},"$lte":{"$timestamp":{"t":1618220080,"i":1}}}}'
+'{"ts":{"$gt": {"$timestamp":{"t":1617778028, "i":1}}}}'
+
+
+
 主从模式已经废弃 不要再使用
 单节点默认没有oplog，可以模拟成单个副本集节点，即只有一个主节点，没用从节点
 

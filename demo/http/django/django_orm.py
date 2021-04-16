@@ -17,12 +17,19 @@ DATABASES = {
 
 
 #models.py
+
+STATUS_ITEMS = [
+     (0, '申请'),
+     (1, '通过'),
+     (2, '拒绝')
+ ]
+
 from django.db import models
 class MyModel(models.Model):
     id = models.AutoField(ID', primary_key=True)
     col1 = models.CharField('字段1', max_length=50)
     col2 = models.CharField('字段2', max_length=50)
-
+    status = models.IntegerField(choices=STATUS_ITEMS)
 
 
 #mymodule.py
@@ -31,10 +38,13 @@ filter_dict['id'] = 11
 #查询
 r1 = MyModel.objects.filter(**filter_dict)
 
+r1.get_status_display()       #get_xxx_display()     #获取字段设置的映射值
+
 search="xxx"
 #模糊查询
 from django.db.models import Q
 r = r1.filter(Q(col1__icontains=search) | Q(col2__icontains=search))
+
 
 #事务
 from django.db import transaction

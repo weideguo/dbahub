@@ -76,7 +76,7 @@ QPS=(Q1-Q2)/time
 
 questions也可以做一定的衡量，不包含存储过程执行的语句
 
-
+--需要显式提交/回滚
 show status like 'Com_commit'
 show status like 'Com_rollback'
 TPS=(CC1+CR1-CC2-CR2)/time

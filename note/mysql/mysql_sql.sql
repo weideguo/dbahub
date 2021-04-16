@@ -35,7 +35,20 @@ BIT[(M)]   M=(1,64)            二进制格式 M为多少位
 JSON                           json格式 5.7.8以后支持
 
 SERIAL           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE 的别称
-    
+
+
+https://dev.mysql.com/doc/refman/8.0/en/innodb-limits.html
+
+LONGBLOB and LONGTEXT columns must be less than 4GB, 
+and the total row size, including BLOB and TEXT columns, must be less than 4GB.
+
+If a row is less than half a page long, all of it is stored locally within the page. （默认页16k）
+If it exceeds half a page, variable-length columns are chosen for external off-page storage until the row fits within half a page.
+
+不包括BLOB等的单个记录最大长度是65535字节。    
+
+InnoDB has a limit of 1017 columns per table, 64 secondary indexes, 16 columns for multicolumn indexes.
+
 
 插入格式 b'101'  
 insert into tb_name(column_name) values(b'101');

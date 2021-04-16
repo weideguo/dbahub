@@ -38,6 +38,13 @@ ALTER TABLE tbl_name FORCE
 	
 	
 
+--设置进度记录
+UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES' WHERE NAME = 'stage/sql/altering table';
+--查看执行进度
+SELECT EVENT_NAME, WORK_COMPLETED, WORK_ESTIMATED,(WORK_COMPLETED/WORK_ESTIMATED)*100 as COMPLETED FROM performance_schema.events_stages_current;
+
+
+
 
 
 #在线DDL工具

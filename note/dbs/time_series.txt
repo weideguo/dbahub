@@ -19,6 +19,7 @@ DolphinDB
 TimescaleDB
 
 
+OpenTSDB     使用hbase存储
 
 
 ------------------------------------------------

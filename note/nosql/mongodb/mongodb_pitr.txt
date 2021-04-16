@@ -3,7 +3,7 @@ PIRT(point-in-time-recovery，基于时间点的恢复，即恢复到指定时�
 整个实例全备，在备份时加--oplog参数，参数并不是指导出oplog，而是确保当前的备份不受实例的操作影响(即备份时实例有写操作)，当前的备份能反映当前实例的状态，因此才可以用于PITR。
 
 全备示例
-bin/mongodump --host 127.0.0.1:27017--oplog -o full_backup_dir
+bin/mongodump --host 127.0.0.1:27017 --oplog -o full_backup_dir
 
 备份oplog
 oplog是记录mongodb的操作，类似于mysql的binlog，可用于数据的时间点恢复。oplog是固定大小，默认为磁盘的5%。可以通过设置参数--oplogSize调整。
@@ -15,6 +15,8 @@ oplog是记录mongodb的操作，类似于mysql的binlog，可用于数据的时
 bin/mongodump --host 127.0.0.1:27017 -d local -c 'oplog.$main' -o oplog_backup_dir
 或者
 bin/mongodump --host 127.0.0.1:27017 -d local -c 'oplog.rs' -o oplog_backup_dir
+
+也可以直接指定用 oplog.rs.bson 文件前滚
 
 
 恢复
@@ -33,7 +35,9 @@ bin/mongorestore --host=127.0.0.1:27017 --oplogReplay --oplogLimit=1504721747 fu
 单个分片分别备份与恢复，方式为单实例、副本集其中的一种。
 
 
-mongodump  通过oplog实现备份的一致性
+mongodump  
+通过oplog实现备份的一致性，不阻塞其他写操作  
+只需要确保oplog保留时间大于备份间隔，备份时加oplog参数即可实现pitr。恢复时上一全备用下一备份的oplog备份。
 
 #只备份还原执行库/表
 -d, --db=<database-name>           
@@ -41,7 +45,8 @@ mongodump  通过oplog实现备份的一致性
 
 
 
-#复制文件实现备份
+#复制文件实现备份  
+#副本集时在SECONDARY加锁不影响PRIMARY的写操作 在PRIMARY操作会阻塞其他连接的写
 db.fsyncLock()      //加锁
                     //复制data目录
 db.fsyncUnlock()    //释放锁

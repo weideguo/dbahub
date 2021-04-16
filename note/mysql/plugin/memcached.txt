@@ -1,0 +1,28 @@
+使用memcached服务缓存innodb的数据
+
+-- 安装
+source MYSQL_HOME/share/innodb_memcached_config.sql
+
+INSTALL PLUGIN daemon_memcached soname "libmemcached.so";              --会启动一个memcached进程
+
+
+CREATE TABLE city (
+       city_id VARCHAR(32),
+       name VARCHAR(1024),
+       state VARCHAR(1024),
+       country VARCHAR(1024),
+       flags INT,
+       cas BIGINT UNSIGNED, 
+       expiry INT,
+       primary key(city_id)
+       ) ENGINE=InnoDB;
+
+--设置表映射
+INSERT INTO `innodb_memcache`.`containers` (
+       `name`,    `db_schema`, `db_table`, `key_columns`, `value_columns`,      `flags`, `cas_column`, `expire_time_column`, `unique_idx_name_on_key`)
+VALUES ('default', 'test',     'city',     'city_id',     'name|state|country', 'flags','cas',        'expiry',             'PRIMARY');
+
+
+--更改memcached配置后需要重启插件
+UNINSTALL PLUGIN daemon_memcached;
+INSTALL PLUGIN daemon_memcached soname "libmemcached.so";

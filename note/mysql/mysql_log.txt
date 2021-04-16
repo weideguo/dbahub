@@ -1,22 +1,22 @@
-mysqlbinlog		----查看二进制文件以供备份
+mysqlbinlog         ----查看二进制文件以供备份
 
 
 二进制日志
 --用于复制
 --用于恢复
 sync_binlog         ---设置二进制日志同步到磁盘的频率，默认二进制日志不是实时同步到磁盘
-log_bin 	 		---my.cnf设置二进制文件路径并启用二进制日志【log_bin=path_name】，设置后即启用
-binlog_format   	---my.cnf设置二进制日志的记录格式【基于语句记录(Statement-Based Logging,SBL)、基于行格式记录(Row-Bbased Logging,RBL)、混合模式记录(Mixed-Based Logging,MBL)】
-expire_logs_days	---保存时间（天）
+log_bin             ---my.cnf设置二进制文件路径并启用二进制日志【log_bin=path_name】，设置后即启用
+binlog_format       ---my.cnf设置二进制日志的记录格式【基于语句记录(Statement-Based Logging,SBL)、基于行格式记录(Row-Bbased Logging,RBL)、混合模式记录(Mixed-Based Logging,MBL)】
+expire_logs_days    ---保存时间（天）
 
-binlog-ignore-db=db1[,db2]    ---指定库不使用binlog
-binlog-do-db=db1[,db2]		  ---指定库使用binlog
+binlog-ignore-db=db1[,db2]      ---指定库不使用binlog
+binlog-do-db=db1[,db2]          ---指定库使用binlog
 
---从库设置不复制，需要在启动命令行中添加					  
-replicate-ignore-db			  
-replicate-do-db1			  
-replicate-wild-do-table                   --可以使用通配符
-replicate-wild-ignore			  --	
+--从库设置不复制，需要在启动命令行中添加                      
+replicate-ignore-db              
+replicate-do-db1              
+replicate-wild-do-table            --可以使用通配符
+replicate-wild-ignore              --    
 
 
 
@@ -36,33 +36,35 @@ SET GLOBAL binlog_format = 'STATEMENT';
 SET GLOBAL binlog_format = 'ROW';
 SET GLOBAL binlog_format = 'MIXED';
 
-show variables like 'log_bin';   			----查看是否启用二进制日志
-show binlog events in 'mysql-bin.000025';  	---查看二进制日志的事件
+show variables like 'log_bin';                 ----查看是否启用二进制日志
+show binlog events in 'mysql-bin.000025';      ---查看二进制日志的事件
 show binlog events;
 show binlog events in 'log_name' from pos_number limit 2
-show binary logs;		---查看二进制日志的信息
+show binary logs;        ---查看二进制日志的信息
 
 show relaylog events [in 'relay_log_name'] [from pos_number] [limit 2];  
 
 mysqlbinlog  log_name    ----查看二进制日志的内容
-	--start-datetime
-	--stop-datetime
-	--short-form
+    --start-datetime
+    --stop-datetime
+    --short-form
 
-	--start-position
-	--stop-position
-	--base64-output=decode-rows        ##导出row格式   只能用于查看，恢复的时候不要加这个参数
-	-v    				   ##导出成sql格式  与--base64-output一同使用
-	
+    --start-position
+    --stop-position
+    --base64-output=decode-rows        --导出row格式   只能用于查看，恢复的时候不要加这个参数
+    -v                                 --导出成sql格式  与--base64-output一同使用
+    
 --从远端读取二进制日志并保存
 mysqlbinlog -u root -p -P 3306 -h host_name -R -r save_as_text_file_name remote_binlog_name
-	--stop-never   ----持续获取不中断
+    --stop-never   ----持续获取不中断
     --raw          --二进制存储，否则以sql存储
+ 
+    --flashback    -- >=5.7 DML语句生成回滚语句
     
-	
+    
 binlog通配符
-binlog.1282{20..32}	
-	
+binlog.1282{20..32}    
+    
 #允许混合使用start-position和stop-datetime 但binlog的顺序不能乱
 mysqlbinlog --start-position=6147873 --stop-datetime="2020-09-02 05:20:00"  binlog.1282{19..32} > x.sql
 
@@ -71,7 +73,7 @@ mysqlbinlog --start-position=6147873 --stop-datetime="2020-09-02 05:20:00"  binl
 
 
 
-binlog
+binlog  mysql层的日志 从连接后，主主从推给从
 文件开头前4字节（MagicNumber）
 \xfe\x62\x69\x6e
 
@@ -80,13 +82,13 @@ binlog
 
 
 
-####redo undo
+####redo undo  存储引擎层的日志
 ---使用独立的undo表空间，必须在数据库创建前指定（默认undo log存放于系统表空间）
 innodb_undo_directory     ---指定undo日志的目录
 innodb_undo_tablespaces   ---指定undo表空间数量
 
 innodb_log_group_home_dir ---指定redo日志文件的目录 默认为data目录
-innodb_log_file_size	  ---指定redo日志文件的大小	
+innodb_log_file_size      ---指定redo日志文件的大小    
 innodb_log_file_in_group  ---指定redo日志文件组的数量 
 
 

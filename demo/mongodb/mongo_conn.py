@@ -47,3 +47,10 @@ mongo_uri="mongodb://%s:%s@%s/%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mo
 
 conn = pymongo.MongoClient(mongo_uri)
 
+
+#存在特殊字符时，先进行转码，再拼接uri
+
+password="!@#$%^&*"
+new_password=urllib.quote_plus(password)
+
+

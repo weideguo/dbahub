@@ -7,7 +7,7 @@ mongod --dbpath=/data/db --rest   		//启动，并启用web界面 http://localho
 --auth   							// run with security
 --maxConns							// 最大连接数，默认最大连接数为819
 -f									// 指定使用的配置文件
---config config_filename    		// 使用配置文件 或者使用-f     配置文件为yaml格式
+--config config_filename    		// 使用配置文件 或者使用-f     配置文件为yaml格式（2.4之前的配置文件格式不一样）
 
 
 字符编码
@@ -29,7 +29,8 @@ prompt   //输出变量
 
 
 //监控
-db.stats()          //对某一个库的状态
+db.collection_name.stats()      //表级别状态查看
+db.stats()                      //库级别状态查看
 db.serverStatus()
 
 rs.status()
