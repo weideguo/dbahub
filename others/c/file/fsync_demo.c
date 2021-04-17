@@ -47,19 +47,6 @@ int main(int argc,char *argv[]){
 
 
 /*
-
-#include <unistd.h>
-
-off_t lseek(int fd, off_t offset, int whence);
- 
-offset：表示从文件的whence位置开始偏移的位置大小。
-whence：表示文件偏移的位置
-  SEEK_SET：表示从文件开始位置偏移
-  SEEK_CUR：表示从文件当前的读写位置偏移
-  SEEK_END：表示从文件的结束位置偏移
-
-
-
 fwrite
 
 ptr     指向要被写入的元素数组的指针。

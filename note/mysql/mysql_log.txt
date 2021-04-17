@@ -118,7 +118,7 @@ redo log 与 binlog 的一致性
 使用undo日志可以将数据回滚到当前事务可查看的最大transaction_id时的数据，从而实现mvcc（多版本并发控制）。
 当确认所有的事务的transaction_id都已经大于undo保存的transaction_id时，这部分的undo日志可以清除。
   
-
+启动时，从redo日志获取最后checkpoint时的lsn，即使表明这个位点前的事务已经被持久化到数据文件，通过应用redo日志，实现事务不丢失。
 
 重新更改配置文件再启动可能出现错误
 1.redo log文件大小不一致，移除现有redo log的文件（需要先安全关闭mysql）

@@ -165,17 +165,12 @@ innoDB 存储引擎
 	
 	系统表空间
 		数据字典                     ---innodb的
-		doublewrite buffer           ---数据页从内存写到数据文件前，innodb先写到doublewrite buffer，完全写入doublewrite buffer后数据才写入到数据文件中。   
-                                        用于防止在脏页写数据文件时发生断电导致文件损坏，如果发生页损坏（大部分文件系统不支持原子写），可以通过doublewrite文件找到对应的页，之后才可以使用redo文件恢复。（8.0.20及之后可以指定innodb_doublewrite_files使用独立文件）
+		doublewrite buffer           
 		change buffer				 ---更改的二级索引缓存，由buffer bool转写到系统表空间以防止丢失，回写到表空间后会清理
 		undo logs (可以设置使用单独的数据文件而不再系统表空间中)
 		表的数据(启用多重表空间时表的数据在单独的表空间) --innodb的
 	
-	
-	doublewrite={0|1}
-		0 不启用二次写   （文件系统支持原子写时可以不使用，此时可以确保数据文件的页不会发生损坏，redo日志两个lsn之间修改的页可以全量写回文件或回滚，继而可以使用redo日志）
-		1 启用二次写，数据被写到磁盘两次
-	
+    
 	change buffer
 		A special data structure that records changes to pages in secondary indexes.
 		DML语句的结果。

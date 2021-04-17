@@ -29,5 +29,15 @@ open和fopen的区别：
 前者无缓冲，后者有缓冲。
 前者与 read, write 等配合使用， 后者与 fread, fwrite等配合使用。
 后者是在前者的基础上扩充而来的，在大多数情况下，用后者。 
+
+#include <unistd.h>
+
+off_t lseek(int fd, off_t offset, int whence);
+ 
+offset：表示从文件的whence位置开始偏移的位置大小。
+whence：表示文件偏移的位置
+  SEEK_SET：表示从文件开始位置偏移
+  SEEK_CUR：表示从文件当前的读写位置偏移
+  SEEK_END：表示从文件的结束位置偏移
 */
 
