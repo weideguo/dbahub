@@ -113,7 +113,10 @@ redo log 与 binlog 的一致性
   写 redo log 进入 prepare 状态
   写 binlog
   提交事务 进入 commit 状态
+
   
+使用undo日志可以将数据回滚到当前事务可查看的最大transaction_id时的数据，从而实现mvcc（多版本并发控制）。
+当确认所有的事务的transaction_id都已经大于undo保存的transaction_id时，这部分的undo日志可以清除。
   
 
 
