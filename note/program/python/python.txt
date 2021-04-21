@@ -109,3 +109,10 @@ Psyco
 
 GIL  global interpreter lock
 导致python即使在多线程只能使用单核cpu
+
+
+
+python -m compileall  <src>     #.py文件编译成.pyc 可以只保留.pyc
+
+echo "{\"a\":1}" | python -m json.tool
+

@@ -83,6 +83,12 @@ git remote -v
 #添加远程仓库
 git remote add <shortname> <url>
  
+#修改 
+git remote rm origin
+git remote add origin [url] 
+ 
+vim .git/config  
+ 
 #从远端仓库拉取本地没有的文件 
 git fetch [remote-name]   
   

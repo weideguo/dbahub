@@ -8,8 +8,34 @@ redis-server $config_file			  ###使用master的配置文件启动
 slave:
 redis-server $slave_config_file		  ###使用slave的配置文件启动
 
-全量同步 slave初始化阶段，使用主库的rdb文件
-增量同步 稳定运行时
 
 SLAVEOF NO ONE                        ##提升当前节点为主
 
+
+
+全量同步 slave初始化阶段，使用主库的rdb文件
+增量同步 稳定运行时
+
+主服务器会根据复制偏移量、复制积压缓冲区和 run_id，来确定执行全量同步还是增量同步
+
+run_id
+run_id是每一台服务器每次运行的身份识别码，在每台服务器启动时自动生成，一台服务器多次运行则成多个run_id
+master在首次连接slave时，会将自己的run_id发送给slave，slave保存此ID，slave发给主的master的run_id不是原来的值，则重新全量同步。
+
+
+复制偏移量
+redis-cli info | grep offset   #查看偏移量
+
+
+复制积压缓冲区 (replication backlog buffer)
+主节点和从节点进行增量同步时，会把写命令也暂存在复制积压缓冲区中。
+如果从节点和主节点间发生了网络断连，等从节点再次连接后，可以从复制积压缓冲区中同步尚未复制的命令操作。
+
+repl-backlog-size  1mb       #默认配置   调大可以增大断开时间
+
+
+复制缓冲区(replication_buffer )
+主节点开始和一个从节点进行全量同步时，会为从节点创建一个输出缓冲区，这个缓冲区就是复制缓冲区。
+当主节点向从节点发送 RDB 文件时，如果又接收到了写命令操作，就会把它们暂存在复制缓冲区中
+
+client-output-buffer-limit slave 256mb 64mb 60  #控制配置
