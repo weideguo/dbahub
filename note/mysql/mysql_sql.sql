@@ -619,5 +619,38 @@ CREATE TABLE `article_merge` ( `id` BIGINT( 20 ) NOT NULL , `subject` VARCHAR( 2
 --插入数据只能往后端的表操作
 --更新 删除可以在前端表操作
 
+UserId 主键
+CreateDate 非唯一键
+Uuid 没有索引
+
+select SQL_NO_CACHE count(*) from t_u_userinfo;              0.38 0.34 0.33
+select SQL_NO_CACHE count(1) from t_u_userinfo;              0.33 0.35 0.34
+select SQL_NO_CACHE count(UserId) from t_u_userinfo;         0.37 0.36 0.38
+select SQL_NO_CACHE count(CreateDate) from t_u_userinfo;     0.48 0.49 0.48
+select SQL_NO_CACHE count(Uuid) from t_u_userinfo;           9.76 
+
+
+
+
+--多表操作
+
+UPDATE T1
+[INNER JOIN | LEFT JOIN] T2 ON T1.C1 = T2. C1
+SET T1.C2 = T2.C2, 
+    T2.C3 = expr
+WHERE ...;
+
+
+UPDATE T1, T2
+SET T1.C2 = T2.C2, 
+    T2.C3 = expr
+WHERE ...;
+
+
+delete a
+from T1 a
+join T2 b on a.PackageId = b.PackageId
+where ...;
+
 
 

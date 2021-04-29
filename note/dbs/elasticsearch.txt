@@ -232,4 +232,25 @@ curl "localhost:9200/_cat/indices?v=true"
 
 
 
+#模板
+#包预设字段的定义  即xx字段是yy类型   索引的主分片、拷贝分片、刷新时间、自定义分析器等
+#索引可使用预定义的模板进行创建，这个模板称作Index templates
+
+get _template                 #查看所有模板
+get _template/template_name   #查看指定模板
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -22,7 +22,7 @@ func running() {
 */
 
 func main() {
-    go running()        //如果不适用并发 则后面的代码不会被同事运行
+    go running()        //如果不使用并发 则后面的代码不会被运行
     
     // 接受命令行输入
     var input string

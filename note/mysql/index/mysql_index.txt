@@ -9,9 +9,17 @@ SELECT * FROM t1, t2 IGNORE INDEX (index_for_column) where ...                  
 
 
 count(*)/count(1)  --没有where子句时，使用最小的索引进行查询；带有where子句，使用能优化where的索引。	
-count(*)           --所有行都计算
-count(colume)      --字段的值为空时不计算
 
+
+count(*)包括了所有列，相当于行数，在统计结果的时候， 不会忽略列值为NULL 
+count(1)包括了所有列，用1代表代码行，在统计结果的时候， 不会忽略列值为NULL （不一定为1，可以是任意常量）
+count(column)只包括列名那一列，在统计结果的时候，会忽略列值为空（null）的计数， 即某个字段值为NULL时，不统计。
+
+https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_count
+InnoDB handles SELECT COUNT(*) and SELECT COUNT(1) operations in the same way. There is no performance difference.
+MyISAM tables, COUNT(*) is optimized to return very quickly if the SELECT retrieves from one table
+, an exact row count is stored for this storage engine and can be accessed very quickly. 
+COUNT(1) is only subject to the same optimization if the first column is defined as NOT NULL.
 
 
 索引

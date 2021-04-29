@@ -28,4 +28,5 @@ func main() {
     fmt.Println(out.String())
     
     fmt.Println(`aaa`)
+    fmt.Println(511/2)
 }

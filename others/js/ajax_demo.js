@@ -53,8 +53,25 @@ fetch(url)
    console.log(err) 
 })
 
+// 返回值需要先格式转换
+fetch(url)
+.then((res)=> res.json() )
+.then(json => console.log(json))
+.catch((err)=>{
+   console.log(err) 
+})
 
 
+fetch(url)
+.then((res)=> {
+    res.json()
+    .then(json => console.log(json)) 
+})
+.catch((err)=>{
+   console.log(err) 
+})
+
+   
 var form = new FormData(document.getElementById('login-form'));
 fetch("/login", {
   method: "POST",

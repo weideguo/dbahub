@@ -17,8 +17,8 @@ using namespace std;
 
 int main(int argc,char *argv[])
 {
-  MYSQL mysql;
-  mysql_init(&mysql);
+    MYSQL mysql;
+    mysql_init(&mysql);
 	const char *user="root";
 	const char *passwd="";
 	const char *host="127.0.0.1";
