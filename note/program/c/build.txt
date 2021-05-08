@@ -41,45 +41,6 @@ boost 一组 C++ 库的集合，提供了线性代数、伪随机数生成、多
 
 
 
-
-####demo
-linux C++
-newcpp.h     ###头文件，包含类的声明，函数的声明
-newcpp.cpp	 ###主函数文件，通过头文件使用类、函数
-func.cpp     ###类函数的实现，包含头文件
-
-#编译成动态链接库
-g++ func.cpp -fPIC -shared -o libcall_func.so                 
-#使用动态链接库
-g++ newcpp.cpp -o newcpp  –L/root/src/lib –lcall_func_so    
-
-#指定使用的头文件编译
-g++ -shared -fPIC -I /usr/include/mysql -o call_func_add.so call_func_add.cpp
-
-
-
-
-/usr/include            ##CentOS头文件目录
-
-gcc/g++         
--I                      ##指定头文件位置
--L                      ##指定动态链接库的目录
-
-
-
-动态链接 运行时需要外部库
-静态链接 运行时不再依赖外部库
-
-
-#动态链接库加载顺序
-
-编译目标代码时指定的动态库搜索路径              在编译时通过gcc 的链接选项-I,-l,-L,-Wl:rpath指定
-环境变量LD_LIBRARY_PATH指定的动态库搜索路径
-配置文档/etc/ld.so.conf中指定的动态库搜索路径
-默认的动态库搜索路径/lib
-默认的动态库搜索路径/usr/lib
-
-
-ldconfig     #/etc/ld.so.conf 更该生效
-
+#缺失包查找
+https://pkgs.org/
 

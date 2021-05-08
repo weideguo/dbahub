@@ -1,0 +1,46 @@
+ldd mysqld
+
+
+linux-vdso.so.1 =>  (0x00007fffb92f4000)                              //Virtual Dynamic Shared Object，内核提供的虚拟的.so，内核把包含某.so的内存页在程序启动的时候映射入其内存空间，外部程序就可以当普通的.so来使用其提供的函数。快速系统调用。
+libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f1c10fed000)
+librt.so.1 => /lib64/librt.so.1 (0x00007f1c10de5000)
+libaio.so.1 => /lib64/libaio.so.1 (0x00007f1c10be3000)
+libcrypt.so.1 => /lib64/libcrypt.so.1 (0x00007f1c109ac000)
+libdl.so.2 => /lib64/libdl.so.2 (0x00007f1c107a8000)
+libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007f1c104a1000)
+libm.so.6 => /lib64/libm.so.6 (0x00007f1c1019f000)
+libc.so.6 => /lib64/libc.so.6 (0x00007f1c0fdd2000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f1c131a6000)
+libfreebl3.so => /lib64/libfreebl3.so (0x00007f1c0fbcf000)
+libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f1c0f9b9000)
+
+
+
+
+
+ls -n | grep mysql | grep "\.so"
+
+
+/usr/lib64/ld-2.17.so                          // 专门负责寻找库文件的库
+
+
+/usr/lib64/libfreebl3.so                       // glibc依赖
+/usr/lib64/libgcc_s-4.8.5-20150702.so.1        // contains some low-level functions that GCC emits calls to (like long long division on 32-bit CPUs).
+/usr/lib64/libtinfo.so.5.9                     // ncurses的一部分？提供了一系列的函数以便使用者调用它们去生成基于文本的用户界面 
+
+/usr/lib64/librt-2.17.so                        // 时间？real-time
+
+/usr/lib64/libstdc++.so.6.0.19                  // glibcxx
+/usr/lib64/libc-2.17.so                         // glibc
+                                                
+/usr/lib64/libcrypt-2.17.so                     // 加密
+                                                    
+/usr/lib64/libaio.so.1.0.1                      // socket相关
+                                                
+/usr/lib64/libdl-2.17.so                        // 动态链接库使用
+                                                
+/usr/lib64/libpthread-2.17.so                   // 线程库
+                                                                                                                            
+/usr/lib64/libm-2.17.so                         // 数学库
+
+

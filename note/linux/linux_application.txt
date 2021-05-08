@@ -317,12 +317,12 @@ rpm -q postfix 检查是否安装postfix
 配置文件：
 /etc/postfix/
 启动：
-sercice postfix start
+service postfix start
 chrconfig postfix on
 默认使用TCP的25号端口（SMTP）
 chkconfig --list|grep postfix
 发送邮件：
-mail -vs “test mail from linuxcast(标题)” root@training.linuxcast.net（本机名）
+mail -vs "test mail from linuxcast(标题)" root@training.linuxcast.net（本机名）
 接收邮件
 mail
 一般不直接修改postfix配置文件，而是通过postconf命令进行配置：

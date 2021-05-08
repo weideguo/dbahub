@@ -5,3 +5,5 @@ sshpass
 *.class
 
 .ipynb_checkpoints
+a.out
+*.so
