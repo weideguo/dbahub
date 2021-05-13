@@ -150,4 +150,31 @@ binlog_group_commit_sync_no_delay_count=N    如果队列中的事务数达到N�
 
 
 
+#半同步复制 >= 5.5
+
+rpl_semi_sync_master_wait_point >=5.7.2   
+
+AFTER_SYNC (the default)
+The master writes each transaction to its binary log and the slave, and syncs the binary log to disk. 
+The master waits for slave acknowledgment of transaction receipt after the sync. 
+Upon receiving acknowledgment, the master commits the transaction to the storage engine and returns a result to the client, which then can proceed.
+等待从的确认在sync binlog事务给从之后
+多复制的机制，主挂掉时事务已经被从复制，但有可能主尚未提交，因而出现从复制并持久比主已经提交的更多的事务。
+
+AFTER_COMMIT
+The master writes each transaction to its binary log and the slave, syncs the binary log, and commits the transaction to the storage engine. 
+The master waits for slave acknowledgment of transaction receipt after the commit. 
+Upon receiving acknowledgment, the master returns a result to the client, which then can proceed.
+等待从的确认在提交给存储引擎之后，即先让存储引擎持久化但客户端还是会阻塞，提交给存储引擎即代表已经被持久化，只是当前的客户端还处于等待，其他客户端已经可以看到事务
+少复制的机制，主挂掉导致主从切换切换时，从可能出现事务丢失（因为原来的主已经在存储引擎层commit）。
+
+
+
+rpl_semi_sync_master_enabled		         启用半同步
+rpl_semi_sync_slave_enabled			         启用半同步
+rpl_semi_sync_master_wait_point		         after_sync after_commit    
+rpl_semi_sync_master_timeout		         超过多少时间从没有响应则退化为异步复制
+rpl_semi_sync_master_trace_level		     semisynchronous replication debug trace level on the master    	
+rpl_semi_sync_master_wait_for_slave_count	 至少等待多少个slave确认复制
+rpl_semi_sync_master_wait_no_slave			 on 发生退化到异步复制，恢复后再继续回复为半同步复制
 

@@ -83,7 +83,6 @@ slave节点作为下一层级slave节点的master
 ----master安装 semisync_master.so
 ----slave安装 semisync_slave.so
 rpl_semi_sync_master_enabled=on    	---master的设置
-rel_semi_sync_master_status=on		---master的设置
 rpl_semi_sync_slave_status=on		---slave的设置
 
 					  
