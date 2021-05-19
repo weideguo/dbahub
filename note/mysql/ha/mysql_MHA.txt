@@ -173,3 +173,14 @@ masterha_check_status --conf=/etc/masterha_default.cnf
 masterha_stop --conf=/etc/masterha_default.cnf
 
 
+
+
+
+#使用ssh连接进行以下操作
+从宕机的旧master获取二进制日志事件（最新slave中继日志没有复制的日志）
+识别含有最新日志的slave
+应用差异的中继日志到其他slave（最新slave与其他slave的中继日志差异）
+应用宕机的旧master获取的二进制日志事件 
+提升一个slave为新master
+使其他的slave连接新的master进行复制
+

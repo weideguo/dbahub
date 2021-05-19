@@ -55,12 +55,21 @@ SELECT EVENT_NAME, WORK_COMPLETED, WORK_ESTIMATED,(WORK_COMPLETED/WORK_ESTIMATED
 #percona
 
 percona-toolkit(perl)
-yum install perl-DBI
-yum install perl-DBD-MySQL
-yum install perl-Time-HiRes
-yum install perl-IO-Socket-SSL
+yum -y install perl-DBI
+yum -y install perl-DBD-MySQL
+yum -y install perl-Time-HiRes
+yum -y install perl-IO-Socket-SSL
+yum -y install perl-Digest-MD5
 #online ddl
 bin/pt-online-schema-change --alter="add key(c1,c2)" --execute u=root,p=,h=127.0.0.1,P=3306,D=test,t=aa2
+
+
+创建临时表，并设置新的字段信息
+在临时表加三个触发器，delete/update/insert 于原表的改动（触发器的动作可以自动等临时表对应行存在后再操作）
+INSERT INTO _x_new SELECT * FROM x    插入数据，原表存在主键或者唯一索引，因此只是逐步加行级锁？
+RENAME TABLE x TO _x_old, _x_new TO x 
+删除表 _x_old、触发器
+
 
 
 #github(go)
