@@ -3,3 +3,8 @@ Logstash        ##数据传输
 Kibana          ##图形展示
 
 
+
+######################################################
+logstash进度记录
+sincedb_path => "data/plugins/inputs/file/"
+
