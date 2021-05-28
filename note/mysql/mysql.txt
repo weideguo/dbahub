@@ -373,6 +373,13 @@ For MyISAM tables, the key statistics are updated as well.
 #消除碎片和链接
 optimize table table_name; 
 
+#innodb 使用以下语句代替 optimize
+alter table table_name engine=innodb;
+
+
+delete语句不会回收磁盘空间，因而会出现大量碎片。使用truncate相当语句drop+create，因此磁盘空间得到释放。
+
+
 #rebuild
 #5.5以及以下不支持online DDL
 ALTER TABLE tbl_name FORCE;    

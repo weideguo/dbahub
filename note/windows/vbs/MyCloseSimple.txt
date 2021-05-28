@@ -1,0 +1,6 @@
+#定时kill
+#conhost.exe
+#前后可以用用%作为通配符
+
+
+%powershell.exe

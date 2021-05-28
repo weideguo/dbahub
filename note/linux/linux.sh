@@ -836,7 +836,8 @@ lastlog
 											
 pidof ${command}		##查看当前命令的pid			
 
-kill -SIGUSR1 ${pid}	##将pid对应命令的日志进行分割					
+kill -HUP ${pid}        ##程序可能自定义处理这些信号而不是结束进程，从而实现重新加载配置等操作，这需要程序支持才能如此
+kill -SIGUSR1 ${pid}				
 	
 线程管理
 ps -T					##查看所有线程
@@ -1600,7 +1601,7 @@ echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
 #逐日存放日志
 /etc/logrotate.d
 
-
+copytruncate模式 copy完成到truncate完成的中间数据会丢失
 
 
 ###funny###

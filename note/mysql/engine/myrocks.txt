@@ -5,4 +5,4 @@ RocksDB 是一个 kv 存储引擎，基于 Log Structured Merge Tree 作为数�
 压缩性能更优
 
 
-适合写多读少
+适合写多读少（insert多 select/update/delete少）

@@ -187,3 +187,24 @@ displayPosition=function(pos){
 }
     
 navigator.geolocation.getCurrentPosition(displayPosition)
+
+
+
+/////////////////////
+<script async defer src="http://myhost/my.js"> 
+ /*js code in here*/
+</script>
+
+正常模式
+浏览器会立即加载并执行指定的脚本，“立即”指的是在渲染该 script 标签之下的文档元素之前，也就是说不等待后续载入的文档元素，读到就加载并执行。
+
+async模式
+js会被异步加载，即加载和渲染后续文档元素的过程将和 js 的加载并行进行（异步）。
+当 js加载完整立即执行js。执行js时，html解析暂停。执行顺序与代码的顺序无关，不保证执行顺序。
+
+defer 模式
+js会被异步加载，加载完成并不会立即执行，而是在所有元素解析完成之后，DOMContentLoaded 事件触发之前完成。因此它会按照代码的顺序执行。
+
+
+延迟脚本并不一定会按照顺序执行，也不一定会在 DOMContentLoaded 事件触发前执行，因此最好只包含一个延迟脚本。
+

@@ -34,6 +34,19 @@ Orchestrator
 复制拓扑管理以及高可用
 
 
+Gaea
+分库分表 小米开发
+
+
+kingshard 
+分库分表 个人项目
+
+
+shardingsphere    apache项目              
+shardingJDBC
+分库分表
+非单独服务，jar包提供给程序端使用
+
 
 tungsten-replicator
 支持多种数据库的复制工具

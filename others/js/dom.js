@@ -11,4 +11,20 @@ document.getElementsByTagName("div") 		      //通过元素类型获取元素 �
 document.getElementsByTagNameNS(ns,name)				 
 
 
+// 绑定动作
+// <input id="btn" type="button" onclick="func1();" />   <!--html中绑定动作-->
+btn1 = document.getElementById('btn1');
+btn1.onclick = function(){}
 
+btn2 = document.getElementById('btn2');
+btn2.addEventListener('click', func2, false); 
+
+
+// 触发动作
+document.getElementById("btn1").onclick();
+document.getElementById("btn2").click();
+
+
+//去除绑定
+btn1.onclick = null； //去掉绑定的事件
+btn2.removeEventListener('click', func2, false); 

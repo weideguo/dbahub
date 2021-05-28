@@ -1,4 +1,14 @@
+#print a stack trace of a running process
+pstack $pid
+gstack $pid      #两者相同
+
+
+
 GNU Project Debugger
+
+
+############################################################################gdb启动程序并进行调试
+编译时需要为 gcc -g
 
 gdb进入命令行
 
@@ -20,25 +30,61 @@ c
 
 
 
+gdb $exefile      #最常用的用gdb启动程序，开始调试的方式
 
 
 
 
 
+############################################################################调试正在运行的程序
 
 gdb executable-file process-id    #分析正在运行的进程
 如
 gdb mysqld $mysqld_pid
 
 
+#修改mysql进程的参数变量
+gdb -p $pid -ex "set max_connections=1000" -batch
+
+--batch  执行批处理，不进入交互模式
 
 
 
-#print a stack trace of a running process
-pstack $pid
-gstack $pid      #两者相同
+gdb -p $pid    #进入交互模式
+
+#gdb命令
+
+set logging file /tmp/test.txt   #设置操作gdb的日志输出文件
+set logging on                   #打开日志输出
 
 
+signal 1                         #给进程发送信号，对应 kill -l 
+
+
+info threads                     #查看线程
+thread thread_no                 #切换到线程号
+thread apply all command         #所有线程都执行命令打印栈桢
+thread apply all bt              #输出所有的线程堆栈 
+
+set print elements N             #指定打印的长度，对长字符串特别有用
+set print element 0              #输出完整的字符串
+set print pretty                 #设置GDB打印结构的时候，每行一个成员，并且有相应的缩进，缺省是关闭的
+
+print {type} variable 
+比如：
+(gdb) p {ABC} 0x7fffffffe710
+$2 = {val = 1.5, val2 = 10}
+
+print xxx                        #打印变量
+p /x xxx                         #16进制显示
+p str@str_len                    #打印字符串
+                
+info locals                      #打印出当前函数中所有局部变量及其值
+info args                        #打印出当前函数的参数名及其值
+info functions {regexp}          #打印函数名称
+info variables {regexp}          #打印全局变量名称
+display $name                    #自动打印变量
+undisplay                        #取消自动打印 
 
 
 

@@ -82,10 +82,15 @@ retcode	        Return code of the logged operation.
 参考文档 https://mariadb.com/kb/en/mariadb-audit-plugin/
 
 
-## 4.开发连接中间件
+## 4.抓包解析
+通过抓取mysql服务所在的网卡流量，由mysql协议解析传输的信息。  
+参考工具(mysql-sniffer)[https://github.com/Qihoo360/mysql-sniffer]
+
+
+## 5.开发连接中间件
 所有连接都通过中间件，对现有架构破坏太大，不具可行性。
 
 
-## 5.企业版（自带审计插件）
+## 6.企业版（自带审计插件）
 需要付费，且版本要升级。
 
