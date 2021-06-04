@@ -4,6 +4,6 @@ sshpass
 *.log
 *.class
 
-.ipynb_checkpoints
+.ipynb_checkpoints/
 a.out
 *.so
