@@ -42,3 +42,18 @@ data = {'source_filename':'MTQ5NTY5MTk0NS42NDgwNzc6KV91bml0X2NyZWF0ZTExMS56aXA='
 result = t_filter.render(data)
 
 print result
+
+
+##########################################
+
+from jinja2 import Template
+template = Template('Hello {{ name }}!')
+template.render({'name':'John Doe'})
+
+
+from jinja2 import Environment, meta
+
+templ_str = "echo {{before.stdout_map_desc.x}}  {{session.aa}}  {{global.aa}}  {{select.aa}} "
+env = Environment()
+ast = env.parse(templ_str)
+print(meta.find_undeclared_variables(ast))  

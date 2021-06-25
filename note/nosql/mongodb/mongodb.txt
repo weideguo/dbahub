@@ -97,7 +97,13 @@ db.killOp({op:opid})			    //杀死操作
 
 
 
-db._adminCommand( {getCmdLineOpts: 1})   //查看启动参数
+db._adminCommand( {getCmdLineOpts: 1} )     //查看启动参数
+
+db._adminCommand( {getCmdLineOpts: 1} )
+db.adminCommand( {setParameter: 1, wiredTigerEngineRuntimeConfig: "cache_size=80G"} )        //动态修改参数
+db.adminCommand( {setParameter: 1, wiredTigerEngineRuntimeConfig: "cache_size=80G"} )
+
+db.adminCommand( { getParameter : "*" } )    //查看参数
 
 
 日志
