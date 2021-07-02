@@ -1,5 +1,5 @@
 启动php-fpm（FastCGI Process Manager，启动之后才可以在web服务器执行php）
-php-fpm -c /etc/php.ini -y /usr/local/etc/php-fpm.conf
+php-fpm -c /etc/php.ini -y /etc/php-fpm.conf
 
 
 #直接运行（不需要启动php-fpm）

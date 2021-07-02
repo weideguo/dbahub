@@ -1,0 +1,9 @@
+k8s 对docker的替代
+
+containerd                  --> dockerd
+containerd-shim             --> 
+containerd-shim-runc-v1     --> 
+containerd-shim-runc-v2     --> 
+containerd-stress           --> 压测
+
+

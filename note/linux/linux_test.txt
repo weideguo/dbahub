@@ -1,8 +1,46 @@
 sysbench
 #可用于操作系统以及数据库的压力测试
 
+需要分别进行
+prepare     #准备数据
+run         #运行测试
+cleanup     #删除数据
 
+
+bin/sysbench ./share/sysbench/oltp_insert.lua \
+--threads=4 \
+--table-size=500000 \
+--tables=10 \
+--mysql-db=db_test \
+--mysql-user=root \
+--mysql-password=mysql_passwd \
+--mysql-host=127.0.0.1 \
+--mysql-port=3306 \
+prepare
+
+--mysql-socket=/home/mysql/mysql-8.0.20/run/mysqld.sock \
+
+
+###################################################################################
 tpcc-mysql
 #mysql的压力测试
 
+#数据准备
+mysql tpcc1000 < create_table.sql
+mysql tpcc1000 < add_fkey_idx.sql
+
+./tpcc_load -h127.0.0.1 -p 3306 -d tpcc1000 -u root -p mysql_passwd -w 100
+
+#测试
+./tpcc_start -h 127.0.0.1 -p 3306 -d tpcc1000 -u root -p mysql_passwd -w 100 -c 10 -r 100 -l 300 -i 20 -f /var/log/tpcc_mysql.log
+
+
+
+-w warehouse 仓库，测试库的逻辑数量，不是实际值；
+-c 连接数；
+-r warmup_time:指定预热时间，以秒为单位，默认是10秒，主要目的是为了将数据加载到内存；
+-l running_time:指定测试执行时间，以秒为单位，默认是20秒；
+-i report_interval:指定生产报告的时间间隔，默认是10秒；
+-f report_file:将测试中各项操作的记录输出到指定文件内保存；
+-t trx_file:输出更详细的操作信息到指定文件内保存；
 

@@ -13,6 +13,7 @@
 #使用defaults-file确定还原路径
 ./innobackupex --defaults-file=/u05/mysql5634/my.cnf --copy-back /u03/xb_backup_dir/2017-01-16_13-12-43
 
+./innobackupex --defaults-file=/u05/mysql5634/my.cnf --move-back /u03/xb_backup_dir/2017-01-16_13-12-43
 
 ##手动mv文件到对应目录更快 程序使用copy比较慢
 
@@ -96,7 +97,10 @@ alter table recovery_table_demo import tablespace;
 
 
 
+2.X 引入了打包与压缩
+#从文件中提取
+./xbstream -x < /path_to_file -C /path_to_dir
 
-
-
+#解压 需要先安装qpress
+xtrabackup --decompress /path_to_dir
 

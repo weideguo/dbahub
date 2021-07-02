@@ -41,6 +41,8 @@ SLAVE START ... PASSWORD = ...
 CREATE SERVER ... OPTIONS(... PASSWORD ...)
 ALTER SERVER ... OPTIONS(... PASSWORD ...)
 
+alter user user() identified by "root";         --修改当前用户的密码
+
 ##修改账号密码加密方式 8.0版本加密认证修改以兼容之前的连接程序
 ALTER USER 'root'@'localhost' IDENTIFIED with mysql_native_password BY '123456';
 ##创建旧的密码加密账号

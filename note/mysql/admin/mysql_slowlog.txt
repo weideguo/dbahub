@@ -2,7 +2,7 @@
 
 
 
-$ pt-query-digest --user=anemometer --password=superSecurePass \
+pt-query-digest --user=anemometer --password=superSecurePass \
                   --review h=db.example.com,D=slow_query_log,t=global_query_review \
                   --history h=db.example.com,D=slow_query_log,t=global_query_review_history \
                   --no-report --limit=0% \ 
@@ -18,5 +18,37 @@ anemometer系统设置连接数据库，即可在前台分析
 
 https://github.com/box/Anemometer
 
+
+
+--filter 选项
+#只分析select语句
+$event->{fingerprint} =~ m/^select/i
+
+#只分析root用户
+($event->{user} || "") =~ m/^root/i
+
+#只分析Full_scan、Full_join类型语句
+(($event->{Full_scan} || "") eq "yes") || (($event->{Full_join} || "") eq "yes") 
+
+
+--type 
+slowlog     #默认为分析慢查询日志
+genlog      #通用日志
+binlog      #
+tcpdump     #tcpdump出来的文件也可以分析
+
+
+
+###########生成报告
+
+
+
+pt-query-digest  my_slow.log
+
+
+
+################
+#mysql自带的 可以聚合同类语句
+mysqldumpshow  my_slow.log
 
 

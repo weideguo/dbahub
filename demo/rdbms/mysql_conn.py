@@ -64,3 +64,9 @@ conversions = MySQLdb.converters.conversions
 conversions[FIELD_TYPE.BIT] = lambda data: data == b'\x01'
 
 MySQLdb.connect(conv=conversions)
+
+
+######################################################################
+conn.thread_id()         #对应show processlist的id，binlog记录每个id的执行语句，由此可以确定每个连接的执行语句
+
+

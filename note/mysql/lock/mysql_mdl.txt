@@ -1,0 +1,95 @@
+元数据锁 meta data lock
+
+server层的锁 所有存储引擎都存在
+
+
+已经存在的事务（select 以及其他DML）会导致alter表操作处于 Waiting for table metadata lock 状态
+
+
+创建、删除索引
+修改表结构
+表维护操作 （optimize table、repair table ）
+删除表
+获取表上表级写锁 （ lock table tab_name write )
+
+
+alter table的操作过程中:
+在after create步骤会获取metadata独占锁，
+当进行到altering table的过程时（通常是最花时间的步骤），对该表的读写都可以正常进行，这就是online ddl的表现
+
+
+
+1. select语句操作MDL锁流程
+
+1) Opening tables阶段，加共享锁
+
+a) 加MDL_INTENTION_EXCLUSIVE锁
+b) 加MDL_SHARED_READ锁
+
+2) 事务提交阶段，释放MDL锁
+
+a) 释放MDL_INTENTION_EXCLUSIVE锁
+b) 释放MDL_SHARED_READ锁
+
+
+
+2. DML语句操作MDL锁流程
+
+1) Opening tables阶段，加共享锁
+
+a) 加MDL_INTENTION_EXCLUSIVE锁
+b) 加MDL_SHARED_WRITE锁
+
+2) 事务提交阶段，释放MDL锁
+
+a) 释放MDL_INTENTION_EXCLUSIVE锁
+b) 释放MDL_SHARED_WRITE锁
+
+
+
+3. alter操作MDL锁流程
+
+1) Opening tables阶段，加共享锁
+
+a) 加MDL_INTENTION_EXCLUSIVE锁
+b) 加MDL_SHARED_UPGRADABLE锁，升级到MDL_SHARED_NO_WRITE锁
+
+2) 操作数据，copy data，流程如下：
+
+a) 创建临时表tmp，重定义tmp为修改后的表结构
+b) 从原表读取数据插入到tmp表
+
+3) 将MDL_SHARED_NO_WRITE读锁升级到MDL_EXCLUSIVE锁
+
+a) 删除原表，将tmp重命名为原表名
+
+4) 事务提交阶段，释放MDL锁
+
+a) 释放MDL_INTENTION_EXCLUSIVE锁
+b) 释放MDL_EXCLUSIVE锁
+
+
+
+
+
+SHARED_UPGRADABLE	    共享升级锁	    0	  一般在执行DDL时在on-line情况下会产生该锁
+EXCLUSIVE	            排他锁       X	1	  一般在执行DDL时会产生该锁
+SHARED_NO_READ_WRITE	排他锁       X	1	  执行lock tables xxx write产生该锁
+SHARED_WRITE	        意向排他锁   IX	2	  一般执行DML的更新语句 或 select ... for update产生该锁
+SHARED_READ	            意向共享锁   IS	2.5	  select ... lock in share mode产生该锁(8.0版本以后使用select...for share)
+SHARED_READ_ONLY	    共享锁       S	3	  执行lock tables xxx read产生该锁
+
+
+
+
+1、SHARED_UPGRADABLE 本身为读锁但有些特殊，所以列表里把它的优先级设置为0。
+ 一、并不受队列中的写锁等待而阻塞，只和当前持锁的session比对，当前持锁session为排他锁X，则等待，反之获得锁
+ 二、为了保证一张表同时只有一个DDL操作进行，SHARED_UPGRADABLE 之间是互斥的，即一个时刻只有一个 SHARED_UPGRADABLE 是GRANTED状态，其余是被阻塞。
+
+2、EXCLUSIVE、SHARED_NO_READ_WRITE 级别相同，在队列中排队，先进先出。
+
+3、SHARED_WRITE 与 SHARED_READ 兼容，但 SHARED_WRITE 优先级高于 SHARED_READ_ONLY 且不兼容
+
+4、SHARED_READ 与 SHARED_WRITE 和 SHARED_READ_ONLY 分别兼容。即如果前面的持锁类型为SHARED_WRITE，则可以获得锁。如果前面持锁类型为SHARED_READ_ONLY，也可以获得锁。
+
+5、SHARED_READ_ONLY 优先级最低，主要是因为被 SHARED_WRITE 互斥，但如果只有 SHARED_READ 则他们的优先级是兼容的。

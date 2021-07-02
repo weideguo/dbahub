@@ -192,6 +192,14 @@ git ls-remote
 #git push [remote-name] [local-branch]:[remote-branch]
 git push origin master:0.1
 
+
+git clone  https://xx
+
+#列出clone的分支信息
+git branch -r      
+
+#远端有多个分支，clone到本地只是创建master->master的，可以用git checkout -b设置不同分支的映射
+
 #跟踪远程分支 git pull获取的分支
 git checkout -b [branch] [remotename]/[branch]
 

@@ -1,0 +1,41 @@
+#编译实践
+#redis-0.091
+
+#编译成 .o 文件 使用当前目录的头文件
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g anet.c
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g sds.c
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g adlist.c
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g redis-cli.c
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g zmalloc.c
+
+#连接成最终可执行文件
+gcc -o redis-cli -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g anet.o sds.o adlist.o redis-cli.o zmalloc.o
+
+
+
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g adlist.c 
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g ae.c 
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g anet.c 
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g dict.c 
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g redis.c 
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g sds.c 
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g zmalloc.c
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g lzf_d.c
+gcc -c -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g lzf_c.c
+gcc -o redis-server -std=c99 -pedantic -O2 -Wall -W -DSDS_ABORT_ON_OOM -g adlist.o ae.o anet.o dict.o redis.o sds.o zmalloc.o lzf_c.o lzf_d.o
+
+
+###########
+gcc -c -std=c99 anet.c
+gcc -c -std=c99 sds.c
+gcc -c -std=c99 adlist.c
+gcc -c -std=c99 redis-cli.c
+gcc -c -std=c99 zmalloc.c
+
+gcc -o redis-cli -std=c99 -g anet.o sds.o adlist.o redis-cli.o zmalloc.o
+
+
+
+
+
+

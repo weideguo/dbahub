@@ -1,0 +1,18 @@
+
+5.7引入
+基于表并行的，对于每张表的导出只能是单个线程的
+
+
+# 主线程加读锁
+flush tables with read lock;              
+show master status; show slave status;    
+
+# 开n个线程
+start transaction; 
+
+# 主线程释放锁
+
+# n个线程进行并发备份
+
+
+
