@@ -1,0 +1,12 @@
+编译安装
+ cd $postgresql_home
+ ./configure --prefix=/03/postgresql
+ make
+ make install
+
+cd ./contrib   ##编译扩展插件 可选
+make
+make install
+
+
+bin/initdb -D ./data/     				        #初始化数据库

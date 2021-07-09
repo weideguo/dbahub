@@ -1,0 +1,14 @@
+VACUUM
+VACUUM — garbage-collect and optionally analyze a database
+
+#autovacuum       automate the execution of VACUUM and ANALYZE commands    高版本才有
+#postgresql.conf
+track_counts = on
+autovacuum = on
+
+
+MVCC机制
+
+innodb的基于回滚段实现。undo日志自动清理。
+PG新老数据一起存放的基于XID实现。新老数据一起存放，需要定时触 发VACUUM。
+

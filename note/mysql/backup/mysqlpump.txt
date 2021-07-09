@@ -16,3 +16,13 @@ start transaction;
 
 
 
+
+mysqlpump -u root -pmysql_passwd -h 127.0.0.1 -P 3306 --routines --triggers --events --default-parallelism 5 --default-character-set=utf8 --single-transaction --all-databases > mysql_backup_all_20210703.sql
+
+mysqlpump -u root -pmysql_passwd -h 127.0.0.1 -P 3306 --routines --triggers --events --default-parallelism 5 --default-character-set=utf8 --single-transaction --databases db1 db2 db3 > mysql_backup_20210703.sql
+
+
+--set-gtid-purged=on             #通过gtid实现自动设置pos？
+
+
+

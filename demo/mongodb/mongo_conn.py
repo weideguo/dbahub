@@ -39,6 +39,8 @@ mongdb_auth=("my_mongo_user","my_mongo_password")
 
 mongdb_auth_db="admin"
 
+#不一定需要replicaSet参数，只是有些驱动可能需要？
+#mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
 #mongo_replset_name="my_mongo_replset_name"
 #mongo_uri="mongodb://%s:%s@%s/%s?replicaSet=%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mongo_replset), mongdb_auth_db, mongo_replset_name)
 

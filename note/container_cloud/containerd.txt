@@ -7,3 +7,107 @@ containerd-shim-runc-v2     -->
 containerd-stress           --> 压测
 
 
+
+#查看集群信息
+kubectl cluster-info
+
+
+-c container-name  #如果省略，则为pod中第一个容器
+
+#所有命名空间的pod
+kubectl get pods --all-namespaces
+
+#列出指定命名空间的pod
+kubectl -n test get pods
+kubectl -n test get pods -o wide
+
+#查看端口转发
+kubectl -n test get svc -o wide
+
+#查看节点信息
+kubectl get nodes -o wide
+
+
+#执行命令
+kubectl exec (POD | TYPE/NAME) [-c CONTAINER] [flags] -- COMMAND [args...] [options]
+
+#进入命令行
+kubectl -n test exec -it $podsname -- bash
+
+#复制文件
+kubectl -n test cp $podsname:$from-dir $to-dir
+
+
+#查看 stdout 日志
+kubectl -n test logs $podsname
+
+#类似tail -f
+kubectl -n test logs -f $podsname
+
+
+#查看pod的相信信息
+kubectl describe pods $podsname -n $namespace
+
+
+
+#创建pod
+kubectl create -f ./pod.json
+
+cat pod.json | kubectl create -f -
+
+kubectl create -f pod.yaml --edit -o json
+
+
+
+
+# cat pod.json 
+{
+"apiVersion": "v1",
+"kind": "Pod",
+"metadata": {
+  "name": "testbox",
+  "namespace": "default"
+},
+"spec": {
+  "containers": [
+     {
+        "name": "testbox-host",
+        "image": "busybox:latest",
+        "command": [
+           "sleep"
+        ],
+        "args": [
+           "1000"
+        ]
+      }
+    ]
+  }
+}
+
+
+# cat pod.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testbox
+  namespace: default
+spec:
+  containers:
+  - name: testbox-host
+    image: busybox:latest
+    command: ["sleep"]
+    args: ["1000"]
+
+
+
+
+configMap 让镜像 和 配置文件解耦
+
+#列出所有configmaps
+kubectl -n dev get configmap
+
+# 查看configmaps
+kubectl -n dev describe cm $configmapsname
+
+# 修改configmaps
+kubectl -n test edit configmaps $configmapsname

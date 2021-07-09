@@ -11,9 +11,7 @@ MySQL Shell
     Primary 即传统意义上的 Master，一个副本集只允许一个
     Secondary 即 Slave，允许一个或多个
 
-classic MySQL protocol      常规执行sql语句连接，使用单独端口，默认3306
-X DevAPI (X protocol)       mysql shell使用，使用单独端口，默认33060。5.7引入，需要先加载插件；8.0默认直接启用。      
-             AdminAPI       X DevAPI的一部分？provides an integrated solution for high availability and scalability using InnoDB
+
 
 MySQL Shell 使用TCP连接MySQL服务
 支持语言

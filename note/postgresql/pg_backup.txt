@@ -1,0 +1,85 @@
+################################逻辑备份
+
+pg_dump dbname > dumpfile  #备份成sql文件
+psql dbname < dumpfile     #恢复
+
+pg_dumpall > dumpfile
+psql -f dumpfile postgres
+
+pg_dump -Fc dbname > filename
+pg_restore -d dbname filename
+
+
+
+
+################################物理备份
+归档WAL write ahead log
+wal_level         replica or higher, 
+archive_mode      on off aways
+archive_command   shell command
+
+#在配置文件中设置 postgresql.conf
+archive_command = 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'  # Unix
+archive_command = 'copy "%p" "C:\\server\\archivedir\\%f"'  # Windows
+
+%p is replaced by the path name of the file to archive
+%f is replaced by only the file name
+
+PITR
+#物理备份(二选一)
+pg_basebackup -D /data/pg_backup_test -l 2018_09_13_backup
+pg_basebackup -D backup/data -T /opt/ts=$(pwd)/backup/ts    #如果使用表空间使用其他目录，需要指定映射关系
+
+SELECT pg_start_backup('label_name', false, false);   #The third parameter being false  initiate a non-exclusive base backup.
+直接复制data目录进行备份
+SELECT * FROM pg_stop_backup(false, true);
+
+
+复制的时候可选不复制以下
+pg_wal
+pg_replslot
+postmaster.pid
+postmaster.opts
+以下目录下的文件也可以不复制，但目录需要存在
+pg_dynshmem 
+pg_notify 
+pg_serial 
+pg_snapshots 
+pg_stat_tmp  
+pg_subtrans
+pgsql_tmp开头的目录可以不复制
+
+#恢复
+复制物理备份的文件到对应目录
+
+清空pg_wal，将未归档的pg_wal下的文件放入，以便恢复到示例down的最后时刻（旧版本的为pg_xlog）
+在归档中可用的段将会被优先于pg_wal中的文件被使用
+
+    
+修改文件recovery.conf（在data目录下）
+     restore_command = 'cp /mnt/server/archivedir/%f %p'      #设置从备份的归档wal进行恢复
+     recovery_target_timeline = "string"                      #设置恢复到的时间点
+     recovery_target_time = timestamp                         #latest 0 1423234
+
+默认情况下，恢复将会一直恢复到 WAL 日志的末尾。
+
+
+启动实例
+
+
+
+
+pg_waldump         #将wal文件导出成可读形式文件 
+pg_resetwal        #清空wal日志，需要关闭postgresql进程
+
+
+
+
+由backup_label文件查看备份开始时的WAL LOCATION以及对应的wal文件，可以只用该文件以及之后的进行恢复
+
+
+
+
+
+
+

@@ -102,5 +102,5 @@ alter table recovery_table_demo import tablespace;
 ./xbstream -x < /path_to_file -C /path_to_dir
 
 #解压 需要先安装qpress
-xtrabackup --decompress /path_to_dir
+xtrabackup --decompress --remove-original ...
 

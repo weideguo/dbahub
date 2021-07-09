@@ -53,10 +53,14 @@ vgextend vg_name /dev/hda6    			#扩展vg_name
 lvextend –L 1G /dev/vg_name/lv_name  	#扩展LV
 resize2fs /dev/vg_name/lv_name    		###更新文件系统
 
+xfs_growfs /dev/vg_name/lv_name         ###xfs文件系统使用这个替代  resize2fs
+
+
 缩小无法在线缩小  需要先unmount
 resize2fs /dev/linuxcast/mylv 5G    	###缩小磁盘分区
 lvreduce -L -1G /dev/linuxcast/mylv  	###缩小LV
 vgreduce linuxcast /dev/sdd   			###缩小卷组
+
 
 
 pvdisplay   ##显示pv(Physical Volume)

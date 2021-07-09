@@ -1,21 +1,10 @@
- 编译安装
- cd $postgresql_home
- ./configure --prefix=/03/postgresql
- make
- make install
-
-cd ./contrib   ##编译扩展插件 可选
-make
-make install
-
 
 默认端口5432 
 pg是多进程模式
 pg一个连接建立一个进程
  
- 
-bin/initdb -D ./data/     				        #初始化数据库
-bin/pg_ctl -D ./data/ -l logfile start    #启动实例
+
+bin/pg_ctl -D ./data/ -l logfile start          #启动实例
 bin/postgres -D ./data    				        #实际服务运行的文件
 
 关闭
@@ -166,243 +155,34 @@ show client_encoding;
 show server_encoding;
  
  
-select * from pg_stat_activity ;           #查看进程
+select * from pg_stat_activity ;           #查看进程 连接数
 select pg_terminate_backend(procpid);      #杀死进程
 
-
-#配置文件#########################################################################################################################
-$postgresql/data
-postgresql.conf   参数配置文件
-pg_hba.conf 		  认证文件，用户登录限制   host-based authentication
-pg_ident.conf     配置操作系统用户映射为数据库用户 
-
-####map示例
-###################################################pg_hba.conf
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-host    all             all             192.168.0.0/16          ident map=omicron
-
-###################################################pg_ident.conf
-# MAPNAME       SYSTEM-USERNAME         PG-USERNAME
-# bryanh can also connect as guest1
-omicron         bryanh                  guest1
-
-#########################pg_hba.conf中METHOD的类型
-    trust
-    
-    reject
-    
-    scram-sha-256
-    
-    md5
-    
-    password
-    
-    gss
-    
-    sspi
-    
-    ident
-    
-    peer
-    
-    ldap
-    
-    radius
-    
-    cert
-    
-    pam
-    
-    bsd
-       
-
-内存设置
-shared_buffers
-temp_buffers  数据库会话访问临时表数据
-work_mem      内部的sort和hash操作
-maintenance_work_mem   VACUUM，CREATE INDEX，REINDEX等操作
+select usename,count(*) from pg_stat_activity group by 1; 
 
 
 
+--查看表的字段信息
+select 
+a.attname as fieldname, 
+col_description(a.attrelid,a.attnum) as comment,
+format_type(a.atttypid,a.atttypmod) as type, 
+a.attnotnull as notnull
+from pg_class as c,
+pg_attribute as a
+where c.relname = 'bill'                         --- 要查的表名
+and a.attrelid = c.oid and a.attnum > 0;
 
-#配置文件重新加载（二选一）
-pg_ctl reload
-SELECT pg_reload_conf();
+
+
  
- 
-#####################################################################################################################################  
- 
-VACUUM
-VACUUM — garbage-collect and optionally analyze a database
-
-#autovacuum       automate the execution of VACUUM and ANALYZE commands    高版本才有
-#postgresql.conf
-track_counts = on
-autovacuum = on
-
-
-
-pg_dump dbname > dumpfile  #备份成sql文件
-psql dbname < dumpfile     #恢复
-
-pg_dumpall > dumpfile
-psql -f dumpfile postgres
-
-pg_dump -Fc dbname > filename
-pg_restore -d dbname filename
-
-
-归档WAL write ahead log
-wal_level         replica or higher, 
-archive_mode      on off aways
-archive_command   shell command
-
-archive_command = 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'  # Unix
-archive_command = 'copy "%p" "C:\\server\\archivedir\\%f"'  # Windows
-
-%p is replaced by the path name of the file to archive
-%f is replaced by only the file name
-
-PITR
-#物理备份(二选一)
-pg_basebackup -D /data/pg_backup_test -l 2018_09_13_backup
-pg_basebackup -D backup/data -T /opt/ts=$(pwd)/backup/ts    #如果使用表空间使用其他目录，需要指定映射关系
-
-SELECT pg_start_backup('label_name', false, false);   #The third parameter being false  initiate a non-exclusive base backup.
-直接复制data目录进行备份
-SELECT * FROM pg_stop_backup(false, true);
-
-
-复制的时候可选不复制以下
-pg_wal
-pg_replslot
-postmaster.pid
-postmaster.opts
-以下目录下的文件也可以不复制，但目录需要存在
-pg_dynshmem 
-pg_notify 
-pg_serial 
-pg_snapshots 
-pg_stat_tmp  
-pg_subtrans
-pgsql_tmp开头的目录可以不复制
-
-#恢复
-复制物理备份的文件到对应目录
-清空pg_wal，将最新示例的pg_wal下的文件放入，以便恢复到示例down的最后时刻
-修改文件recovery.conf（在data目录下）
-     restore_command = 'cp /mnt/server/archivedir/%f %p'   #设置从备份的归档wal进行恢复
-     recovery_target_timeline = "string"                      #设置恢复到的时间点
-     recovery_target_time = timestamp                         #latest 0 1423234
-启动实例
-
-
-#########主从###################################################################################################
-#Log-Shipping Standby Servers
-
-archive, pg_wal, streaming replication      #三步恢复方式
-
-从archive目录复制到pg_wal目录，根据pg_wal目录的日志文件恢复，然后根据streaming replication追加
-
-
-##需要复制主的归档目录到从的归档目录，如果从实例需要从归档日志开始恢复
-
-主实例账号设置
-##pg_hba.conf
-##  host    all             foo             192.168.0.0/16          md5
-
-
-从实例
-
-#####recovery.conf
-standby_mode = 'on'
-primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'     
-restore_command = 'cp /path/to/archive/%f %p'                                  ##恢复用
-archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'              ##清理日志，pg_archivecleanup主要用于standby
-
-
-#############Replication Slots
-#replication slots provide an automated way to ensure that the master does not remove WAL segments until they have been received by all standbys, and that the master does not remove rows which could cause a recovery conflict even when the standby is disconnected.
-
-SELECT * FROM pg_create_physical_replication_slot('node_a_slot');
-SELECT slot_name, slot_type, active FROM pg_replication_slots;
-
-#####recovery.conf
-standby_mode = 'on'
-primary_conninfo = 'application_name=s1 host=192.168.1.50 port=5432 user=foo password=foopass'
-primary_slot_name = 'node_a_slot'
-
-
-##streaming replication 默认异步复制
-
-
-#同步复制
-#在主实例中设置postgresql.conf
-###哪些从实例需要同步复制
-synchronous_standby_names = 'FIRST 2 (s1, s2, s3)'   #列表中前两个从要同步复制  对应primary_conninfo中的application_name
-synchronous_standby_names = 'ANY 2 (s1, s2, s3)'     #任意两个从要同步复制
-synchronous_standby_names = '*'                      #所有从都需要同步复制
-
-synchronous_commit = on                              #同步复制模式 off, local, remote_write, remote_apply, on                                  
-
-##########################################################################################################################
-
-
-select pg_current_wal_lsn();                              主 当前日志点
-select pg_walfile_name_offset(pg_current_wal_lsn());      查看当前日志点对应的文件以及偏移量
-select pg_last_wal_receive_lsn();                         从 最近接受的日志点
-select pg_is_in_recovery();                               是否进行恢复 实例复制也算一种恢复
-select pg_last_wal_replay_lsn();                          已经回放的日志点
-select pg_last_xact_replay_timestamp();                   从实例上一个回放事务的时间戳（为在主实例完成的时间戳）
-
-
-select pg_start_backup('label_goes_here');                #开始备份
-SELECT * FROM pg_walfile_name_offset(pg_stop_backup());   #结束备份并显示备份的wal点 以便直接使用之后的wal进行恢复
-
-select pg_switch_wal();                                   #手动切换日志
-
-
-select * from  pg_stat_replication    ##查看复制的信息 同步方式
-【pg_current_wal_lsn】 【sent_lsn】         indicate that the master server is under heavy load
-【sent_lsn】 【pg_last_wal_receive_lsn】    indicate network delay, or that the standby is under heavy load
-
-
-防止脑裂
-STONITH
-Shoot The Other Node In The Head    
-    
-
-#fail over 二选一
-pg_ctl promote                                               ##提升当前实例为主
-
-#recovery.conf
-trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对应这个文件，即可提升当前实例为主  standby_mode = 'on'
-
-
-##############################################################################################################################
-
-pg_waldump    #将wal文件导出成可读形式文件 
-pg_resetwal   #清空wal日志，需要关闭postgresql进程
-
-bin/pg_rewind --target-pgdata=./data --source-server="host=192.168.1.128 port=5432 user=pg_user password=pg_user_password dbname=postgres"   ##切换为新主的从 如果失败，手动从新主备份然后再设主从
-
 bin/pg_controldata -D ./data  ##查看实例状态 
+
 
 
 pg_test_fsync      ##测试wal的sync性能
 pg_test_timing     ##测试服务器的性能开销
 
-pg_receivewal -D /data/pg_test/pg_wal_test -h 192.168.1.128 -p 5432 -U pg_user -W    #直接接受wal文件并保存于本地 当前接收的文件以.partial结尾
-
-bin/pg_recvlogical -d postgres -h 192.168.59.130 -p 5432 -U wdg -W --file=/data/pg_test/pg_wal_logic/wal.txt -S logical_slot_test --start   ##接收wal的可读格式 需要预先创建logical slot  
-
-
-
-select * from pg_replication_slots;                      ##查看slot
-SELECT * FROM pg_drop_replication_slot('node_a_slot');   ##删除slot
-
-SELECT * FROM pg_create_logical_replication_slot('logical_slot_test', 'test_decoding');            #创建logical_replication_slot  需要wal_level为logical  需要编译扩展插件
-SELECT * FROM pg_logical_slot_get_changes('logical_slot_test', NULL, NULL);                        #由logical_replication_slot查看操作
 
 
 ##
@@ -411,7 +191,20 @@ create extension postgres_fdw;        #创建插件
 drop extension postgres_fdw cascade;  #删除插件
 
 
-MVCC机制
 
-innodb的基于回滚段实现。undo日志自动清理。
-PG新老数据一起存放的基于XID实现。新老数据一起存放，需要定时触 发VACUUM。
+
+## pg_stat_statements 插件安装
+
+shared_preload_libraries='pg_stat_statements'
+
+select sum(calls) s from pg_stat_statements;  --通过间隔一段时间调用以计算qps
+
+
+
+--修改配置文件 postgresql.auto.conf，这个文件不要手动修改
+--如果允许在线修改，则直接生效；不支持在线修改，重启后生效
+--即使启动时也加载配置文件 postgresql.auto.conf
+alter system set shared_preload_libraries='pg_stat_statements';     
+
+
+
