@@ -18,7 +18,11 @@ bin/sysbench ./share/sysbench/oltp_insert.lua \
 --mysql-port=3306 \
 prepare
 
+
 --mysql-socket=/home/mysql/mysql-8.0.20/run/mysqld.sock \
+
+--oltp-point-selects=4
+表示 oltp 脚本中 sql 测试命令，select 操作次数为4，默认值为1。
 
 
 ###################################################################################
@@ -43,4 +47,12 @@ mysql tpcc1000 < add_fkey_idx.sql
 -i report_interval:指定生产报告的时间间隔，默认是10秒；
 -f report_file:将测试中各项操作的记录输出到指定文件内保存；
 -t trx_file:输出更详细的操作信息到指定文件内保存；
+
+
+###################################################################################
+mysqlslap mysql压测
+
+#使用自定义脚本测试
+mysqlslap -uroot -proot -h 127.0.0.1 -P 3306 --delimiter=";" --create="CREATE TABLE a (b int);INSERT INTO a VALUES (23)" --query="SELECT * FROM a" --concurrency=50 --iterations=200
+
 

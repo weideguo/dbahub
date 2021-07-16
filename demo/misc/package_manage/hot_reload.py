@@ -42,7 +42,9 @@ a="aaaa"
 #demo.py
 if __name__ == "__main__":
     import time
-    from imp import reload
+    #from imp import reload          #python2
+    from importlib import reload     #python3
+    
     import config
     while True:
         reload(config)

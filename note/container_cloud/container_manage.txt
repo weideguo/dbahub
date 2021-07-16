@@ -24,6 +24,8 @@ OpenShift (redhat paas, 基于k8s)
 
 
 
+helm  k8s的包管理器
+
 
 
 
