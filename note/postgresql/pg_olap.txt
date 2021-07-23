@@ -1,0 +1,71 @@
+
+--pg可以通过插件实现列式存储
+
+yum -y install protobuf protobuf-c protobuf-c-devel openssl openssl-devel
+
+
+git clone https://github.com/citusdata/cstore_fdw.git
+--修改Makefile中的PG_CONFIG值为pg_config所在的目录
+--执行make && make install	
+make && make install
+
+
+#设置启动插件
+shared_preload_libraries = 'cstore_fdw';
+
+
+
+
+create extension cstore_fdw;
+create server cstore_server foreign data wrapper cstore_fdw ;	
+
+
+
+--普通表
+CREATE TABLE customer
+(
+    customer_id TEXT,
+    review_date DATE,
+    review_rating INTEGER,
+    review_votes INTEGER,
+    review_helpful_votes INTEGER,
+    product_id CHAR(10),
+    product_title TEXT,
+    product_sales_rank BIGINT,
+    product_group TEXT,
+    product_category TEXT,
+    product_subcategory TEXT,
+    similar_product_ids CHAR(10)[]
+);
+--外部表
+CREATE FOREIGN TABLE customer_reviews
+(
+    customer_id TEXT,
+    review_date DATE,
+    review_rating INTEGER,
+    review_votes INTEGER,
+    review_helpful_votes INTEGER,
+    product_id CHAR(10),
+    product_title TEXT,
+    product_sales_rank BIGINT,
+    product_group TEXT,
+    product_category TEXT,
+    product_subcategory TEXT,
+    similar_product_ids CHAR(10)[]
+)
+SERVER cstore_server
+OPTIONS(compression 'pglz');	
+
+
+--数据先插入普通表 然后插入外部列式表 
+\copy customer to '/tmp/customer_data.csv' with csv;	
+
+insert into customer_reviews select * from customer;	
+
+
+--也可以直接插入外部表
+\copy customer_reviews to '/tmp/customer_data.csv' with csv;	
+
+
+--不支持delete以及update，只能通过以上两种方式插入数据
+

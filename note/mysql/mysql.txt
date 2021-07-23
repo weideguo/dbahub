@@ -380,14 +380,6 @@ alter table table_name engine=innodb;
 delete语句不会回收磁盘空间，因而会出现大量碎片。使用truncate相当语句drop+create，因此磁盘空间得到释放。
 
 
-#rebuild
-#5.5以及以下不支持online DDL
-ALTER TABLE tbl_name FORCE;    
-ALTER TABLE tbl_name ENGINE=InnoDB;
-
-/*!5.6*/
-ALTER TABLE tbl_name FORCE, ALGORITHM=INPLACE, LOCK=NONE;    
-ALTER TABLE tbl_name ENGINE=InnoDB, ALGORITHM=INPLACE, LOCK=NONE;
 
 
 
@@ -462,15 +454,6 @@ checksum table table_name;
 
 
 
-    
-排序
-指定主键时，不加order by语句则按照主键排序
-不指定主键，但unqiue键在为第一个字段，按unique键排序。
-不指定主键，按照插入顺序排序。	
-	
-
-
-
 --信息查看
 information_schema.partitions;	
 information_schema.tables;	
@@ -488,4 +471,13 @@ ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防�
 --password函数的实现
 SELECT PASSWORD('password');
 SELECT SHA1(UNHEX(SHA1('password')));
+
+
+
+#mysql8 开始支持并行查询（在此之前单个sql都是由一个线程执行），只适用于聚簇索引的扫描，二级索引不适用。
+set innodb_parallel_read_threads=4;
+
+会提升count(*) \ check table 等操作
+
+
 

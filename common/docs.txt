@@ -1,0 +1,54 @@
+文档相关工具
+
+
+使用markdown写文档
+
+#######################gitbook################################
+npm install -g gitbook-cli
+
+
+gitbook init    #初始化目录
+
+gitbook serve   #构建并运行web服务
+
+
+gitbook build   #构建_book（即只是转成html）
+
+
+
+
+#######################mkdocs################################
+
+mkdocs new my_docs    #初始化新项目
+
+mkdocs serve          #直接运行成web服务
+
+mkdocs build          #构建成html
+
+
+
+##自带可用主题
+theme: readthedocs
+
+##使用其他主题
+pip install mkdocs-material
+
+
+
+theme:
+    name: "material"
+    logo:
+        icon: "mkdocs"
+    palette:
+        primary: "black"
+        accent: "deep orange"
+    language: "zh"
+
+    logo: "images/logo.svg"
+
+# 友情链接
+extra:
+  social:
+    - type: "github"
+      link: "https://github.com/weideguo"
+

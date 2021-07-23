@@ -71,3 +71,36 @@ default-character-set=utf8
 collation-server = utf8_unicode_ci
 init-connect='SET NAMES utf8'             ----客户端连接的时候执行命令"set names utf8",也可以使其他命令,对super用户无效
 character-set-server = utf8
+
+
+
+
+collation_connection            #for comparisons of literal strings
+collation_database              #动态参数，由mysql更改。不要手动修改。
+collation_server                #默认排序规则
+
+
+
+
+排序规则
+utf8mb4_0900_ai_ci
+uft8mb4 means that each character is stored as a maximum of 4 bytes in the UTF-8 encoding scheme.
+0900    refers to the Unicode Collation Algorithm version. (The Unicode Collation Algorithm is the method used to compare two Unicode strings that conforms to the requirements of the Unicode Standard).
+ai      refers accent insensitivity. That is, there is no difference between e, è, é, ê and ë when sorting.
+ci      refers to case insensitivity. This is, there is no difference between p and P when sorting.
+
+
+
+utf8mb4_0900_as_cs
+
+
+utf8_bin             The binary (bin) collation blindly compares the binary value of characters (so it is case sensitive). 
+utf8_unicode_ci      The unicode collations follows the Unicode standard for comparisons. 
+utf8_general_ci      The general collation is faster but less correct than the unicode collation.
+
+
+utf8_general_mysql500_ci  backward compatibility of old tables that used the old utf8_general_ci from before MySQL 5.1.24
+utf8mb4_unicode_520_ci    as it offers the greatest number of characters that you can store, and it sorts characters in the most correct way possible
+
+
+

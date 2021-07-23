@@ -573,3 +573,12 @@ services:                   #
 docker-compose build             #根据配置文件构建所有镜像
 docker-compose build <SERVICE>   #根据配置文件构建单个镜像
 
+
+
+单个容器可以通过容器名连接其他容器，如在web容器可连接 redis:6379 
+
+默认每个docker-compose运行生成一个网络
+docker network ls                            #列出网络
+docker network inspect test_default          #若yaml配置文件位于test目录下，则创建的网络为test_default
+
+

@@ -83,3 +83,11 @@ adaptive hash index(自适应哈希索引)
 null值对索引的影响
 where column_name is not null  --不走索引
 
+
+
+
+排序
+指定主键时，不加order by语句则按照主键排序
+不指定主键，但unqiue键在为第一个字段，按unique键排序。
+不指定主键，按照插入顺序排序。	
+

@@ -1,0 +1,18 @@
+#插件
+
+./contrib   #源码自带的插件目录，在安装pg之后可以单独编译安装插件
+
+configure --prefix=/path_to_pg  
+
+cd ./contrib/plugin_dir
+
+make && make install       #会安装到pg安装目录的lib目录下
+
+
+
+
+
+##在postgresql.conf 设置，可以用逗号分隔
+shared_preload_libraries='pg_stat_statements'
+
+
