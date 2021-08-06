@@ -15,9 +15,9 @@ string object
 unicode object
 '''
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')   #文件的编码为utf8
+import sys                       #python2使用，所有的字符指定都为utf8的二进制格式
+reload(sys)                      #python3不使用，都为unicode
+sys.setdefaultencoding('utf8')   #
 
 
 a="中文"            #在GBK编码下输入 a的编码为               '\xd6\xd0\xce\xc4'

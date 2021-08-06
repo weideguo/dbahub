@@ -13,6 +13,9 @@ _source     文档实际值
         
         
 
+分片和复制（shards & replicas） 
+
+
 
 #kibana console中操作
 
@@ -240,5 +243,14 @@ size表示查询多少条文档
 
 get _template                 #查看所有模板
 get _template/template_name   #查看指定模板
+
+
+
+
+
+####################################################################
+GET /_cluster/health                 #查看集群状态
+
+
 
 

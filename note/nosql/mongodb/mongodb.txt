@@ -218,3 +218,9 @@ echo 'db.currentOp({$all:true})' | bin/mongo --quiet | more
 
 
 
+
+#碎片优化 不会阻塞crud  但会阻塞索引的修改以及drop操作
+db.runCommand({ compact: <collection name> })
+
+
+

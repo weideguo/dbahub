@@ -154,26 +154,25 @@ db.runCommand( { collMod: "collection_name",                                    
 			index: { keyPattern: { createdAt: 1 },                                                 
 			expireAfterSeconds: 60                                                                 
 			}                                                                                      
+
                                                                                                    
                                                                                                    
 db.collection_name.distinct('sub_hotel_id').length                                                 // distinct
 db.collection_name.distinct('sub_hotel_id',{}).length                                              // distinct where 
 
 
+// hint 强行使用索引
+db.collection_name.find({"a": 4, "b": 5, "c": 6}).hint({"a": 1, "b": 1})         //使用字段名
+db.collection_name.find({"a": 4, "b": 5, "c": 6}).hint("a_1_b_1")                //使用索引名
+// 强行表扫描
+db.collection_name.find().hint({"$natural":1})
 
 
-//explain输出
+// explain 三种模式
 
-
-
-
-
-
-
-
-
-
-
+queryPlanner          //默认
+executionStats        //
+allPlansExecution     //
 
 
 

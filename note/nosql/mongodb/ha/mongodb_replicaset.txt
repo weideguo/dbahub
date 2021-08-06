@@ -9,7 +9,7 @@ mongod --port 27071 --dbpath "../data" --replSet "mongo_repl"
 在命令行中
 rs.initiate()    			//启动一个新的副本集		//只在主节点启动
 rs.conf()		 			//查看副本集配置
-rs.status()		 			//查看配置
+rs.status()		 			//查看副本状态 延迟信息
 rs.add("hostname:port")  	//添加副本集成员
 rs.addArb()					//添加仲裁节点
 rs.remove("hostname:port")	//移除副本节点
@@ -17,12 +17,22 @@ db.isMaster()				//查看当前节点是否为主节点
 rs.isMaster()
 rs.stepDown()				//将主库降为从库
 
+db.printSlaveReplicationInfo()  //查看延迟信息
+
+
 
 ##reconfig重新修改副本集节点
 cfg=rs.conf()
 cfg.members[1].priority=2;
 rs.reconfig(cfg);
 
+
+##设置节点
+cfg = rs.conf()
+cfg.members[1].priority = 0           // 优先级，越高则主从切换时优先升为主
+cfg.members[1].hidden = true          // 阻止客户端连接到
+cfg.members[1].slaveDelay = 3600      // 延迟复制
+rs.reconfig(cfg)
 
 
 ##使用配置变量设置

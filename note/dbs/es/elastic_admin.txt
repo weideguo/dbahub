@@ -1,0 +1,40 @@
+es使用全文索引
+
+GET /_cluster/health                 #查看集群状态
+
+
+
+
+分片和复制（shards & replicas） 
+
+分片存储于不同节点中
+最好一个节点对应一个分片？
+
+#设置分片
+PUT indexName
+{
+    "settings": {
+        "number_of_shards": 5
+    }
+}
+
+
+
+#加载数据到内存
+PUT /indexName
+{
+  "settings": {
+    "index.store.preload": ["nvd", "dvd"]
+  }
+}
+
+
+
+nvd 该文件中存储了影响相关度分数的因素
+dvd 存储了文档的数据
+tim 文档字典
+doc 发布清单
+dim 点数据
+
+
+
