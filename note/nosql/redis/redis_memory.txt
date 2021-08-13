@@ -1,0 +1,22 @@
+#查看内存状态
+info memory
+
+
+#查看内存碎片自动清理
+config get activedefrag 
+
+#设置内存碎片自动清理
+config get activedefrag 
+
+
+#手动清理内存碎片
+memory purge
+
+
+
+config get hz
+过期key的清理机制
+
+懒惰清理  获取key时判断过期则清理
+主动清理  根据参数hz确定清理频率，每次只清理部分key
+

@@ -125,20 +125,22 @@ db.collection_name.find().sort({"like":1})                                      
 //索引                                                                                             
 db.collection_name.ensureIndex({"title":1})                                                        //建立索引    3.0.0后不推荐使用
 db.collection_name.createIndex({"title":1})                                                        //使用这个代替ensureIndex
-db.collection_name.ensureIndex({"field1":1,"field2":1})                                            //复合索引
-db.collection_name.getIndexes()                                                                    
+db.collection_name.createIndex({"field1":1,"field2":1})                                            //复合索引
+db.collection_name.createIndex({"title":1},{"unique":true})                                        //唯一索引                                                                                
+db.collection_name.createIndex({"title":1},{"background":true})                                    //在后台创建索引，创建时不会阻塞其他的操作
+db.collection_name.createIndex({"title":1},{"name":"index_name"})                                  //指定索引名                                                                   
+
+db.collection_name.reIndex()                                                                       //重建索引
+
 db.collection_name.dropIndexes()                                                                   //删除所有索引
-db.collection_name.dropIndex("index_name")                                                         //删除索引
-db.collection_name.ensureIndex({"title":1},"unique":true)                                          //唯一索引
+db.collection_name.dropIndex("index_name")                                                         //删除索引 存在排他锁 4.2之前锁整个库
+
 db.colletiion_name.explain().find()                                                                //查看执行计划
 db.collection_name.find().explain()                                                                
 db.collection_name.find().explain("executionStats")                                                //执行计划中同时输出executionStats信息
 db.collection_name.find().explain("executionStats").executionStats.executionStages                 //更精简的执行计划信息
-                                                                               
-db.collection_name.ensureIndex({"title":1},{"background":true})                                    //在后台创建索引，创建时不会阻塞其他的操作
-db.collection_name.ensureIndex({"title":1},{"name":"index_name"})                                  
-                                                                                                   
-db.collection_name.reIndex()                                                                       //重建索引
+
+
 db.collection_name.find({"account" : "1320210189"}).explain({"all":true})                          
 db.collection_name.explain().find({"field_name":"value1"})                                         //查看是否使用索引
 db.collection_name.totalIndexSize()                                                                //索引大小
@@ -155,6 +157,14 @@ db.runCommand( { collMod: "collection_name",                                    
 			expireAfterSeconds: 60                                                                 
 			}                                                                                      
 
+db.runCommand( {
+   collMod: <collection>,
+   index: {
+      keyPattern: <index_spec> || name: <index_name>,
+      expireAfterSeconds: <number>,  // If changing the TTL expiration threshold
+      hidden: <boolean>              // If changing the visibility of the index from the query planner
+   }
+} )
                                                                                                    
                                                                                                    
 db.collection_name.distinct('sub_hotel_id').length                                                 // distinct
@@ -166,6 +176,16 @@ db.collection_name.find({"a": 4, "b": 5, "c": 6}).hint({"a": 1, "b": 1})        
 db.collection_name.find({"a": 4, "b": 5, "c": 6}).hint("a_1_b_1")                //使用索引名
 // 强行表扫描
 db.collection_name.find().hint({"$natural":1})
+
+
+//查看索引的统计信息
+db.collection_name.aggregate( [ { $indexStats: { } } ] )
+
+
+//隐藏索引
+db.collection_name.hideIndex()
+db.collection_name.unhideIndex()
+
 
 
 // explain 三种模式
@@ -297,9 +317,9 @@ ok            是否成功，成功为1
 大于等于    $gte
 小于等于    $lte
 
-游标
+游标 cursor
 var c=db.collection_name.find()
-while(c.hasNext()) printjson(c.next())
+while(c.hasNext()){ printjson(c.next())}
 
 
 printjson(c[1])

@@ -8,13 +8,13 @@
 
 启动docker服务
 dockerd                 #1直接启动 
-service docker start	#2使用service docker start启动
+service docker start    #2使用service docker start启动
 
 
 
-/etc/sysconfig/docker    	                                ###配置文件
-/var/lib/docker				                                ###数据路径
-/var/lib/docker/devicemapper/mnt/$no_idea_dir/rootfs/   	###容器的文件对应在主机中的位置，在此目录下的文件容器可以直接使用
+/etc/sysconfig/docker                                       ###配置文件
+/var/lib/docker                                             ###数据路径
+/var/lib/docker/devicemapper/mnt/$no_idea_dir/rootfs/       ###容器的文件对应在主机中的位置，在此目录下的文件容器可以直接使用
 
 /etc/docker/daemon.json                                     ##配置文件路径
 
@@ -31,36 +31,36 @@ systemd   CoreOS的init进程
 
 namespace
 资源隔离        (flags)
-	UTS			CLONE_NEWUTS  主机名与域名	                  unix time-sharing system
-	IPC         CLONE_NEWIPC  信号量、消息队列、共享内存      Inter-Process Communication
-	PID         CLONE_NEWPID  进程编号
-	Network     CLONE_NEWNET  网络
-	Mount       CLONE_NEWNS   挂载点
-	User        CLONE_NEWUSER 用户、组
+    UTS            CLONE_NEWUTS  主机名与域名                      unix time-sharing system
+    IPC         CLONE_NEWIPC  信号量、消息队列、共享内存      Inter-Process Communication
+    PID         CLONE_NEWPID  进程编号
+    Network     CLONE_NEWNET  网络
+    Mount       CLONE_NEWNS   挂载点
+    User        CLONE_NEWUSER 用户、组
 
-	
-	通过调用系统函数clone等创建子进程
-		
+    
+    通过调用系统函数clone等创建子进程
+        
 cgroups
 资源限制
 
-	表现为一个文件系统,挂载后可以看到自系统 
-		mkdir -p /cgroups/memory
-		mount -t cgroup -o memory memory /cgroups/memory
-	
-	在/sys/fs/cgroup/XXX(XXX: cpu | ...)下，创建目录，目录下自动生成文件，在文件中写入信息(进程号、cpu使用率)达到限制进程使用资源的目的
-	
-yum install libcgroups  #安装cgroups	
+    表现为一个文件系统,挂载后可以看到自系统 
+        mkdir -p /cgroups/memory
+        mount -t cgroup -o memory memory /cgroups/memory
+    
+    在/sys/fs/cgroup/XXX(XXX: cpu | ...)下，创建目录，目录下自动生成文件，在文件中写入信息(进程号、cpu使用率)达到限制进程使用资源的目的
+    
+yum install libcgroups  #安装cgroups    
 service cgconfig start  #启动cgroups
 
 /etc/cgconfig.conf #配置文件 启动服务时依赖这个挂载cgroups文件，也可以在启动后在cgroups层级中手动添加目录并挂载
-	
-	
-	
+    
+    
+    
 docker创建命名为docker的控制组/sys/fs/cgroup/cpu/docker/$container_id
-	tasks     		进程、线程ID
-	cgroup.proc		TGID（线程组ID，即线程组第一个进程的PID）
-	
+    tasks             进程、线程ID
+    cgroup.proc        TGID（线程组ID，即线程组第一个进程的PID）
+    
 
 
 
@@ -76,7 +76,7 @@ docker API      可以对docker进行管理
 
 容器执行驱动      execdriver
 volume存储驱动    volumedriver
-镜像存储驱动	  graphdriver
+镜像存储驱动      graphdriver
 
 
 #busybox
@@ -84,7 +84,7 @@ volume存储驱动    volumedriver
 在docker容器中
 cd /usr/bin
 ln -s  busybox vi          #创建链接实现命令
-		
+        
 
 
 alpine  ##简单的基础镜像
@@ -93,30 +93,30 @@ scrach  ##空镜像 可以跟busybox使用
 ######################################################################################################################################################
 
 
-	
-	
+    
+    
 Dockerfile命令
-	ENV	<key> <value>	                   #环境变量声明
-	FROM <image>                           #使用基础镜像
-	COPY <src> <dest>                      #复制<src>的目录、文件添加到镜像中的dest
-	ADD <src> <dest>                       #与COPY类似
-	RUN <command>                          #创建容器，执行命令，命令结束后提交容器为新镜像，新镜像被下一条指令使用
-	CMD	<command>	                       #执行命令    启动参数会覆盖CMD的值
-	ENTRYPOINT  <command>                  #与CMD类似   让镜像变成像命令一样使用（启动时参数传给ENTRYPOINT指定的命令）  应用运行前的准备工作
-	ONBUILD	<INSTRUCTION>                  #该镜像被作为FROM引用时执行docker指令
-	EXPOSE  <port> 		                   #端口暴露
-	EXPOSE  <container_port>:<host_port>   #端口映射 
+    ENV    <key> <value>                   #环境变量声明
+    FROM <image>                           #使用基础镜像
+    COPY <src> <dest>                      #复制<src>的目录、文件添加到镜像中的dest
+    ADD <src> <dest>                       #与COPY类似
+    RUN <command>                          #创建容器，执行命令，命令结束后提交容器为新镜像，新镜像被下一条指令使用
+    CMD    <command>                       #执行命令    启动参数会覆盖CMD的值
+    ENTRYPOINT  <command>                  #与CMD类似   让镜像变成像命令一样使用（启动时参数传给ENTRYPOINT指定的命令）  应用运行前的准备工作
+    ONBUILD    <INSTRUCTION>               #该镜像被作为FROM引用时执行docker指令
+    EXPOSE  <port>                         #端口暴露
+    EXPOSE  <container_port>:<host_port>   #端口映射 
 
 
 CMD ./hello 替换为 CMD ["./hello"]，Docker 就会直接运行程序，不会把它放到 shell 中运行。即不需要shell环境，可以用于scrach镜像。
 
 
-docker build github.com/creack/docker-firefox     	                ##创建镜像，使用url
-docker build -t image_name:TAG_name - < Dockerfile   	            ##创建镜像，从STDIN导入Dockerfile，ADD只能使用URL	
-docker build -t image_name:TAG_name .   				            ##创建镜像，使用当前目录下的Dockerfile,Dockerfile指定的主机路径为相对路径
-docker build - < Dockfile                                           #使用Dockerfile创建镜像                  
+docker build github.com/creack/docker-firefox                        ##创建镜像，使用url
+docker build -t image_name:TAG_name - < Dockerfile                   ##创建镜像，从STDIN导入Dockerfile，ADD只能使用URL    
+docker build -t image_name:TAG_name .                               ##创建镜像，使用当前目录下的Dockerfile,Dockerfile指定的主机路径为相对路径
+docker build - < Dockfile                                            #使用Dockerfile创建镜像                  
 docker build -f <dockerfile name>  .                               
-docker build -f Dockerfile .		  
+docker build -f Dockerfile .          
 
 
 ```Dockfile
@@ -173,25 +173,25 @@ CMD [ "redis-server" ]
 数据卷volume 将宿主机的文件、文件夹挂载到容器 容器或宿主机的修改可以彼此查看到
 
 docker run
-	-v vol_name:/container_dir		#指定名字创建volume		创建目录在/var/lib/docker/volumes
-	-v /container_dir				#随机生成名字、ID 		
-	-v /hostdir:/container_dir      #以主机指定目录挂载到容器指定目录
+    -v vol_name:/container_dir       #指定名字创建volume        创建目录在/var/lib/docker/volumes
+    -v /container_dir                #随机生成名字、ID         
+    -v /hostdir:/container_dir       #以主机指定目录挂载到容器指定目录
 
-	
+    
 也可以使用Dockerfile创建volume
-VOLUME /data					    #挂载到容器的/data   不能指定主机的目录
-VOLUME ["/data1","/data2"]		    #挂载两个目录
+VOLUME /data                        #挂载到容器的/data   不能指定主机的目录
+VOLUME ["/data1","/data2"]            #挂载两个目录
 
-docker volume inspect vol_name		                                #以名字查看volume的信息
+docker volume inspect vol_name                                      #以名字查看volume的信息
 docker inspect --format "{{.Volumes}}" container_id                 #查看volume
-docker inspect -f '{{.Id}}' $container_name   						###查看容器的id
+docker inspect -f '{{.Id}}' $container_name                         ###查看容器的id
 docker inspect <container id>                                       #查看docker的信息，网络、volume等
 
 
 
 
 ###container_name/container_id可以通用
-docker images    		                                            ###显示已经存在的镜像
+docker images                                                       ###显示已经存在的镜像
 docker pull image_tag                                               ###添加镜像 image_tag如centos:6  hub.docker.com/explore中查看
 docker pull private-registry.com/user-name/ubuntu:latest            
 docker push 192.168.0.100:5000/ubuntu                               # 推送镜像库到私有源，也可以推送到官方
@@ -200,15 +200,15 @@ docker push localhost:5000/my-alpine                                #上传镜�
 
 
                          
-docker start $container_name  										##启动一个容器
+docker start $container_name                                        ##启动一个容器
 docker kill <container-id>                                          #停止一个运行中的容器
-docker create --name wdg_container ubuntu      						###使用镜像创建容器，--name指定容器名，可以自动生成 
+docker create --name wdg_container ubuntu                           ###使用镜像创建容器，--name指定容器名，可以自动生成 
 docker commit $container_id $image_name                             ###容器提交成镜像
 
 
 
-docker cp $contrain_id_or_name:$docker_file $host_file      		####拷贝容器中文件到主机
-docker cp $host_file $contrain_id_or_name:$docker_file    			####拷贝主机中文件到容器
+docker cp $contrain_id_or_name:$docker_file $host_file              ####拷贝容器中文件到主机
+docker cp $host_file $contrain_id_or_name:$docker_file              ####拷贝主机中文件到容器
 docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-                  ##移动文件 主机与容器 ##Copy files/folders between a container and the local filesystem
 docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH                  
 docker cp local_file <CONTAINER id>:/container_path                 ##复制本地文件到容器内
@@ -216,11 +216,11 @@ docker cp local_file <CONTAINER id>:/container_path                 ##复制本�
 
 
 docker export $container_id >> /home/export.tar                     ###容器转成文件
-cat /home/export.tar | docker import - $image_name:$version  	    ###容器导出的文件转成镜像
+cat /home/export.tar | docker import - $image_name:$version         ###容器导出的文件转成镜像
 tar cv --files-from /dev/null | docker import - scratch             #scrach是专有名字 为空镜像 可以用作其他的基础镜像                                                                        
 
-docker save $image_name >> /home/save.tar     	                    ###镜像转成文件
-docker load < /home/save.tar    								    ###镜像导出的文件转成镜像
+docker save $image_name >> /home/save.tar                           ###镜像转成文件
+docker load < /home/save.tar                                        ###镜像导出的文件转成镜像
 
 
                                                                
@@ -238,36 +238,36 @@ docker rmi <image id> | <image name>                                ##删除镜�
 docker rm <container id>                                            ##删除容器
 docker ps -a                                                        ##查看容器 包括停止的
 docker ps                                                           ##查看生成的容器
-docker info		                                                    ###                                     
-docker stop    	                                                    ##停止
+docker info                                                         ###                                     
+docker stop                                                         ##停止
 docker restart                                                      ##重启
 docker pause                                                        ##暂停
 docker unpause                                                      ##取消暂停
 docker logs                                                         ##输出指定容器的日志
 
 
-docker run -i ubuntu /bin/bash   									                            ###创建容器，运行，进入交互模式
-docker run -v $host_dir:$docker_dir $container_name   				                            ###-v挂载主机文件夹到容器
-docker run -p $host_ip:$host_Port:$container_port $container_name                               ####容器与主机端口映射
+docker run -i ubuntu /bin/bash                                                                   ###创建容器，运行，进入交互模式
+docker run -v $host_dir:$docker_dir $container_name                                              ###-v挂载主机文件夹到容器
+docker run -p $host_ip:$host_Port:$container_port $container_name                                ####容器与主机端口映射
 docker run -it --name my_docker_name --link docker_name:alias_name image_name /bin/bash         #启动镜像image_name命名为my_docekr_name,连接到命名为docker_name的容器,并设置别名为alias_name。使用alias_name可以当做host_name使用从而进行连接
 
 docker run -it centos7 /bin/sh                                                                  #使用镜像创建新容器并进入shell，quit退出时会结束容器   【 ctl+p ctl+q】退出时不结束容器
 
-	-i   #交互模式
-	-t   #分配一个伪终端(pseudo-TTY)
-	-d   #后台进行方式运行            #紧跟的命令不能发生退出 否则容器会停止   
-	-p 8080:80   			#容器的80映射到主机8080
-	-p 127.0.0.1:8080:80	        #端口绑定到127.0.0.1:8080
-	--expose 80 81			##开放一组端口
-	--user user_name  		##使用镜像中指定用户启动容器
-	
-	-v <conteiner path>		##挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
-	-v <host path>:<container pth>   ##将主机的目录挂载到容器的目录
-	--env XXX=YYY                    ##可以有多个--env
+    -i   #交互模式
+    -t   #分配一个伪终端(pseudo-TTY)
+    -d   #后台进行方式运行            #紧跟的命令不能发生退出 否则容器会停止   
+    -p 8080:80               #容器的80映射到主机8080
+    -p 127.0.0.1:8080:80            #端口绑定到127.0.0.1:8080
+    --expose 80 81            ##开放一组端口
+    --user user_name          ##使用镜像中指定用户启动容器
+    
+    -v <conteiner path>        ##挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
+    -v <host path>:<container pth>   ##将主机的目录挂载到容器的目录
+    --env XXX=YYY                    ##可以有多个--env
         --restart                     
             no             #不自动启动容器
-	    always         #一直尝试启动直到成功
-	    on-failure:10  #尝试10次都失败后不再启动
+        always         #一直尝试启动直到成功
+        on-failure:10  #尝试10次都失败后不再启动
 #容器内服务自自动  
 通过linux的服务自启动方式实现，即写入/etc/rc.local或者相关文件？    
 通过Dockerfiler中设置启动命令    
@@ -409,18 +409,18 @@ container network model
 dockerd --fixed-cidr=172.18.0.1/24                                               ##启动daemon时指定使用的网段，与docker0网桥处于同一网段
                                                                                                                                                                  
 docker network ls                                                                #查看网络
-docker inspect <network-id>				                                         #查看指定网络详细信息
+docker inspect <network-id>                                                      #查看指定网络详细信息
 
 
 docker network create --driver <driver-name> <network-name>                      #创建创建一个网络 创建网络时会生成一个虚拟网卡  
-docker network create net_name1       							                 #默认驱动选择bridge  
-docker network create net_name2       							                 #默认驱动选择bridge  
+docker network create net_name1                                                  #默认驱动选择bridge  
+docker network create net_name2                                                  #默认驱动选择bridge  
                                                                              
 docekr run -it --name contrain1 --network net_name1 /bin/bash                    ##不指定network，则默认为bridge
 docekr run -it --name contrain2 --network net_name2 /bin/bash                    
 docekr run -it --name contrain3 --network net_name2 /bin/bash                    
                                                                                  
-docker network connect net_name2 container1		                          #新增网络并配置ip以连接这个网络
+docker network connect net_name2 container1                                      #新增网络并配置ip以连接这个网络
 
 处在同一网络时可以直接使用其他容器的名称连接 如 ping contrain2
 
@@ -439,37 +439,37 @@ docker run -d -P --name web --link db:webdb webapp python app.py         #--link
 
 
 
-route -n	##查看静态路由
+route -n    ##查看静态路由
 brctl show  ##查看网桥
 
 
 linux network namespace
 
-ip netns add nstest;    		                #创建network namespace
-ip netns list;		                            #增加
-ip netns delete nstest;			                #删除
+ip netns add nstest;                            #创建network namespace
+ip netns list;                                    #增加
+ip netns delete nstest;                            #删除
                                                 
 ip netns exec nstest ip addr                    #显示nstest namespace中的网卡信息；格式 ip netns exec <network namespace name> <command>
 ip netns exec nstest bash                       #启动一个shell
 
 
-ip netns exec nstest ip link set dev lop up	    #启动环回设备lo
+ip netns exec nstest ip link set dev lop up        #启动环回设备lo
 ip link add veth-a type veth peer name veth-b   #添加虚拟网卡veth-a veth-b
 ip link set veth-b netns nstest                 #将veth-b网卡添加到nstest
 
 
-ip netns exec nstest ip link    	            #查看nstest命令空间的网卡
+ip netns exec nstest ip link                    #查看nstest命令空间的网卡
                                                 
 ip addr add 10.0.0.1/24  dev veth-a             #veth-a网卡没有分配，是主机的网卡
-ip link set dev veth-a up	                    #启动网卡veth-a
+ip link set dev veth-a up                        #启动网卡veth-a
                                                 
 ip addr add 10.0.0.2/24  dev veth-b             #veth-b网卡是nstest命名空间下的网卡
-ip link set dev veth-b up	                    #启动网卡veth-b
+ip link set dev veth-b up                        #启动网卡veth-b
                                                 
 ip route                                        #生成路由，在主机中
-ip netns exec netns ip route 		            #生成路由，在nstest中
+ip netns exec netns ip route                     #生成路由，在nstest中
                                                 
-ping 10.0.0.2				                    #ping,在主机中
+ping 10.0.0.2                                    #ping,在主机中
 ip netns exec nstest ping 10.0.0.1              #ping,在nstest中
 
 
@@ -494,28 +494,28 @@ ln -s /proc/$PID/ns/net /var/run/netns/nstest     将进程的network namespace�
 
 启动容器
 
-	docker run -itd --name test1 --net=none ubuntu /bin/bash
+    docker run -itd --name test1 --net=none ubuntu /bin/bash
 
 创建网桥
-	brctl addbr br0
-	ip link set br0 up
-	#将主机eth0桥接到br0上，并把eth0的ip配置在br0
-	ip addr add  10.1.1.1/24 dev br0;\
-			ip addr del 10.1.1.1/24 dev eth0;\
-			btctl addif br0 eth0;\
-			ip route del default;\
-			ip route add default via 10.1.1.254/24 dev br0
-	
-	pid=$(docker inspect --format '{{.State.Pid}}' test1)   
-	mkdir -p /var/run/netns
-	ln -s /proc/$pid/ns/net /var/run/netns/$pid
-	ip link add veth-a type veth peer name veth-b
-	brctl addif br0 veth-a up                                #veth-a连接到网桥
-	ip link set veth-b $pid                                  #veth-b加入network namespace
-	ip netns exec $pid ip link set dev veth-b eth0
-	ip netns exec $pid ip link set eth0 up	
-	ip netns exec $pid ip addr add 10.1.1.2/24/24 dev eth0   #容器的ip
-	ip netns exec $pid ip route add default via 10.1.1254
+    brctl addbr br0
+    ip link set br0 up
+    #将主机eth0桥接到br0上，并把eth0的ip配置在br0
+    ip addr add  10.1.1.1/24 dev br0;\
+            ip addr del 10.1.1.1/24 dev eth0;\
+            btctl addif br0 eth0;\
+            ip route del default;\
+            ip route add default via 10.1.1.254/24 dev br0
+    
+    pid=$(docker inspect --format '{{.State.Pid}}' test1)   
+    mkdir -p /var/run/netns
+    ln -s /proc/$pid/ns/net /var/run/netns/$pid
+    ip link add veth-a type veth peer name veth-b
+    brctl addif br0 veth-a up                                #veth-a连接到网桥
+    ip link set veth-b $pid                                  #veth-b加入network namespace
+    ip netns exec $pid ip link set dev veth-b eth0
+    ip netns exec $pid ip link set eth0 up    
+    ip netns exec $pid ip addr add 10.1.1.2/24/24 dev eth0   #容器的ip
+    ip netns exec $pid ip route add default via 10.1.1254
 
     
     
