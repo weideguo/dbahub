@@ -39,6 +39,7 @@ monitor                       ###实时打印出redis服务接收到的命令
 sync                          ###用于同步主从
 client pause <millisecond>    ##在指定时间内阻塞客户端的命令
 
+
 ##慢查询
 slowlog len                   #获取慢查询日志长度
 slowlog get 2                 #获取慢查询语句，获取两个

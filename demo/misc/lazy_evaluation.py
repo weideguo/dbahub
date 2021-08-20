@@ -28,3 +28,20 @@ list(islice((time.sleep(x) for x in range(3)), 3))
 
 
 
+
+def f():
+    i = 0
+    while i<10:
+        i += 1
+        print("-----------"+str(i))
+        yield i
+
+
+import time
+for x in f():
+    time.sleep(2)
+    print(x)
+    
+#使用多少才生成多少    
+    
+

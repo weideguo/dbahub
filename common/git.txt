@@ -45,6 +45,12 @@ git update-index --skip-worktree  $file            #不跟踪文件更新，但�
 git update-index --no-skip-worktree  $file         #重新跟踪文件
 
 
+git update-index --assume-unchanged $file          #pull时候忽略这个文件 目录则加/在尾部
+git update-index --no-assume-unchanged $file       #ull时候取消忽略这个文件
+
+
+
+
 #跟踪新文件 文件依然保存在本地仓库 文件每次要commit前都要执行
 git add xxx.txt  
 #跟踪删除

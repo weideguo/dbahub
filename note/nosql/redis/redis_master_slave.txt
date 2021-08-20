@@ -9,8 +9,9 @@ slave:
 redis-server $slave_config_file		  ###使用slave的配置文件启动
 
 
-SLAVEOF NO ONE                        ##提升当前节点为主
+SLAVEOF NO ONE                        ##提升当前节点为主      
 
+REPLICAOF $host $port                 ##5.0及之后
 
 
 全量同步 slave初始化阶段，使用主库的rdb文件
@@ -39,3 +40,11 @@ repl-backlog-size  1mb       #默认配置   调大可以增大断开时间
 当主节点向从节点发送 RDB 文件时，如果又接收到了写命令操作，就会把它们暂存在复制缓冲区中
 
 client-output-buffer-limit slave 256mb 64mb 60  #控制配置
+
+
+
+
+psync
+psync <run_id> <offset>        ##提供部分复制的能力  sync是全量
+
+
