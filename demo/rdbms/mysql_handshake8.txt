@@ -1,0 +1,122 @@
+mysql 5.7 客户端连接mysql8 caching_sha2_password 
+--ssl-mode=DISABLED 禁用ssl
+   
+------------------mysql服务主动发送-------------------------------------        
+
+0000   4a 00 00 00 0a 38 2e 30 2e 32 33 00 7f 16 03 00   J....8.0.23.....
+0010   09 73 70 4d 28 68 4a 65 00 ff ff 21 02 00 ff cf   .spM(hJe...!....
+0020   15 00 00 00 00 00 00 00 00 00 00 7f 4d 08 0b 27   ............M..'
+0030   07 7a 1e 4e 25 0c 18 00 6d 79 73 71 6c 5f 6e 61   .z.N%...mysql_na
+0040   74 69 76 65 5f 70 61 73 73 77 6f 72 64 00         tive_password.
+
+
+
+4a 00 00                                                            #Packet Length: 74
+00                                                                  #Packet Number: 0
+0a                                                                  #Protocol: 10             -----Server Greeting-------
+38 2e 30 2e 32 33                                                   #Version: 8.0.23
+00                                                                  #
+7f 16 03 00                                                         #Thread ID: 202367
+09 73 70 4d 28 68 4a 65                                             #Salt: \tspM(hJe
+00                                                                  #
+ff ff                                                               #Server Capabilities: 0xffff
+21                                                                  #Server Language: utf8 COLLATE utf8_general_ci (33)
+02 00                                                               #Server Status: 0x0002
+ff cf                                                               #Extended Server Capabilities: 0xcfff
+15                                                                  #Authentication Plugin Length: 21
+00 00 00 00 00 00 00 00 00 00                                       #Unused: 00000000000000000000
+7f 4d 08 0b 27 07 7a 1e 4e 25 0c 18                                 #Salt: \177M\b\v'\az\036N%\f\030
+00                                                                  #
+6d 79 73 71 6c 5f 6e 61 74 69 76 65 5f 70 61 73 73 77 6f 72 64      #Authentication Plugin: mysql_native_password
+00                                                                  #
+
+
+------------------mysql客户端发送-------------------------------------    
+
+0000   bb 00 00 01 85 a6 ff 01 00 00 00 01 21 00 00 00   ............!...
+0010   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0020   00 00 00 00 64 62 61 5f 74 65 73 74 00 14 a3 6c   ....dba_test...l
+0030   cb ed 12 ee e8 59 36 6d c0 e6 40 a6 51 0c 42 e8   .....Y6m..@.Q.B.
+0040   c9 e4 6d 79 73 71 6c 5f 6e 61 74 69 76 65 5f 70   ..mysql_native_p
+0050   61 73 73 77 6f 72 64 00 66 03 5f 6f 73 05 4c 69   assword.f._os.Li
+0060   6e 75 78 0c 5f 63 6c 69 65 6e 74 5f 6e 61 6d 65   nux._client_name
+0070   08 6c 69 62 6d 79 73 71 6c 04 5f 70 69 64 05 32   .libmysql._pid.2
+0080   37 34 33 30 0f 5f 63 6c 69 65 6e 74 5f 76 65 72   7430._client_ver
+0090   73 69 6f 6e 06 35 2e 37 2e 32 36 09 5f 70 6c 61   sion.5.7.26._pla
+00a0   74 66 6f 72 6d 06 78 38 36 5f 36 34 0c 70 72 6f   tform.x86_64.pro
+00b0   67 72 61 6d 5f 6e 61 6d 65 05 6d 79 73 71 6c      gram_name.mysql
+
+
+MySQL Protocol
+    Packet Length: 187
+    Packet Number: 1
+    Login Request
+        Client Capabilities: 0xa685
+        Extended Client Capabilities: 0x01ff
+        MAX Packet: 16777216
+        Charset: utf8 COLLATE utf8_general_ci (33)
+        Unused: 0000000000000000000000000000000000000000000000
+        Username: dba_test
+        Password: a36ccbed12eee859366dc0e640a6510c42e8c9e4               #客户端为8时 不发送这个字段     
+        Client Auth Plugin: mysql_native_password                        #客户端为8时 caching_sha2_password
+        Connection Attributes
+
+
+
+------------------mysql服务端发送（auth switch request）-------------------------------------   
+
+0000   52 54 00 92 64 cf fe ee e8 73 ca 42 08 00 45 00   RT..d....s.B..E.
+0010   00 64 b6 ad 40 00 3c 06 23 a7 0a 18 20 10 0a 15   .d..@.<.#... ...
+0020   30 03 0c ea af f4 22 64 a4 75 32 2c cc df 80 18   0....."d.u2,....
+0030   00 83 6b 16 00 00 01 01 08 0a 48 26 c5 96 6b 11   ..k.......H&..k.
+0040   88 a9 2c 00 00 02 fe 63 61 63 68 69 6e 67 5f 73   ..,....caching_s
+0050   68 61 32 5f 70 61 73 73 77 6f 72 64 00 18 70 46   ha2_password..pF
+0060   4a 3c 6d 3a 54 3e 42 4b 56 04 66 33 51 20 03 42   J<m:T>BKV.f3Q .B
+0070   29 00                                             ).
+
+MySQL Protocol
+    Packet Length: 44
+    Packet Number: 2
+    Status: 0xfe
+    Auth Method Name: caching_sha2_password
+    Auth Method Data: 1870464a3c6d3a543e424b56046633512003422900
+
+
+------------------mysql客户端发送（auth switch response）-------------------------------------   
+
+0000   fe ee e8 73 ca 42 52 54 00 92 64 cf 08 00 45 00   ...s.BRT..d...E.
+0010   00 58 44 7a 40 00 40 06 91 e6 0a 15 30 03 0a 18   .XDz@.@.....0...
+0020   20 10 af f4 0c ea 32 2c cc df 22 64 a4 a5 80 18    .....2,.."d....
+0030   00 e5 16 b9 00 00 01 01 08 0a 6b 11 88 c8 48 26   ..........k...H&
+0040   c5 96 20 00 00 03 18 53 5e fe 31 5a ac bb f2 6d   .. ....S^.1Z...m
+0050   fe 41 d9 ce 78 45 8d a0 50 fa 57 46 26 e0 24 ea   .A..xE..P.WF&.$.
+0060   d9 99 10 e1 51 d3                                 ....Q.
+
+MySQL Protocol
+    Packet Length: 32
+    Packet Number: 3
+    Auth Method Data: 18535efe315aacbbf26dfe41d9ce78458da050fa574626e024ead99910e151d3
+
+
+------------------mysql服务端响应------------------------------------- 
+0000   02 00 00 04 01 03                                 ......
+
+##固定的响应 why？
+MySQL Protocol
+    Packet Length: 2
+    Packet Number: 4
+    Payload: 0103
+        [Expert Info (Warning/Undecoded): unknown/invalid response]
+
+
+------------------mysql服务端响应ok------------------------------------- 
+0000   07 00 00 05 00 00 00 02 00 00 00                  ...........
+
+MySQL Protocol
+    Packet Length: 7
+    Packet Number: 5
+    Response Code: OK Packet (0x00)
+    Affected Rows: 0
+    Server Status: 0x0002
+    Warnings: 0
+

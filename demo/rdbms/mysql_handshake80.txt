@@ -1,0 +1,204 @@
+mysql8 客户端连接mysql8 caching_sha2_password 
+--ssl-mode=DISABLED 禁用ssl
+   
+------------------mysql服务主动发送-------------------------------------     
+0000   4a 00 00 00 0a 38 2e 30 2e 32 33 00 1d 1a 03 00   J....8.0.23.....
+0010   3b 1e 7d 2a 19 60 3c 77 00 ff ff 21 02 00 ff cf   ;.}*.`<w...!....
+0020   15 00 00 00 00 00 00 00 00 00 00 66 4f 3e 3f 5c   ...........fO>?\
+0030   3b 7b 0c 41 55 34 51 00 6d 79 73 71 6c 5f 6e 61   ;{.AU4Q.mysql_na
+0040   74 69 76 65 5f 70 61 73 73 77 6f 72 64 00         tive_password.
+
+
+
+MySQL Protocol
+    Packet Length: 74
+    Packet Number: 0
+    Server Greeting
+        Protocol: 10
+        Version: 8.0.23
+        Thread ID: 203293
+        Salt: ;\036}*\031`<w
+        Server Capabilities: 0xffff
+        Server Language: utf8 COLLATE utf8_general_ci (33)
+        Server Status: 0x0002
+        Extended Server Capabilities: 0xcfff
+        Authentication Plugin Length: 21
+        Unused: 00000000000000000000
+        Salt: fO>?\;{\fAU4Q
+        Authentication Plugin: mysql_native_password
+
+
+Server Capabilities: 0xffff
+    .... .... .... ...1 = Long Password: Set
+    .... .... .... ..1. = Found Rows: Set
+    .... .... .... .1.. = Long Column Flags: Set
+    .... .... .... 1... = Connect With Database: Set
+    .... .... ...1 .... = Don't Allow database.table.column: Set
+    .... .... ..1. .... = Can use compression protocol: Set
+    .... .... .1.. .... = ODBC Client: Set
+    .... .... 1... .... = Can Use LOAD DATA LOCAL: Set
+    .... ...1 .... .... = Ignore Spaces before '(': Set
+    .... ..1. .... .... = Speaks 4.1 protocol (new flag): Set
+    .... .1.. .... .... = Interactive Client: Set
+    .... 1... .... .... = Switch to SSL after handshake: Set
+    ...1 .... .... .... = Ignore sigpipes: Set
+    ..1. .... .... .... = Knows about transactions: Set
+    .1.. .... .... .... = Speaks 4.1 protocol (old flag): Set
+    1... .... .... .... = Can do 4.1 authentication: Set
+
+
+Extended Server Capabilities: 0xcfff
+    .... .... .... ...1 = Multiple statements: Set
+    .... .... .... ..1. = Multiple results: Set
+    .... .... .... .1.. = PS Multiple results: Set
+    .... .... .... 1... = Plugin Auth: Set
+    .... .... ...1 .... = Connect attrs: Set
+    .... .... ..1. .... = Plugin Auth LENENC Client Data: Set
+    .... .... .1.. .... = Client can handle expired passwords: Set
+    .... .... 1... .... = Session variable tracking: Set
+    .... ...1 .... .... = Deprecate EOF: Set
+    1100 111. .... .... = Unused: 0x67
+
+
+
+
+
+------------------mysql客户端发送-------------------------------------   
+
+0000   b4 00 00 01 85 a6 ff 09 00 00 00 01 ff 00 00 00   ................
+0010   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0020   00 00 00 00 64 62 61 5f 74 65 73 74 00 00 63 61   ....dba_test..ca
+0030   63 68 69 6e 67 5f 73 68 61 32 5f 70 61 73 73 77   ching_sha2_passw
+0040   6f 72 64 00 73 04 5f 70 69 64 04 38 37 36 35 09   ord.s._pid.8765.
+0050   5f 70 6c 61 74 66 6f 72 6d 06 78 38 36 5f 36 34   _platform.x86_64
+0060   03 5f 6f 73 05 4c 69 6e 75 78 0c 5f 63 6c 69 65   ._os.Linux._clie
+0070   6e 74 5f 6e 61 6d 65 08 6c 69 62 6d 79 73 71 6c   nt_name.libmysql
+0080   07 6f 73 5f 75 73 65 72 05 6f 70 61 64 6d 0f 5f   .os_user.opadm._
+0090   63 6c 69 65 6e 74 5f 76 65 72 73 69 6f 6e 06 38   client_version.8
+00a0   2e 30 2e 32 34 0c 70 72 6f 67 72 61 6d 5f 6e 61   .0.24.program_na
+00b0   6d 65 05 6d 79 73 71 6c                           me.mysql
+
+
+
+
+MySQL Protocol
+    Packet Length: 180
+    Packet Number: 1
+    Login Request
+        Client Capabilities: 0xa685
+        Extended Client Capabilities: 0x09ff
+        MAX Packet: 16777216
+        Charset: utf8mb4 COLLATE utf8mb4_0900_ai_ci (255)
+        Unused: 0000000000000000000000000000000000000000000000
+        Username: dba_test
+        Client Auth Plugin: caching_sha2_password
+        Connection Attributes
+
+
+
+Client Capabilities: 0xa685
+    .... .... .... ...1 = Long Password: Set
+    .... .... .... ..0. = Found Rows: Not set
+    .... .... .... .1.. = Long Column Flags: Set
+    .... .... .... 0... = Connect With Database: Not set                           #如果连接时指定库名，则这里为Set，在Username之后有Schema字段
+    .... .... ...0 .... = Don't Allow database.table.column: Not set
+    .... .... ..0. .... = Can use compression protocol: Not set
+    .... .... .0.. .... = ODBC Client: Not set
+    .... .... 1... .... = Can Use LOAD DATA LOCAL: Set
+    .... ...0 .... .... = Ignore Spaces before '(': Not set
+    .... ..1. .... .... = Speaks 4.1 protocol (new flag): Set
+    .... .1.. .... .... = Interactive Client: Set
+    .... 0... .... .... = Switch to SSL after handshake: Not set
+    ...0 .... .... .... = Ignore sigpipes: Not set
+    ..1. .... .... .... = Knows about transactions: Set
+    .0.. .... .... .... = Speaks 4.1 protocol (old flag): Not set
+    1... .... .... .... = Can do 4.1 authentication: Set
+
+
+Extended Client Capabilities: 0x09ff
+    .... .... .... ...1 = Multiple statements: Set
+    .... .... .... ..1. = Multiple results: Set
+    .... .... .... .1.. = PS Multiple results: Set
+    .... .... .... 1... = Plugin Auth: Set
+    .... .... ...1 .... = Connect attrs: Set
+    .... .... ..1. .... = Plugin Auth LENENC Client Data: Set
+    .... .... .1.. .... = Client can handle expired passwords: Set
+    .... .... 1... .... = Session variable tracking: Set
+    .... ...1 .... .... = Deprecate EOF: Set
+    0000 100. .... .... = Unused: 0x04
+
+
+------------------mysql服务端发送（auth switch request）-------------------------------------  
+0000   2c 00 00 02 fe 63 61 63 68 69 6e 67 5f 73 68 61   ,....caching_sha
+0010   32 5f 70 61 73 73 77 6f 72 64 00 38 34 27 29 09   2_password.84').
+0020   61 0d 44 16 2b 42 22 25 20 5e 77 25 38 7b 05 00   a.D.+B"% ^w%8{..
+
+
+
+MySQL Protocol
+    Packet Length: 44
+    Packet Number: 2
+    Status: 0xfe
+    Auth Method Name: caching_sha2_password
+    Auth Method Data: 3834272909610d44162b422225205e7725387b0500
+
+
+
+------------------mysql客户端发送（auth switch response）-------------------------------------   
+0000   20 00 00 03 9e 88 7d 0d 6a 73 03 66 89 bd 56 b4    .....}.js.f..V.
+0010   ef 79 73 d7 da b1 75 de 13 25 d7 7d 0d 8e f8 77   .ys...u..%.}...w
+0020   20 b9 f4 6f                                        ..o
+
+
+
+MySQL Protocol
+    Packet Length: 32
+    Packet Number: 3
+    Auth Method Data: 9e887d0d6a73036689bd56b4ef7973d7dab175de1325d77d0d8ef87720b9f46f
+
+
+
+
+------------------mysql服务端响应------------------------------------- 
+0000   02 00 00 04 01 03                                 ......
+
+
+
+MySQL Protocol
+    Packet Length: 2
+    Packet Number: 4
+    Payload: 0103
+        [Expert Info (Warning/Undecoded): unknown/invalid response]
+
+
+
+
+------------------mysql服务端响应ok------------------------------------- 
+0000   07 00 00 05 00 00 00 02 00 00 00                  ...........
+
+Frame 65: 77 bytes on wire (616 bits), 77 bytes captured (616 bits)
+Ethernet II, Src: fe:ee:e8:73:ca:42 (fe:ee:e8:73:ca:42), Dst: RealtekU_92:64:cf (52:54:00:92:64:cf)
+Internet Protocol Version 4, Src: 10.24.32.16, Dst: 10.21.48.3
+Transmission Control Protocol, Src Port: 3306, Dst Port: 48770, Seq: 133, Ack: 221, Len: 11
+MySQL Protocol
+    Packet Length: 7
+    Packet Number: 5
+    Response Code: OK Packet (0x00)
+    Affected Rows: 0
+    Server Status: 0x0002
+    Warnings: 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

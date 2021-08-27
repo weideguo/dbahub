@@ -468,11 +468,6 @@ select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的
 ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防止sql泄露
 
 
---password函数的实现
-SELECT PASSWORD('password');
-SELECT SHA1(UNHEX(SHA1('password')));
-
-
 
 #mysql8 开始支持并行查询（在此之前单个sql都是由一个线程执行），只适用于聚簇索引的扫描，二级索引不适用。
 set innodb_parallel_read_threads=4;

@@ -65,3 +65,19 @@ show grants for db_user;
 
 show privileges     ---查看所有的权限
 
+
+
+认证插件
+default_authentication_plugin
+
+mysql_native_password       -- 5.7以及以下默认使用
+sha256_password             -- 
+caching_sha2_password       -- 8.0默认使用
+
+
+
+
+mysql_native_password password函数的实现
+SELECT PASSWORD('password');
+SELECT SHA1(UNHEX(SHA1('password')));
+

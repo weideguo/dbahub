@@ -186,7 +186,7 @@ docker volume inspect vol_name                                      #以名字�
 docker inspect --format "{{.Volumes}}" container_id                 #查看volume
 docker inspect -f '{{.Id}}' $container_name                         ###查看容器的id
 docker inspect <container id>                                       #查看docker的信息，网络、volume等
-
+docker inspect mysql | grep MergedDir                               #查看容器对应使用的本地目录
 
 
 

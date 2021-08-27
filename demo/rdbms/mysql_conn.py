@@ -15,7 +15,8 @@ connect=mysql.connector.connect
 
 
 """
-#pip install PyMySQL   #python3的支持 与MySQLdb兼容
+#pip install PyMySQL            #python3的支持 与MySQLdb兼容
+#pip install cryptography       #使用caching_sha2_password格式的密码则必须安装这个包（mysql8默认使用）
 
 import pymysql
 connect = pymysql.connect

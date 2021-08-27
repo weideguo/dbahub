@@ -3,20 +3,22 @@ https://mysqlserverteam.com/mysql-8-0-4-new-default-authentication-plugin-cachin
 
 
 #两种认证机制
-faster authentication (密码存储于内存时)
+###
+faster authentication (密码缓存于内存时，大部分情况使用)
 允许使用SHA2哈希的基于质询-响应(challenge-response)的身份验证。
   
                                                       <- Nonce
 XOR( SHA256(pwd), SHA256(SHA256(SHA256(pwd))), Nonce) ->
   
-  
 
-full authentication (ALTER USER/SET PASSWORD/GRANT, RENAME USER, FLUSH PRIVILEGES  执行后)
+
+
+###
+full authentication (ALTER USER/SET PASSWORD/GRANT, RENAME USER, FLUSH PRIVILEGES  执行后，缓存于内存的密码被清除)
 要求客户端安全地发送实际密码（必须使用TLS连接或使用RSA密钥对）。
+服务器生成5000轮哈希，并与mysql.user中存储的值进行比较。
+
+存储在数据库时，对密码和盐进行5000轮SHA256散列
 
 
 
-
-
-存储在数据库时
-对密码和盐进行5000轮SHA256散列

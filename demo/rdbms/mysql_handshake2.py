@@ -49,11 +49,17 @@ mysql_password=b"test"           #实际明文密码
 #客户端生成传给服务端的挑战认证数据  
 #x := SHA1(password) XOR SHA1(salt + SHA1(SHA1(password)))
 import hashlib
-p=hashlib.sha1(hashlib.sha1(mysql_password).digest()).digest()
+#p=hashlib.sha1(hashlib.sha1(mysql_password).digest()).digest()
+#
+#str2 = hashlib.sha1(salt+p).digest()
+#
+#str1 = hashlib.sha1(mysql_password).digest()
 
-str2 = hashlib.sha1(salt+p).digest()
 
-str1 = hashlib.sha1(mysql_password).digest()
+SHA1 = lambda x : hashlib.sha1(x).digest()
+
+str1=SHA1(password) 
+str2=SHA1(salt + SHA1(SHA1(password)))
     
 client_secrect =  XOR(str1,str2)                               
 

@@ -123,10 +123,10 @@ salt=salt1+salt2
 `Z\x00\x00                                            服务器分配线程id                 4
 7!=OWHAN                                              随机数1                          8      
 \x00                                                                                   
-\xfe\xf7                                              服务器权能标志？？？             2
+\xfe\xf7                                              服务器权能标志（一些约定信息）   2
 \x08                                                  字符编码                         1
 \x02\x00                                              服务器状态                       2
-\xbf\x81                                              服务器权能标志（高16位）？？？   2
+\xbf\x81                                              服务器权能标志（高16位）         2
 \x15
 \x00\x00\x00\x00\x00\x00\x07\x00\x00\x00              填充数                           10
 CEo#]*X]KAAa                                          随机数2                          12字节
@@ -194,4 +194,5 @@ mysql-unsha1 -h 127.0.0.1 -P 3306 -u root --password=5baa61e4c9b93f3f0682250b6cf
 mysql> SELECT SHA1(UNHEX('5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'));
 2470c0c06dee42fd1618bb99005adca2ec9d1e19
 
+知道在mysql.user存储的值，可以进行登陆
 """
