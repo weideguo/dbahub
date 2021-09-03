@@ -1,7 +1,7 @@
 mysql mem = 
   key_buffer_size 						--缓存MyISAM的Index block		   
 + innodb_buffer_pool_size               --innodb的缓冲，缓冲数据和索引      
-+ innodb_additional_mem_pool_size       --用于存放数据字典等的内存池        
++ innodb_additional_mem_pool_size       --用于存放数据字典等的内存池  5.7以及以后不再支持   
 + innodb_log_buffer_size                --日志的缓冲（ ib_logfile files that make up the redo log）       
 
 + query_cache_size                      --The amount of memory allocated for caching query results       

@@ -89,6 +89,14 @@ rpl_semi_sync_slave_status=on		---slave的设置
 设置多线程复制
 set global slave_parallel_workers=30					  
 
+
+
+
+set slave_parallel_type="LOGICAL_CLOCK"       -- 5.7.2 引入 默认DATABASE
+Transactions that are part of the same binary log group commit on a master are applied in parallel on a slave. 
+默认DATABASE为库级别的并发
+
+
 atomic commitment protocol,APC
 两阶段提交 (two-phase commit,2PC)
 msater提交事务后，等slave节点提交完毕

@@ -1,0 +1,36 @@
+基于grafana实现的监控展示
+
+
+#服务端安装
+#下载镜像
+docker pull percona/pmm-server:latest
+
+#创建持久化的pmm-data镜像
+docker create -v /opt/prometheus/data -v /opt/consul-data -v /var/lib/mysql -v /var/lib/grafana --name pmm-data percona/pmm-server:latest /bin/true
+
+#启动容器
+docker run -d -p 80:80 --volumes-from pmm-data --name pmm-server --restart always percona/pmm-server:latest
+
+-e ORCHESTRATOR_ENABLED=true     #启用Orchestrator复制拓扑
+-e DISABLE_TELEMETRY=true        #关闭数据上传到percona.com
+-e DISABLE_UPDATES=true          #关闭更新
+
+
+
+
+#client端 服务端访问相关端口获取数据（42000 42001 ...）
+#安装
+
+https://www.percona.com/downloads/pmm/
+
+#启动pmm-agent进程
+
+
+#设置服务端 
+pmm-admin config --server 192.168.100.1:8080
+
+#添加监控的对象 （会创建XXX_exporter进程以对于相关的服务）
+pmm-admin add mysql  --user root --password root --host 192.168.1.24 --port 3306
+
+pmm-admin add mongodb
+

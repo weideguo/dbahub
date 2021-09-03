@@ -431,22 +431,6 @@ mysql升级
 2.直接复制data目录，运行mysql_upgrade升级
 
 
-内部数据库
-mysql
-performance_schema
-information_schema			--全部是视图。
-
-
-##表大小
-select table_schema,table_name,concat(round(data_length/1024/1024,2),'MB') data_size from information_schema.tables;
-
-表、索引大小
-select sum(data_length + index_length) as src_used_space from information_schema.tables
-
-
-库的大小
-select concat(round(sum(data_length/1024/1024),2),'MB') data_size from information_schema.tables where table_schema='database_name';
-
 
 
 ##比较表的差异

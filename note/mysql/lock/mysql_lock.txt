@@ -191,6 +191,9 @@ select * from information_schema.innodb_lock_waits;
 select * from information_schema.innodb_trx;
 
 
+行锁查看
+show status like '%innodb%lock%';
+
 
 ###############################
 ###update 加锁方式

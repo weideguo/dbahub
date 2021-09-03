@@ -33,3 +33,14 @@ show profile for query <query_id>;   --查看指定语句的执行性能分析
 
 
 
+
+show status like '%handle%'
+
+索引利用率（请求次数）
+1-
+(%Handler_read_rnd_next% + %Handler_read_rnd%) / 
+(%Handler_read_rnd_next% + %Handler_read_rnd% + %Handler_read_first% + %Handler_read_next% + %Handler_read_key% + %Handler_read_prev% + %Handler_read_last%)
+
+
+
+

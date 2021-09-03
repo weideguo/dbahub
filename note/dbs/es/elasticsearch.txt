@@ -13,10 +13,6 @@ _source     文档实际值
         
         
 
-分片和复制（shards & replicas） 
-
-
-
 #kibana console中操作
 
 #列出所有索引
@@ -170,86 +166,16 @@ POST test/_delete_by_query
 
 
 
-#分词器 收索引擎的倒排索引依赖分词器
-
-#查看分词
-GET _analyze
-{
-  "analyzer": "standard",
-  "text": "live long and prosperous, long long time a ago"
-}
-
-
-#mapping 数据类型
-
-#查看所有文档的数据类型
-GET _mapping
-
-#查看文档的数据类型
-GET test/_mapping
-
-
-#创建文档并设置数据类型，如果不创建，则在插入时创建并自动设置数据类型
-PUT test
-{
-  "mappings": {
-    "properties": {
-      "title": {
-        "type": "text"
-      },
-      "name": {
-        "type": "keyword"
-      },
-      "age": {
-        "type": "integer"
-      }
-    }
-  }
-}
-
-#增加mapping
-PUT test/_mapping
-{
-  "properties": {
-    "agex": {
-      "type": "text"
-    }
-  }
-}
-
-
-#不能修改mapping
-
-
-
-#http操作
+#########http操作
 curl -XGET "http://localhost:9200/_cat/health"
 curl -XGET "http://localhost:9200/_cat/health?v"
-
-
-#列出所有索引
-curl "localhost:9200/_cat/indices?v=true"
-
 
 from表示从第几行开始
 size表示查询多少条文档
 
 
-
-
-#模板
-#包预设字段的定义  即xx字段是yy类型   索引的主分片、拷贝分片、刷新时间、自定义分析器等
-#索引可使用预定义的模板进行创建，这个模板称作Index templates
-
-get _template                 #查看所有模板
-get _template/template_name   #查看指定模板
-
-
-
-
-
-####################################################################
-GET /_cluster/health                 #查看集群状态
+#列出所有索引
+curl "localhost:9200/_cat/indices?v=true"
 
 
 
