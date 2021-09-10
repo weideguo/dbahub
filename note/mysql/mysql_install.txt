@@ -73,7 +73,7 @@ windows下
 	启动mysql服务
 		运行mysqld命令，命令位于bin目录下  mysqld 
 	关闭mysql
-		mysqladmin -u root -p shutdowmn ---root可以为其他有关闭权限的mysql用户
+		mysqladmin -u root -p shutdown ---root可以为其他有关闭权限的mysql用户
 
 
 

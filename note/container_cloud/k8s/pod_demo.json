@@ -1,0 +1,26 @@
+#创建pod
+#kubectl create -f ./pod.json
+#cat pod.json | kubectl create -f -
+# cat pod.json 
+{
+"apiVersion": "v1",
+"kind": "Pod",
+"metadata": {
+  "name": "testbox",
+  "namespace": "default"
+},
+"spec": {
+  "containers": [
+     {
+        "name": "testbox-host",
+        "image": "busybox:latest",
+        "command": [
+           "sleep"
+        ],
+        "args": [
+           "1000"
+        ]
+      }
+    ]
+  }
+}

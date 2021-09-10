@@ -58,7 +58,7 @@
 create table recovery_table_demo (..)
 #抛弃表空间
 alter table recovery_table_demo discard tablespace;
-#复制备份的表空间文件到表所在的目录  ##任意完整备份的文件也可以？
+#复制备份的表空间文件到表所在的目录idb以及cfg文件（如果没有cfg会有告警 will attempt to import without schema verification）
 #导入表空间
 alter table recovery_table_demo import tablespace;
 

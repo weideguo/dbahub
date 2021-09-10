@@ -93,10 +93,13 @@ unlock tables;     				---开启事务先前有【lock tables】时，解锁时�
 flush tables;   --刷数据到磁盘  Closes all open tables, forces all tables in use to be closed, and flushes the query cache. 
 FLUSH TABLES tbl_name [， tbl_name];      --细粒度flush
 
----加锁
+---flush加锁  为刷数据到磁盘且加锁 因此可以进行文件级别备份
 flush tables with read lock;    						----全局锁。锁住所有的表。加锁实现super用户也不能写入
 
-FLUSH TABLES tbl_name [， tbl_name] ... WITH READ LOCK;	---对指定的表加锁
+FLUSH TABLES tbl_name [, tbl_name] ... WITH READ LOCK;	---对指定的表加锁，获取后其他事务只能读，先加排他元数据锁，然后关闭表缓存，重新打开表，获取锁，降级元数据锁为共享元数据锁。
+FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;      ---只对innodb有效，获取后其他事务只能读，获取共享元数据锁，此后可以直接复制cfg（如果没有cfg文件在恢复时有告警）、idb文件以进行表空间级备份
+
+-- 普通加锁
 LOCK TABLES `table_name` WRITE;							---添加写锁，其他事务不可再加锁，其他事务不能读表
 lock tables `table_name` read;							---添加读锁，其他事务可以再加读锁，其他事务可以读表
 

@@ -658,4 +658,14 @@ join T2 b on a.PackageId = b.PackageId
 where ...;
 
 
+-- innodb以及myisam 
+HANDLER tbl_name OPEN [ [AS] alias];                                                --必须先打开才能查询 会话有效
 
+HANDLER tbl_name READ index_name { = | <= | >= | < | > } (value1,value2,...)
+    [ WHERE where_condition ] [LIMIT ... ];                                         --使用索引时可以指定索引使用的字段，可以任意最左组合
+HANDLER tbl_name READ index_name { FIRST | NEXT | PREV | LAST }
+    [ WHERE where_condition ] [LIMIT ... ];
+HANDLER tbl_name READ { FIRST | NEXT }
+    [ WHERE where_condition ] [LIMIT ... ];
+
+HANDLER tbl_name CLOSE;

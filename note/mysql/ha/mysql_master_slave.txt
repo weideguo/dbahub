@@ -216,6 +216,10 @@ reset slave;             #清空主从信息（注意先保存已经同步好的
 
 
 
+--8.0.22以及以后的操作
+START REPLICA ;        ---代替 START SLAVE     
+
+
 
 
 

@@ -15,7 +15,7 @@ https://metacpan.org/
 yum install perl-CPAN
 
 #进入cpan命令行
-perl　-MCPAN　-e　shell　
+perl  -MCPAN  -e  shell  
 
 #查找
 cpan> i /DBI/  

@@ -1,0 +1,14 @@
+#创建pod
+#kubectl apply -f pod.yaml
+# cat pod.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testbox
+  namespace: default
+spec:
+  containers:
+  - name: testbox-host
+    image: busybox:latest
+    command: ["sleep"]
+    args: ["1000"]
