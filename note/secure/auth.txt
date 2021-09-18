@@ -34,6 +34,20 @@ cn/uid：一条记录的名字/ID
 dn:cn=L20,ou=L13,ou=L12,ou=L11,dc=L0
 
 
+权限树
+ L0                              #dc
+ ├── L11                         #ou
+     ├── L12                     #ou
+         ├── L13                 #ou
+             ├── L20             #cn
+             ├── L21             #cn
+             ├── L22             #
+             ├── L23             #
+             ├── L24             #
+             ├── L25             #
+             └── L26             #
+
+
 
 Pluggable Authentication Modules
 Linux-PAM + OpenLDAP 实现统一的linux账号管理

@@ -295,6 +295,8 @@ system_time_zone                  --服务器的时区，，默认由操作系�
 set global time_zone="+8:00"      --数据库实例当前的时区，设置后即影响mysql的时间，默认与system_time_zone一致
 set time_zone="+8:00"						  
 
+#配置文件中设置
+default-time-zone='timezone'
 	
 大小写
 lower_case_table_names=[0|1|2]      
