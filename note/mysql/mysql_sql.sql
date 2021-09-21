@@ -76,6 +76,29 @@ UPDATE t_name SET col = json_set(col,'$.json_filed_name','xxyy1') ...     #增�
 json_remove(col,'$.json_filed_name')                                      #删除json中字段
 JSON_EXTRACT(col,'$.json_filed_name')                                     #提取字段
 
+-- 函数
+JSON_APPEND() JSON_ARRAY_INSERT() JSON_UNQUOTE() JSON_ARRAY()
+JSON_REPLACE() JSON_CONTAINS() JSON_DEPTH() JSON_EXTRACT()
+JSON_INSERT() JSON_KEYS() JSON_LENGTH() JSON_VALID()
+JSON_MERGE() JSON_OBJECT() JSON_QUOTE() JSON_REMOVE()
+JSON_CONTAINS_PATH() JSON_SEARCH() JSON_SET() JSON_TYPE()
+-- 参数格式
+(json_doc, path, val[, path, val] ...)
+
+-- 通过创建虚拟列实现加索引
+ALTER TABLE t_name ADD col VARCHAR(30) AS (JSON_UNQUOTE(json_col->"$.properties.STREET"));
+ALTER TABLE t_name ADD INDEX (col);
+
+
+-- 虚拟列 5.7及以后支持
+<type> [ GENERATED ALWAYS ] AS ( <expression> ) [ VIRTUAL|STORED ]
+
+VIRTUAL   --不存储 默认
+STORED    --额外存储数据
+
+full_name VARCHAR(255) AS (CONCAT(first_name,' ',last_name))
+
+
 ENUM('value1','value2',...)     A string object that can have only one value
 SET('value1','value2',...)      A string object that can have zero or more values
 
@@ -227,15 +250,16 @@ select * from table_name limit 5 offset 2;  --从第3行开始选5行
 select * from table_name limit 3;    --选择前3行
 
 
-约束
+约束 主键 索引 外键
 ALTER TABLE table_name ADD CONSTRAINT constraint_name UNIQUE (column1,column2);
 撤销约束
 ALTER TABLE table_name DROP CONSTRAINT constraint_name;
 
+ALTER TABLE tb_emp7 ADD CONSTRAINT constraint_name CHECK(<check_expr>); --如 num>0
+
 
 更改表的字段
 ALTER TABLE table_name MODIFY column_name data_type;
-
 
 
 UDF (use defined function)
