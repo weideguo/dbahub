@@ -122,12 +122,9 @@ show open tables    #查看表的锁状态
  
 锁等待时间
 --由锁造成等待时，等待多久才发出超时错误
-lock_wait_timeout
-
-
-innodb_deadlock_detect    #>=5.7.15 死锁检测是否启用，默认启用（不启用则通过lock_wait_timeout进行超时等待判断）
-
-
+innodb_lock_wait_timeout
+innodb_deadlock_detect      #>=5.7.15 死锁检测是否启用，默认启用（不启用则通过innodb_lock_wait_timeout进行超时等待判断）
+innodb_print_all_deadlocks  #输出死锁信息到错误日志，否则只能通过 show engine innodb status 查看最近一次死锁信息
 
 
 死锁解决
@@ -189,10 +186,11 @@ DROP TABLE innodb_tablespace_monitor;
 
 
 查看事务锁等待状态:
-select * from information_schema.innodb_locks;
-select * from information_schema.innodb_lock_waits;
+select * from information_schema.innodb_locks;         -- 废弃
+select * from information_schema.innodb_lock_waits;    -- 废弃
 select * from information_schema.innodb_trx;
 
+select p.id,p.TIME,p.command from information_schema.innodb_trx t join information_schema.processlist p where t.trx_mysql_thread_id=p.id;
 
 行锁查看
 show status like '%innodb%lock%';

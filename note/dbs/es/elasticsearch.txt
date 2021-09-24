@@ -27,6 +27,9 @@ GET ${indice}/_search
 #使用id查询indices的数据
 GET ${indice}/_doc/${_id}
 
+#查询indices的文档数
+GET _cat/count/${indice}?v
+
 #全文搜索
 GET ${indice}/_search?q=${condition}
 

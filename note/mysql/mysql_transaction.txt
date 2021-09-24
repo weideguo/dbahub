@@ -7,6 +7,13 @@ start transaction;   ----开始事务 或 begin
 commit;    ----提交事务   ---rollback回滚事务
 
 
+start transaction                     -- 推荐使用
+transaction_characteristic:
+    WITH CONSISTENT SNAPSHOT          -- 在执行该语句时即开启事务，之后的读即可一致
+  | READ WRITE                        -- 默认 在执行第一条语句才开启事务，即在执行改语句到执行第一条语句的间隔的更改能被看到
+  | READ ONLY                         --
+ 
+
 SAVEPOINT identifier
 ROLLBACK [WORK] TO [SAVEPOINT] identifier
 RELEASE SAVEPOINT identifier
@@ -120,4 +127,11 @@ read没有阻塞write, 使用MVCC的技术解决了write/read相互阻塞的问�
 而对开启MVCC机制的锁，叫做乐观锁，大多基于数据版本(Version)记录机制实现
 
 MVCC的一种简单实现是基于CAS(Compare-and-swap)思想的有条件更新(Conditional Update)
+
+
+
+
+-- 查看未提交的事务，即开启事务，但未进行任何操作 可能是在事务中有其他不合理非数据库的耗时操作
+select * from INNODB_TRX t join processlist p ON t.trx_mysql_thread_id=p.id WHERE t.trx_state='RUNNING' AND p.COMMAND='Sleep'
+
 

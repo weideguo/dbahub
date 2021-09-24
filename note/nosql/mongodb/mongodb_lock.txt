@@ -1,0 +1,26 @@
+
+// 查看锁信息
+db.adminCommand( { lockInfo: 1 } )
+
+
+MongoDB uses reader-writer locks that allow concurrent readers shared access to a resource, such as a database or collection.
+
+
+a shared (S) locking mode for reads  
+an exclusive (X) locking mode for write 
+intent shared (IS) and intent exclusive (IX) modes indicate an intent to read or write a resource using a finer granularity lock. 
+When locking at a certain granularity, all higher levels are locked using an intent lock.
+
+
+For example, 
+when locking a collection for writing (using mode X), 
+both the corresponding 
+database lock and the global lock 
+must be locked in intent exclusive (IX) mode. 
+
+A single database can simultaneously be locked in IS and IX mode, 
+but an exclusive (X) lock cannot coexist with any other modes, 
+and a shared (S) lock can only coexist with intent shared (IS) locks.
+
+
+

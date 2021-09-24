@@ -74,7 +74,7 @@ new_password=quote_plus(password)
 from pymongo import ReadPreference
 
 db = conn.get_database("my_mongodb", read_preference=ReadPreference.SECONDARY_PREFERRED)
-
+#get_database(name=None, codec_options=None, read_preference=None, write_concern=None, read_concern=None) 
 
 """
 PRIMARY              默认选项，从primary节点读取数据
@@ -83,4 +83,35 @@ SECONDARY            从secondary节点读取数据，没有即报错
 SECONDARY_PREFERRED  优先从secondary节点读取，如果没有可用的secondary节点，则从primary节点读取
 NEAREST              从集群中可用的节点读取数据
 
+
+
+
+read_concern 决定到某个读取数据时，能读到什么样的数据。
+local       能读取任意数据，这个是默认设置
+majority    只能读取到“成功写入到大多数节点的数据”
+available
+linearizable
+snapshot
+
+
+write_concern 表示写入后得到多少个 Secondary 的确认后再返回
+
+w
+数字      确切的个数
+majority  n/2 + 1
+tag set   标签组：即制定哪几个 tag 的 Secondary
+
+j 设置为 true，表示等数据已经写入了磁盘上的 journal 后再返回，这时候即便数据库挂掉，也是能从 journal 中恢复
+
+wtimeout 防止超时
+
+from pymongo import WriteConcern
+WriteConcern(w=None, wtimeout=None, j=None, fsync=None)
 """
+
+
+
+
+
+
+

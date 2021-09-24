@@ -385,11 +385,11 @@ s.commitTransaction()
 
 
 
+mongodb可以直接内嵌(Embed)，即使多级json，可以通过A.B.C格式获取指定路径的数据
+另一种是连接(Link)，使用 DBRef
+DBRef("collection_name", ObjectId("obj_id"))
 
-
-
-
-
-
+db.c.insert({"q": DBRef("a", ObjectId("60e59ab669581a6c9c0b96af"))})
+db.c.findOne().q.fetch()                                                     
 
 
