@@ -31,6 +31,7 @@ pmm-admin config --server 192.168.100.1:8080
 
 #添加监控的对象 （会创建XXX_exporter进程以对于相关的服务）
 pmm-admin add mysql  --user root --password root --host 192.168.1.24 --port 3306
+#pmm-admin add mysql [<flags>] [<name>] [<address>]
 
 pmm-admin add mongodb
 

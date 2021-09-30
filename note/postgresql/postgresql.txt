@@ -124,11 +124,18 @@ create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###�
 create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
 
 ##进行资源限制？
-create database demodb		###创建数据库 一个连接只能来连接一个数据库
-template template0
+create database demodb		            ### 创建数据库 一个连接只能来连接一个数据库
+template template0                      ### 使用的模板
 encoding 'UTF8'
 tablespace ts_demo01
 connection limit 200;
+
+
+pg的模板
+template1   #默认使用，由template0生成，可以修改
+template0   #干净的模板
+
+
 
 alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
 

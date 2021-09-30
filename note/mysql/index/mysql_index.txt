@@ -81,7 +81,7 @@ adaptive hash index(自适应哈希索引)
 
 
 null值对索引的影响
-where column_name is not null  --不走索引
+where column_name is not null  -- 也走索引
 
 
 

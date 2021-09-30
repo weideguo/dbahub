@@ -244,7 +244,7 @@ docker restart                                                      ##重启
 docker pause                                                        ##暂停
 docker unpause                                                      ##取消暂停
 docker logs                                                         ##输出指定容器的日志
-
+docker logs --tail=10 -f <container-name>
 
 docker run -i ubuntu /bin/bash                                                                   ###创建容器，运行，进入交互模式
 docker run -v $host_dir:$docker_dir $container_name                                              ###-v挂载主机文件夹到容器
