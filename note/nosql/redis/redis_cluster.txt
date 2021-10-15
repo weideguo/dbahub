@@ -19,5 +19,9 @@ appendonly yes
 redis-cli -c -p 7000   ###连接单个节点验证集群,客户端会自动切换连接点
 
 
+key映射到slot，每个节点存储部分slot
 
+
+cluster集群的代理
+redis-cluster-proxy [OPTIONS] [node1_host:node1_port,node2_host:node2_port,...]
 

@@ -393,3 +393,10 @@ db.c.insert({"q": DBRef("a", ObjectId("60e59ab669581a6c9c0b96af"))})
 db.c.findOne().q.fetch()                                                     
 
 
+
+// 设置read preference，即优先从哪里读
+db.getMongo().setReadPref('secondary')
+
+db.getMongo().getReadPref()
+
+

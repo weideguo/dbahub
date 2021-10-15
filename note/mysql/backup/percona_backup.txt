@@ -23,7 +23,7 @@
 #需要连接到数据库实例
 #需要预先存在全量热备的文件夹/u03/xb_backup_dir/2017-01-16_14-54-07
 #生成增量备份文件在/u03/xb_incre_backup_dir
-./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf --incremental /u03/xb_incre_backup_dir --incremental-basedir=/u03/xb_backup_dir/2017-01-16_14-54-07
+./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf --incremental --incremental-basedir=/u03/xb_backup_dir/2017-01-16_14-54-07 /u03/xb_incre_backup_dir 
 
 
 --incremental-lsn=123456      #【--incremental-basedir】可由下xtrabackup_checkpoints的lsn代替指定
@@ -78,6 +78,7 @@ alter table recovery_table_demo import tablespace;
 --slave-info  			##将【change master to ...】的信息备份存放在"xtrabackup_slave_info"文件中
 --safe-slave-backup		##备份时关闭sql_thread，备份结束后自动启动sql_thread
 
+--compress              ##单个文件压缩  增量备份也可以使用压缩 因为只是用checkpoint对比变化的page
 
 原理
 基于innodb crash-recovery机制
@@ -93,7 +94,6 @@ alter table recovery_table_demo import tablespace;
 
 差异备份
     上一次 完全备份之后 变化的部分的备份（相当于第一次增量备份）
-
 
 
 

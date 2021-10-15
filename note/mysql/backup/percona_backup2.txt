@@ -12,6 +12,15 @@ innodb数据文件复制原理
 从而获取一份不同checkpoint时page的innodb数据文件。但每个page都带有，因而可以应用redo日志前滚已实现持久化。
 
 
-增量备份则通过比对page的lsn，不同则复制page。
+增量备份由上一次备份的checkpoint，对比变化的page，每一个page都由一个lsn对比
 
+
+
+--备份innodb后执行的语句
+FLUSH NO_WRITE_TO_BINLOG TABLES             --关闭所有打开的表，强制关闭所有正在使用的表，并刷新查询缓存和预准备语句缓存。
+FLUSH TABLES WITH READ LOCK                 --加索  之后拷贝所有非事务表
+SHOW MASTER STATUS                          --获取binlog位置，即在此pos之前的都已经被备份
+SHOW VARIABLES                              --
+FLUSH NO_WRITE_TO_BINLOG ENGINE LOGS        --将innodb层的重做日志持久化到磁盘，然后再进行拷贝。执行刷新redo log buffer中的日志到磁盘中，然后redo log copy线程拷贝这最后的redo log日志数据。
+UNLOCK TABLES
 

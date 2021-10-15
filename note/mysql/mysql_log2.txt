@@ -1,0 +1,30 @@
+参考文档 https://www.cnblogs.com/f-ck-need-u/p/9010872.html
+
+redo log 通常是物理日志，记录的是数据页的物理修改，而不是某一行或某几行修改成怎样怎样，它用来恢复提交后的物理数据页(恢复数据页，且只能恢复到最后一次提交的位置)。
+undo log 用来回滚行记录到某个版本。undo log一般是逻辑日志，根据每行记录进行记录。
+
+
+redo log也是基于页的格式来记录的
+在每个redo日志组的第一个redo log file中，前2KB记录4个特定的部分（即四个块），从2KB之后才开始记录log block
+redo log以块为单位进行存储的，每个块占512字节
+
+
+log block header 日志块头（12字节）
+log_block_hdr_no          (4字节)该日志块在redo log buffer中的位置ID。
+log_block_hdr_data_len    (2字节)该log block中已记录的log大小。写满该log block时为0x200，表示512字节。
+log_block_first_rec_group (2字节)该log block中第一个log的开始偏移位置。
+lock_block_checkpoint_no  (4字节)写入检查点信息的位置。
+
+
+log block tailer 日志尾（8字节）
+log_block_trl_no         该值和块头的 log_block_hdr_no 相等。
+
+
+
+log block body （492字节）
+redo_log_type       占用1个字节，表示redo log的日志类型。
+space               表示表空间的ID，采用压缩的方式后，占用的空间可能小于4字节。
+page_no             表示页的偏移量，同样是压缩过的。
+redo_log_body       表示每个重做日志的数据部分，恢复时会调用相应的函数进行解析。例如insert语句和delete语句写入redo log的内容是不一样的。
+
+

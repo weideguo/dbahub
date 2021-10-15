@@ -158,6 +158,17 @@ Innodb的实现真算不上MVCC，因为并没有实现核心的多版本共存�
 实现未提交事务主动回滚。
   
   
+
+undo log是采用段(segment)的方式来记录的， 由 innodb_rollback_segments 控制回滚段数量
+每个回滚段中有1024个undo log segment，每个undo操作在记录的时候占用一个undo log segment
+  
+  
+  
+  
+  
+  
+  
+  
 启动时，从redo日志获取最后checkpoint时的lsn，即使表明这个位点前的事务已经被持久化到数据文件，通过应用redo日志，实现事务不丢失。
 
 重新更改配置文件再启动可能出现错误

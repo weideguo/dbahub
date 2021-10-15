@@ -1,0 +1,13 @@
+Chart       一个helm程序包，包含运行一个应用的工具和资源定义
+Release      在k8s集群上运行的一个chart实例
+Repository  用于存放和共享chart的仓库；http/https服务器
+
+
+helm --help
+
+#列出指定命名空间的Release
+helm -n <namespace> list 
+
+
+
+

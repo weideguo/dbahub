@@ -8,6 +8,19 @@ bin/pt-online-schema-change --alter="add key(openId,status)" --execute u=root,p=
 
 pt–table-checksum
 #在主库运行。在主库、从库的表进行checksum，判断数据是否一致。执行过的sql语句记录到binlog。不在意从库延时，延迟多少，计算的校验值都一样。
+pt-table-checksum --nocheck-replication-filters --no-check-binlog-format --replicate=test.checksum --databases=mydatabase --tables=mytable --chunk_size=100 h=127.0.0.1,u=root,P=3306  
+
+#主库中计算crc
+COALESCE(LOWER(CONV(BIT_XOR(CAST(CRC32( 主键 ) AS UNSIGNED)), 10, 16)), 0)
+执行时自动切换binlog格式为statement，传输 replace ... (..,this_cnt,this_crc,..)... select 语句实现在同一时刻（执行顺序）对表进行校验
+
+#将主库的校验值更新到主从校验表
+
+UPDATE `test`.`checksum` SET  master_crc = '2f9cca9c', master_cnt = '1' WHERE db = 'mydatabase' AND tbl = 'mytable' AND chunk = '1'
+
+#从库中对比每个chunk
+master_cnt <> this_cnt OR master_crc <> this_crc OR ISNULL(master_crc) <> ISNULL(this_crc) 
+
 
 pt-table-sync
 #用来修复多个实例之间数据的不一致。内部集成了pt-table-checksum的校验功能

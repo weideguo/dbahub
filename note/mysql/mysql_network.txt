@@ -1,0 +1,7 @@
+connect_timeout      TCP三次握手超时时间
+wait_timeout         建立连接后无交互
+interactive_timeout  建立连接交互后
+net_read_timeout     client----->MySQL Server 的超时时间
+net_write_timeout    client<-----MySQL Server 的超时时间
+
+

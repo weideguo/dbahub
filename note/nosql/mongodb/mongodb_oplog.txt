@@ -44,20 +44,6 @@ use local;
 db.oplog.rs.find()
 
 
-PITR
-
-mongodump --oplog     #有oplog才能实现定点恢复
-	--gzip #compress archive our collection output with Gzip
-	--oplog does not dump the oplog collection
-			主要目的是确保导出时不受更改的影响，用于实现定点恢复。
-	
-mongodump -d local -c oplog.rs -o backup_op
-#将oplog备份得到的oplog.rs.bson替换【mongodump --oplog】备份目录backup_path中的oplog.bson，即可使用backup_path进行PITR
-	
-mongorestore --oplogReplay --oplogLimit=<seconds> backup_path  ##恢复到指定时间
-
-	--gzip #decompress gzipped input
-
 
 
 全备+dump出oplog.rs，使用oplogReplay可以定点恢复
@@ -70,9 +56,9 @@ oplog具有幂等性(idempotent)，多次操作结果也一样。
 
 
 
+// 查看oplog的大小
+db.oplog.rs.stats().maxSize
 
-分片(sharding)PITR
-在每个(replicate set)以及(config server replicate set)
-
-
+// 修改oplog的大小 mb
+db.adminCommand({replSetResizeOplog:1, size: 2048});
 

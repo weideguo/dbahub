@@ -34,3 +34,19 @@ Pages flushed up to（LSN3）：当前最旧的脏页数据对应的LSN，写Che
 Last checkpoint at （LSN4）：当前已经写入Checkpoint的LSN
 
 LSN1>=LSN2>=LSN3>=LSN4
+
+
+
+刷日志到磁盘有以下几种规则：
+1.发出commit动作时。已经说明过，commit发出后是否刷日志由变量 innodb_flush_log_at_trx_commit 控制。
+2.每秒刷一次。这个刷日志的频率由变量 innodb_flush_log_at_timeout 值决定，默认是1秒。这个刷日志频率和commit动作无关。
+3.当log buffer中已经使用的内存超过一半时。
+
+
+sharp checkpoint：在重用redo log文件(例如切换日志文件)的时候，将所有已记录到redo log中对应的脏数据刷到磁盘。
+fuzzy checkpoint：一次只刷一小部分的日志到磁盘，而非将所有脏日志刷盘。有以下几种情况会触发该检查点：
+
+master thread checkpoint        由master线程控制，每秒或每10秒刷入一定比例的脏页到磁盘。
+flush_lru_list checkpoint       从MySQL5.6开始可通过 innodb_page_cleaners 变量指定专门负责脏页刷盘的page cleaner线程的个数，该线程的目的是为了保证lru列表有可用的空闲页。
+async/sync flush checkpoint     同步刷盘还是异步刷盘。例如还有非常多的脏页没刷到磁盘(非常多是多少，有比例控制)，这时候会选择同步刷到磁盘，但这很少出现；如果脏页不是很多，可以选择异步刷到磁盘，如果脏页很少，可以暂时不刷脏页到磁盘
+dirty page too much checkpoint  脏页太多时强制触发检查点，目的是为了保证缓存有足够的空闲空间。too much的比例由变量 innodb_max_dirty_pages_pct 控制，MySQL 5.6默认的值为75，即当脏页占缓冲池的百分之75后，就强制刷一部分脏页到磁盘。

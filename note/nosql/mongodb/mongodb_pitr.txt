@@ -16,7 +16,8 @@ bin/mongodump --host 127.0.0.1:27017 -d local -c 'oplog.$main' -o oplog_backup_d
 或者
 bin/mongodump --host 127.0.0.1:27017 -d local -c 'oplog.rs' -o oplog_backup_dir
 
-也可以直接指定用 oplog.rs.bson 文件前滚
+将oplog备份得到的oplog.rs.bson替换【mongodump --oplog】备份目录backup_path中的oplog.bson，即可使用backup_path进行PITR
+也可以直接指定用 oplog.rs.bson 文件前滚	
 
 
 恢复
@@ -28,7 +29,6 @@ PITR恢复示例
 bin/mongorestore --host=127.0.0.1:27017 --oplogReplay --oplogLimit=1504721747 full_backup_dir
 
 #oplogLimit的值为时间戳，即为要将整个实例恢复到的时间点。
-
 
 
 分片(sharding)
