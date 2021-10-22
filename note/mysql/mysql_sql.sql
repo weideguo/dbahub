@@ -635,7 +635,9 @@ SUBPARTITIONS 2 (
     PARTITION p2 VALUES LESS THAN MAXVALUE
 );
 
-
+主键/唯一键限制
+every unique key on the table must use every column in the table s partitioning expression 
+如果有多个唯一键/包括主键，则构成键的部分必须使用在分区表达式中，即所有唯一键中必须包含相同列，且要使用该列进行分区
 
 
 MRG_MYISAM

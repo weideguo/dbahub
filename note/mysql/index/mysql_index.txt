@@ -23,10 +23,15 @@ COUNT(1) is only subject to the same optimization if the first column is defined
 
 
 索引
-fulltext索引   ----只有myisam使用
+fulltext索引   ----只有myisam使用 5.6以后innodb支持全文索引
 CREATE TABLE fulltext_sample(name TEXT,FULLTEXT(name)) ENGINE=MyISAM;
 ALTER TABLE fulltext_sample ADD FULLTEXT(name);   ----改表结构添加全文索引
 create fulltext index index_name on fulltext_sample(name);   
+
+
+SELECT * FROM articles
+        WHERE MATCH (title,body)
+        AGAINST ('database' IN NATURAL LANGUAGE MODE);
 
 
 alter table table_name add key (col1,col2);

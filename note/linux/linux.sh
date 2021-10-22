@@ -35,8 +35,8 @@ GRUB (GRand Unified Bootloader)
 dmesg 查看启动过程
 
 ###grub中的最小设置，可以进入编辑界面进行编辑
-root	 启动磁盘的位置，可以选择从磁盘 root (hd0,0) / root (cd0,0)
-kernel	 内核选择
+root     启动磁盘的位置，可以选择从磁盘 root (hd0,0) / root (cd0,0)
+kernel     内核选择
 initrd   初始化RAM磁盘，文件系统可用之前的一个初始化文件系统。作为内核引导的一部分进行加载。
 
 #启动顺序
@@ -57,15 +57,15 @@ tty  #查看当前的tty
 
 
 
-OOM out-of memory   				##系统会杀掉一些进程以释放内存
-OOM内核参数设置
-/etc/sysctl.conf  			##修改该文件中对应的值
-sysctl -p  		  		##使修改生效
-sysctl vm.overcommit_memory=1		###直接使内核参数生效
+OOM out-of memory                         ##系统会杀掉一些进程以释放内存
+OOM内核参数设置  
+/etc/sysctl.conf                          ##修改该文件中对应的值
+sysctl -p                                 ##使修改生效
+sysctl vm.overcommit_memory=1             ##直接使内核参数生效
+sysctl -a                                 ##列出所有内核参数值
 
-
-echo 0 > /proc/sys/vm/swapping		 ##禁用所有进程使用swap 直接生效 重启失效
-vm.swapping=0                            ###/etc/sysctl.conf中修改禁用swap
+echo 0 > /proc/sys/vm/swapping            ##禁用所有进程使用swap 直接生效 重启失效
+vm.swapping=0                             ###/etc/sysctl.conf中修改禁用swap
 
 cat /proc/sys/vm/swappiness               ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
 vm.swappiness=10                          ##修改swap的使用权重
@@ -80,12 +80,12 @@ SWAP分区异常使用
 
 mysqld --memlock                ##内存锁定             
 
-	 	
-/proc/$pid/smaps					##查看进程的swap的使用
+         
+/proc/$pid/smaps                    ##查看进程的swap的使用
 /proc/$pid/maps
 
-cat /proc/$pid/smaps | grep "Swap" 	##查看swap，需要先相加起来
-cat /proc/$pid/status | grep "Swap"	##查看swap
+cat /proc/$pid/smaps | grep "Swap"     ##查看swap，需要先相加起来
+cat /proc/$pid/status | grep "Swap"    ##查看swap
 
 pmap -d $pid 
 代码段、数据段、堆、文件映射区域、栈
@@ -104,20 +104,20 @@ x86的默认内存页大小是4kb，可以使用2mb或者更大的巨型页
 
 echo 2000 > /proc/sys/vm/nr_hugepages  #修改巨型页的数量
 
-numactl 			##控制进程与共享存储的numa技术
+numactl             ##控制进程与共享存储的numa技术
 
 numactl --interleave=all ${command}
 #当当前cpu没有可以分配的内存，可以使用其他cpu的内存。all表示所有
 #不设置时当达到cpu的分配阈值，即使系统还有空余内存，也不分配给当前cpu，而选择使用SWAP
 
 
-SMP  symmetic multi processing				对称多处理系统
-MPP  massvie parallel processor    			大规模并行处理
-NUMA non uniform memory access architecture		非统一内存访问
+SMP  symmetic multi processing                对称多处理系统
+MPP  massvie parallel processor                大规模并行处理
+NUMA non uniform memory access architecture        非统一内存访问
 
 
-vmstat		        ###查看虚拟内存swap si/so 表示与物理内存的交换
-vmstat -S m 1		###隔1秒显示一次
+vmstat                ###查看虚拟内存swap si/so 表示与物理内存的交换
+vmstat -S m 1        ###隔1秒显示一次
 
 ##增加swap分区  重启后失效
 dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建一个大文件，内容全为0
@@ -133,15 +133,15 @@ cgroups
 /proc/cgroups 
 
 ##修改最大文件描述符
-/etc/security/limits.conf	 		###配置文件修改，最大打开文件数，以及其他
+/etc/security/limits.conf             ###配置文件修改，最大打开文件数，以及其他
 /etc/security/limits.d
 
 
 
-ulimit -a							###查看所有的限制
-ulimit -n 2048						##修改允许打开最大的文件数
-lsof | wc -l						##查看已经打开的文件数
-lsof -p pid 						##查看进程打开的文件
+ulimit -a                            ###查看所有的限制
+ulimit -n 2048                        ##修改允许打开最大的文件数
+lsof | wc -l                        ##查看已经打开的文件数
+lsof -p pid                         ##查看进程打开的文件
 lsof -c mysql                                           ##查看对应进程名打开的文件
 lsof +L1                                                ##unlinked的文件信息
 lsof +L/-L                                              ##打开或关闭文件的连结数计算，当+L没有指定时，所有的连结数都会显示(默认)；若+L后指定数字，则只要连结数小于该数字的信息会显示；连结数会显示在NLINK列。
@@ -175,11 +175,11 @@ chattr +i dirname    #则不能对该文件夹进行任何修改
 lsattr  filename     #查看文件属性
 
 
-quota  				#磁盘使用限制
-edquota				#编辑数据文件
+quota                  #磁盘使用限制
+edquota                #编辑数据文件
 
 
-pmap pid							##查看指定pid使用的内存
+pmap pid                            ##查看指定pid使用的内存
 
 
 lspci | grep -i vga   ##查看显卡
@@ -191,9 +191,9 @@ lspci 查看PCI设备
 lsusb 查看USB设备）
 lsblk 查看块设备
 ls+tab+tab  查看ls开头的命令
-which command	##查看command的路径
+which command    ##查看command的路径
 whereis command
-type command	##查看command的路径
+type command    ##查看command的路径
 
 
 time command    #计算命令执行的时间
@@ -239,7 +239,7 @@ selinux
 禁用（disabled）：禁用SElinux，与不带SElinux的系统一样         
 /usr/sbin/sestatus -v      ##如果SELinux status参数为enabled即为开启状态
 getenforce                 ##也可以用这个命令检查
-setenforce 0  			   ##临时关闭；1 为开启
+setenforce 0                 ##临时关闭；1 为开启
 
 由selinux设置问题导致启动失败
 进入kernel选择界面，编辑kernel，添加 
@@ -293,14 +293,14 @@ userdel user_name ##删除用户   (加 -r 删除用户目录）
 保留条目
 
 
-umask -S   	 ###查看用户创建文件时文件的默认权限
+umask -S        ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002
-			 ###文件夹777-002
+             ###文件夹777-002
 添加执行sudo的权限为在sudoers文件【/etc/sudoers】中添加
-visudo          				###直接进入编辑/etc/sudoers   也可以用vi编辑，写入的时候强制写入
-sudo ${command}  				###以root用户执行命令
+visudo                          ###直接进入编辑/etc/sudoers   也可以用vi编辑，写入的时候强制写入
+sudo ${command}                  ###以root用户执行命令
 
-sudo -u db_user00 ${command}   	##以指定用户执行命令
+sudo -u db_user00 ${command}       ##以指定用户执行命令
 
 sudo /bin/su - db_user00 /data/db_user00/redis_6379/redis_server.sh start   ##以root用户身份执行su ...
 
@@ -334,10 +334,10 @@ chroot $NEWROOT $COMMAND   ####run command or interactive shell with special roo
 
 ACL（access control list）      ###现对与chmod管理粒度更细
 mount -o acl /dev/sda5 /mnt     ###ACL需要在挂载文件的时候打开ACL功能
-getfacl file_name   					###查看一个文件的ACL设置
-setfacl -m u:username:rwx file_name   	###设置用户权限
-setfacl -m g:groupname:--x file_name 	###设置组权限
-setfacl -x u:username file_name   		####删除ACL设置
+getfacl file_name                       ###查看一个文件的ACL设置
+setfacl -m u:username:rwx file_name       ###设置用户权限
+setfacl -m g:groupname:--x file_name     ###设置组权限
+setfacl -x u:username file_name           ####删除ACL设置
 
 
 tune2fs -o +acl /dev/sda        ###ext2/ext3/ext4文件系统增加acl功能
@@ -349,13 +349,13 @@ tar -xzvf file.tar.gz    ##解压tar.gz
 tar -xjvf file.tar.bz2   ##解压 tar.bz2
 压缩/解压
 bzip2 
-gzip	
+gzip    
 xz
-	
-awk '{print $1}' filename  			####显示文件中每行第一个字符串
-awk -F':' '{print $1}' filename    	####使用分割符":"分割并显示每行第一个字符
+    
+awk '{print $1}' filename              ####显示文件中每行第一个字符串
+awk -F':' '{print $1}' filename        ####使用分割符":"分割并显示每行第一个字符
 awk -F":" '{print $1}' filename
-awk -F":" '/exp/{print $1}'			###查找符合exp的行并进行分割，可以使用正则表达式
+awk -F":" '/exp/{print $1}'            ###查找符合exp的行并进行分割，可以使用正则表达式
 awk '/exp/'
 
 awk '{sum += $1};END {print sum}'   ##计算数字总和
@@ -366,49 +366,49 @@ awk '{x[$1]+=1} END{for( i in x ){print x[i]"    "i}}'                          
 
 
 
-sed [-nefri] 'command' filename     		####编辑文字  删除、替换  
-sed 's/lintxt1/linetxt2/g'	filename		####替换字符 将文件中的linetxt1替换成linetxt2 可以使用正则表达式
-sed 's|lintxt1|linetxt2|g'	filename
-sed '/linetxt/d' filename					####删除匹配的行  将配备linetxt的行删除 可以使用正则表达式
+sed [-nefri] 'command' filename             ####编辑文字  删除、替换  
+sed 's/lintxt1/linetxt2/g'    filename        ####替换字符 将文件中的linetxt1替换成linetxt2 可以使用正则表达式
+sed 's|lintxt1|linetxt2|g'    filename
+sed '/linetxt/d' filename                    ####删除匹配的行  将配备linetxt的行删除 可以使用正则表达式
 
 
 echo "xxx" | xargs                          ##设置标准输出
 
 xargs - build and execute command lines from standard input
 
-tr '.' '_'	filename						##将【.】替换为【_】，-d为删除
-tr -s " " filename							##去除空格
+tr '.' '_'    filename                        ##将【.】替换为【_】，-d为删除
+tr -s " " filename                            ##去除空格
 
 
 list的使用
-ip=($ip1 $ip2 $ip3)		###以空格分割
-${ip:1:2 }				###显示list中下标1到2的元素
-${str#exp}									###字符串str截去exp，截取操作可以使用类似命令
+ip=($ip1 $ip2 $ip3)        ###以空格分割
+${ip:1:2 }                ###显示list中下标1到2的元素
+${str#exp}                                    ###字符串str截去exp，截取操作可以使用类似命令
 
-cut -d '#' -f 1 filename					###以"#"分割字符串并获取第一个值
+cut -d '#' -f 1 filename                    ###以"#"分割字符串并获取第一个值
  
-grep -o 'exp' filename 						###查找只符合exp中的字符串，可以使用正则表达式  不用-o则匹配行
-grep -oP "(?<=//).*?(?=/)"					###-P perl类型的正则表达式，支持零宽断言
+grep -o 'exp' filename                         ###查找只符合exp中的字符串，可以使用正则表达式  不用-o则匹配行
+grep -oP "(?<=//).*?(?=/)"                    ###-P perl类型的正则表达式，支持零宽断言
 
-grep -v "exp" filename						###反向选择，获取不包含exp的行
+grep -v "exp" filename                        ###反向选择，获取不包含exp的行
 
 grep -C 5 "foo" file    #显示file文件里匹配foo字串那行以及上下5行
 grep -B 5 "foo" file    #显示foo及前5行
 grep -A 5 "foo" file    #显示foo及后5行
 
 
-uniq filename								###获取的行没有重复，-d获取有重复的行
+uniq filename                                ###获取的行没有重复，-d获取有重复的行
 
-cmp filename1 filename2						###逐位比较两个文件
-diff										###逐行比
+cmp filename1 filename2                        ###逐位比较两个文件
+diff                                        ###逐行比
 
-basename $path/filename						###从全录路径中提取文件名
-basename $path/filename.txt	.txt			###从全录路径中提取文件名并去掉后缀
+basename $path/filename                        ###从全录路径中提取文件名
+basename $path/filename.txt    .txt            ###从全录路径中提取文件名并去掉后缀
  
 
 
 diff  file_old file_new > file_update.patch   #生成补丁文件
-patch -p0 file_old 	file_update.patch         #应用补丁文件
+patch -p0 file_old     file_update.patch      #应用补丁文件 不能多次应用
 
 
 diff -Naru test test_new  > test.patch        #对比目录  使用git时 git diff > my.patch
@@ -423,9 +423,9 @@ xdelta3 -d -s SOURCE OUT TARGET_NEW           #打补丁成新文件
  
 
 ##正则表达
-"sinosy_${DATE}_*.log"	双引号可以禁止通配符扩展，但是允许变量扩展。
-'sinosy_${DATE}_*.log'	同时禁止通配符扩展与变量扩展。
-sinosy_${DATE}_\*.log	使用转义字符——反斜杠，也可以防止扩展。
+"sinosy_${DATE}_*.log"    双引号可以禁止通配符扩展，但是允许变量扩展。
+'sinosy_${DATE}_*.log'    同时禁止通配符扩展与变量扩展。
+sinosy_${DATE}_\*.log    使用转义字符——反斜杠，也可以防止扩展。
 
 date -d @141231322   #时间戳换成时间
 date +%s             #显示时间戳
@@ -470,7 +470,7 @@ scp local_file remote_username@remote_ip:remote_filefolder   ##从本地复制�
 scp -oPort=3600 -r ...
 -oPort -P       ##指定使用的端口
 -r              ##复制目录
--C		        ##压缩传输
+-C                ##压缩传输
 
 -o              ##与ssh的使用一致
 -oPort=3600
@@ -522,20 +522,20 @@ ctrl+]
 rsync
 两种模式
 C/S 
-	server
-		rsync --daemon --config=/data/rsyncd.conf
-	client
-		rsync -azvrP path_to_send rsync://remote_user@remote_host:port/block_name		##block_name为server端配置文件中的块名
-		
+    server
+        rsync --daemon --config=/data/rsyncd.conf
+    client
+        rsync -azvrP path_to_send rsync://remote_user@remote_host:port/block_name        ##block_name为server端配置文件中的块名
+        
 命令行（使用ssh协议）
-		rsync [OPTION]... SRC [SRC]... [USER@]HOST::DEST             ##从源端（SRC，可以多个）同步文件到目的端（DEST）
+        rsync [OPTION]... SRC [SRC]... [USER@]HOST::DEST             ##从源端（SRC，可以多个）同步文件到目的端（DEST）
 
 
-客户端	
-rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_host:port/block_name	
-	
-使用密码文件权限必须其他账号不能访问（只是对于rsync模式有效，ssh模式不能使用密码文件）	
-	
+客户端    
+rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_host:port/block_name    
+    
+使用密码文件权限必须其他账号不能访问（只是对于rsync模式有效，ssh模式不能使用密码文件）    
+    
 #进入stfp交互模式
 sftp -o Port=22  root@10.10.1.10
  #在本地执行
@@ -558,19 +558,19 @@ inotify-tools 监听文件然后使用rsync推送文件
 
 nc
 ###端口扫描
-nc -v -w 2 -z 192.168.5.230 21       		
+nc -v -w 2 -z 192.168.5.230 21               
 
 ##扫描udp端口
 nc -u 127.0.0.1 9000
 nc -u -z -v -w 2 127.0.0.1 9000    #非交互模式
 
 ###监听端口
-nc -lp 65500   				###旧版
-nc -l 65500    				###新版
-nc --udp -l 65500    		###新版 默认使用TCP协议
+nc -lp 65500                   ###旧版
+nc -l 65500                    ###新版
+nc --udp -l 65500            ###新版 默认使用TCP协议
 
-nc -lp 65500  &				##后台运行
-nc -l -w 10000 6500 &		##
+nc -lp 65500  &                ##后台运行
+nc -l -w 10000 6500 &        ##
 
 
 #使用不同网卡/ip监听  同一主机中相同端口不同ip之间不互相冲突，即可以同时监听  ipA:portX ipB:portX
@@ -581,7 +581,7 @@ nc -lv 127.0.0.1 12345
 ###远程复制 host2到host1
 ##1234为端口，没有限制;操作步骤有要求
 host1: nc -l 1234 > text.txt
-host2: nc host1_ip 1234 < text.txt  	
+host2: nc host1_ip 1234 < text.txt      
 
 host1: nc -l 1234 | tar zxvf -
 host2: tar zcvf - text.txt | nc host1_ip 1234
@@ -601,8 +601,8 @@ tail
 
 find ./ -name "file_name"  ##当前文件以名字查找
 find ./ -name "*test*" –type f -exec rm -rf {} \;   ###查找当前目录下指定文件并删除 ##【-exec command ;】匹配后执行command
-find ./ -name "*test*" –type d						###查找当前目录下指定的目录
-find ./ -type f -ctime +14 -exec rm -rf {} \;		##查找时间离现在大于14天的文件，删除
+find ./ -name "*test*" –type d                        ###查找当前目录下指定的目录
+find ./ -type f -ctime +14 -exec rm -rf {} \;        ##查找时间离现在大于14天的文件，删除
 
 find ./ ! -path "./aaa"                             #! 过滤
 
@@ -622,13 +622,13 @@ echo "aaa" | cat --
 echo "aaa" | cat 
 
 
-tee filename 		##将输入写入文件中
+tee filename         ##将输入写入文件中
 
 echo "xyz" > filename    ###清空文件并写入
-echo "xyz" >> filename 	 ###在尾部追加写入
+echo "xyz" >> filename      ###在尾部追加写入
 
 
-stdbuf -oL	${command} > out.log
+stdbuf -oL    ${command} > out.log
 #以行为缓冲单位重定向命令的输出，即命令输出一行，写入文件一行
 
 
@@ -713,9 +713,9 @@ Ctrl+g 列出光标所在行的行号。
 :set number
 关闭行号
 ：set nonu
-/string		向前搜索指定的字符
-?string		向后收索指定的字符
-n			收索下一个字符串
+/string        向前搜索指定的字符
+?string        向后收索指定的字符
+n            收索下一个字符串
 
 linux中的文件标识
 l是链接，相当于windows的快捷方式
@@ -731,36 +731,36 @@ if [ -h $newfile ];then echo 111; fi       #判断是否是链接
 readlink $newfile                          #读取链接的指向
 
 linux文件夹
-bin 	可执行文件（命令）所有用户
-boot 	引导目录，内核保存于其中  
-dev 	被抽象为文件的硬件设配
-etc 	配置文件
-usr 	保存装的应用软件
-root 	root用户文件
-home 	用户私有数据
-lib 	库文件
-sbin 	可执行的二进制文件（超级用户才可执行）
-media  	挂载文件
-mnt 	挂载文件
-opt 	装大型软件（非强制）
-proc 	虚拟文件夹（保存在内存中的实时信息）
-sys 	底层硬件信息
-var 	保存经常变化的信息（如log，保存的是日志）
-tmp 	临时目录（系统会自动删除）
+bin     可执行文件（命令）所有用户
+boot     引导目录，内核保存于其中  
+dev     被抽象为文件的硬件设配
+etc     配置文件
+usr     保存装的应用软件
+root     root用户文件
+home     用户私有数据
+lib     库文件
+sbin     可执行的二进制文件（超级用户才可执行）
+media      挂载文件
+mnt     挂载文件
+opt     装大型软件（非强制）
+proc     虚拟文件夹（保存在内存中的实时信息）
+sys     底层硬件信息
+var     保存经常变化的信息（如log，保存的是日志）
+tmp     临时目录（系统会自动删除）
 
 /etc/cron.daily/tmpwatch  tmp目录清空机制centos6以及以下
 
 
 进程管理
-ps -ef | grep java   	##查看有关与java的进程
+ps -ef | grep java       ##查看有关与java的进程
 pgrep java
 
 
-service vsftpd start  	##启动程序
-service vsftpd stop   	##结束进程
-crontab -l           	##让使用者在固定时间或固定间隔执行程序之用
-						## -l 查看 、-e 编辑
-/var/log/cron			##crontab日志
+service vsftpd start      ##启动程序
+service vsftpd stop       ##结束进程
+crontab -l               ##让使用者在固定时间或固定间隔执行程序之用
+                        ## -l 查看 、-e 编辑
+/var/log/cron            ##crontab日志
 /var/spool/cron/        ##crontab 的信息，每个账号的调度对应一个文件，文件可以热加载（因而可能会被恶意利用，如通过写文件实现反弹shell）
 
 
@@ -775,7 +775,7 @@ cat /etc/syslog.conf    #查看各个日志的对应路径
 ##linux日志
 /var/log目录下
 
-	
+    
 /var/log/messages       ##系统日志，记录各种事件   也可以用 logger 命令手动写日志进入
 
 /var/log/secure         ##安全日志（记录账号的登陆断开信息，如果很大说明有人在试图破解密码？）
@@ -794,15 +794,15 @@ lastb
 lastlog
 
 
-											
-pidof ${command}		##查看当前命令的pid			
+                                            
+pidof ${command}        ##查看当前命令的pid            
 
 kill -HUP ${pid}        ##程序可能自定义处理这些信号而不是结束进程，从而实现重新加载配置等操作，这需要程序支持才能如此
-kill -SIGUSR1 ${pid}				
-	
+kill -SIGUSR1 ${pid}                
+    
 线程管理
-ps -T					##查看所有线程
-ps -T -p $pid			##查看某个进程的线程
+ps -T                    ##查看所有线程
+ps -T -p $pid            ##查看某个进程的线程
 ps -eLo pid,lwp,psr,args | grep qemu   #第三列代表线程运行的第几个cpu
 
 
@@ -844,7 +844,7 @@ ps -U user_name   #查看用户当前运行的进程
 ps -ejH   #查看进程树
 ps axjf   
 
-pstree $pid				##查看进程、线程的层级
+pstree $pid                ##查看进程、线程的层级
 tree                    ##展示目录的树状结构
 
 pstree -p $pid | awk -F"[()]" '{print $2}'| xargs kill -9            #杀死进程以及相关子进程
@@ -852,66 +852,66 @@ pstree -p $pid | awk -F"[()]" '{print $2}'| xargs kill -9            #杀死进�
 
 top                     ##使用子命令H查看线程，Tasks数增多
 
-ulimit -u				##当前用户的最大线程数查看
-ulimit -u 2048			##修改当前用户的最大线程数
+ulimit -u                ##当前用户的最大线程数查看
+ulimit -u 2048            ##修改当前用户的最大线程数
 
 
-						
-prtconf -m  		##AIX查看物理内存
-prtconf  			##查看物理参数
-prtconf | more    	##分页查看					 
-free -m   			##内存与swap查看   ###SWAP用作虚存分区
-	
-	total   总内存
-	used    已经使用的内存
-	free    空闲内存
-	shared  当前废弃不用的内存
-	buffer  buffer cache内存
-	cached  page cache内存
+                        
+prtconf -m          ##AIX查看物理内存
+prtconf              ##查看物理参数
+prtconf | more        ##分页查看                     
+free -m               ##内存与swap查看   ###SWAP用作虚存分区
+    
+    total   总内存
+    used    已经使用的内存
+    free    空闲内存
+    shared  当前废弃不用的内存
+    buffer  buffer cache内存
+    cached  page cache内存
     available 列显示还可以被应用程序使用的物理内存大小
     
     
-	-buffer/cache =used-buffers-cached  程序占用的内存
-	+buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
+    -buffer/cache =used-buffers-cached  程序占用的内存
+    +buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
 
 
 /proc/meminfo  #free命令信息来自于此
 
 
-top  	  			###查看系统运行状态   AIX使用topas
+top                    ###查看系统运行状态   AIX使用topas
 ###top的内部命令 在执行top后输入
-h	##帮助说明
-	%us user cpu time   执行用户进程的时间
-	%sy system cpu time 在内核空间运行的cpu时间
-	%ni user nice cpu time (% CPU time spent on low priority processes)
-	%id idle cpu time
-	%wa io wait cpu time (% CPU time spent in wait)
-	%hi hardware irq (% CPU time spent serving/handling hardware interrupts)
-	%si software irq (% CPU time spent serving/handling spftware interrupts)
-	%st steal time (% CPU time in involuntary wait by virtual while hypervisor is servicing another processor)
+h    ##帮助说明
+    %us user cpu time   执行用户进程的时间
+    %sy system cpu time 在内核空间运行的cpu时间
+    %ni user nice cpu time (% CPU time spent on low priority processes)
+    %id idle cpu time
+    %wa io wait cpu time (% CPU time spent in wait)
+    %hi hardware irq (% CPU time spent serving/handling hardware interrupts)
+    %si software irq (% CPU time spent serving/handling spftware interrupts)
+    %st steal time (% CPU time in involuntary wait by virtual while hypervisor is servicing another processor)
 
-	
-	VIRT virtual memory usage  
-	RES resident memory usage
-	SHR shared memory 
-	DATA 数据占用的内存
-	
-	RES-SHR  计算进程占用物理内存
+    
+    VIRT virtual memory usage  
+    RES resident memory usage
+    SHR shared memory 
+    DATA 数据占用的内存
+    
+    RES-SHR  计算进程占用物理内存
     
     
     VIRT:
     It includes all code, data and shared libraries plus pages that have been swapped out and pages that have been mapped but not used.
     进程"需要"虚拟内存大小，包括进程使用的库、代码、数据。是一个假象的内存空间，在程序运行过程中虚拟内存空间中需要被访问的部分会被映射到物理内存空间中。虚拟内存空间大只能表示程序运行过程中可访问的空间比较大，不代表物理内存空间占用也大。
 
-f 选择显示的内容	
+f 选择显示的内容    
 
     
 cat /proc/stat            #%Cpu从此计算
 
 cpu usage=(idle2-idle1)/(cpu2-cpu1)*100 
 cpu usage=[(user_2 +sys_2+nice_2) - (user_1 + sys_1+nice_1)]/(total_2 - total_1)*100;
-	
-	
+    
+    
 cat /proc/loadavg         # load average 从此计算   1=100%
     
 lavg_1      1-分钟平均负载
@@ -945,31 +945,31 @@ iostat -d -x -k 1 10    ##查看io信息间隔一秒查询，查10次
 -d #只显示disk的信息
 -c #只显示cpu的信息
 
-	%util  #在统计时间内（所有处理io的时间/总时间）
+    %util  #在统计时间内（所有处理io的时间/总时间）
 
 cat /proc/$pid/io      #查看进程的io的情况
-	
-pidstat -r -p PID      #查看进程的内存使用	
-	
-	
-	
-	
+    
+pidstat -r -p PID      #查看进程的内存使用    
+    
+    
+    
+    
 badblocks -s -v sdb1   ##坏道检测
-hdparm sdb1			   ##磁盘信息获取
+hdparm sdb1               ##磁盘信息获取
 
 
-sar 				###系统活动信息
+sar                 ###系统活动信息
 
-/proc/meminfo		##内存信息
+/proc/meminfo        ##内存信息
 /proc/cpuinfo       ##查看CPU信息
 /proc/interrupts    ##中断信息
 
 cat /proc/cpuinfo | grep processor | wc -l   ##cpu核数
 
 
-setup  		##进入图形化设置界面
-xmanager 	###远程桌面软件，可以使用图形界面
-eval    	###先扫描命令行进行变量替换，然后再执行命令  eval {command} $var
+setup          ##进入图形化设置界面
+xmanager     ###远程桌面软件，可以使用图形界面
+eval        ###先扫描命令行进行变量替换，然后再执行命令  eval {command} $var
 
 AIX  显示10个消耗cpu最多的进程
 ps aux |head -1 ;ps aux |sort -rn +2 |head -10   ###修改【sort -rn +x】指定由第x+1列排序
@@ -1015,9 +1015,9 @@ rc.local是在完成所有初始化之后执行的
 /usr/lib/systemd/system   #centos7 service文件位置
 
 通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
-chmod +x /etc/rc.d/init.d/simpleTest	使之可直接执行
-chkconfig --add simpleTest    			把该服务添加到配置当中
-chkconfig --list simpleTest    			可以查看该服务进程的状态   显示不同级别的状态
+chmod +x /etc/rc.d/init.d/simpleTest    使之可直接执行
+chkconfig --add simpleTest                把该服务添加到配置当中
+chkconfig --list simpleTest                可以查看该服务进程的状态   显示不同级别的状态
 chkconfig --del httpd                   删除
 chkconfig --level httpd 2345 on         设置在哪些级别运行
 chkconfig --level httpd 2345 off        设置在哪些级别关闭
@@ -1028,7 +1028,7 @@ chkconfig --level httpd 2345 off        设置在哪些级别关闭
 
 ##linux与window的文件传输 使用ZModem协议
 sz  将选定的文件发送到本地
-rz	交互窗口 rz -bey
+rz    交互窗口 rz -bey
 
 FTP
 vim /etc/vsftpd/chroot_list  
@@ -1044,16 +1044,16 @@ mput
 get
 mget
 
-dirname $path1/filename.txt			###显示文件的父目录
-pwd									###显示当前目录
+dirname $path1/filename.txt            ###显示文件的父目录
+pwd                                    ###显示当前目录
 
 
 
-${command} > out.file 2>&1    	####将错误的输出定向到标准输出
+${command} > out.file 2>&1        ####将错误的输出定向到标准输出
 
-0	标准输入。键盘输入，并返回在前端。
-1	标准输出。正确返回值，输出到前端。【1>】可以直接表示成【>】， &1表示1通道
-2	标准出错。错误返回值，输出到前端。
+0    标准输入。键盘输入，并返回在前端。
+1    标准输出。正确返回值，输出到前端。【1>】可以直接表示成【>】， &1表示1通道
+2    标准出错。错误返回值，输出到前端。
 
 ; 表示语句的结束，一行中出现多语句时使用
 
@@ -1061,7 +1061,7 @@ ${command} > out.file 2>&1    	####将错误的输出定向到标准输出
 创建临时文件夹模拟回收站
 myrm(){ D=/tmp/$(date +%Y%m%d%H%M%S); mkdir -p $D; mv "$@" $D && echo "moved to $D ok"; }
 alias rm='myrm'
-unalias commad	###删除别名
+unalias commad    ###删除别名
 
 
 
@@ -1096,28 +1096,28 @@ env|grep -i SSH_CONNECTION|awk '{print $3}'
 
 shell执行方式
 1、产生新的shell执行相应的shell scripts。
-	使用方式是在scripts文件中加入  #!/bin/sh
+    使用方式是在scripts文件中加入  #!/bin/sh
 2、不产生新的shell，在当前shell下执行一切命令。
-	source命令，使用"."类似,当前进程执行
-	exec以新的进程代替原来的进程，PID保持不变
+    source命令，使用"."类似,当前进程执行
+    exec以新的进程代替原来的进程，PID保持不变
 加入【&】在执行脚本后面实现后台运行
 nohup command_nam &  ##在后台运行命令command_name
 
 
 setup         ##进入图形配置界面
 
-ping   		##测试网络连接  
-host、dig	##测试DNS解析 
-ip route 	##显示路由表
-traceroute 	##追踪到达目标地址的网络路径 
-mtr			##网络质量测试 
-hostname 	##查看主机名  【/etc/sysconfig/network】修改配置文件实现修改主机名，使用【hostname new_hostname】临时修改主机名
+ping           ##测试网络连接  
+host、dig    ##测试DNS解析 
+ip route     ##显示路由表
+traceroute     ##追踪到达目标地址的网络路径 
+mtr            ##网络质量测试 
+hostname     ##查看主机名  【/etc/sysconfig/network】修改配置文件实现修改主机名，使用【hostname new_hostname】临时修改主机名
 
 netperf     ##测试网络带宽
 
 
-kill -l 					##列出所有信号名称
-stty -a						###查看信号对应的操作
+kill -l                     ##列出所有信号名称
+stty -a                        ###查看信号对应的操作
 
 stty size       #查看终端的大小
 
@@ -1144,7 +1144,7 @@ sysctl -w net.ipv4.ip_forward=1
 
 
 
-md5sum 			##计算文件的MD5
+md5sum             ##计算文件的MD5
 
 sha1sum
 
@@ -1214,7 +1214,7 @@ rpm -ivh --prefix= /opt/temp    xxx.rpm
 rpm -qa | grep vsftp   ##查看是否安装软件
 rpm -Uvh package_name  ##升级指定程序
 
-rpm -i package.src.rpm		##解压源码包，之后可以选择标准源码包安装相同操作
+rpm -i package.src.rpm        ##解压源码包，之后可以选择标准源码包安装相同操作
 rpm -e package_name         ##删除包
 
 
@@ -1258,7 +1258,7 @@ ldconfig
 
 十六进制查看
 vim vi中
-:%!xxd 		十六进制模式   
+:%!xxd         十六进制模式   
 :%!xxd -r   文本模式
 
 ctrl+f 前翻一页

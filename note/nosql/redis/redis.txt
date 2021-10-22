@@ -109,6 +109,18 @@ eval "return #redis.call('keys','n*')" 0  #计算配备key的数量
 
 -eval filename  #命令行中执行
 
+# 加载脚本返回sha1码
+SCRIPT LOAD "return 'hello world'"
+
+# 由加载脚本返回的sha1码执行脚本
+EVALSHA "232fd51614574cf0867b83d384a5e898cfd24e5a" 0 
+
+# 清空缓存的脚本
+SCRIPT FLUSH
+
+# 杀死正在运行的脚本
+SCRIPT KILL 
+
 #########################数据类型#############################################
 
 字符串 string

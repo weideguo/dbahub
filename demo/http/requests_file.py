@@ -29,3 +29,32 @@ r = requests.post(url, files=file)
 print(r.text)
 
 
+
+
+import os
+import requests
+from urllib3 import encode_multipart_formdata
+
+def post_file(url, filename):
+    """
+    上传文件
+    使用更底层的消息构造
+    """
+    file_name = filename.split("/")[-1]
+    with open(filename, "rb") as f:
+        length = os.path.getsize(filename)
+        data = f.read()
+    
+    file_data = {
+        "filename": file_name,
+        "filelength": length,
+    }
+    file_data["file"] = (file_name, data)
+    encode_data = encode_multipart_formdata(file_data)
+    _file_data = encode_data[0]
+    
+    headers = {"Content-Type": "application/octet-stream"}
+    headers['Content-Type'] = encode_data[1]
+    
+    return requests.post(url, data=_file_data, headers=headers)
+
