@@ -1,10 +1,109 @@
+prometheus
+
 服务监控系统和时间序列数据库
 
-prometheus  数据存储
- 基于HTTP采用pull方式收集数据 
-   输出被监控组件信息的HTTP接口被叫做exporter。可以自行实现或者已提供的，在被监控的机器运行，已提供的支持监控如Nginx、MySQL、Linux系统信息。
- pushgateway 接受push服务，Prometheus稍后再pull，相当于缓存
+基于HTTP采用pull方式收集数据 
+  输出被监控组件信息的HTTP接口被叫做exporter。可以自行实现或者已提供的，在被监控的机器运行，已提供的支持监控如Nginx、MySQL、Linux系统信息。
+pushgateway 接受push服务，Prometheus稍后再pull，相当于缓存
+
+# 启动
+docker run -d -p 9090:9090 prom/prometheus
+
+# 启动参数
+--web.enable-lifecycle          # 可以通过接口重新加载配置文件                
+--web.enable-admin-api          # 启用管理接口
+--storage.tsdb.retention=90d    # 数据保留时间
+
+
+# 重载配置
+curl -X POST http://localhost:9090/-/reload
+# 快照备份（备份的目录位于数据目录的snapshots文件夹下，还原时用快照替换数据目录即可）
+curl -XPOST http://localhost:9090/api/v1/admin/tsdb/snapshot
+
+
+# /etc/prometheus/prometheus.yml 配置文件
+
+scrape_configs:
+  - job_name: "prometheus"
+
+    static_configs:
+      - targets: ["localhost:9090"]               # 持续pull的端口 
+ 
+
+
+
+# 被prometheus调用的接口
+curl "http://localhost:9090/metrics"
+go_gc_duration_seconds_sum 1.489508829            # 格式为 字段名 字段值
+go_gc_duration_seconds_count 20539                # 
+
+
+
+# 启动 pushgateway 服务，启动之后需要在 prometheus 的配置文件设置调用该服务提供的接口
+docker run -d -p 9091:9091 prom/pushgateway
+
+# 单个值
+echo "demo_metric 100" | curl --data-binary @- http://pushgateway-host:9091/metrics/job/demo
+
+# 多个值
+cat <<EOF | curl --data-binary @- http://10.211.55.25:9091/metrics/job/demo/instance/test
+m1 11
+m2 22
+EOF
+
+
+metric_name{k1=v1,k2=v2}   22
+metric_name{k1=v11,k2=v22} 33
+
+
+
+通过接口提交kv类型的数据，但可以通过后缀自定义设置数据类型
+
+
+
+Counter     计数器 只增不减的
+# prometheus_remote_storage_samples_in_total 为 Counter 类型，使用5分钟间隔计算每秒的递增速率
+rate(prometheus_remote_storage_samples_in_total[5m])
+
+# 
+topk(10, prometheus_http_requests_total)
+
+
+Gauge       仪表盘 可增可减的
+# 计算两个小时内的差异变化
+delta(prometheus_tsdb_blocks_loaded[2h])
+# 使用两个小时的数据，预测4个小时后的变化
+predict_linear(prometheus_tsdb_blocks_loaded[2h], 4*60*60)
+
+
+
+
+Histogram   直方图             _bucket{le="<上边界>"}
+
+
+
+Summary     摘要               {quantile="<φ>"}              特殊情况的Histogram
+
+
+
+
+
 
 Grafana  图形展示
 
+# 启动 grafana 用于展示prometheus的数据（也可以展示其他数据源的数据，在grafana可以选择不同的数据源）
+docker run -d -p 3000:3000 grafana/grafana
+
+
+
+
+
+
+AlterManager
+
+# 启动 AlterManager 用于告警发送 （prometheus在启动时设置--alertmanager.url以关联AlterManager）
+docker run -d -p 9093:9093 \
+--name alertmanager \
+-v /home/chenqionghe/promethues/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml \
+prom/alertmanager
 

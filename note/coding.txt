@@ -13,10 +13,12 @@ Unicode(or Universal Coded Character set) Transformation Format-8bit
 
 
 编码(encoding)
-utf8   	变长，中文三字节，英文一字节 1-4字节
+utf8   	变长，中文三字节，英文一字节，可存储1-6字节
 latin1  定长，单字节，iso-8859-1编码，扩展ASCII+
 GBK		变长，中文双字节，英文一字节
 utf16	定长，二字节表示所有字符
+utf32   定长，始终使用 4 个字节来存储
+utf16   变长，2 个或者 4 个字节来存储
 
 
 utf8mb4  mysql专用？最大可以存储4字节，mysql的utf8编码最大只能存储3字节
@@ -38,7 +40,7 @@ BOM
 byte order mark
 文件开头多
 EFBBBF   utf8编码时
-FEFF     utf6编码时
+FEFF     utf16编码时
 
 
 

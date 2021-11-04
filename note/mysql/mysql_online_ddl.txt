@@ -82,10 +82,10 @@ RENAME TABLE x TO _x_old, _x_new TO x
 
 
 #github(go)
-
-gh-ost -execute --allow-on-master -conf /data/hadoop/mysql5530/etc/my.cnf -alter "add x int" -database test -table a -user root -password 
-
 #在主库执行，从库会复制
+gh-ost -execute --allow-on-master -conf /data/hadoop/mysql5530/etc/my.cnf -alter "add x int" -database test -table a -user root -password xxx
+gh-ost -execute --allow-on-master  -alter "add x int" -database test -table a -host 127.0.0.1 -port 5733 -user root -password xxx
+
 
 
 #facebook 

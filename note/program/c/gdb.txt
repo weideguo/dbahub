@@ -3,11 +3,29 @@ pstack $pid
 gstack $pid      #两者相同
 
 
+pstack $pid > pstack.info
 
-GNU Project Debugger
+# 对堆栈信息进行排序
+pt-pmp  pstack.info
+
+
+
+# 逐个线程查看系统调用
+strace -f -F -ff -o my_strace -s 1024 -p $pid
+
+
+
+# 记录所有内部函数调用
+perf record -p $pid
+
+# 解析并查看perf.data内容
+perf script -i perf.data > perf.log && less perf.log
+
 
 
 ############################################################################gdb启动程序并进行调试
+GNU Project Debugger
+
 编译时需要为 gcc -g
 
 gdb进入命令行

@@ -1,6 +1,6 @@
 ################################逻辑备份
 
-pg_dump dbname > dumpfile  #备份成sql文件
+pg_dump dbname > dumpfile  #备份成sql文件  通过transaction-snapshot实现数据的一致性，备份期间不能执行DDL，不会影响其他DML
 psql dbname < dumpfile     #恢复
 
 pg_dumpall > dumpfile

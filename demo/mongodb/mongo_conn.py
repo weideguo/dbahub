@@ -48,7 +48,9 @@ mongdb_auth_db="admin"
 mongo_uri="mongodb://%s:%s@%s/%s" % (mongdb_auth[0], mongdb_auth[1], ",".join(mongo_replset), mongdb_auth_db)
 
 conn = MongoClient(mongo_uri)
-
+"""
+maxPoolSize  连接池的大小
+"""
 
 conn.list_database_names()
 
