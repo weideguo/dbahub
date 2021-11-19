@@ -32,4 +32,4 @@ def get_universal_random_str(n):
     return universal_generated_str
 
 if __name__=="__main__":
-    print(get_simple_random_str(9))
+    print(get_simple_random_str(16))

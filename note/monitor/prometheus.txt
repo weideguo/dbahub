@@ -29,6 +29,10 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]               # 持续pull的端口 
  
+ 
+# promethus 也可以通过http的get方法传递参数给exporter
+ 
+ 
 
 
 
@@ -67,6 +71,13 @@ rate(prometheus_remote_storage_samples_in_total[5m])
 
 # 
 topk(10, prometheus_http_requests_total)
+
+
+# QPS
+rate(mysql_global_status_queries{job="mysql"}[5m])
+
+# TPS
+sum(rate(mysql_global_status_commands_total{command=~"(commit|rollback)"}[5m])) without (command)
 
 
 Gauge       仪表盘 可增可减的

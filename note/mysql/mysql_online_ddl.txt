@@ -87,6 +87,9 @@ gh-ost -execute --allow-on-master -conf /data/hadoop/mysql5530/etc/my.cnf -alter
 gh-ost -execute --allow-on-master  -alter "add x int" -database test -table a -host 127.0.0.1 -port 5733 -user root -password xxx
 
 
+使用binlog进行增量表数据同步
+
+
 
 #facebook 
 OnlineSchemaChange(python)

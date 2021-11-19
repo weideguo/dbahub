@@ -17,3 +17,21 @@ keyring_file_data=/root/mysql-keyring/keyring
 
 #加密现有表 对客户端透明
 alter table table_name encryption='Y';
+
+
+# 可以自动生成密钥文件，创建第一个加密表的时候
+
+
+
+# 
+INSTALL PLUGIN keyring_udf SONAME 'keyring_udf.so';
+CREATE FUNCTION keyring_key_generate RETURNS INTEGER     SONAME 'keyring_udf.so';
+CREATE FUNCTION keyring_key_fetch RETURNS STRING         SONAME 'keyring_udf.so';
+CREATE FUNCTION keyring_key_length_fetch RETURNS INTEGER SONAME 'keyring_udf.so';
+CREATE FUNCTION keyring_key_type_fetch RETURNS STRING    SONAME 'keyring_udf.so';
+CREATE FUNCTION keyring_key_store RETURNS INTEGER        SONAME 'keyring_udf.so';
+CREATE FUNCTION keyring_key_remove RETURNS INTEGER       SONAME 'keyring_udf.so';
+
+
+
+

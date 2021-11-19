@@ -77,6 +77,7 @@ from pymongo import ReadPreference
 
 db = conn.get_database("my_mongodb", read_preference=ReadPreference.SECONDARY_PREFERRED)
 #get_database(name=None, codec_options=None, read_preference=None, write_concern=None, read_concern=None) 
+#必须要在uri中配置这里才能切换使用？否则即使加入集群这里也不用
 
 """
 PRIMARY              默认选项，从primary节点读取数据

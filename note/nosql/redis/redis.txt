@@ -162,8 +162,8 @@ SINTER key1 key2             ###交集
 SUNION key1 key2             ###并集
                              
                              
-有序集合 zset(SortedSet)      
-ZADD key 0 value1            
+有序集合 zset(SortedSet)     通过score排序 member要唯一
+ZADD key 0 value1            ## zadd key score member
 ZADD key 1 value2            
 ZRANGE key 0 100             ###开始下标，显示数目
 ZRANGEBYSCORE key 0 100      ###开始下标，结束下标

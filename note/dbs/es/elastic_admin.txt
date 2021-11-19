@@ -246,5 +246,6 @@ post indexName/_refresh           #手动刷新
 
 
 
-
+#备份与迁移
+elasticdump 
 
