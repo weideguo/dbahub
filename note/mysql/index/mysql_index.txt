@@ -98,8 +98,7 @@ where column_name is not null  -- 也走索引
 
 
 
-left join
-相对于join会固定 左边 表为驱动表，只有join才能通过优化器选择驱动表
+left join / join 都能通过优化器选择驱动表
 小表驱动大表更优，大表通过索引执行次数更少，减少随机访问
 驱动表的关联key使用不了索引，只有普通where的key才能使用索引
 

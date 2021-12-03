@@ -18,8 +18,9 @@ service docker start    #2使用service docker start启动
 
 /etc/docker/daemon.json                                     ##配置文件路径
 
+/var/lib/docker/                                            ##启动的容器对应文件所在的目录
 
-
+cd /var/lib/docker/ && find ./ -name $filename -type f      ##查看退出容器的文件，可以修改文件
 
 #####################################################################################################################################################
 LXC  linux container
@@ -587,5 +588,11 @@ docker-compose build <SERVICE>   #根据配置文件构建单个镜像
 默认每个docker-compose运行生成一个网络
 docker network ls                            #列出网络
 docker network inspect test_default          #若yaml配置文件位于test目录下，则创建的网络为test_default
+
+
+runlike -p  <container>                      #查看容器的启动参数 docker inspect的封装
+docker inspect <container>                   # env 
+
+
 
 

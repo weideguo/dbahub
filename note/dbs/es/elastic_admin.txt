@@ -13,6 +13,9 @@ Elasticsearch 没有采用节点级别的主从复制，而是基于分片。只
 get indexName/_settings
 
 
+#查看分片状态 为UNASSIGNED这表示为未分配
+get _cat/shards
+
 
 #设置索引的信息
 PUT indexName

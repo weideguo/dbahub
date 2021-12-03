@@ -46,6 +46,7 @@ go_gc_duration_seconds_count 20539                #
 # 启动 pushgateway 服务，启动之后需要在 prometheus 的配置文件设置调用该服务提供的接口
 docker run -d -p 9091:9091 prom/pushgateway
 
+/metrics/job/<jobname>{/<label>/<label>}
 # 单个值
 echo "demo_metric 100" | curl --data-binary @- http://pushgateway-host:9091/metrics/job/demo
 
@@ -59,6 +60,9 @@ EOF
 metric_name{k1=v1,k2=v2}   22
 metric_name{k1=v11,k2=v22} 33
 
+
+# 删除数据
+curl -X DELETE http://pushgateway-host:9091/metrics/job/demo
 
 
 通过接口提交kv类型的数据，但可以通过后缀自定义设置数据类型
