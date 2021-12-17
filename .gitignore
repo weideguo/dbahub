@@ -7,3 +7,4 @@ sshpass
 .ipynb_checkpoints/
 a.out
 *.so
+go.sum

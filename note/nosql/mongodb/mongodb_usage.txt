@@ -365,6 +365,12 @@ GridFS是MongoDB规范用于存储和检索大文件，文档最大16MB限制，
 GridFS的划分一个文件分成块存储数据，每个块在一个单独的文件，每个最大尺寸255K。
 GridFS默认使用两个集合 fs.files 和 fs.chunks 存储该文件的元数据和块。
 
+命令行中使用 mongofiles 命令插入GridFS文档，会在db下创建两个特殊表 fs.files 和 fs.chunks
+mongofiles -d db_name put song.mp3
+
+use db_name
+db.fs.files.find()                                  # 查看文档信息
+db.fs.chunks.find({files_id: ObjectId('xxxx')})     # 获取区块(chunk)的数据
 
 
 事务 >=4.0
@@ -430,3 +436,11 @@ db.col.find({"title" : {$type : 2}})
 db.col.find({"title" : {$type : 'string'}})
 
 
+
+
+// insert into col_bak select * from col;
+db.col.find().forEach( function(i) {
+
+db.col_bak.insert(i);
+
+});

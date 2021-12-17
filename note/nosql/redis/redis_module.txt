@@ -1,0 +1,37 @@
+4.0.0 引入模块
+
+
+##############################RedisJSON
+
+info Modules            # 查看模块信息
+mudule list             # 列出模块
+
+
+module load  <path>     # 运行时加载模块
+module UNLOAD <name>    # 解除模块
+
+
+# 在配置文件中设置加载模块
+loadmodule /path/to/module/target/release/librejson.so
+
+
+# 使用
+JSON.SET foo . '"bar"'
+JSON.GET foo
+JSON.TYPE foo .
+
+
+
+##############################RediSearch
+
+
+FT.CREATE index1 SCHEMA title TEXT name TEXT
+
+FT.ADD index1 doc1 1.0 FIELDS title "123" name "123"
+FT.ADD index1 doc2 1.0 FIELDS title "234" name "345"
+
+ft.search index1 *
+ft.search index1 "@title:123"
+
+ft.del index1 doc1
+

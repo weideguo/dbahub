@@ -17,14 +17,14 @@ DECIMAL(5,2)      -999.99 to 999.99
 
 CHAR[(M)]         255字符          		定长字符串 
 VARCHAR(M)        65535字节          	变长字符串   M代表字符数
-TINYBLOB          255字节        		二进制字符串 
-TINYTEXT     	  255字节        		文本字符串 
-BLOB[(M)]         65535字节      		二进制字符串
-TEXT[(M)]         65535字节      		长文字符串 
-MEDIUMBLOB   	  16 777 215字节 		二进制字符串
-MEDIUMTEXT   	  16 777 215字节 		文本字符串
-LOGNGBLOB    	  4 294 967 295字节 	二进制字符串
-LONGTEXT     	  4 294 967 295字节 	文本字符串
+TINYBLOB          255字节        		变长二进制字符串 
+TINYTEXT     	  255字节        		变长文本字符串 
+BLOB[(M)]         65535字节      		变长二进制字符串
+TEXT[(M)]         65535字节      		变长长文字符串 
+MEDIUMBLOB   	  16 777 215字节 		变长二进制字符串
+MEDIUMTEXT   	  16 777 215字节 		变长文本字符串
+LOGNGBLOB    	  4 294 967 295字节 	变长二进制字符串
+LONGTEXT     	  4 294 967 295字节 	变长文本字符串
 
 VARBINARY(M) 	  65535字节				变长二进制字符串
 BINARY(M)    	  255字节				定长二进制字符串

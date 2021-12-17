@@ -101,7 +101,9 @@ create table DATABASE_NAME.dbo.TABLE_NAME ....;
 user db_name    #切换数据库
 
 
-
+字段类型
+nvarchar      #变长度的unicode字符串
+varchar       #
 
 
 

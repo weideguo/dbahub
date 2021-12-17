@@ -30,8 +30,8 @@ rs.reconfig(cfg);
 ##设置节点
 cfg = rs.conf()
 cfg.members[1].priority = 0           // 优先级，越高则主从切换时优先升为主
-cfg.members[1].hidden = true          // 阻止客户端连接到
-cfg.members[1].slaveDelay = 3600      // 延迟复制
+cfg.members[1].hidden = true          // 阻止客户端连接到，隐藏节点可以在选主中参与投票，但不会被选中
+cfg.members[1].slaveDelay = 3600      // 延迟复制，如果设置为延迟，则设置不被选取为主
 rs.reconfig(cfg)
 
 

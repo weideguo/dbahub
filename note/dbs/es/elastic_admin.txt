@@ -16,13 +16,15 @@ get indexName/_settings
 #查看分片状态 为UNASSIGNED这表示为未分配
 get _cat/shards
 
+GET _cat/shards/indexName                         #查看索引的分片信息
+
 
 #设置索引的信息
 PUT indexName
 {
     "settings": {
         "number_of_shards": 5,                     #分片数         最好跟节点数相同，可以确保数据可以随着节点扩展
-        "number_of_replicas" : 2                   #分片的副本数   当个节点还额外存多少份，可以保证当节点发生故障时数据依旧可用
+        "number_of_replicas" : 2                   #分片的副本数   单个节点还额外存多少份，可以保证当节点发生故障时数据依旧可用
     }
 }
 
@@ -173,7 +175,7 @@ get _template/template_name   #查看指定模板
 
 
 PUT /_template/template_1
-{ "template" : "*",                                                     #
+{ "template" : "*",                                                     #匹配的索引，匹配则使用该模板
 "order" : 0,                                                            #当属性等配置出现不一致的，以order的最大值为准，order默认值为0，order越大，优先级越高 
 "settings" : { "number_of_shards" : 1 },                                #
 "mappings" : { "type1" : { "_source" : { "enabled" : false } } }        #
@@ -251,4 +253,39 @@ post indexName/_refresh           #手动刷新
 
 #备份与迁移
 elasticdump 
+
+
+
+
+Hot-Warm 冷热架构（高频访问索引放于热节点，低频访问索引放于冷节点）
+
+在配置文件设置节点的冷热属性
+#elasticsearch.yml
+node.attr.hotwarm_type: hot　　　# 标识为热数据节点　
+
+
+# 查看节点属性
+GET _cat/nodeattrs?v
+
+# 只要特定字段，排序 
+GET _cat/nodeattrs?v&h=node,attr,value&s=attr:desc
+
+
+# 设置索引的冷热
+PUT hot_warm_test_index/_settings
+{
+        "index.routing.allocation.require.temperature": "hot"                  #warm 
+}
+
+
+
+
+
+# vim elasticsearch.yml
+cluster.name: myhost                   #
+node.name: es-master1.myhost.com       #
+node.master: true                      # 为主节点
+node.data: false                       # 设置不存数据，因此只存储集群相关的元数据
+discovery.zen.ping.unicast.hosts: ["es-master1.myhost.com:9300","es-master2.myhost.com:9300","es-master3.myhost.com:9300","es-hot1.myhost.com:9300","es-hot2.myhost.com:9300","es-hot3.myhost.com:9300","es-warm1.myhost.com:9300","es-warm2.myhost.com:9300"]            #主节点需要设置所有节点，其他节点只需要设置主节点
+
 

@@ -75,15 +75,48 @@ use admin
 db.runCommand({addshard:"localhost:27081"})												###副本集添加 db.runCommand({addshard:"shard_name/host_ip:host_port[,...]"})
 db.runCommand({addshard:"localhost:27082"})					
 
-	
-db.runCommand({enablesharding:"db_name"})												###对db_name数据库进行分片	
-db.runCommand({shardcollection:"db_name.collection_name",key:{id:hashed}})				###collectiion_name的键id以hashed进行分片
+sh.addShard("db_name.collection_name",key_name)	
 
-sh.addShard("db_name.collection_name",key_name)
+db.runCommand({enablesharding:"db_name"})												###对db_name数据库进行分片	
+
+db.runCommand({shardcollection:"db_name.collection_name",key:{id:hashed}})				###collectiion_name的键id以hashed进行分片 表不为空时字段需要先创建索引？
+sh.shardCollection("<database>.<collection>",{<shard key field>: "hashed"})             ###哈希(hash)分片，对单列使用hash索引作为分片键
+sh.shardCollection("<database>.<collection>",{<shard key field>:1,...} )                ###范围(range)分片，可以使用多个字段作为分片键，并将数据划分为由分片键确定的连续范围
+
 
 
 db.runCommand({listshards:1})  	###查看分片服务器的配置
 db.col_name.stats()				##查看collection的分片等信息
-sh.status()
+sh.status()                     ##查看数据分布
 
 
+# 查看balancer状态
+sh.getBalancerState(
+# 查看balancer锁信息
+db.locks.find({"_id" : "balancer"}).pretty()
+# 设置balance窗口
+db.settings.update({ _id : "balancer" }, { $set : { activeWindow : { start : "23:00", stop : "6:00" } } }, true )
+# 查看balance窗口
+sh.getBalancerWindow()
+
+
+# 启动行balance
+sh.startBalancer()
+
+
+# 集合级别启用、禁用balance
+sh.enableBalancing("db_name.collection_name")
+sh.disableBalancing("db_name.collection_name")
+
+# 查看表的balancer状态
+db.getSiblingDB("config").collections.findOne({_id : "db_name.collection_name"})
+
+
+###数据分配不平均时
+# split chunk
+sh.splitAt( "db_name.collection_name", { field1:30, field2:30 })
+sh.splitAt( "db_name.collection_name", { field1:60, field2:60 })
+
+
+# 手工移动chunk，通过find条件，将这条记录所在的chunk移动到指定rs
+db.runCommand({moveChunk: "db_name.collection_name", find:{ field1:30, field2:30}, to: "s1"})

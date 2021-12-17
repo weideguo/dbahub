@@ -1,0 +1,22 @@
+# 可以通过telnet模拟tcp层发起http请求，两个回车则提交
+telnet 10.0.0.1 80
+
+## GET请求
+GET / HTTP/1.1                      #进入telnet命令行 构造GET请求 / 为路径
+User-Agent: curl/7.29.0             #
+Accept: */*                         #
+
+##
+
+## POST请求
+POST / HTTP/1.1
+User-Agent: curl/7.29.0
+Content-Length: 8
+Content-Type: application/x-www-form-urlencoded
+
+abcdefgh
+
+###
+
+
+

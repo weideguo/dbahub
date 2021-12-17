@@ -84,8 +84,9 @@ rename <old-command> <new-command>  ###通过重命名实现禁用命令
 
 INFO                                ###查看服务器状态 
 client list                         ###查看连接的客户端
-dbsize                              ###当前数据库的kyes的数量
+dbsize                              ###当前数据库的keys的数量
 
+info commandstats                   ###命令的执行统计
 
 
 客户端通信

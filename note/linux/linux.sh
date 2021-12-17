@@ -463,6 +463,12 @@ curl -d "p1=v1&p2=v2" "http://example"  #post
 
 curl -k    #忽略https未信任证书错误
 
+curl -u user:name ...
+# 等同于
+base64_str=`echo user:name | base64`
+curl -H "Authorization: Basic ${base64_str}" ...
+
+
 
 wget  ##通过url下载
 scp local_file remote_username@remote_ip:remote_filefolder   ##从本地复制到远端，反过来即为远端复制到本地
@@ -475,7 +481,6 @@ scp -oPort=3600 -r ...
 -o              ##与ssh的使用一致
 -oPort=3600
 -o "Port 3600"  ##格式跟~/.ssh/config的一致
-
 
 
 sshpass -p my_password scp ...
