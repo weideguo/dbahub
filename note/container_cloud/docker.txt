@@ -594,5 +594,13 @@ runlike -p  <container>                      #查看容器的启动参数 docker
 docker inspect <container>                   # env 
 
 
+# 查看<container_hash>
+docker inspect <container_id> | grep Id
 
+# 可以修改次文件实现更改容器的端口映射
+/var/lib/docker/containers/<container_hash>/hostconfig.json
+/var/lib/docker/containers/<container_hash>/config.v2.json
+
+# 映射
+"80/tcp":[{"HostIp":"","HostPort":"8082"}]
 

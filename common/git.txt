@@ -46,7 +46,7 @@ git update-index --no-skip-worktree  $file         #重新跟踪文件
 
 
 git update-index --assume-unchanged $file          #pull时候忽略这个文件 目录则加/在尾部
-git update-index --no-assume-unchanged $file       #ull时候取消忽略这个文件
+git update-index --no-assume-unchanged $file       #pull时候取消忽略这个文件
 
 
 

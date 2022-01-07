@@ -79,9 +79,12 @@ datetime.strptime('2020-08-11 10:38:54 +0800','%Y-%m-%d %H:%M:%S %z').timestamp(
 
 
 #python2 python3
-ds=datetime.strptime('2020-08-11 10:22:54','%Y-%m-%d %H:%M:%S').now(pytz.timezone("Asia/Shanghai"))
+ds=datetime.now(pytz.timezone("Asia/Shanghai"))
 time.mktime(ds.timetuple())
 
 
-
+# 时区转换
+utc_now=datetime.strptime('2020-08-11 10:22:54','%Y-%m-%d %H:%M:%S')
+utc_now=utc_now.replace(tzinfo=pytz.timezone("UTC"))                       # 设置时区
+local_datetime=utc_now.astimezone(tz)                                      # 转换到其他时区
 

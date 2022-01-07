@@ -5,7 +5,7 @@ pg一个连接建立一个进程
  
 
 bin/pg_ctl -D ./data/ -l logfile start          #启动实例
-bin/postgres -D ./data    				        #实际服务运行的文件
+bin/postgres -D ./data                          #实际服务运行的文件
 
 关闭
 bin/pg_ctl -D ./data stop
@@ -40,55 +40,62 @@ psql [OPTION]... [DBNAME [USERNAME]]
 
 
 psql中的命令
-\?			###\开始的命令查看
-\h			###sql语句查看
-\! clear 	###执行系统的命令
-\q			###退出命令行 
-\db			###列出所有的tablespace	
-\l			###列出所有database
-\c db_name  ###切换数据库
-\dt			###查看数据库下的表
-\d tb_name	###查看表的字段 #表结构
-\dv			###查看视图
-\du			###查看用户    安装时默认以当前用户名创建一个用户，没有密码
+\?            ###\开始的命令查看
+\h            ###sql语句查看
+\! clear      ###执行系统的命令
+\q            ###退出命令行 
+\db           ###列出所有的tablespace    
+\l            ###列出所有database   select * from pg_database;
+\c db_name    ###切换数据库
+\dt           ###查看数据库下的表
+\d tb_name    ###查看表的字段 #表结构
+\dv           ###查看视图
+\du           ###查看用户    安装时默认以当前用户名创建一个用户，没有密码
 
 \set AUTOCOMMIT off    #关闭自动提交 只对当前会话有效
 \set AUTOCOMMIT on
 
-schema            #表的全形   schema_name.table_name
+schema                 #表的全形   schema_name.table_name
 tablespace
 domains
 
 一个database下有多个schema
 不能同时访问不同database下的对象
 
-
-
 创建表默认在public schema下，public下的表可以不指定schema
+#普通查询需要指定schema
+select * from schema_name.table_name;
 
 特殊schema 系统自动创建
     pg_catalog
     information_schema
     
+
 系统表 在 pg_catalog 下 ，可以不指定schema进行查询
-pg_user
-pg_roles
+pg_user          #用户
+pg_roles         #角色
+pg_group         #组
+
 pg_tablespace
 pg_database
 pg_tables    
 
 
-
 select * from pg_catalog.pg_tables;
-select * from pg_tables;                       #查看表信息 如 schema tablespace
-SELECT tablename FROM pg_tables WHERE tablename NOT LIKE 'pg%' AND tablename NOT LIKE 'sql_%' ORDER BY tablename;   ###查询数据库的非系统表
+select * from pg_tables;                                      # 查看表信息 如 schema tablespace
+SELECT tablename FROM pg_tables 
+WHERE tablename NOT LIKE 'pg%' 
+AND tablename NOT LIKE 'sql_%' ORDER BY tablename;            # 查询数据库的非系统表
+select * from information_schema.tables;                      # 查看所有的表
 
 
-select * from information_schema.tables;   ##查看所有的表
+select * from pg_database;                                    # 查看库信息
+select datname,pg_database_size(datname) from pg_database;    # 查看数据库的大小
+select pg_relation_size('table_name')                ;        # 表的大小
+select pg_total_relation_size('table_name')          ;        # 表的大小 包括索引
+select pg_size_pretty(pg_relation_size('table_name'));        # 更友好的查看表的大小
 
-
-#普通查询需要指定schema
-select * from schema_name.table_name;
+select pg_relation_filepath('tab100');                        # 查看表的位置 
 
 
 
@@ -97,9 +104,9 @@ select * from schema_name.table_name;
 CREATE ROLE role_name;
 DROP ROLE role_name;
 
-select * from information_schema.table_privileges;  ##查看用户对表的权限
+select * from information_schema.table_privileges;                                #查看用户对表的权限
 
-create user test_user with password 'test_password' login in role "TestRole1"     #同时需要修改与重载配置文件pg_hba.conf以允许用户访问
+create user test_user with password 'test_password' login in role "TestRole1"     #可能同时需要修改与重载配置文件pg_hba.conf以允许用户访问
 ALTER USER postgres WITH PASSWORD 'postgres';
 
 GRANT ALL PRIVILEGES ON DATABASE exampledb TO test_user; 
@@ -115,17 +122,24 @@ GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
          | ALL TABLES IN SCHEMA schema_name [, ...] }
     TO role_specification [, ...] [ WITH GRANT OPTION ]
 
+-- 查看用户的密码记录信息
+SELECT * FROM pg_authid ;
+
+
+ALTER DATABASE db_name OWNER TO test_user;
+ALTER DATABASE table_name OWNER TO test_user;
+
 
 
 ##进行存储设置？
-create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';   		###表空间的文件在数据目录下
+create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';           ###表空间的文件在数据目录下
 
 ##进行命令空间限制？
-create schema schema01;					###创建schema  各个对象比如表,函数等存放在各个schema下,同一个schema下不能有重复的对象名字,但在不同schema下可以重复.
+create schema schema01;                   ### 创建schema  各个对象比如表，函数等存放在各个schema下，同一个schema下不能有重复的对象名字，但在不同schema下可以重复
 
 ##进行资源限制？
-create database demodb		            ### 创建数据库 一个连接只能来连接一个数据库
-template template0                      ### 使用的模板
+create database demodb                    ### 创建数据库 一个连接只能来连接一个数据库
+template template0                        ### 使用的模板
 encoding 'UTF8'
 tablespace ts_demo01
 connection limit 200;
@@ -139,21 +153,21 @@ template0   #干净的模板
 
 alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
 
-create table table_name(...) tablespace ts_demo;   ##创建表
+create table table_name(...) tablespace ts_demo;   #创建表
  
-select pg_relation_filepath('tab100');             ###查看表的位置 
+show search_path;                                            ###查看创建表时使用的schema
+set search_path=schema_name                                  ###设置创建表时使用的schema
+ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
+
+
 
 show all;                          ##查看所有参数
 show XXX;      ##查看参数
-set XXX=yyyy;  ##设置参数           ##changes run-time configuration parameters，只对当前session有效
+set XXX=yyyy;  ##设置参数          ##changes run-time configuration parameters，只对当前session有效
 set local XXX=yyyy;                ##指对当前事务有效
 
 alter system set set XXX=yyyy;     ##等同于更正配置文件再reload
 ALTER SYSTEM RESET XXX;
-
-show search_path;			               ###查看创建表时使用的schema
-set search_path=schema_name	       ###设置创建表时使用的schema
-ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
 
 
 ##字符编码
@@ -167,6 +181,7 @@ select pg_terminate_backend(procpid);      #杀死进程
 
 select usename,count(*) from pg_stat_activity group by 1; 
 
+show max_connections;                      #最大连接数
 
 
 --查看表的字段信息
@@ -189,6 +204,9 @@ bin/pg_controldata -D ./data  ##查看实例状态
 
 pg_test_fsync      ##测试wal的sync性能
 pg_test_timing     ##测试服务器的性能开销
+
+
+
 
 
 

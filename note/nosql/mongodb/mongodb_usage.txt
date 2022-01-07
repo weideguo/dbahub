@@ -172,8 +172,11 @@ db.runCommand( {
 } )
                                                                                                    
                                                                                                    
-db.collection_name.distinct('sub_hotel_id').length                                                 // distinct
-db.collection_name.distinct('sub_hotel_id',{}).length                                              // distinct where 
+db.collection_name.distinct("hotel_id").length                                                 // distinct
+db.collection_name.distinct("hotel_id",{}).length                                              // distinct where 
+
+// 结果集太大时需要使用aggregate代替distinct
+db.collection_name.aggregate([{"$match":{}}, {$project:{"hotel_id":true}}, {"$group":{"_id":"$hotel_id"}}, {"$group":{"_id":null, "count":{"$sum":1}}}])
 
 
 // hint 强行使用索引
@@ -398,6 +401,8 @@ DBRef("collection_name", ObjectId("obj_id"))
 db.c.insert({"q": DBRef("a", ObjectId("60e59ab669581a6c9c0b96af"))})
 db.c.findOne().q.fetch()                                                     
 
+db.c.save({ title : "test", author: {name : "name1", id : 1}})
+db.c.find({"author.name":"name1"})                               //json格式数据查看
 
 
 // 设置read preference，即优先从哪里读
@@ -418,7 +423,7 @@ Binary data               5
 Undefined                 6        已废弃。
 Object id                 7     
 Boolean                   8     
-Date                      9        mongodb都以utc存储时间，因此以Date类型存储时需要代码段对时区进行转换
+Date                      9        mongodb都以utc存储时间，因此以Date类型存储时需要代码端对时区进行转换
 Null                      10     
 Regular Expression        11     
 JavaScript                13     
@@ -436,6 +441,11 @@ db.col.find({"title" : {$type : 2}})
 db.col.find({"title" : {$type : 'string'}})
 
 
+// 时间相关函数
+new Date()
+日期格式为 yyyy-MM-ddThh:mm:ssZ
+new Date("2022-01-01T10:00:00Z")         # 不传入参数则为当前utc+0的时间
+ISODate("2022-01-01T10:00:00Z")          # 不传入参数则为当前utc+0的时间
 
 
 // insert into col_bak select * from col;

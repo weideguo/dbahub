@@ -14,33 +14,20 @@ host    all             all             192.168.0.0/16          ident map=omicro
 omicron         bryanh                  guest1
 
 #########################pg_hba.conf中METHOD的类型
-    trust
-    
-    reject
-    
-    scram-sha-256
-    
-    md5
-    
-    password
-    
-    gss
-    
-    sspi
-    
-    ident
-    
-    peer
-    
-    ldap
-    
-    radius
-    
-    cert
-    
-    pam
-    
-    bsd
+    trust             # 不用密码即可连接
+    reject            # 拒绝连接
+    scram-sha-256     # 推荐使用，10之后支持，修改postgresql.conf参数文件 password_encryption = scram-sha-256，由MD5更改时需要通过重新设置密码升级密码记录格式，反之同理
+    md5               # 客户端提供 MD5 加密的密码用于验证，challenge-response验证    
+    password          # 原始密码，通过明文传输               
+    gss               #
+    sspi              #
+    ident             #
+    peer              #
+    ldap              #
+    radius            #
+    cert              #
+    pam               #
+    bsd               #
        
 
 

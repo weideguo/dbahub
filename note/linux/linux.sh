@@ -231,6 +231,9 @@ xclock   ###验证display参数
 /etc/profile
 /etc/bashrc
 
+
+.bash_history            ##history的信息，清空可以清除history的显示  
+
 selinux
 配置文件/etc/sysconfig/selinux
 工作模式 SElinux=permissive

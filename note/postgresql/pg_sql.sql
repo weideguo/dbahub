@@ -35,6 +35,11 @@ TIME (WITHOUT TIME ZONE | WITH TIME ZONE)       存储天内的时间。如果�
 TIMESTAMP (WITHOUT TIME ZONE | WITH TIME ZONE)  存储日期和时间。可以存储或不存储数据库服务器的时区，使用 8 字节存储空间。
 
 
+用户定义的数据类型：
+CREATE DOMAIN   创建了一个用户定义的数据类型，可以有可选的约束。
+CREATE TYPE     用于使用存储过程创建复合类型(两种或多种数据类型混合的数据类型)
+
+
 
 -- 使用虚表时设置类型
 select '10.0.0.1/32'::inet;
@@ -50,5 +55,10 @@ begin;
 commit; -- rollback;
 
 
+alter table tb_old rename to tb_new;
+
+create table (tb_new like tb_old);
+
+explain select ...
 
 

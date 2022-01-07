@@ -12,9 +12,13 @@ pip install jupyter
 #启动
 nohup jupyter notebook --ip=0.0.0.0 --port=8888 &
 
-扩展安装
+# 设置扩展支持
 pip install jupyter_contrib_nbextensions
 jupyter contrib nbextension install
+
+# 安装扩展
+pip install ipywidgets
+jupyter nbextension enable --py widgetsnbextension
 
 #设置主题
 pip install jupyterthemes
