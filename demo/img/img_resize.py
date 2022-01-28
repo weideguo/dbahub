@@ -48,3 +48,12 @@ for f in fs:
         print(format_exc())
         print(f)
  
+ 
+"""
+Image.NEAREST   低质量
+Image.BILINEAR  双线性
+Image.BICUBIC   三次样条插值
+Image.ANTIALIAS 高质量
+
+resize 可以缩小与放大
+"""
