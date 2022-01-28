@@ -1,0 +1,120 @@
+进程
+	SMON  系统监视器(System Monitor)
+	PMON  进程监视器(Process Monitor) 当取消当前的事务，或释放进程占用的锁以及释放其它资源之后，PMON进程清空那些失败的进程。
+	DBWR  数据库书写器(Database Write)
+	LGWR  日志书写器(Log Write) 日志写入进程负责将重做日志缓冲区的日志条目写入磁盘上的联机日志文件
+	CKPT  进程是检查点(Checkpoint) 检查点进程的作用是执行一个"检查点(checkpoint)"，同步数据库的所有数据文件、控制文件和重做日志文件。在执行一个检查点之后，数据库处于一个完整状态。
+	
+	MMON  定期将统计信息从内存写到磁盘
+	MMAN  Memory Management 
+	ARCn  写归档日志
+	ASMB  ASM实例中与前台程序连接，与ASM实例通信
+
+
+	用户进程
+	数据库进程
+		服务器进程
+		后台进程 v$bgprocess
+
+客户进程与服务进程一一对应，为专有(dedicated)服务器连接    
+多个客户进程对应一个服务器进程，为共享(shared)服务器连接    
+---【shared_servers】为0则表示数据库没有启动共享服务模式；指定了当instance 启动的时候 shared server process 启动的数量。
+---【shared_server_sesions】指定了总共允许的的shared server session 的数量。
+---【dispatcher】设置类似【(PROTOCOL=TCP)(DISPATCHERS=3)】，在服务端启用共享连接，同时专有连接也生效。 v$dispatcher 查看共享连接的状态
+----由连接时选的connect_identifier的配置(tnsnames.ora文件中设置)确定连接的方式。
+
+---【processes】指定最大进程数，v$process查看当前进程
+---【sessions】指定最大会话数，v$session查看当前会话
+
+
+CHECKPOINT
+检查点  
+---checkpoint值为发出checkpoint时的scn(system change number)的值。
+---【fast_start_mttr_target】的值为实例恢复的最大时间，系统计算这个时间可以保留的脏块，达到脏块容量则更改检查点
+---checkpoint事件由checkpoint进程（LGWR/CKPT进程）发出，当checkpoint事件发生时DBWn会将脏块写入到磁盘中，同时数据文件和控制文件的文件头也会被更新以记录checkpoint信息，数据文件对应的scn记录在控制文件
+alter system checkpoint;  --手动执行checkpoint，一般系统自动执行
+
+SCN(System Change Number)
+
+联机日志文件、数据文件、控制文件同时记录scn
+orcle先更改重做日志，再在内存中更改信息，在达到一定条件再将脏块写入磁盘，发出检查点才会将SCN信息写入到控制文件和数据文件头部。
+
+
+触发checkpoint条件
+1.当发生日志组切换的时候 
+2.当符合LOG_CHECKPOINT_TIMEOUT，LOG_CHECKPOINT_INTERVAL，fast_start_io_target，fast_start_mttr_target参数设置的时候 
+3.当运行ALTER SYSTEM SWITCH LOGFILE的时候 
+4.当运行ALTER SYSTEM CHECKPOINT的时候 
+5.当运行alter tablespace tablespace_name begin backup，end backup的时候 
+6.当运行alter tablespace,datafile offline的时候
+7.Shutdown abort外的关库命令
+8.运行alter tablespace tablespace_name read only时
+
+【fast_start_mttr_target】     -----实例恢复时间，即为发出checkpoint后，由于数据库异常关闭，充新启动实例之后需要恢复checkpoint之后的操作所需要的时间
+-----【fast_start_mttr_target】为0时，禁用MTTR advisor
+-----【LOG_CHECKPOINT_INTERVAL】为0，禁用automatic checkpoint tuning 
+
+
+select file#,checkpoint_change# from v$datafile_header;  ----查看各个文件的检查点
+select checkpoint_change# from v$database;   			---查看数据库的检查点
+
+SMON在启动时依照检查点和SCN恢复实例
+
+select a.name,a.checkpoint_change# start_scn,b.checkpoint_change# last_scn from v$datafile_header a,v$datafile b where a.file#=b.file#;    
+----v$datafile			是记录在控制文件中各个文件的SCN和对应信息
+----V$datafile_header	是记录在数据文件头中对应的文件信息
+
+
+进程会话相关视图	
+v$session
+v$process
+v$mystat	
+---查看连接的信息
+select sid,serial#,username,program,machine,client_info from v$session
+where username is not null
+order by username,program,machine; 
+---关闭会话
+select saddr,sid,serial#,paddr,username,status from v$session 
+alter system kill session 'sid,serial#' ;
+
+----根据sid查询sql语句的spid，由spid杀死进程即可结束会话
+select b.spid,a.sid,a.serial#,a.machine from v$session a,v$process b where a.paddr =b.addr  and a.sid = '&sid';
+----输入SID号查sql语句
+select sql_text from v$sqlarea where (hash_value,address)=(select sql_hash_value,sql_address from v$session where sid=&sid);
+----由spid查看sid,serial#  使用【top -u oracle】系统命令查看oralce用户的进程
+select sid,serial# from v$session where paddr in (select ADDR from v$process where spid=&spid);
+----杀会话
+alter system kill session 'sid,serial#';
+
+linux中查看内存占用情况
+top -u process_name 
+ps aux 查看所有占用资源
+----ps aux |head -1 ;ps aux |sort -rn +2 |head -10   ###修改【sort -rn +x】指定由第x+1列排序
+
+---找到当前所有session IO信息
+select ses.username,ses.sid,ses.status,
+   max(decode(sta.name,'session logical reads',sest.value)) as "LOG IO",
+   max(decode(sta.name,'physical reads',sest.value)) as "PHY IO",
+   round(max(decode(sta.name,'session logical reads',sest.value))
+        /(3600*24*(sysdate-ses.logon_time)),2) as "LOG IO/S",
+   round(max(decode(sta.name,'physical reads',sest.value))
+        /(3600*24*(sysdate-ses.logon_time)),2) as "PHY IO/S",
+        trunc(60*24*(sysdate-ses.logon_time)) as "Minutes"
+        from v$session ses,v$sesstat sest,v$statname sta
+        where ses.sid=sest.sid and sest.statistic#=sta.statistic#
+           and sta.name in ('session logical reads','physical reads')
+           and ses.username is not null
+   group by ses.username,ses.sid,ses.status,ses.logon_time
+   order by 1,2;
+---然后通过找到的sid，可以查看该session正在执行什么sql，以及sql的执行计划：
+select sql_fulltext from v$sqlarea
+  where (hash_value,address) =
+         (select decode(sql_hash_value,0,prev_hash_value,sql_hash_value) as hash_value,
+                decode(sql_hash_value,0,prev_sql_addr,sql_address) as sql_addr
+                 from v$session where sid=&sid);
+SELECT operation, options, object_name, cost FROM v$sql_plan
+   WHERE (hash_value,address)=
+  (select decode(sql_hash_value,0,prev_hash_value,sql_hash_value) as hash_value,
+       decode(sql_hash_value,0,prev_sql_addr,sql_address) as sql_addr
+        from v$session where sid=&sid);
+

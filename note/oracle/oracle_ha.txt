@@ -1,0 +1,34 @@
+RAC
+Real Apply Cluster
+oralce集群架构
+RAC是实现grid的一种方案
+
+GI
+(Grid Infrastructure ) 
+GI主要包括了两个主要部分，即clusterware和ASM(Automatic Storage Management)
+
+	
+DSG 
+基于日志抽取实现的备份工具
+
+ADG
+(Active Data Guard)  
+用于主、备库备份，通过数据在线日志后归档日志解析
+
+DG
+(Dataguard)是oracle公司的主备，用于主库宕机时，应用切换到备库
+物理standby   ---主备库完全一样，直接应用redo实现同步
+逻辑standby   ---物理组织和数据结构可以不一样，将redo日志转换成SQL，在standby执行SQL实现同步
+
+OGG
+(oracle golden guard)
+一种基于日志的结构化数据复制备份软件，它通过解析源数据库在线日志或归档日志获得数据的增量变化，再将这些变化应用到目标数据库，从而实现源数据库与目标数据库同步
+
+OCR 
+(Oracle Cluster Registry)   
+基于分布式高速缓存共享架构  
+
+gateway 
+透明网关  Transparent Gateway
+oracle对其他类型数据库的访问
+实现异构服务的技术（不同数据库平台的互连称为数据库的异构服务）	

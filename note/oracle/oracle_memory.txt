@@ -1,0 +1,39 @@
+
+SGA(System Global Area)系统全局区    	---【sga_target】 初始分配，【sga_max_size】
+	共享池 (shared pool) 				---【shared_pool_size】 缓存最近执行的SQL语句以及数据字典。库高速缓存(library cache)、数据字典缓冲区(dictionary cache)、行执行消息缓冲区(Buffers for parallel execution messages)，以及用于系统控制的各种内存结构。
+	高速缓冲区(buffer cache)   			---【db_cache_size】 脏缓冲区(dirty buffer)、自由缓冲区(free buffer)[缓冲内容与磁盘文件内容一致]、忙缓冲区(pinned buffer)[服务器进程正在访问的缓冲区]。
+	重做日志缓冲区(redo log buffer)     ---【log_buffer】Oracle在执行任何DML和DDL操作改变数据之前，都会将恢复所需要的信息，先写入重做日志缓冲区，然后再写入数据库高速缓冲区。
+	java池(java pool)   				---【java_pool_size】
+	大池(large pool)    				---【large_pool_size】 供一次性大量的内存分配使用
+	流池(stream pool)   				---【streams_pool_size】
+
+查看sga【show parameter sga】，修改sga大小【alter system sga_max_size=1024m scope=spfile; (使用both为同时在线更改，使用scope需要重新启动后才生效)】
+v$memory_dynamic_components   ---查看各个组件内存占用大小
+V$SGA_DYNAMIC_COMPONENTS  ---查看SGA的动态内存分配
+【memory_target】=SGA+PGA  --分配给SGA和PGA的内存值，不能超过【MEMORY_MAX_TARGET】。
+
+自动内存管理(AMM Automatic Memory Management): memory_target=非0。LOCK_SGA ＝ true ，则 AMM 是不可用的。
+自动共享内存管理(ASMM Automatic Shared Memory Management): memory_target=0 、sga_target=非0 
+手工共享内存管理: memory_target=0 、sga_target=0，指定 share_pool_size 、db_cache_size 等 sga 参数
+自动 PGA 管理: memory_target=0 、workarea_size_policy=auto 、PGA_AGGREGATE_TARGET=非0
+手动 PGA 管理: memory_target=0 、workarea_size_policy=manal ， 指定SORT_AREA_SIZE 等 PGA 参数。一般不使用手动管理PGA
+
+buffer cache中的buffer根据不同的状态可以分为以下4种类型：
+free buffer/unused buffer：buffer cache初始化时或者在执行alter system flush buffer_cache以后的buffer,该buffer中没有存放任何内容。
+clean buffer：server process从数据文件中读入的block且还没有被其他进程所修改或者又dbwr将dirt buffer刚刚写入到数据文件中的buffer,该buffer中的内容与数据文件中的block一致。
+pinned buffer：当前的buffer被某个进程正在读取或者正在修改时。
+dirt buffer：该buffer的内容与数据文件中block的内容不一致。
+
+alter system flush shared_pool;     ----清空共享池
+alter system flush buffer_cache;	----清空高速缓冲区
+
+
+PGA(Programn Global Area)   --【pga_aggregate_target】
+	每个服务进程私有的内存区域	
+	
+UGA
+User Global Area 用户全局区
+---这个内存区与特定的会话相关联，保存会话的状态。
+--用共享服务器(shared)，UGA 就在SGA 中分配；
+--如果使用专用服务器(dedicated)，UGA就会在PGA中。
+

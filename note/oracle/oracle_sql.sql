@@ -738,4 +738,5 @@ long   ---可以直接以字符串插入，一个表只能有一个long的字段
 select * from scott.emp where ename like '%\%%' escape '\';	----使用【\】转换【%】，转换符【\】可以使用其他符号代替
 	
 	
-
+-- limit的实现
+select owner,table_name from ALL_TABLES where rownum<=10;

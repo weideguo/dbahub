@@ -1,0 +1,90 @@
+查看用户默认的表空间
+select username,default_tablespace from dba_users;
+查看表空间对应的文件
+select tablespace_name,file_name from dba_data_files;
+
+切换用户
+connect system/ as sysdba;
+connect xyz
+
+删除用户及用户的所有表
+drop user wdgtest cascade
+
+
+/*
+ORACLE数据字典视图的种类分别为：USER,ALL 和 DBA.
+USER_*:有关用户所拥有的对象信息，即用户自己创建的对象信息
+ALL_*:有关用户可以访问的对象的信息，即用户自己创建的对象的信息加上其他用户创建的对象但该用户有权访问的信息
+DBA_*:有关整个数据库中对象的信息
+*/
+--(这里的*可以为TABLES,INDEXES,OBJECTS,USERS等。)
+--1、查看所有用户
+select * from dba_user;
+select * from all_users;
+select * from user_users;
+--2、查看用户系统权限
+select * from dba_sys_privs;
+select * from all_sys_privs;
+select * from user_sys_privs;
+--3、查看用户对象权限
+select * from dba_tab_privs;
+select * from all_tab_privs;
+select * from user_tab_privs;
+--4、查看所有角色
+select * from dba_roles;
+--5、查看用户所拥有的角色
+select * from dba_role_privs;
+select * from user_role_privs;
+--6、查看当前用户的缺省表空间
+select username,default_tablespace from user_users;
+--7、查看用户权限、角色权限
+SELECT * FROM DBA_SYS_PRIVS WHERE GRANTEE='RESOURCE'
+
+oracle账户权限设置
+---外部验证
+os_authent_prefix为外部账号的前缀，登陆oracle时使用账号为：前缀+系统账号
+使用外部验证可以不必输入密码
+1.创建操作系统用户
+2.在sqlplus中创建外部验证的数据库账号
+create user ops$weideguo identified externally;  --默认前缀为ops$,weideguo为操作系统中的账号
+sqlplus /   ----直接登录
+3.赋予账户创建会话等权限
+4.修改操作系统用户的环境变量 添加修改oracle_home、path
+
+---口令验证
+使用账号和密码验证登陆
+select * from sys.user$   ---查看用户
+
+
+---管理员验证
+sysdba角色的密码保存在密码文件中
+
+---更改账号密码
+password user_name                                --由交互提示进行修改
+alter user user_name identified by new_password;  --在sysdba账户下
+
+---安全角色
+CREATE ROLE secure_role IDENTIFIED USING wdg.auth_role;   -----【wdg.auth_role】为验证的procedure名   
+----使用安全角色启用角色时通过procedure验证，而不需要密码
+
+
+
+--授权
+grant create session to user_name;  
+grant create table to  user_name;  
+grant create tablespace to  user_name;  
+grant create view to  user_name; 
+
+权限
+dba_sys_privs
+dba_tab_privs
+grant {object_privileges_name | system_privileges_name} to public; ---将权限授予给所有用户
+系统权限(system privileges)，回收时不级联     [with admin option] 授权同时允许被授予的对象将系统权限付给其他用户
+对象权限(object privileges)，回收时级联回收   [with grant option] 授权同时允许被授予的对象将对象权限付给其他用户
+
+GRANT SELECT,DELETE,UPDATE,INSERT ON USER1.TABLE1 TO USER2 ;
+
+
+alter user scott account unlock;               ----解锁scott
+
+

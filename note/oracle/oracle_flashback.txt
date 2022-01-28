@@ -1,0 +1,120 @@
+闪回
+---依据表空间的内容闪回，如删除时只是逻辑删除
+---由undo表空间的大小确定flashback query能力的大小
+
+flash recovery area 
+----闪回恢复区,具体对应操作系统中的一个目录
+v$flash_recovery_area_usage   ----闪回恢复区各项的使用率
+v$recovery_area_usage    	  -----11g中使用以代替v$flash_recovery_area_usage
+【db_recovery_file_dest_size】指定闪回恢复区的可用空间大小，设置为空即取消闪回恢复区 -----设置了闪回恢复区，则【log_archive_dest】不能设置
+【db_recovery_file_dest】指定闪回恢复区的位置
+【db_flashback_retention_target】指定数据库可以回退的时间，单位为分钟
+
+V$CONTROLFILE, V$LOGFILE, V$ARCHIVED_LOG, V$DATAFILE_COPYIS_RECOVERY_DEST_FILE ,指明相关的文件是否在恢复区内
+
+
+查看是否处于闪回状态 
+select flashback_on from v$database;
+
+开启闪回 --mount模式
+	1. alter database archivelog;
+	2. alter database flashback open;   ---必须处于归档模式； off
+
+闪回查询
+	SELECT column_name FROM table_name [AS OF SCN|TIMESTAMP expression] [WHERE expression] ;
+
+	闪回表  必须先启用行移动(row movement)
+	alter table table_name enable row movement;  --禁用为disable
+	FLASHBACK TABLE table_name TO SCN|TIMESTAMP expression;
+
+flashback 技术是以Undo segment中的内容为基础的，因此受限于UNDO_RETENTON参数。
+把整个数据库回退到过去的某个时点的状态，这个功能依赖于Flashback log 日志。
+DB_FLASHBACK_RETENTION_TARGET    ----flashback log保留的时间，flashback database能恢复的最早时间点
+db_recovery_file_dest            ----flashback log的保留位置
+ora_rowscn  --oracle的伪列
+
+to_date('2016-03-11 10:00:00','yyyy-mm-dd hh24:mi:ss')   --将时间转换成timestamp的格式
+select current_scn from v$database;  --查询当前scn
+select timestamp_to_scn(sysdate) from dual;  ---查询当前scn
+scn_to_timestamp、timestamp_to_scn   ---timestamp与scn的转换
+
+
+闪回事务 --查询变更sql
+权限
+select any transaction
+execute on dbms_flashback
+补全日志
+alter database add supplemental log data(primary key,unique index) columns;  --drop为关闭补全日志 
+select supplemental_log_data_min from v$database;  --查看是否启用补全日志
+
+select xid,operation,commit_scn,undo_sql from flashback_transaction_query where xid in (select versions_xid from table_name versions between scn minvalue and maxvalue);   ---查询特定scn内的事务
+
+select versions_starttime,versions_endtime,versions_xid,versions_operation,t.* from table_name versions between scn minvalue and maxvalue t;    ----查询表的事务
+
+DBMS_FLASHBACK.TRANSACTION_BACKOUT    ---闪回事务使用的procedure
+
+declare
+v_xid SYS.XID_ARRAY:=SYS.XID_ARRAY(hextoraw('000A002000016CD0'));    -----使用VERSIONS_XID获取v_xid
+begin
+SYS.DBMS_FLASHBACK.TRANSACTION_BACKOUT(numtxns=>1,xids=>v_xid,options=>dbms_flashback.NOCASCADE_FORCE);
+end;
+
+----NOCASCADE：若检测到Transaction之间存在依赖关系，则无法进行回退
+----NOCASCADE_FORCE：若Transaction间仅存在” Write-after-write dependency”类型的依赖关系，则可以实施强行回退；若遇到除” Write-after-write dependency”以外的其它类型的依赖关系，则无法进行回退
+----CASCADE：对存在依赖关系的Transaction实施连带回退
+----NONCONFLICT_ONLY：仅回退Transaction里不存在依赖关系的SQL，会破坏事务的原子性
+
+闪回版本的伪列
+VERSIONS_STARTTIME	返回查询结果行的第一个版本的时间戳。
+VERSIONS_STARTSCN	返回查询结果行的第一个版本的SCN。
+VERSIONS_ENDTIME	返回查询结果行的最后一个版本的时间戳。
+VERSIONS_ENDSCN		返回查询结果行的最后一个版本的SCN。
+VERSION_XID			对于每一行的每一个版本，返回创建该版本的事务的ID（一个RAW类型数字）。
+VERSIONS_OPERATION	对于每一行的每一个版本，返回代表生成该版本的操作的一个字符。返回值分别为I（插入操作）、U（更新）或者D（删除）。
+
+select * from scott.emp versions between scn minvalue and maxvalue [as of scn snc_num];  ----在某个scn时查询版本信息
+
+select versions_xid as vxid,versions_startscn,versions_endscn,versions_operation 
+from weideguo.emp versions  
+between scn minvalue and maxvalue as of scn 2515913 where empno=8000;    ---在某个scn查询某一行的变化情况
+
+
+闪回删除  --只支持非sys用户
+【recyclebin】参数为on时才启用回收站
+select * from recyclebin;   --查看回收站的对象，使用数据字典recyclebin、user_recyclebin、dba_recyclebin
+flashback table t1 to before drop  [rename to t2];   --闪回删除,可以同时选择更改表名
+purge table table_name;    --清空回收站 --可为table、index、recyclebin、dba_recyclebin、tablespace、user
+drop table table_name purge;  --同时在回收站清空
+
+
+create database link dblink_name connect to user_name identified by user__password usering 'connect_identifier';  --创建database liink，connect_identifier由$oracle_home/network/admin/tnsnames.ora下设置
+select * from table_name@dblink_name;  ---使用dblink
+
+闪回数据库   --在mount模式  
+--表被使用purge参数从回收站删除后不能使用闪回删除恢复，可以使用闪回数据库恢复  
+FLASHBACK DATABASE [database_name] to [SCN|TIMESTAMP expression]|[BEFORE SCN|TIMESTAMP expression]
+alter database open resetlogs;  --需要重置undo日志 或者在只读模式 read only
+
+【v$flashback_database_log】由视图估算可闪回的点
+
+Flashback Database(依赖于闪回日志)之外，其他的闪回技术都是依赖于Undo撤销数据(undo表空间)
+
+FDA(flashback data archive   )
+---闪回数据归档
+CREATE FLASHBACK ARCHIVE [default] fbar1 TABLESPACE "TBS_DATA1" RETENTION 2 DAY;   --创建闪回数据归档区。可以有一个默认闪回数据归档区
+alter table table_name flashback archive fbar1;  ---如果不指定flashback archive名使用默认。
+alter flashback archive flar1 purge all;   ---清空闪回数据归档
+--数据字典 *为dba或user
+*_FLASHBACK_ARCHIVE
+*_FLASHBACK_ARCHIVE_TS
+*_FLASHBACK_ARCHIVE_TABLES
+--权限
+flashback archive administrator
+flashback archive on fbar1 
+
+闪回数据归档区是一个逻辑概念，是从一个或者多个表空间中拿出一定的空间，来保存表的修改历史，这样就摆脱了对Undo撤销数据的依赖，不利用undo就可以闪回到归档策略内的任何一个时间点
+
+还原点  --restore point
+----闪回数据库是可以使用还原点
+create restore point point_name;  ---创建还原点
+drop database;   ---删除数据库

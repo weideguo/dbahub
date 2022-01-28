@@ -1,0 +1,60 @@
+修改sqlplus默认设置文件
+文件路径$oracle_name/sqlplus/admin/glogin.sql
+set sqlprompt "_user '@' _connect_identifier>"   ----修改sqlplus的提示符
+
+sqlplus使用
+
+sqlplus sys/sys_passwd@orcl as sysdba   ---登录 密码和connect_identify不是必须
+
+-- tnsnames.ora中设置 service_name 
+-- select INSTANCE_NAME from v$instance;  --对应service_name
+@[<net_service_name> | [//]Host[:Port]/<service_name>]
+
+conn sys/sys as sysdba;                        ----以DBA的身份登录
+
+CONNECT username / password[ @db_alias] AS [ SYSOPER | SYSDBA ];  
+
+密码文件
+授予SYSDBA 或者SYSOPER角色的用户口令保存于外部文件[$ORACLE_HOME/dbs/orapworcl]
+
+select * from v$pwfile_users   ---使用口令文件进行身份验证的用户列表，即被授予sysdba角色的用户
+
+show parameter remote_login_passwordfile;
+remote_login_passwordfile      ---设置是否允许远程登录使用口令文件进行身份验证【none | shared | exclusive】
+ldap_directory_sysauth         ---{yes|no},允许或禁止对sysdba或sysoper权限的目录授权
+
+orapwd file=sys_password_filename passowd=sys_password     ---创建密码文件
+
+
+在sqlnet.ora中($oracle_home/network/admin)
+SQLNET.AUTHENTICATION_SERVICES= (NTS)   --使用操作系统验证，即可以不输出密码也可以sysdba登陆
+SQLNET.AUTHENTICATION_SERVICES= none    --取消使用操作系统验证
+
+
+
+
+show pagesize;     --
+set pagesize 100;  --
+
+column col_name format a10    ---设置sqlplus中col_name列输出的长度为10
+column col_name format 9999   ---设置sqlplus中col_name列输出的长度为4(即为有多少个9)
+
+
+help index         --查看所有命令
+help command_name  --查看命令的具体解释
+
+
+@ file_name  ---执行sql脚本；execute
+
+----编辑缓冲区
+edit afiedt.buffer   
+run    ----运行缓冲区
+
+--假脱机
+spool file_name.txt   ---将以下的部分输出到文件中
+	{content}
+spool off	
+
+clear screen   ----清屏
+
+

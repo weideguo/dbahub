@@ -1,0 +1,21 @@
+SQLLDR(sql loader)
+两种加载数据的模式： ----执行sqlldr命令时指定【direct】参数为true或false，选择为直接或传统加入
+1. conventional path: 生成普通的insert命令对表进行插入操作。
+2. direct path: 直接对数据文件进行修改，是将被插入的表锁住，目的是提高加载的速度。
+---将文件的数据(如csv文件)导入到数据库中
+
+DBV(DB Verify)   
+---执行物理数据结构的完整性检查
+dbv file=/u01/app/oracle/oradata/orcl/users01.dbf [blocksize=8192]
+
+
+oracle体系结构
+实例(instance) = SGA+进程  
+oracle服务器   = 数据库+实例
+
+oracle逻辑组成
+dba_segment
+dba_extents
+block(块)    -----最小读取单位
+extent(区)   -----最小分配单位 由固定多个块组成 
+segment(段)  -----由多个区组成，对应数据库中的对象，如一个表对应一个段

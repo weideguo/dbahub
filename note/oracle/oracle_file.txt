@@ -1,0 +1,171 @@
+数据库文件(data file)
+--dba_data_files
+--数据文件依赖与表空间存在，保存数据库中数据的文件
+
+alter system dump datafile file_num block block_id ;   ---file_num可以由dba_data_files数据字典产看
+alter system dump datafile file_num block min min_block_id max max_block_id; 
+
+	
+控制文件(controlfile)
+v$controlfile
+v$parameter
+v$controlfile_record_section
+控制文件中记载了数据文件、重做日志名称和位置、日志序列号、检查点和日志历史信息，以及RMAN备份信息
+包含：可变部分、不可变部分
+----它记录了数据库的名字、数据文件的位置等信息
+---用于记录和维护数据库结构（数据库名、数据文件的名称和路径、联机重做日志文件的名称和路径、备份信息等，包括rman的备份信息）
+select value from v$parameter where name='control_files';   ----查询控制文件的路径
+
+--备份控制文件
+alter database backup controlfile to trace as '/home/oracle/ctl';
+创建重建控制文件脚本
+cat ctl | grep -v ^- | grep -v ^$ > c.sql   ----去空行及注释，备份控制文件创建脚本
+查看控制文件内容
+strings controlfile_name   ---查看控制文件，控制文件以二进制存储，不能直接查看，strings可以用于查看二进制文件
+sqlplus中：
+oradebug setmypid
+oradebug dump controlfile 3  --3是dump level，在user_dump_dest参数指定的路径查看dump的内容
+
+http://blog.csdn.net/tianlesoftware/article/details/6525628
+
+
+联机重做日志文件(online redo log)
+---v$log/v$logfile
+---保存对数据库的变更操作
+---联机重做日志循环写入；把重做日志文件保存，称为归档，得到归档日志
+alter system dump logfile logfile_name;    ----导出联机重做日志文件
+
+日志组有四种状态：unused, current ,active ,inactive;
+unused:表明该日志组从来没有被使用过。
+current:是oracle当前正在使用的日志组，即后台进程LGWR正在写的日志组。
+active:当发生日志切换的时候，状态为current的日志组就会变成active状态，表明记录在这个日志组的事务提交所造成的数据块改变，还没有完全从database buffer cache 写入到data file中。当数据库处于archivelog mode时，ARCn就会归档这个日志组。所以处在这个状态的日志组是不允许被覆盖的。崩溃恢复需要该状态，可用于块恢复，可能归档也可能未归档。
+inactive:处于这个状态的日志组，表明记录在这个日志组的事务提交所造成的数据块的改变，已经完全从database buffer cache写入到data file中了，实例恢复不再需要这个状态的日志组了，所以这个日志组是可以被覆盖的。
+
+---表级日志设置
+alter table t_target {logging|nologging|force logging};
+logging     	----default 记录日志信息到联机重做日志文件，临时表空间将不记录日志到联机重做日志文件
+nologging	 	----不记录
+force logging	----数据库的操作都记录到到联机重做日志文件，临时表空间或临时回滚段除外，忽略类似NOLOGGING之类的指定参数   取消NO FORCE LOGGING;
+
+---查看日志模式
+select log_mode,force_logging from v$database;   
+select tablespace_name,logging,force_logging from dba_tablespaces;
+
+alter system switch logfile; --切换当前日志组，如果处于归档模式则进行归档
+
+
+alter database [db_name] add logfile [group 4]('logfile_path') size 50M;  --添加日志组
+alter database [db_name] add logfile member ('logfile_path') to group 4;  ---为已经存在的日志组添加成员，同组成员互为镜像
+alter database [db_name] drop group 4;  --删除日志组，但不删除在操作系统中的文件
+alter database [db_name] drop logfile member 'logfile_path';  --删除日志组成员
+日志文件重定位
+alter database rename file  'xxxx' to 'yyyy';  --需要在在模式
+
+---清空日志组
+alter database clear logfile group 4; 
+ALTER DATABASE CLEAR UNARCHIVED LOGFILE GROUP 5;  ----清空避免归档
+
+---分析归档日志
+1.设置数据字典导出路径
+alter system set utl_file_dir='/home/oracle' scope=spfile;
+execute dbms_logmnr_d.build(dictionary_filename=>'logminer_dict.ora',dictionary_location=>'/home/orcle');
+2.增加需要分析的重做日志文件
+execute dbms_logmnr.add_logfile(LogFileName='/u01/app/oracle/oradata/orcl/redo01.log',options=>dbms_logmnr.new);
+3.执行日志加载
+使用数据字典
+execute dbms_logmnr.start_logmnr(DictFileName=>'/home/orcle/logmnr_dict.ora');
+使用在线字典
+execute dbms_logmnr.start_logmnr(Options=>dbms_logmnr.DICT_FROM_ONLINE_CATALOG);
+4.查看日志
+select sql_redo from v$logmnr_contents where table_name='table_name';
+5.卸载日志
+execute dbms_logmnr.end_logmnr
+
+
+
+归档日志(archive log)   
+----recover命令使用归档日志，联机重做日志
+
+alter database archivelog;  --在mount模式启用归档，noarchivelog为非归档
+
+archive log list  --查看归档状态
+
+alter system archive log current;   ---归档当前的联机重做日志文件
+alter system switch logfile;  		--强制更换当前归档日志组,在自动归档模式即同时将当前的日志组进行归档
+
+
+修改归档路径
+
+alter system set log_archive_dest_1='location=path [mandatory]' scope=spfile;  --mandatory指定这个位置的归档必须成功。默认为optional，即在多路归档下不强制要求都成功；如果都为optional，则至少一路归档成功。
+alter system set log_archive_dest_2='service=standby_db' scope=spfile;   ---设置归档到另外的数据库。【standby_db】为tnsnames.ora文件中指定的connect identifier
+
+
+log_archive_start为true则为自动归档，flase则不为自动归档，可以使用
+alter system set log_archive_start=true scope=spfile  ---mount模式自动归档设置
+alter system archive log start; --设置为自动归档，stop为非自动归档，无须重新启动实例，即可立即启用自动归档功
+
+手工归档
+ALTER SYSTEM ARCHIVE LOG ALL;
+alter system archive log current；
+
+SELECT * FROM v$loghist;                  ---查看日志历史信息
+SELECT destination FROM v$archive_dest;   ---查看归档日志路径
+SELECT name,log_mode FROM v$database;     ---归档状态
+SELECT * FROM v$archive_processes;        ---归档进程
+
+
+
+初始化参数文件
+$oracle_home/dbs/init.ora
+
+启动次序spfile优先于pfile
+show parameter spfile;  ---查看使用的服务器参数文件
+
+--参数文件pfile（parameter file）对应路径
+--spfile（server parameter file） 9i之后使用  服务器参数文件 可由pfile创建
+--利用文件对数据库和实例进行配置
+SELECT NAME, VALUE, DISPLAY_VALUE FROM V$PARAMETER WHERE NAME ='spfile';    --查看初始化参数文件位置
+
+服务器参数文件  
+v$spparamater   ---isspecified确定是否启用
+v$parameter   ---show parameter
+spfile(server parameter file)由pfile(对应为$oracle_home/dbs/init.ora文件)创建   【spfile】参数中指定路径
+spfile可以在线更改，pfile需要重启才起作用
+
+create spfile[="path_name/file_name"] from pfile[="path_name/file_name"];  ---由pfile创建spfile
+create pfile[="path_name/file_name"] from spfile[="path_name/file_name"];  ---由spfile创建pfile
+
+概要文件 profile  (概要文件存储在数据字典里?)用户的资源与口令的限制
+数据字典：
+dba_profiles 
+dba_user
+用户的口令限制和资源使用,资源参数用于限制资源的使用，密码参数设置与密码有关的安全策略   
+alter profile profile_name limit parameter_name parameter_value;	---修改概要概要文件
+create profile profile_name
+		item_name1 item_value1
+		item_name2 item_value2;              ---创建概要文件
+alter user user_name profile profile_name;   ---更改用户的概要文件
+
+
+告警文件、追踪文件
+---$ORACLE_BASE/diag/diag/rdbms/orcl/orcl/alert    ---log.xml  
+---$ORACLE_BASE/diag/diag/rdbms/orcl/orcl/trace    ---alert_orcl.log  【BACKGROUND_DUMP_DEST】指定
+---【diagnostic_dest】参数为alert日志的根目录  默认为$ORACLE_BASE/diag
+告警信息
+DBA_OUTSTANDING_ALERTS    
+DBA_ALERT_HISTORY    ---告警被清除后转到这个数据字典
+
+ADR(Automatic Diagnostic Repository)    ---存放数据库诊断日志、跟踪文件的目录
+v$diag_info
+
+Oracle跟踪文件分为三种类型
+1.后台报警日志文件
+    记录数据库在启动、关闭和运行期间后台进程的活动情况,如表空间创建、回滚段创建、某些alter命令、日志切换、错误消息等。在数据库出现故障时，应首先查看该文件，但文件中的信息与任何错误状态没有必然的联系。
+2.DBWR、LGWR、SMON等后台进程创建的后台跟踪文件
+    后台跟踪文件根据后台进程运行情况产生，保存在【BACKGROUND_DUMP_DEST】。
+3.由连接到Oracle的用户进程(Server Processes)生成的用户跟踪文件
+    这些文件仅在用户会话期间遇到错误时产生。此外，用户可以通过执行oracle跟踪事件来生成该类文件，保存在【USER_DUMP_DEST】。
+
+
+db_cache_size指定默认block的db_nK_cache_size的大小
+---即如果db_block_size指定为8k，db_8k_cacahe_size不能再指定

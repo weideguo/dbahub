@@ -1,0 +1,62 @@
+TABLESPACE(表空间)
+---创建表空间  
+create tablespace DEMOSPACE   
+datafile 'E:\app\Administrator\oradata\orcl\DEMOSPACE_TBSPACE.dbf'   
+size 1500M   
+autoextend on next 5M maxsize 3000M;  
+---删除表空间  
+drop tablespace DEMOSPACE including contents and datafiles 
+---添加数据文件
+alter tablespace demospace add datafile 'E:\app\Administrator\oradata\orcl\DEMOSPACE_TBSPACE2.dbf' size 100m;
+--查看表空间的大小
+SELECT tablespace_name, round(bytes / (1024 * 1024), 0) total_space 
+FROM dba_data_files order by tablespace_name
+select tablespace_name, sum(bytes)/(1024*1024) free_space 
+from dba_free_space  group by tablespace_name;
+--修改数据文件大小
+alter database datafile 'E:\app\Administrator\oradata\orcl\CBI_TABLESPACE.DBF' resize 2048m
+
+
+----大表空间
+(bigfile tablespace)  
+---一个表空间只有一个数据文件
+---默认创建小表空间，可以有多个数据文件 
+create bigfile tablespace datafile 'path/filename' size 1000m [...]; ---创建大表空间
+alter tablespace add datafile 'path/filename' size 100m;    ---小表空间添加数据文件
+
+
+--非system表空间数据文件更改 
+alter tablesapce tablespace_name rename datafile 'xxx/xxx/xxx' to 'yyyy/yyyy/yyy';
+--system表空间(在mount模式)数据文件更改 
+alter database rename file 'xxx/xxx/xxx' to 'yyyy/yyyy/yyy';
+
+
+alter table table_name move tablespace_name;   ----将表转入新的表空间
+
+create user user_name identified by "user_password"o default tablespace tablespace_name;  
+alter user demo identified by demo1; --修改用户密码，也可以使用【password [user_name]】命令进行修改
+alter user maclean default tablespace xyz;  ---修改默认表空间，创建用户默认使用【users】表空间
+
+----授予用户使用表空间的权限 
+alter user user_name quota unlimited on tablespace_name;  
+alter user user_name quota *M on tablespace_name; 
+
+
+表空间
+system     --sys、system等用户的表空间
+sysaux     --system的辅助表空，system auxiliary
+undotbs1   --回滚段表空间（撤销表空间）。事务在未提交前更改的记录保存于此。
+		   --参数【UNDO_RETENTION】设置保留时间，如果回滚段表空间大小固定，则参数不启作用。
+		   --Auto Undo Management（UNDO自动管理）。【undo_management】为【auto】则启用自动撤销管理；【manual】将不启用回滚段。
+ALTER DATABASE UNDOTBS01 RETENTION GUARANTEE;     ---保证数据库中的撤销保留。当表空间使用满，则不能再执行DML。
+ALTER DATABASE UNDOTBS01 RETENTION NOGUARANTEE;   ---关闭撤销信息的保证保留	   
+select tablespace_name,retention from dba_tablespaces;   --查看保留状态
+select b.tablespace_name,AUTOEXTENSIBLE,RETENTION  from dba_tablespaces a,dba_data_files b where a.TABLESPACE_NAME=b.TABLESPACE_NAME and b.TABLESPACE_NAME='UNDOTBS1';   ----查看表空间的guarantee状态
+
+ddatabase_properties                                 ----保存数据库全局默认表空间的信息
+alter database default tablespace tablespace_name;   ----修改系统默认表空间
+
+
+数据字典
+本地管理	(9i后为缺省)表空间的存储管理信息保存在表空间的数据文件的头部
+字典管理	由数据字典管理，数据字典存储在system表空间

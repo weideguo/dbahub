@@ -1,6 +1,6 @@
 Optimal Flexible Architecture (OFA) ----Oracle软件和数据库文件及文件夹的命名约定和存储位置规则。OFA其实就是一种Oracle的一种规范。
 ORACLE_BASE目录通常是/pm/h/u。pm为mount的点；h是字符常量，通常是app；u是目录所有者，通常是oracle。
-RACLE_HOME目录通常是/pm/h/u/product/V。其中V是版本号。
+ORACLE_HOME目录通常是/pm/h/u/product/V。其中V是版本号。
 
 useradd -g oinstall -G dba oracle   ---安装的用户oracle所属的组为oinstall/dba
 
@@ -12,6 +12,7 @@ ORACLE_HOME --- $ORACLE_BASE/product/11.2.0/dbhome_1
 
 安装
 使用图形界面安装
+    
 使用静默安装
 	静默安装dbms（数据库管理系统）
 	./runInstaller -silent -ignoreSysPrereqs -showProgress -responseFile /home/oracle/db_install.rsp    ----需要预先创建rsp相应文件

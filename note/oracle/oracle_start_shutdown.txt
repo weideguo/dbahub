@@ -1,0 +1,64 @@
+
+--设置环境变量
+export ORACLE_BASE=/u01/app/oracle
+export ORACLE_HOME=$ORACLE_BASE/product/11.2.0.4/dbhome_1
+export PATH=$ORACLE_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib 
+
+--以dba角色进入sqlplus 启动/关闭需要再sqlplus下进行
+sqlplus "/as sysdba"   -- sqlplus sys/ as sysdba 不需要交互密码的写法
+
+--启动数据库
+startup nomount  --创建并启动数据实例
+startup mount
+startup [open]
+startup force     --相当与执行shutdown abort后再startup open
+startup restrict  --只能DBA使用，限制运行的实例只能在本地管理
+	--受限状态接换enable/disable
+	alter system enable restricted session;
+startup pfile='path\file_name'     --指定数据库文本初始化参数文件的位置与名称
+
+
+--数据库状态转换 由nomount状态开始
+alter database mount;
+alter databse open;
+alter database open read write;  --可读写方式打开
+alter database open read only;   --只读方式打开
+--静默状态 只能允许DBA用户在数据库中执行事务操作
+alter system quiesce restricted;
+alter system unquiesce;
+--挂起状态 数据库文件和控制文件的I/O都被暂停
+alter system suspend;                    --挂起
+alter systen resume;                     --退出挂起
+
+select database_status from v$instance;  --查询状态 active为正常状态 suspend为挂起状态
+select open_mode from v$database;        --查看数据库的启动状态	
+
+
+---关闭数据库
+SHUTDOWN NORMAL        --不允许新的连接、等待会话结束、等待事务结束、做一个检查点并关闭数据文件。启动时不需要实例恢复。
+SHUTDOWN TRANSACTIONAL --不允许新的连接、不等待会话结束、等待事务结束、做一个检查点并关闭数据文件。启动时不需要实例恢复。
+SHUTDOWN IMMEDIATE     --不允许新的连接、不等待会话结束、不等待事务结束、做一个检查点并关闭数据文件。没有结束的事务是自动rollback的。启动时不需要实例恢复。 
+SHUTDOWN ABORT         --不允许新的连接、不等待会话结束、不等待事务结束、不做检查点且没有关闭数据文件。启动时自动进行实例恢复。
+
+
+
+数据库模式
+	nomount	
+		startup nomount    ---关闭时进入nomount
+		读初始化参数文件，启动实例  
+	mount
+		startup mount			---关闭时进入mount
+		alter database mount;   ---nomount时进入
+		oracle按照初始化参数文件的control_file打开控制文件。
+		控制文件记录数据的物理结构等数据库信息，如数据文件和日志文件信息。
+	open
+		alter database open;     ---nomount、mount时进入
+		oracle依据控制文件所记录的数据文件和重做日志信息，打开数据文件和重做日志文件
+
+	
+	
+open阶段有两个recovery
+Media Recovery   基于online redo log
+Cache Recovery	 依赖bootstrap$等数据字典
+

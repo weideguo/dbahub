@@ -1,0 +1,372 @@
+ORACLE对象
+
+查询创建语句
+SET LONG 1000;   ---长类型显示字节数
+select dbms_metadata.get_ddl('TABLE','table_name') from dual;                         --查看创建表语句             
+select dbms_metadata.get_ddl('TABLESPACE',a.tablespace_name) from dba_tablespaces a;  --查看创建表空间语句             
+SELECT DBMS_METADATA.GET_DDL('TABLE','TABLE_NAME','TABLE_SCHEMA') FROM DUAL;
+SELECT * FROM ALL_SOURCE;  --查看存储过程创建语句
+
+
+说明
+comment on column table_name.column_name is 'xxxxxx';
+comment on table table_name is 'xxxx';
+select　* from user_tab_comments;  --使用数据字典查询说明　 user_col_comments为字段的说明
+				 
+
+
+
+HWM(high water mark)
+--高水位线	
+truncate  回收高水位线	
+delete    不回收高水位线
+
+alter table table_name shrink cascade;   ----收缩高水位线(hwm high water mark)；tablespace也可以收缩
+
+
+Oracle表分类：普通堆表，索引组织表，簇表，临时表，外部表，分区表
+
+IOTs Index-Organized Tables
+索引组织表数据是按主键有序的存储在B树索引结构中。与一般B树索引不同的的是，在IOT中每个叶结点即有每行的主键列值，又有那些非主键列值。
+create table indexTable(
+	ID varchar2 ( 10 ),
+	NAME varchar2 ( 20 ),
+	constraint pk_id primary key ( ID )
+)
+organization index ;
+
+--外部表
+--数据库中只保存表的定义，数据以文件形式保存在数据库之外
+--两种访问驱动
+--oracle_loader 只可将外部源数据加载到数据库中
+--oracle_datapump 可以加载数据，也可从数据库中导出到外部源文件
+--创建外部表
+create table ext_emp   --创建表 
+(
+	emp_id number(4),
+	ename varchar(10),
+	job varchar(10),
+	mgr_id number(4),
+	hiredate varchar(20),
+	salary number(8,2),
+	dept_id number(2)
+)
+organization external     --说明建立外部表
+(   
+	type oracle_loader    --指定访问驱动，可以为oracle_loader和oracle_datapump
+	default directory datadir  --指定默认目录对象
+	access parameters(    --设置数据源文件与表中行之间的映射关系
+		records delimited by newline  --设置记录的分隔符
+		badfile baddir:'empxt%a_%p.bad' --不必须 --设置坏文件的存放目录和文件名
+		logfile logdir:'empxt%a_%p.log' --不必须 --设置日志文件的存放目录和文件名
+		fields terminated by ','  --设置文件中字段分隔符
+		missing field values are null   --不必须  --设置无值字段处理,如果有这条语句，需要放在设置分隔符语句后？
+		(                               --必须与创建时的顺序一致，并且不能漏
+			emp_id,ename,job,mgr_id,    
+			hiredate,salary,dept_id
+		)
+	)
+	location('example2.dat')  --数据源文件，多个使用','分隔
+) 
+parallel  					--不必须  --支持对外部数据源文件的并行查询
+reject limit unlimited;  	--不必须  --设置多少行转换失败时返回oracle错误，默认为0. 
+
+
+cluster
+--簇  一个簇由共享相同数据块的一组表组成，这些表共享某些公共列。
+--如果经常要访问这些列，能够给减少硬盘I/O
+
+分区表  
+---将一张表划分为多个部分
+select * from table_name partition (p1);   ---查询p1分区的值
+
+----创建分区表
+create table table_name(
+......
+)
+partition by (column_name)
+(
+......
+);
+
+---分割一个分区
+ALTER TABLE  rang_test  SPLIT PARTITION P6 
+AT (TO_DATE('2015-09-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS',  'NLS_CALENDAR=GREGORIAN')) 
+INTO (PARTITION P3 tablespace tbs_wdg,PARTITION P6) ;
+
+----交换分区
+----将table1分区p1的内容指定为table2的内容，并不涉及数据修改或复制。
+alter table table1 exchange partition p1 with table table2;
+
+删除一个分区
+alter  table orders  truncate partition p1 [update [global] index];
+	
+
+临时表
+create global temporary table tmp(...) on commit {delete|preserve} rows;
+
+ON COMMIT DELETE ROWS   ----当事务提交后，临时段将被删除
+ON COMMIT PRESERVE ROWS  -----会话结束时临时表被删除
+
+临时表空间
+dba_tablespace_groups --查询的数据字典
+创建临时表空间
+默认使用的临时表空间 temp 
+create temporary tablespace tmp_name tempfile 'path_name/file_name' size 5m group group_name; 
+alter user weideguo temporary tablespace [group_name | tmp_name]   --给用户指定临时表空间
+alter database <database_name> default tempoprary tablespace [group_name | tmp_name]  ---数据库级设置临时表空间
+
+临时表空间组
+alter tablespace temp1 tablespace group tempgrp;
+alter database default temporary tablespace tempgrp;
+
+
+transportable data encrypt(透明数据加密)
+加密表空间  
+需要使用wallet
+在sqlnet.ora设置wallet
+1. ENCRYPTION_WALLET_LOCATION =  
+   (SOURCE=  
+	 (METHOD=file)  
+	 (METHOD_DATA=  
+	   (DIRECTORY=/u01/app/oracle/product/11.2.0/wallet))) 
+2. 在wallet中创建key
+alter system set encryption key authenticated by "password";
+alter system set key identified by "password";   ---使用两者之一
+alter system set wallet close identified by "password";  ---关闭wallet; open 则为启用
+
+使用wallet登录
+mkstore -wrl /u01/app/oracle/product/11.2.0/wallet -create   ---创建wallet   wallet的密码跟oracle密码没有联系
+---如上修改sqlnet.ora文件
+mkstore -wrl /u01/app/oracle/product/11.2.0/wallet -createCredential orcl oracle_user oracle_user_password    ---需要输入在交互中输入wallet密码
+sqlplus /@orcl   ---登录
+
+支持的加密算法
+3DES168 AES128  AES192  AES256
+
+创建加密表字段
+ create table tde_private(  
+id number(10) [primary key],  
+info varchar2(50) encrypt using 'AES192'  
+); 
+创建加密表空间
+create tablespace encrypted_ts encryption [using 'AES256'] default storage(encrypt);
+
+CREATE TABLE sf_tab ( 
+id NUMBER, 
+clob_data CLOB 
+) 
+LOB(clob_data) STORE AS SECUREFILE;
+
+securefiles   ----加密、利用压缩节约空间和数据重复消除
+			  ----默认的LOB存储格式为BASIXFILE
+【db_securefile】系统参数 ----为ignore是强制使用basicfile;为permitted允许使用securefile
+
+oracle ACL
+(access control)
+---数据字典 dba_network_acls	dba_network_acl_privileges
+BEGIN DBMS_NETWORK_ACL_ADMIN.CREATE_ACL ( 
+acl =>'mycompany-com-permissions.xml', principal => 'ACCT_MGR', 
+is_grant => TRUE, privilege => 'connect');
+DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL ( 
+acl => 'mycompany-com-permissions.xml', 
+host =>'*.mycompany.com');
+END;
+
+COMPRESS
+create tablespace TEST datafile '/u01/oracle/ora11g/oradata/test/test.dbf' size 10M default compress;   ----创建压缩表空间
+alter tablespace test default compress;   ----压缩表；nocompress为不压缩
+
+xml表
+create table xmltable of xmltype;
+insert into xmltable values(xmltype(getclobdocument('EXP_DIR','order.xml')));    ---function getclobdocument需要自己编写 
+查询xml
+SELECT extractValue(value(X),'/PurchaseOrder/Reference') FROM XMLTABLE X;     --- extract(),extractValue(),和existsNode()
+select * from xmltable;
+
+
+
+resumable space  ---遇到空间不足，事务不会直接中断，而是生成alert log，解决后事务自动恢复。
+【resumable_timeout】设置为非0,即启用   在该时间内解决后自动恢复
+
+VIEW
+create view  ... with check option;   ----由视图插入时检查是否符合视图的约束
+					 
+inline view  --内联视图
+select * from (select * from abc);    ---(select * from abc)即为内联视图
+
+drop view view_name;
+
+物化视图
+materialized view
+materilized view log    ---用于支持快速刷新
+物化视图本身会存储数据
+DBMS_MVIEW.REFRESH  ----手动刷新
+----创建语句
+create materialized view view_name
+refresh [fast|complete|force]
+[on [commit|demand] | start with (start_time) next (next_time)]
+as
+{创建物化视图用的查询语句}   ----如 select语句
+
+snapshot(表的快照)
+dba_hist_wr_control   ---快照时间隔及保留时间查询
+dba_hist_snapshot     ---查询历史快照
+
+create snapshot log on table_name;   ---建立表的快照日志
+---创建表的快照
+---COMPLETE 全表更新；FAST  增量更新
+---使用【materialized view】代替【SNAPSHOT】可以实现不同表的数据的同步，物化视图和快照都可以直接查看。两者相同？
+CREATE SNAPSHOT snapshot_name  
+REFRESH {COMPLETE|FAST} START WITH SYSDATE NEXT SYSDATE+1/24
+as select * from table_name@dblink_name;
+EXEC DBMS_SNAPSHOT.REFRESH('snapshot_name','C');   ---手动刷新快照。后面为刷新的方式：C--complete;F--fast。
+
+
+constraint 
+---完整性约束
+---约束类型
+check      		C
+foreign key		R
+primary key		P
+unique			U				 
+
+---创建表时添加约束
+constraint c_name primary key (col_name);  --设置主键
+constraint c_name foreign key (col_name) references outside_table_name(ouside_table_col);  --设置外键，参照的键必须唯一
+constraint c_name unique(col_name);
+
+alter table table_name add constraint constraint_name unique (column_name) [deferrable initially deferred];    ---【deferrable】指定约束可以推迟；【not deferrable】为不可推迟。【initially deferrable】启动推迟，在提交事务时才使用约束判断DML是够合法；【initially immediate】不启用延迟，执行sql语气即使用约束检查。
+alter table table_name add constraint constraint_name check(column>100) deferrable;   --只能在添加约束时设置constriant可延迟
+alter table table_name drop constraint constraint_name;   ---删除约束
+
+
+约束constraint三个属性：
+deferrable  ---可延迟的
+not deferrable  ---不可延迟的
+
+只有在可延迟状态才可以设置延迟
+set constraint constraint_name deferred;    ---设置约束延迟，即在事务提交时再判断约束
+set constraint constraint_name immediate;   ---恢复约束在执行sql语句时生效
+
+alter table table_name disable constraint constraint_name;    ---禁用约束
+alter table table_name enable constraint constraint_name;	  ---启用约束
+alter table table_name enable novalidate constraint constraint_name;   ---对已有的数据不验证约束，新添加的验证约束。
+
+ENABLE VALIDATE      ---检查新、旧数据
+ENABLE NOVALIDATE    ---检查新插入，不检查已有数据
+DISABLE VALIDATE     ---不检查新插入，不允许对旧数据进行修改
+DISABLE NOVALIDATE   ---新、旧数据都不检查
+
+
+INDEX
+unique index     ---添加【unique】或【primary key】约束后自动创建
+nonunique index  ---手动创建
+
+---使用truncate  index将失效，需要rebulid
+
+--索引数据字典
+dba_indexes
+user_indexes
+
+create index index_name on table_name (column_name);
+create index index_name on table_name (column_name1,column_name2);
+create index index_name on table_name (column_name desc);
+
+alter index index_name invisible;    --索引不可见，但索引依然更新
+alter index index_name visible;
+
+alter index index_name unusable;    ----设置索引不可用，重新启用需要重建
+alter index index_name rebuild; 
+
+alter index index_name rebuiled online;   ----生产环境不建议使用
+alter index index_name rebuild [tablespace tablespace_name] -----加入表空间名，会将指定的索引移动到指定的表空间当中
+
+create index index_name on ....;   			---创建B树索引
+create bitmap index index_name on ...;      ---创建位图索引
+
+局部索引 local index
+dba_ind_partitions
+
+全局索引 global index
+
+
+SYNONYM
+create [public] synonym synonym_name for table_name;    ----为表创建同义词
+drop [public] synonym synonym_name;   ----删除同义词
+oracle的内部视图为V_$VIEWNAME，其synonyms为V$VIEWNAME。只能对视图或表授予权限
+
+
+
+SEQUENCE
+create sequence sequence_name 
+start with 1
+increment by 1
+minvalue 1 maxvalue 100;
+
+
+oracle queue
+DBMS_AQADM.CREATE_QUEUE
+user_queue_tables
+user_queues
+user_queue_subscribers
+user_queue_schedules
+
+
+--包（package）可以包含存储过程（procedure）、函数（function）、触发器（trigger）
+alter trigger trigger_name enable 				--激活触发器，禁用为disable
+alter table table_name enable all triggers 		--激活所有触发器
+
+查看源代码（proceduce、function、trigger、package）的数据字典
+DBA_SOURCE
+user_source
+
+
+
+rowid 格式
+AAAPec+AAF+AAAABS+AAA
+Data object number+relative file number+block number+row number
+
+ROWNUM	
+
+	
+绑定变量
+【&】指定变量   
+【&&】指定变量时只需要输入一次，除非使用【undefine fieldname】解除					 
+如
+select &sal s from dual;    ---每次运行都有交互提示输入sal的值
+select &&sal s from dual;	---第一次运行时有交互提示输入sal的值，之后直接使用该值而不会再有提示。使用【undefined sal】可以解绑定
+
+
+锁
+
+【commit】或【rollback】解锁
+TX锁称为事务锁或行级锁。
+TM锁称为表级锁。
+	SS(Row-S)
+	SX(Row-X)
+	S(share)
+	SSX(share row exclusive)
+	X(exclusive) 
+TM锁获得后，系统再自动申请TX类型的锁，并将实际锁定的数据行的锁标志位进行置位。
+
+v$locked_object;   ---锁的信息记录视图
+v$lock
+
+insert、update、delete 加行级排他锁
+drop、truncate、alter  加表级排他锁
+
+SELECT ... FOR UPDATE [OF column_list][WAIT n|NOWAIT][SKIP LOCKED];    ---行级锁。排他锁？。【commit】解除锁定
+---如不使用of指定锁定的表的列，则所有表的相关行均被锁定;若在of中指定了需修改的列，则只有与这些列相关的表的行才会被锁定。
+---wait 等待多少秒后报资源忙的错误;
+---skip locked  跳过已经被锁住的行，只执行能够获得锁的行。即不报资源忙错误。
+             
+lock table table_name in {share|exclusive} mode;   ---加锁
+
+如果不能row exclusive的话，就不能进行insert,update,delete 操作
+不能获得exclusive锁定就不能进行drop操作
+share  ---共享锁   允许其他session同时给对象加share锁    
+exclusive  ---排他锁   不允许其他session同时给对象加锁
+row share  ----行共享锁  不允许其他SESSION执行exclusive锁定
+row exclusive    ---行排他锁  只允许其他session加row share、row exclusive锁。
+share row exclusive    ---共享行排他锁  只允许其他session个对象加row share锁 

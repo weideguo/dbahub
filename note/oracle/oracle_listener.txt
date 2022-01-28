@@ -1,0 +1,32 @@
+监听文件
+$oracle_home/NETWORK/ADMIN/listener.ora     --用于设置监听监听地址及端口供其他连接使用
+$oracle_home/NETWORK/ADMIN/tnsnamers.ora    --用于设置connect_identifier以实现本地连接其他服务器
+tnsping connect_identifier                  --测试tnsnames.ora中设置的connnect_identifier是否正确
+
+show parameter name;  --查询服务名	 
+alter system set service_names='orcl,ocp' scope=spfile;  --修改服务名，多个服务名使用【，】分开，可用于tnsnames.ora中的设置
+
+alter system set local_listener=t1 scope=spfile;         ---如果监听非1521端口，必须设置，t1为tnsnames.ora中设置的服务名
+启动非默认listener监听器
+在lsnrctl中 	
+	set curr listener_name;   ---设置当前的监听器名，监听器在listener.ora中设置
+	start                     ---启动当前监听器
+
+lsnrctl start          ----启动监听默认的listener监听
+
+ps -ef|grep LOCAL=NO  产看是否有远程连接,同时依次杀进程	
+
+【remote_listerner】   ----设置后使用远端的listener处理会话？？？
+
+修改数据库监听程序
+/配置和移植工具/Net Manager/Oracle Net配置/本地/监听程序/LISTENER   ---windows下监听设置
+$ORACLE_HOME/network/admin/listener.ora   ---修改配置文件设置监听
+动态监听
+LISTENER_NAME=(DESCRIPTION_LIST...)
+使用TCP/IP协议中的端口，端口号的范围从0到65535
+使用IPC
+(Inter-Process Communication)进程间通信
+
+静态监听
+LISTENER_NAME=(SID_LIST...)
+使用动态链接库文件

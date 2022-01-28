@@ -1,0 +1,26 @@
+数据库逻辑备份与还原
+权限
+DATAPUMP_EXP_FULL_DATABASE
+DATAPUMP_IMP_FULL_DATABASE
+
+--逻辑备份与恢复
+1.创建目录
+create directory EXP_DIR as 'D:\backup';  --在sql plus中创建目录（目录对应的位置应该存在文件夹）
+grant read,write on directory EXP_DIR to weideguo;  --授权用户使用文件夹
+select * from dba_directories;  --查看目录
+2.数据导出  （在cmd中切换到文件夹 E:\app\Administrator\product\11.2.0\dbhome_1\BIN）
+	exp system/manager@TEST file=d:\daochu.dmp full=y    --将数据库TEST完全导出，用户名system 密码manager，导出到d:\
+	exp file=d:\daochu.dmp 
+	expdp weideguo/weideguo@orcl DIRECTORY=EXP_DIR DUMPFILE=wdg.dmp LOGFILE=wdg.log SCHEMAS=weideguo JOB_NAME=exp_weideugo_schema
+	expdp USERID='sys/carnation@pdborcl as sysdba' schemas=cbi_mo directory=EXP_DIR dumpfile=cbi_mo.dmp logfile=cbi_mo.log version=11.2.0.1.0  job_name=expdp_job
+3.导入
+	imp wdgtest/wdgtest@orcl fromuser=weideguo touser=wdgtest file=d:\back.dmp
+	impdp schemas=cbi_mo directory=EXP_DIR  dumpfile=cbi_mo.dmp logfile=cbi_mo.log version=11.2.0.1.0 job_name=impdp_job
+	impdp remap_schema=cbi_mo:wdgtest directory=EXP_DIR remap_tablespace=PDBORCL_CBI:WDGTEST_SPACE dumpfile=cbi_mo.dmp logfile=cbi_mo.log version=11.2.0.1.0 job_name=impdp_job         --将从用户cbi_mo导出的数据导入用户wdgtest
+
+	impdp system/Carnation2015 directory=data_pump_dir dumpfile=test.dmp sqlfile=test.sql  ----使用sqlfile参数将原有导出的dmp文件导成sql文件
+	impdp  attach=job_name    ---查看导入为job_name的导入运行状况
+
+transportable tablespace (可移植表空间)
+---导出元数据，由表空间文件导入到另外的数据库
+---使用impdp/expdp
