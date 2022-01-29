@@ -1359,6 +1359,8 @@ GPU
 
 lspci | grep -i vga      #查看显卡信息
 
+lshw -C display
+
 
 #DNS设置
 /etc/resolv.conf

@@ -52,14 +52,15 @@ pgsql_tmp开头的目录可以不复制
 #恢复
 复制物理备份的文件到对应目录
 
-清空pg_wal，将未归档的pg_wal下的文件放入，以便恢复到示例down的最后时刻（旧版本的为pg_xlog）
+清空pg_wal，将未归档的pg_wal下的文件放入，以便恢复到示例down的最后时刻（10之前旧版本的为pg_xlog）
 在归档中可用的段将会被优先于pg_wal中的文件被使用
 
     
 修改文件recovery.conf（在data目录下）
-     restore_command = 'cp /mnt/server/archivedir/%f %p'      #设置从备份的归档wal进行恢复
+     restore_command = 'cp /mnt/server/archivedir/%f %p'      #设置从备份的归档wal进行恢复 （或者直接复制文件到pg_wal目录（旧版本为pg_xlog））
      recovery_target_timeline = "string"                      #设置恢复到的时间点
      recovery_target_time = timestamp                         #latest 0 1423234
+     recovery_target_xid = <xid>                              #恢复到的事务 ID
 
 默认情况下，恢复将会一直恢复到 WAL 日志的末尾。
 

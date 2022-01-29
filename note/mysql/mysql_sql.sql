@@ -638,7 +638,7 @@ SUBPARTITIONS 2 (
 主键/唯一键限制
 every unique key on the table must use every column in the table s partitioning expression 
 如果有多个唯一键/包括主键，则构成键的部分必须使用在分区表达式中，即所有唯一键中必须包含相同列，且要使用该列进行分区
-
+没有主键，则分区的字段没有任何限制
 
 MRG_MYISAM
 --MYISAM的分区表 比较老的版本使用 5.5以上MyISAM以及支持分区表

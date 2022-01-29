@@ -20,11 +20,11 @@ def f2():
     print("function2 end")
  
  
-c1=Process(target=f1)      
-c2=Process(target=f2)      
+#c1=Process(target=f1)      
+#c2=Process(target=f2)      
     
-#c1=Thread(target=f1)    
-#c2=Thread(target=f2)    
+c1=Thread(target=f1)    
+c2=Thread(target=f2)    
 
 c1.start()
 c2.start()

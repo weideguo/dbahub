@@ -4,6 +4,10 @@ ssl-ca=ca.pem
 ssl-cert=server-cert.pem
 ssl-key=server-key.pem  
 
+# 不启用ssl
+skip_ssl
+
+
 Client-Side
 mysql --ssl-ca=ca.pem \
        --ssl-cert=client-cert.pem \
@@ -30,4 +34,7 @@ create user ... require ssl;
 	
 mysql_ssl_rsa_setup 命令可以快速生成密钥对
 
+
+# 设置使用的密码插件
+default_authentication_plugin = "caching_sha2_password"              # mysql_native_password 
 

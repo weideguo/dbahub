@@ -11,3 +11,5 @@ journal file记录原生的操作（raw operation）
 journal file记录的操作应用在shared view上，shared view刷新输出到data file
 
 
+journal 是 MongoDB 存储引擎层的日志，如果不配置 journal，写入 wiredtiger 的数据，并不会立即持久化存储；而是每分钟会做一次全量的checkpoint（storage.syncPeriodSecs配置项，默认为1分钟），将所有的数据持久化。如果中间出现宕机，那么数据只能恢复到最近的一次checkpoint，这样最多可能丢掉1分钟的数据。
+oplog   是 MongoDB 主从复制层面的日志

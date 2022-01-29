@@ -1,5 +1,6 @@
 #coding:utf8
 #协程demo
+#python2
 
 import time
 

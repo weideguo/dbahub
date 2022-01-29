@@ -222,6 +222,17 @@ git rebase origin/master
 git rebase [basebranch] [topicbranch]
 
 
+# 用于把一个分支的修改合并到当前分支
+git rebase
+
+# git会继续应用(apply)余下的补丁（git pull出现冲突，处理冲突后运行）
+git rebase --continue
+
+
+# 在提交给上游分支之后，在合并上游分支，会导致合并信息超前于上游分支 （This branch is X commits ahead of Y.）
+git rebase <upstream>/master   #rebase到上游分支
+git push -f                    #提交给github
+
 ###################################################################################################
 
 submodule应用

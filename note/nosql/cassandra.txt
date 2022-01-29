@@ -2,7 +2,11 @@
 conf/cassandra.yaml
 
 操作语言为CQL
+写优于读
+对等架构
+分区容忍和可用性（AP），最终一致（C）
 
+推荐存储日志类型数据，即很少update
 
 启动
 bin/cassandra
