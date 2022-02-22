@@ -1,0 +1,22 @@
+数据卷 / 持久卷 volume 
+将宿主机的文件、文件夹挂载到容器 容器或宿主机的修改可以彼此查看到
+
+启动容器 使用持久卷
+docker run
+    -v vol_name:/container_dir       #指定名字创建volume     
+    -v /container_dir                #隐式生成持久卷，随机生成名字、ID         
+    -v /hostdir:/container_dir       #隐式生成持久卷，以主机指定目录挂载到容器指定目录
+
+    
+使用Dockerfile创建volume
+VOLUME /data                         #挂载到容器的/data   不能指定主机的目录
+VOLUME ["/data1","/data2"]           #挂载两个目录
+
+
+显式创建数据卷 
+docker volume create --name vol_name                                
+
+
+docker volume ls                                                    #列出所有的数据卷
+docker volume inspect vol_name                                      #以名字查看volume的信息
+docker inspect --format "{{.Volumes}}" container_id                 #查看volume

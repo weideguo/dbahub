@@ -1,0 +1,178 @@
+##网络
+
+docker网络模式
+host模式
+Docker使用了Linux的Namespaces技术来进行资源隔离，如PID Namespace隔离进程，Mount Namespace隔离文件系统，Network Namespace隔离网络等。一个Network Namespace提供了一份独立的网络环境，包括网卡、路由、Iptable规则等都与其他的Network Namespace隔离。一个Docker容器一般会分配一个独立的Network Namespace。但如果启动容器的时候使用host模式，那么这个容器将不会获得一个独立的Network Namespace，而是和宿主机共用一个Network Namespace。容器将不会虚拟出自己的网卡，配置自己的IP等，而是使用宿主机的IP和端口。
+
+例如，我们在10.10.101.105/24的机器上用host模式启动一个含有web应用的Docker容器，监听tcp80端口。当我们在容器中执行任何类似ifconfig命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用10.10.101.105:80即可，不用任何NAT转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。
+
+container模式
+这个模式指定新创建的容器和已经存在的一个容器共享一个Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过lo网卡设备通信。
+
+none模式
+这个模式和前两个不同。在这种模式下，Docker容器拥有自己的Network Namespace，但是并不为Docker容器进行任何网络配置。这个Docker容器没有网卡、IP、路由等信息。需要我们自己为Docker容器添加网卡、配置IP等。
+
+bridge模式
+bridge模式是Docker默认的网络设置，此模式会为每一个容器分配Network Namespace、设置IP等，并将一个主机上的Docker容器连接到一个虚拟网桥上。
+
+
+
+网络驱动
+bridge
+host
+overlay
+remote
+null
+
+
+ip addr show         #在容器中查看网络
+
+
+
+CNM
+container network model
+
+
+沙盒（sandbox）
+端点（endpoint）容器的网络点，类似于网卡？
+网络（network） 一个网络可以包含多个端点
+
+
+
+##bridge演示
+
+##会在容器中创建网卡eth0并自动配置ip
+##在宿主机中创建网卡veth
+##通过在宿主机创建的网桥docker0通信 
+##docker daemon启动后自动创建网桥docker0，默认172.17.0.1/16，docker容器都会在其中选择一个未使用的ip
+
+dockerd --fixed-cidr=172.18.0.1/24                                               ##启动daemon时指定使用的网段，与docker0网桥处于同一网段
+                                                                                                                                                                 
+docker network ls                                                                #查看网络
+docker inspect <network-id>                                                      #查看指定网络详细信息
+
+
+docker network create --driver <driver-name> <network-name>                      #创建创建一个网络 创建网络时会生成一个虚拟网卡  
+docker network create net_name1                                                  #默认驱动选择bridge  
+docker network create net_name2                                                  #默认驱动选择bridge  
+                                                                             
+docekr run -it --name contrain1 --network net_name1 /bin/bash                    ##不指定network，则默认为bridge
+docekr run -it --name contrain2 --network net_name2 /bin/bash                    
+docekr run -it --name contrain3 --network net_name2 /bin/bash                    
+                                                                                 
+docker network connect net_name2 container1                                      #新增网络并配置ip以连接这个网络
+
+处在同一网络时可以直接使用其他容器的名称连接 如 ping contrain2
+
+
+#DNS实现，新
+docker network create isolated_nw                                                 #创建网络
+docker run --net=isolated_nw -it --name=container1 --link container2:c2 /bin/bash #创建容器container1，并连接到container2  可以使用别名连接
+docker run --net=isolated_nw -it --name=container2 /bin/bash                      #创建容器container2
+
+
+##使用link通信
+#环境变量注入(/etc/hosts),传统（不再推荐使用）
+docker run -d --name db training/postgres
+docker run -d -P --name web --link db:webdb webapp python app.py         #--link <name or id>:alias  连接时使用别名即可连接 不用指定ip
+
+
+
+
+route -n    ##查看静态路由
+brctl show  ##查看网桥
+
+
+linux network namespace
+
+ip netns add nstest;                            #创建network namespace
+ip netns list;                                    #增加
+ip netns delete nstest;                            #删除
+                                                
+ip netns exec nstest ip addr                    #显示nstest namespace中的网卡信息；格式 ip netns exec <network namespace name> <command>
+ip netns exec nstest bash                       #启动一个shell
+
+
+ip netns exec nstest ip link set dev lop up        #启动环回设备lo
+ip link add veth-a type veth peer name veth-b   #添加虚拟网卡veth-a veth-b
+ip link set veth-b netns nstest                 #将veth-b网卡添加到nstest
+
+
+ip netns exec nstest ip link                    #查看nstest命令空间的网卡
+                                                
+ip addr add 10.0.0.1/24  dev veth-a             #veth-a网卡没有分配，是主机的网卡
+ip link set dev veth-a up                        #启动网卡veth-a
+                                                
+ip addr add 10.0.0.2/24  dev veth-b             #veth-b网卡是nstest命名空间下的网卡
+ip link set dev veth-b up                        #启动网卡veth-b
+                                                
+ip route                                        #生成路由，在主机中
+ip netns exec netns ip route                     #生成路由，在nstest中
+                                                
+ping 10.0.0.2                                    #ping,在主机中
+ip netns exec nstest ping 10.0.0.1              #ping,在nstest中
+
+
+
+
+ip netns list命令的信息由下获取
+/var/run/netns
+
+进程的network namespace，不同的net:[XXXXX] 代表不同network namespace
+/proc/$PID/ns
+
+ln -s /proc/$PID/ns/net /var/run/netns/nstest     将进程的network namespace文件链接到/var/run/netns下，即可使用ip netns进行操作
+
+
+
+
+
+原本主机网络
+#网络 10.1.1.0/24
+#eth0 10.1.1.1/24 
+#网关 10.1.1.254/24
+
+启动容器
+
+    docker run -itd --name test1 --net=none ubuntu /bin/bash
+
+创建网桥
+    brctl addbr br0
+    ip link set br0 up
+    #将主机eth0桥接到br0上，并把eth0的ip配置在br0
+    ip addr add  10.1.1.1/24 dev br0;\
+            ip addr del 10.1.1.1/24 dev eth0;\
+            btctl addif br0 eth0;\
+            ip route del default;\
+            ip route add default via 10.1.1.254/24 dev br0
+    
+    pid=$(docker inspect --format '{{.State.Pid}}' test1)   
+    mkdir -p /var/run/netns
+    ln -s /proc/$pid/ns/net /var/run/netns/$pid
+    ip link add veth-a type veth peer name veth-b
+    brctl addif br0 veth-a up                                #veth-a连接到网桥
+    ip link set veth-b $pid                                  #veth-b加入network namespace
+    ip netns exec $pid ip link set dev veth-b eth0
+    ip netns exec $pid ip link set eth0 up    
+    ip netns exec $pid ip addr add 10.1.1.2/24/24 dev eth0   #容器的ip
+    ip netns exec $pid ip route add default via 10.1.1254
+
+    
+    
+    
+pipework(直接使用pipework工具配置网络)
+
+跨主机通信(主机在同一网络)
+1.桥接
+使用两块网卡，一块用于主机通信，一块用于桥接所有容器。所有的容器处于一个二层网络。
+
+2.直接路由
+同一主机的容器在一个二层网络，不同主机的容器通过主机的网卡转发。只需要一块网卡。
+
+
+
+
+
+#跨网络通信
+GRE generic routing encapsulation
+用于实现VPN？

@@ -1,0 +1,81 @@
+默认仓库设置
+/etc/docker/daemon.json
+
+{
+    "registry-mirrors":["https://registry.docker-cn.com"]
+}
+
+
+#其他设置
+/etc/containers/registries.conf
+/etc/sysconfig/docker
+
+
+
+##私有仓库
+##register
+#docker 容器内服务自启动 
+
+##启动TLS
+
+docker run -d \
+  --restart=always \
+  --name registry \
+  -v /local_path/certs:/certs \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:80 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  -p 80:80 \
+  registry:2
+
+
+使用账号密码
+htpasswd 创建密码文件并上传到/auth/htpasswd
+-e "REGISTRY_AUTH=htpasswd" \
+-e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+-e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+
+  
+不启用TLS
+docker run -d -p 5000:5000 --restart always --name registry registry:2  
+  
+  
+  
+#使用私有仓库
+#编辑 /etc/docker/daemon.json
+#多个私有仓库，逗号分隔即可
+{
+    "insecure-registries": [
+        "registry:5000"
+    ]
+}
+
+
+#镜像仓库代替
+{
+    "registry-mirrors": [
+        "http://docker.mirrors.ustc.edu.cn"
+    ],
+    
+}
+
+
+
+
+##容器私有仓库启动
+##不设置TLS时只能在本地使用
+docker run -d -p 5000:5000 --restart=always --name registry registry-1.docker.io/distribution/registry
+
+curl http://127.0.0.1:5000/v2/_catalog            #仓库查看
+
+
+
+第三方仓库
+#登陆
+docker login --username=user_name 3th_parth_registry_server
+#下载
+docker pull ...
+#上传
+docker tag ...
+docker push ...
+

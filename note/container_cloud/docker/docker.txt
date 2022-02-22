@@ -1,0 +1,115 @@
+容器(container)
+镜像(image)
+容器使用镜像启动生成，镜像可以由容器保存创建
+
+容器可以使用ssh连接(不建议)
+
+
+
+启动docker服务
+dockerd                 #1直接启动 
+service docker start    #2使用service docker start启动
+
+
+
+/etc/sysconfig/docker                                       ###配置文件
+/var/lib/docker                                             ###数据路径
+/var/lib/docker/devicemapper/mnt/$no_idea_dir/rootfs/       ###容器的文件对应在主机中的位置，在此目录下的文件容器可以直接使用
+
+/etc/docker/daemon.json                                     ##配置文件路径
+
+/var/lib/docker/                                            ##启动的容器对应文件所在的目录
+
+cd /var/lib/docker/ && find ./ -name $filename -type f      ##查看退出容器的文件，可以修改文件（尽量不要如此，使用数据卷代替）
+
+
+# 可以修改次文件实现更改容器的端口映射
+/var/lib/docker/containers/<container_hash>/hostconfig.json
+/var/lib/docker/containers/<container_hash>/config.v2.json
+
+# 映射
+"80/tcp":[{"HostIp":"","HostPort":"8082"}]
+
+
+#####################################################################################################################################################
+alpine                     ##简单的基础镜像
+scrach                     ##空镜像 可以跟busybox使用   
+
+#busybox
+静态编译不依赖第三方库，可以在空镜像中安装从而实现常规linux命令的使用
+在docker容器中
+cd /usr/bin
+ln -s  busybox vi          #创建链接实现命令
+ 
+######################################################################################################################################################
+### container_name/container_id image_id/image_name 可以通用
+
+docker info                                                         ##查看默认使用的registry等其他信息    
+
+docker ps -a                                                        ##查看容器 包括停止的
+docker ps                                                           ##查看生成的容器
+
+docker images                                                       # 显示已经存在的镜像
+
+docker pull image_tag                                               # 下拉镜像 image_tag如centos:6  hub.docker.com/explore中查看
+docker pull private-registry.com/user-name/ubuntu:latest            
+docker push 192.168.0.100:5000/ubuntu                               # 推送镜像库到私有源，也可以推送到官方
+docker tag apline:3.4 localhost:5000/my-alpine
+docker push localhost:5000/my-alpine                                # 上传镜像到仓库要先tag
+
+docker search ip1:port1/centos                                      #从指定仓库搜索镜像，默认从公共镜像搜索
+
+docker rmi <image_id>                                               ##删除镜像
+docker rm <container_id>                                            ##删除容器
+              
+docker start <container_id>                                         ##启动一个容器
+docker kill <container_id>                                          #停止一个运行中的容器
+docker create --name wdg_container ubuntu                           ###使用镜像创建容器，--name指定容器名，可以自动生成 
+docker commit <container_id> $image_name                             ###容器提交成镜像
+
+docker inspect -f '{{.Id}}' $container_name                         ###查看容器的id
+docker inspect <container id>                                       #查看docker的信息，网络、volume等
+docker inspect <container_id> | grep Id                             #查看<container_hash>  
+docker inspect mysql | grep MergedDir                               #查看容器对应使用的本地目录
+
+docker cp $contrain_id_or_name:$docker_file $host_file              ####拷贝容器中文件到主机
+docker cp $host_file $contrain_id_or_name:$docker_file              ####拷贝主机中文件到容器
+docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-                  ##移动文件 主机与容器 ##Copy files/folders between a container and the local filesystem
+docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH                  
+docker cp local_file <CONTAINER id>:/container_path                 ##复制本地文件到容器内
+
+
+docker export $container_id >> /home/export.tar                     ###容器转成文件
+cat /home/export.tar | docker import - $image_name:$version         ###容器导出的文件转成镜像
+tar cv --files-from /dev/null | docker import - scratch             #scrach是专有名字 为空镜像 可以用作其他的基础镜像                                                                        
+
+docker save $image_name >> /home/save.tar                           ###镜像转成文件
+docker load < /home/save.tar                                        ###镜像导出的文件转成镜像
+
+                                         
+docker attach <container-id>                                        #进入容器 需要使用 ctrl+p ctrl+q 退出，否则容器会关闭                                                                  
+docker attach [OPTIONS] CONTAINER                                   #Attach to a running container 进入运行中的容器
+                                                                                                                                                                                                                                                                                                                                      
+docker exec -it <container-id> /bin/bash                            #进入容器 退出不会导致容器关闭                                                                   
+docker exec [OPTIONS] CONTAINER COMMAND [ARG...]                    
+                                                                                                                                        
+                  
+docker stop      <container_id>                                     ##停止
+docker restart   <container_id>                                     ##重启
+docker pause     <container_id>                                     ##暂停
+docker unpause   <container_id>                                     ##取消暂停
+
+                                                
+docker logs --tail=10 -f <container_id>                           ##输出指定容器的日志
+
+
+####################################################################################################################################################
+  
+#第三方工具登录容器
+nsenter --target $PID --mount --uts --ipc --net --pid  
+
+
+runlike -p  <container>                      #查看容器的启动参数 docker inspect的封装
+
+
+

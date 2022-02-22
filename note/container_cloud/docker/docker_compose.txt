@@ -1,0 +1,39 @@
+ocker-compose
+多个容器管理
+yaml文件定义和运行多个容器
+
+#查看命令说明
+docker-compose --help
+
+
+#默认使用当前目录的配置文件运行 docker-compose.yml
+#自定义配置文件运行 -f my-docker.yml
+
+
+#使用yaml配置文件运行容器（自动下载/构建镜像）
+docker-compose up -d
+
+
+```yaml                     #
+version: '2'                #
+services:                   #
+  web:                      #定义一个镜像
+    build: .                #构建镜像使用的Dockfile的路径
+    depends_on:             #依赖的镜像
+      - db                  #
+      - redis               #
+  redis:                    #
+    image: redis            #对应镜像名称或镜像ID，本地不存在，则自动从仓库拉取（默认为dockhub）
+  db:                       #
+    image: postgres         #
+```
+
+docker-compose build             #根据配置文件构建所有镜像
+docker-compose build <SERVICE>   #根据配置文件构建单个镜像
+
+
+
+单个容器可以通过容器名连接其他容器，如在web容器可连接 redis:6379 
+
+默认每个docker-compose运行生成一个网络
+

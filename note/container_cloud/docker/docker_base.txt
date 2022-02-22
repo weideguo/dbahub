@@ -1,0 +1,58 @@
+docker基础知识
+
+LXC  linux container
+libvirt-lxc
+
+
+systemd   CoreOS的init进程
+
+
+namespace
+资源隔离        (flags)
+    UTS            CLONE_NEWUTS  主机名与域名                      unix time-sharing system
+    IPC         CLONE_NEWIPC  信号量、消息队列、共享内存      Inter-Process Communication
+    PID         CLONE_NEWPID  进程编号
+    Network     CLONE_NEWNET  网络
+    Mount       CLONE_NEWNS   挂载点
+    User        CLONE_NEWUSER 用户、组
+
+    
+    通过调用系统函数clone等创建子进程
+        
+cgroups
+资源限制
+
+    表现为一个文件系统,挂载后可以看到自系统 
+        mkdir -p /cgroups/memory
+        mount -t cgroup -o memory memory /cgroups/memory
+    
+    在/sys/fs/cgroup/XXX(XXX: cpu | ...)下，创建目录，目录下自动生成文件，在文件中写入信息(进程号、cpu使用率)达到限制进程使用资源的目的
+    
+yum install libcgroups  #安装cgroups    
+service cgconfig start  #启动cgroups
+
+/etc/cgconfig.conf #配置文件 启动服务时依赖这个挂载cgroups文件，也可以在启动后在cgroups层级中手动添加目录并挂载
+    
+    
+    
+docker创建命名为docker的控制组/sys/fs/cgroup/cpu/docker/$container_id
+    tasks             进程、线程ID
+    cgroup.proc       TGID（线程组ID，即线程组第一个进程的PID）
+    
+
+
+
+int clone(int (*child_func)(void *).void *child_stack,int flags,void *arg)   ##创建一个独立namespace的进程
+fork()       #创建子进程
+
+init进程托管孤儿进程，pid=1
+
+
+
+docker API      可以对docker进行管理
+
+
+容器执行驱动      execdriver
+volume存储驱动    volumedriver
+镜像存储驱动      graphdriver
+

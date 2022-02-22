@@ -1,0 +1,64 @@
+```Dockerfile
+# This my first nginx Dockerfile
+# Version 1.0
+
+# Base images 基础镜像
+FROM centos
+
+#MAINTAINER 维护者信息
+MAINTAINER wwwwdddddggggg 
+
+#ENV 设置环境变量
+ENV PATH /usr/local/nginx/sbin:$PATH
+
+#ADD  文件放在当前目录下，拷过去会自动解压
+ADD nginx-1.8.0.tar.gz /usr/local/  
+ADD epel-release-latest-7.noarch.rpm /usr/local/  
+
+#RUN 执行以下命令 
+RUN rpm -ivh /usr/local/epel-release-latest-7.noarch.rpm
+RUN yum install -y wget lftp gcc gcc-c++ make openssl-devel pcre-devel pcre && yum clean all
+RUN useradd -s /sbin/nologin -M www
+
+#WORKDIR 相当于cd
+WORKDIR /usr/local/nginx-1.8.0 
+
+RUN ./configure --prefix=/usr/local/nginx --user=www --group=www --with-http_ssl_module --with-pcre && make && make install
+
+RUN echo "daemon off;" >> /etc/nginx.conf
+
+#EXPOSE 映射端口
+EXPOSE 80
+
+#CMD 运行以下命令
+CMD ["nginx"]
+```
+
+```Dockerfile
+FROM alpine:3.4
+...
+RUN addgroup -S redis && adduser -S -G redis redis
+...
+#即为执行 docker-entrypoint.sh $CMD
+ENTRYPOINT ["docker-entrypoint.sh"]                     
+EXPOSE 6379
+#docker run覆盖的参数可以覆盖CMD 即整体目的为组装成 redis-server 或者run时的ARG参数 当成参数传给 docker-entrypoint.sh
+CMD [ "redis-server" ]
+
+```
+
+
+Dockerfile命令
+    ENV    <key> <value>                   #环境变量声明
+    FROM <image>                           #使用基础镜像
+    COPY <src> <dest>                      #复制<src>的目录、文件添加到镜像中的dest
+    ADD <src> <dest>                       #与COPY类似
+    RUN <command>                          #创建容器，执行命令，命令结束后提交容器为新镜像，新镜像被下一条指令使用
+    CMD    <command>                       #执行命令    启动参数会覆盖CMD的值
+    ENTRYPOINT  <command>                  #与CMD类似   让镜像变成像命令一样使用（启动时参数传给ENTRYPOINT指定的命令）  应用运行前的准备工作
+    ONBUILD    <INSTRUCTION>               #该镜像被作为FROM引用时执行docker指令
+    EXPOSE  <port>                         #端口暴露
+    EXPOSE  <container_port>:<host_port>   #端口映射 
+
+
+CMD ./hello 替换为 CMD ["./hello"]，Docker 就会直接运行程序，不会把它放到 shell 中运行。即不需要shell环境，可以用于scrach镜像。
