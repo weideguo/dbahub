@@ -1,0 +1,47 @@
+强制索引 FORCE INDEX 
+SELECT * FROM table1 FORCE INDEX (field1)...
+
+
+忽略索引 IGNORE INDEX 
+SELECT * FROM table1 IGNORE INDEX (field1, field2) ...
+
+
+关闭查询缓冲 SQL_NO_CACHE 
+SELECT SQL_NO_CACHE field1, field2 FROM table1;
+
+
+强制查询缓冲 SQL_CACHE
+SELECT SQL_CALHE * FROM table1;
+
+
+优先操作 HIGH_PRIORITY
+因锁进行排队时，这个操作优先进行
+SELECT HIGH_PRIORITY * FROM table1;
+
+
+滞后操作 LOW_PRIORITY
+因锁进行排队时，这个操作滞后
+update LOW_PRIORITY table1 set field1= where field1 = ...
+
+
+延时插入 INSERT DELAYED
+INSERT DELAYED INTO table1 set field1= ...
+客户端提交数据给MySQL，MySQL直接返回OK状态给客户端，但数据尚未实际更改，只是存储在内存里面排队等待执行。会导致函数LAST_INSERT_ID()失效。
+
+
+强制连接顺序 STRAIGHT_JOIN
+SELECT table1.field1, table2.field2 FROM table1 STRAIGHT_JOIN table2 WHERE ...
+强迫MySQL按table1、table2的顺序连接表。
+
+
+强制使用临时表 SQL_BUFFER_RESULT
+SELECT SQL_BUFFER_RESULT * FROM table1 WHERE ... 
+将结果集放到临时表中，尽快释放表锁，对发送数据给客户端时间耗时很长有用
+
+
+分组使用临时表 SQL_BIG_RESULT 和 SQL_SMALL_RESULT
+SELECT SQL_BIG_RESULT field1, COUNT(*) FROM table1 GROUP BY field1;
+GROUP BY 或 DISTINCT 有用，将查询结果放到临时表中。
+For SQL_BIG_RESULT, MySQL directly uses disk-based temporary tables if they are created, and prefers sorting to using a temporary table with a key on the GROUP BY elements. 
+For SQL_SMALL_RESULT, MySQL uses in-memory temporary tables to store the resulting table instead of using sorting. This should not normally be needed.
+

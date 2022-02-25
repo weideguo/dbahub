@@ -62,3 +62,23 @@ create table (tb_new like tb_old);
 explain select ...
 
 
+
+-- sequence
+
+create sequence sq_name increment 2 minvalue 1 no maxvalue  start with 1 cache 2 ;
+alter sequence  sq_name increment 1 minvalue 1 maxvalue 999999999999 start with 100 cache 2 ;
+
+-- 查看sequence
+select * from information_schema.sequences; 
+
+
+create table table_name (
+id serial,                 -- 自动创建sequence
+name text);
+
+
+create table table_name (
+id int4 not null default nextval('sequence_name'),
+name text);
+
+

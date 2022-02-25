@@ -1,0 +1,75 @@
+# 运行mysql
+
+docker run \
+        --name=mysql_1 \
+        --env=MYSQL_ROOT_PASSWORD=mysql_password_for_root \
+        --volume=/path_in_localhost:/var/lib/mysql \
+        -p 3306:3306 \
+        --expose=33060 \
+        --restart=no \
+        mysql:5.7 \
+        mysqld --datadir=/var/lib/mysql --user=mysql --server-id=1 --log-bin=/var/lib/mysql/mysql-bin.log ...
+
+
+# 运行postgresql
+
+docker run \
+        --name=postgresql_1 \
+        --env=POSTGRES_USER=postgres \
+        --env=POSTGRES_PASSWORD=pg_password \
+        --env=PGDATA=/var/lib/postgresql/data \
+        --env=LANG=en_US.utf8 \
+        --volume=/path_in_localhost:/var/lib/postgresql/data:rw \
+        -p 5432:5432 \
+        --restart=always \
+        postgres:9.5 \
+        postgres
+
+
+# 运行redis
+
+# 本地目录放置redis.conf文件
+docker run \
+        --name=redis_1 \
+        --volume=/path_in_localhost:/var/lib/redis/data:rw \
+        --workdir=/data \
+        -p 6379:6379 \
+        redis:4.0 \
+        redis-server /data/redis.conf
+
+
+# 运行mongodb
+docker run \
+        --name=mongodb_n \
+        --volume=/localhost_mongo_config_dir:/etc/mongo          # 同时存放mongo配置文件以及keyfile 需要预先创建
+        --volume=/path_in_localhost:/data \                      # 挂使用的data目录应该跟mongo配置文件设置的一致
+        -p 27017:27017 \
+        mongo:4.0 \
+        mongod -f /etc/mongo/mongo.conf    
+
+# 集群设置
+# 1.本地设置配置文件不使用认证登录，然后启动所有节点
+# 2.免密进入一个节点，设置成集群，创建账号     
+# 3.关闭所有节点，本地设置配置文件启动认证以及keyfile，启动所有节点
+
+
+
+docker run \
+        --name=mongodb_1 \
+        --env=MONGO_INITDB_ROOT_USERNAME=root \
+        --env=MONGO_INITDB_ROOT_PASSWORD=mongodb_password \
+        --volume=/path_in_localhsot/keyfile:/keyfile:rw \
+        --volume=/data/configdb \
+        --volume=/data/db \
+        --volume=/keyfile \
+        -p 27017:27017 \
+        mongo:4.2 \
+        --wiredTigerCacheSizeGB=1.5 --transitionToAuth -keyFile /keyfile --replSet rs0 --bind_ip_all --port 27017
+
+# 集群设置
+# 使用账号密码进入主节点，设置成集群（需要预先设置keyfile？）
+
+transitionToAuth  可以使用空密码登录
+
+
+        

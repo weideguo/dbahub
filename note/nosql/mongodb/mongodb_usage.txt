@@ -463,3 +463,7 @@ db.col.find().forEach( function(i) {
 db.col_bak.insert(i);
 
 });
+
+// 时间戳
+var timestamp = Timestamp(1644977198, 1)
+print( new Date(timestamp.t*1000+timestamp.i))

@@ -218,6 +218,8 @@ git pull --rebase
 git fetch
 git rebase origin/master
 
+git pull origin master:local-banch
+
 #合并 master 分支，使之包含来自 client 分支的修改 #会丢失提交信息？？
 git rebase [basebranch] [topicbranch]
 

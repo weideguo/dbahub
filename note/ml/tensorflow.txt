@@ -1,0 +1,8 @@
+# docker安装tensorflow jupyter版本
+docker pull tensorflow/tensorflow:latest-gpu-jupyter
+
+# 启动
+docker run -d -p 8888:8888 <img_id>
+
+
+

@@ -14,13 +14,15 @@ x=time.time()
 gevent.joinall([
         gevent.spawn(f, 'https://www.python.org/'),
         gevent.spawn(f, 'https://www.yahoo.com/'),
-        gevent.spawn(f, 'https://github.com/'),
+        #gevent.spawn(f, 'https://github.com/'),
 ])
 print(time.time() - x)
 
-
 x=time.time()
-for url in ['https://www.python.org/','https://www.yahoo.com/','https://github.com/']:
+for url in ['https://www.python.org/','https://www.yahoo.com/']: #,'https://github.com/']:
     f(url)
  
 print(time.time() - x)
+
+
+

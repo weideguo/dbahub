@@ -6,3 +6,14 @@
 2.死锁检测    innodb_lock_wait_timeout
 
 
+设置以下两个参数，将show engine innodb status中输出到错误日志
+innodb_status_output
+innodb_status_output_locks
+
+
+任意库创建该表，则将show slave status输出到错误日志
+create table innodb_monitor ( id int ) engine = innodb;
+
+create table innodb_lock_monitor(x int) engine=innodb;
+create table innodb_table_monitor(x int) engine=innodb;
+create table innodb_tablespace_monitor(x int) engine=innodb;
