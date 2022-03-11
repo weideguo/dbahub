@@ -1,0 +1,14 @@
+show global variables like '%gtid%';
+
+SET GLOBAL gtid_purged="...";  # 当 global.gtid_executed 为空时可以设置
+
+
+set @@session.gtid_nex="..."
+# 通过设置会话的gtid，mysql判定之后的事务是否执行
+# session.gtid_next <= global.gtid_executed 则不执行之后的事务
+# session.gtid_next >  global.gtid_executed 则执行之后的事务
+
+使用gtid，则 
+搭建主从不需要再设置position位置      change master to ...,master_auto_position=1
+使用binlog前滚不需要先设置开始位置
+

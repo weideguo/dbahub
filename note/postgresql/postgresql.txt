@@ -4,7 +4,7 @@ pg是多进程模式
 pg一个连接建立一个进程
  
 
-bin/pg_ctl -D ./data/ -l logfile start          #启动实例
+bin/pg_ctl -D ./data/ start                     #启动实例 配置文件在data目录下
 bin/postgres -D ./data                          #实际服务运行的文件
 
 关闭
@@ -233,3 +233,17 @@ alter system set shared_preload_libraries='pg_stat_statements';
 
 
 
+时区
+-- 当前时间
+select now();  
+-- 查看时区
+show time zone;
+-- 可选的时区
+select * from pg_timezone_names;
+-- 设置时区
+set time zone "Asia/Shanghai";
+
+# postgresql.conf 中设置时区 
+# 动态修改需要运行 pg_ctl reload
+log_timezone = 'PRC'
+timezone = 'PRC'

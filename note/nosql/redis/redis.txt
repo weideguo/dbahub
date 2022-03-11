@@ -156,11 +156,13 @@ LSET key 0 value             ###设置已经存在的对应下标元素的值
 集合 set    值不能重复       
 SADD key value1              ####往集合添加元素
 SREM key member              ####移除集合中的元素
-SMEMBERS key                 
+SMEMBERS key                 ###阻塞遍历
+SSCAN key 0                  ###非阻塞遍历
 SCARD key                    ###返回集合中元素的数量
 SDIFF key1 key2              ###差集
 SINTER key1 key2             ###交集
 SUNION key1 key2             ###并集
+SPOP key                     ###弹出一个随机值
                              
                              
 有序集合 zset(SortedSet)     通过score排序 member要唯一

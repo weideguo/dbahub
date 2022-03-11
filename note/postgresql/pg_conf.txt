@@ -57,3 +57,15 @@ show config_file;
 
 
 select * from pg_settings where name in ('allow_system_table_mods');       
+
+
+
+wal_level 由低到高
+minimal     默认值，写入从崩溃或立即关机恢复所需要的信息（不建议使用）
+archive     增加wal归档所需的日志（最常用）
+hot_standby 增加在一个后备服务器上运行只读查询所需的信息，一般实在流复制的时候使用到
+logical     增加支持逻辑解码所需的信息
+
+
+
+

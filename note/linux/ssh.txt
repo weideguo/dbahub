@@ -142,7 +142,10 @@ ssh remote_user@remote_host gzip -c filename > filenme.gz				#传输后不解压
 
 ssh实现端口转发，数据通过ssh传输，转发同时实现加密
 ssh -L <local port>:<remote host>:<remote port> <SSH hostname>   ##远端端口转发给本地
-ssh -p 22 -l root -L 3306:127.0.0.1:5640 -CNfg 192.168.59.128    #将远端主机192.168.59.128的5640端口转发到3306  实现本地访问3306端口，并且访问ip为127.0.0.1ip 
+ssh -p 22 -l root -L 3306:127.0.0.1:5640 -CNfg 192.168.59.128    #将远端主机192.168.59.128的5640端口转发到3306  实现本地访问3306端口，并且访问ip为127.0.0.1
+
+ssh -p 22 -l root -L 0.0.0.0:3306:10.0.0.1:3307 -CNfg 192.168.59.128    # 通过 192.168.59.128 代理访问10.0.0.1:3307，可以通过本地的ip:3306发起连接
+
 
 ssh -L 2121:www.example.com:80 tunnel-host -N
 curl http://localhost:2121                                       #通过跳板机tunnel-host访问www.example.com

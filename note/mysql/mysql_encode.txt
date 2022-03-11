@@ -23,7 +23,7 @@ mysql客户端字符编码修改，优先级由高到低：（以修改成utf8�
 
 特殊情况
 mysql在启动时使用参数skip-character-set-client-handshake
-会导致【mysql –default-character-set=utf8】设置连接字符集不生效，但显示执行【set names utf8】还是会生效。这不影响程序(python、java)的客户端的连接字符集设置。
+会导致【mysql --default-character-set=utf8】设置连接字符集不生效，但显示执行【set names utf8】还是会生效。这不影响程序(python、java)的客户端的连接字符集设置。
 
 
 
@@ -52,10 +52,11 @@ SHOW VARIABLES LIKE "collation%"
 CREATE DATABASE database_name DEFAULT CHARACTER SET char_set1 DEFAULT COLLATION char_set2;
 --修改字符集
 ALTER  DATABASE database_name CHARACTER SET char_set1 COLLATION char_set2;	--修改数据库默认的字符集：
-alter table table_name convert to character set char_set1;			--转换表的默认字符集，已有的数据会被转变，如果表的转换存储字符集不兼容，可能导致数据丢失
-alter table table_name DEFAULT CHARSET=utf8;                                    --To change only the default character set for a table
+alter table table_name convert to character set char_set1;			        --转换表的默认字符集，已有的数据会被转变，如果表的转换存储字符集不兼容，可能导致数据丢失
+alter table table_name DEFAULT CHARSET=utf8;                                --To change only the default character set for a table
 alter table table_name change column_name1 column_name1 blob;
 
+alter table table_name convert to CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci; 
 
 latin1 	单字节编码
 GBK     中文二字节，英文一字节
@@ -68,9 +69,9 @@ default-character-set=utf8
 [mysql]
 default-character-set=utf8
 [mysqld]    
-collation-server = utf8_unicode_ci
-init-connect='SET NAMES utf8'             ----客户端连接的时候执行命令"set names utf8",也可以使其他命令,对super用户无效
 character-set-server = utf8
+collation-server = utf8_unicode_ci
+init-connect='SET NAMES utf8'             #客户端连接的时候执行命令"set names utf8",也可以使其他命令,对super用户无效
 
 
 
