@@ -1,0 +1,3 @@
+echo -e '\na:aaa\nc:ccc' | jq -c '. | split("\n")[1:-1] | map (split(":")  | {(.[0]) : .[1]} )  | add ' -R -s
+#{"a":"aaa","c":"ccc"}
+# 实现json格式化

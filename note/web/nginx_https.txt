@@ -68,7 +68,7 @@ proxy_pass http://server_cluster; #后端服务器，具体配置upstream部分�
 
 ./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-file-aio --with-http_realip_module
 
-./configure --prefix=/usr/local/nginx ---with-http_ssl_module   #使用https最小编译参数
+./configure --prefix=/usr/local/nginx --with-http_ssl_module   #使用https最小编译参数
 
 ------------------------------
 PKI Public Key Infrastructure 公钥基础设置

@@ -113,7 +113,14 @@ from pymongo import WriteConcern
 WriteConcern(w=None, wtimeout=None, j=None, fsync=None)
 """
 
+"""
+对于sharding架构 多个mongos也是一样的使用
+连接为连接池，带有重连机制
 
+单个mongos节点关闭不会有影响
+shard主节点关闭，导致python程序插入卡住；但在进入mongos命令行可以插入。？
+
+"""
 
 
 

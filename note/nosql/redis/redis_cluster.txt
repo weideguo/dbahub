@@ -25,3 +25,16 @@ key映射到slot，每个节点存储部分slot
 cluster集群的代理
 redis-cluster-proxy [OPTIONS] [node1_host:node1_port,node2_host:node2_port,...]
 
+
+# 5.0以及以后使用这个操作cluster集群
+redis-cli --cluster help
+
+子命令
+create  #创建集群
+
+
+
+读/写key时必须往指定节点操作，如果只连接一个节点，会提示需要往哪个节点操作。因此需要在连接驱动中封装。
+
+
+

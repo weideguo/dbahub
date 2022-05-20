@@ -90,12 +90,23 @@ db.serverStatus()                   //查看状态信息
 
 	connections  //连接的信息
 
+db.hello()                          // 4.4.2: (and 4.2.10, 4.0.21, and 3.6.21)，一些集群信息
+
 db.currentOp()        				//查看当前连接信息,只列出有操作的
 db.currentOp({"$all":true})			//查看所有连接信息
 db.currentOp({"opid" : 1808430482}) //
 db.killOp({op:opid})			    //杀死操作
 
-
+// 查看当前正在创建索引的操作
+db.adminCommand(
+    {
+      currentOp: true,
+      $or: [
+        { op: "command", "command.createIndexes": { $exists: true }  },
+        { op: "none", "msg" : /^Index Build/ }
+      ]
+    }
+)
 
 db._adminCommand( {getCmdLineOpts: 1} )     //查看启动参数
 

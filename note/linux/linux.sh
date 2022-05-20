@@ -758,6 +758,8 @@ tmp     临时目录（系统会自动删除）
 
 /etc/cron.daily/tmpwatch  tmp目录清空机制centos6以及以下
 
+# centos7 清理配置
+/usr/lib/tmpfiles.d/tmp.conf   
 
 进程管理
 ps -ef | grep java       ##查看有关与java的进程
@@ -1175,7 +1177,7 @@ date |md5sum
 
 cat /dev/urandom | head -1 | md5sum 
 
-
+openssl rand -base64 10
 
 
 yum安装软件

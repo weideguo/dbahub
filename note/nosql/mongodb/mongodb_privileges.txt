@@ -64,11 +64,16 @@ updateRole
 
 //修改密码
 db.changeUserPassword()
+db.changeUserPassword("wdg","new_passwd");
 
 //删除用户、角色
 db.dropRole()
 db.dropUser()
 db.dropAllUsersFromDatabase()
+
+// 也可以如此删除用户 5.0支持
+use admin;
+db.system.users.remove()
 
 
 查看用户信息
