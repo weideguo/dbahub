@@ -1,0 +1,28 @@
+#不支持原始 delete update 语句
+#支持更改/删除数据
+ALTER TABLE ... update ...
+ALTER TABLE ... delete where ...
+
+
+select * from clusters;
+
+# 创建表时通过指定cluster_name实现表副本与分片的设置，因此在启动前服务应该在配置文件设置好remote_servers
+create table table_name on cluster cluster_name (...) engine=ReplicatedMergeTree(...)      
+# 需要分布式表选择一个replica写入即可，由ReplicatedMergeTree完成数据同步，而不需要每个replica都要写入，需要设置 <internal_replication>true<internal_replication>
+# 如果 engine=MergeTree 则不行
+
+# 创建分布式表
+create table table_name_all as table_name engine=Distributed(cluster_name,db_name,table_name,sharding_key);
+
+sharding_key 也可以为 rand()
+
+# 通过table_name能看到分片/副本的原始数据 通过table_name_all实际读写数据
+
+# 远程表 mysql pg
+# 可以INSERT和SELECT。只是映射，本地不存数据    
+CREATE DATABASE [IF NOT EXISTS] db_name [ON CLUSTER cluster]
+ENGINE = MySQL('host:port', ['database' | database], 'user', 'password')
+
+
+# 复制表，mysql/pg的从库
+
