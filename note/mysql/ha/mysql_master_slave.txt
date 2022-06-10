@@ -220,7 +220,59 @@ reset slave;             #清空主从信息（注意先保存已经同步好的
 START REPLICA ;        ---代替 START SLAVE     
 
 
+--8.0.23以及以后 代替change master to
+CHANGE REPLICATION SOURCE TO option [, option] ... [ channel_option ]
 
+option: {
+    SOURCE_BIND = 'interface_name'
+    
+  | SOURCE_HOST = 'host_name'
+  | SOURCE_USER = 'user_name'
+  | SOURCE_PASSWORD = 'password'
+  | SOURCE_PORT = port_num
+  
+  | PRIVILEGE_CHECKS_USER = {'account' | NULL}
+  | REQUIRE_ROW_FORMAT = {0|1}
+  | REQUIRE_TABLE_PRIMARY_KEY_CHECK = {STREAM | ON | OFF}
+  | ASSIGN_GTIDS_TO_ANONYMOUS_TRANSACTIONS = {OFF | LOCAL | uuid}
+  
+  | SOURCE_LOG_FILE = 'source_log_name'
+  | SOURCE_LOG_POS = source_log_pos
+  | SOURCE_AUTO_POSITION = {0|1}
+  
+  | RELAY_LOG_FILE = 'relay_log_name'
+  | RELAY_LOG_POS = relay_log_pos
+  | SOURCE_HEARTBEAT_PERIOD = interval
+  | SOURCE_CONNECT_RETRY = interval
+  | SOURCE_RETRY_COUNT = count
+  | SOURCE_CONNECTION_AUTO_FAILOVER = {0|1}
+  | SOURCE_DELAY = interval
+  | SOURCE_COMPRESSION_ALGORITHMS = 'value'
+  | SOURCE_ZSTD_COMPRESSION_LEVEL = level
+  
+  | SOURCE_SSL = {0|1}
+  | SOURCE_SSL_CA = 'ca_file_name'
+  | SOURCE_SSL_CAPATH = 'ca_directory_name'
+  | SOURCE_SSL_CERT = 'cert_file_name'
+  | SOURCE_SSL_CRL = 'crl_file_name'
+  | SOURCE_SSL_CRLPATH = 'crl_directory_name'
+  | SOURCE_SSL_KEY = 'key_file_name'
+  | SOURCE_SSL_CIPHER = 'cipher_list'
+  | SOURCE_SSL_VERIFY_SERVER_CERT = {0|1}
+  | SOURCE_TLS_VERSION = 'protocol_list'
+  | SOURCE_TLS_CIPHERSUITES = 'ciphersuite_list'
+  | SOURCE_PUBLIC_KEY_PATH = 'key_file_name'
+  | GET_SOURCE_PUBLIC_KEY = {0|1}
+  
+  | NETWORK_NAMESPACE = 'namespace'
+  | IGNORE_SERVER_IDS = (server_id_list)
+}
 
+channel_option:
+    FOR CHANNEL channel
 
-
+server_id_list:
+    [server_id [, server_id] ... ]
+    
+    
+ 

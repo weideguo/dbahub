@@ -31,10 +31,19 @@ redis-cli --cluster help
 
 子命令
 create  #创建集群
+redis-cli -a xxx --cluster create node1_host:node1_port node2_host:node2_port ...  --cluster-replicas 1
 
+--cluster-replicas 每个主节点的副本数 0 1 ...
 
 
 读/写key时必须往指定节点操作，如果只连接一个节点，会提示需要往哪个节点操作。因此需要在连接驱动中封装。
 
+
+
+# 手动切换cluster的主从（在一个从节点执行，只改变该节点的关联的主与从，不影响集群中的其他主从）
+cluster failover
+
+# 6.2.0引入 类似于 cluster failover，用于sentinel环境
+failover     
 
 

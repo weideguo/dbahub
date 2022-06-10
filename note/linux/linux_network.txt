@@ -64,7 +64,7 @@ ethtool -s eth0 #查看网卡状态
 虚拟ip(vip)
 ifconfig eth0:1 192.168.10.100 netmask 255.255.255.0 	 	###eth0为网卡，eth0:1 为子网卡
 ip addr del 192.168.10.100 dev eth0:1						###删除
-
+ip link delete eth0:1
 
 ip [ OPTIONS ] OBJECT { COMMAND | help }
 
