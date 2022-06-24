@@ -50,9 +50,18 @@ python manage.py <command>        #执行命令
     inspectdb                     #由数据库导出django的model文件
     loaddata                      #导入数据   python manage.py loaddata app_name.json
     makemessages                  #用于国际化
+    
     makemigrations                #将model层转为迁移文件                  python manage.py makemigrations app_name    不指定app时为全部
     migrate                       #新版本的迁移文件执行，更新数据库
+                                  # 运行makemigrations 在migration目录生成文件
+                                  # 运行migrate即引用生成的文件修改数据库表结构/内容
+                                  # 通过修改表django_migrations以及修改生成的文件可以控制运行migrate影响的范围
+                                  # migrate --fake 可以的往表django_migrations插入数据但不影响实际的业务表
+                                   
+                                   
     runserver                     #python manage.py runserver 0.0.0.0:8000           运行项目
+    
+    
     sendtestemail                 #Sends a test email to the email addresses specified as arguments.
     shell                         #进入python的shell 可以直接调用model的api
     showmigrations                #Shows all available migrations for the current project

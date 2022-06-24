@@ -1,0 +1,9 @@
+site_name: 我的测试站点 
+nav:
+    - Home: index.md
+    - 如何使用: useage.md
+# 原始的样式
+# theme: readthedocs
+theme:
+    name: material
+    language: zh

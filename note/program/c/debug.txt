@@ -1,0 +1,10 @@
+nm ${binary_file}
+列出二进制文件包含的name mangling（函数格式化形式）
+
+c++filt ${name_mangling}
+转换name mangling成函数原始定义形式
+
+c++filt _Z16digest_add_tokenP16sql_digest_statejP7YYSTYPE
+
+
+

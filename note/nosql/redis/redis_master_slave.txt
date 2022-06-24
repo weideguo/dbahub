@@ -34,6 +34,8 @@ redis-cli info | grep offset   #查看偏移量
 
 repl-backlog-size  1mb       #默认配置   调大可以增大断开时间
 
+repl-backlog-ttl   3600      #缓冲过期时间
+
 
 复制缓冲区(replication_buffer )
 主节点开始和一个从节点进行全量同步时，会为从节点创建一个输出缓冲区，这个缓冲区就是复制缓冲区。

@@ -63,7 +63,7 @@ end
 替换的参数
 
 SQL_TMPL
-[[SELECT c FROM sbtest1 WHERE id=? and c=?]], t.Int, {t.CHAR, 120}
+[[SELECT c FROM sbtest1 WHERE id=? and c=?]], t.INT, {t.CHAR, 120}
  
 
 RAND_TABLE 

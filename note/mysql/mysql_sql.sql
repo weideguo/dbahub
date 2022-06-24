@@ -32,7 +32,7 @@ BINARY(M)    	  255字节				定长二进制字符串
 DATE       4  1000-01-01/9999-12-31 					YYYY-MM-DD     日期值 
 TIME       3  '-838:59:59'/'838:59:59'  				HH:MM:SS    时间值或持续时间 
 YEAR       1  1901/2155                 				YYYY         年份值 
-DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59 	YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化
+DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59 	YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化 DATETIME[(N)]  N为0到6，表示获取时间的秒的小数点后多少位
 TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时 			YYYYMMDD HHMMSS 混合日期和时间值，时间戳，当设置时区变化时，查询的结果也跟着变化
 
 
@@ -40,6 +40,9 @@ BIT[(M)]   M=(1,64)            二进制格式 M为多少位
 JSON                           json格式 5.7.8以后支持
 
 SERIAL           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE 的别称
+
+
+int[(N)] 只是影响命令行的默认显示格式，不影响读写的精度
 
 
 https://dev.mysql.com/doc/refman/8.0/en/innodb-limits.html

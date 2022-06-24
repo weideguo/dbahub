@@ -888,6 +888,12 @@ free -m               ##内存与swap查看   ###SWAP用作虚存分区
     -buffer/cache =used-buffers-cached  程序占用的内存
     +buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
 
+    
+    centos7
+    total = used + free + buff/cache
+    available = free + buff/cache
+
+
 
 /proc/meminfo  #free命令信息来自于此
 

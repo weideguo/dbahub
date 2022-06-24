@@ -56,6 +56,9 @@ with transaction.atomic():
 #select is_manual from SqlWorkflow where id=35 limit 1;
 SqlWorkflow.objects.filter(id=35).values('is_manual').first() 
 
+#select is_manual,bbb from SqlWorkflow where id=35 ;
+SqlWorkflow.objects.get(id=35).values_list('is_manual','bbb')
+
 #get 结果只有一个
 #先select * from from SqlWorkflow; 然后再在python中过滤
 SqlWorkflow.objects.get(id=35).is_manual
