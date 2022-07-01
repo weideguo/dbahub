@@ -55,7 +55,10 @@ docker inspect <network-id>                                                     
 docker network create --driver <driver-name> <network-name>                      #创建创建一个网络 创建网络时会生成一个虚拟网卡  
 docker network create net_name1                                                  #默认驱动选择bridge  
 docker network create net_name2                                                  #默认驱动选择bridge  
-                                                                             
+                          
+docker network create nnn_default --subnet 10.2.0.0/24
+                          
+
 docekr run -it --name contrain1 --network net_name1 /bin/bash                    ##不指定network，则默认为bridge
 docekr run -it --name contrain2 --network net_name2 /bin/bash                    
 docekr run -it --name contrain3 --network net_name2 /bin/bash                    
@@ -63,6 +66,13 @@ docekr run -it --name contrain3 --network net_name2 /bin/bash
 docker network connect net_name2 container1                                      #新增网络并配置ip以连接这个网络
 
 处在同一网络时可以直接使用其他容器的名称连接 如 ping contrain2
+
+# 重新设置docker节点的ip
+# 先关容器，解绑绑定的网络，重置设置网络，然后启动容器
+docker network rm myproject_default
+docker network create myproject_default --subnet 192.168.2.0/24
+docker network disconnect myproject_default <container-id>
+docker network connect myproject_default <container-id> 
 
 
 #DNS实现，新

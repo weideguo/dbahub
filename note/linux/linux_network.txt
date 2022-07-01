@@ -16,8 +16,8 @@ route add -net 192.168.168.0/24  gw  192.168.168.1
 route add default gw 192.168.59.129                   #默认路由/网关
 
 #删除路由
-route del –host 192.168.168.111
-route del –net 192.168.168.0/24
+route del -host 192.168.168.111
+route del -net 192.168.168.0/24
 route del default gw 192.168.59.2                     #删除网关
 
 route ##查看路由

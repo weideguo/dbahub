@@ -20,6 +20,16 @@ ssh_client=client
 #
 #print(stdout.read(), stderr.read())
 
+"""
+stdin, stdout, stderr = client.exec_command(cmd, get_pty=False)
+
+get_pty=False 退出python程序，执行的shell命令不会退出
+get_pty=True  退出python程序，执行的shell命令同时退出
+
+stdin.write('Hello!')   #执行的命令有存在交互的接受输入，则通过stdin输入
+stdin.flush()
+"""
+
 
 #cmd="/data/redis/bin/redis-server /data/redis/redis.conf "
 

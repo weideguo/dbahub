@@ -10,6 +10,12 @@ pt-query-digest --user=anemometer --password=superSecurePass \
                   /var/lib/mysql/db.example.com-slow.log
 
 
+--type     #支持的解析文件类型
+slowlog 
+binlog  
+genlog  
+tcpdump 
+rawlog  
 
 
 

@@ -12,3 +12,11 @@ set @@session.gtid_nex="..."
 搭建主从不需要再设置position位置      change master to ...,master_auto_position=1
 使用binlog前滚不需要先设置开始位置
 
+
+
+# 主库的uuid
+select @@server_uuid;
+
+GTID组成
+主库的uuid+偏移量
+

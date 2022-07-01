@@ -231,6 +231,18 @@ git rebase
 git rebase --continue
 
 
+#合并7f4dc225818e94b37d6f2da3285ef6c096eb1f68提交之前的commit成一个commit，执行改命令时必须所有文件都被commit
+git rebase -i 7f4dc225818e94b37d6f2da3285ef6c096eb1f68
+
+# 运行后设置并退出
+pick 2f1a707 sysbench压测支持
+s e6667f0 syebench配置设置   
+s d0b3bdd update
+s 5de57da update
+s e37cedb update
+
+
+
 # 在提交给上游分支之后，在合并上游分支，会导致合并信息超前于上游分支 （This branch is X commits ahead of Y.）
 git rebase <upstream>/master   #rebase到上游分支
 git push -f                    #提交给github
