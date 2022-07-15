@@ -1,7 +1,7 @@
 #cofing:utf8
 """
 pip install MySQL-python==1.2.5   #暂时只支持python2  
-pip install mysqlclient           #支持python3
+pip install mysqlclient           #支持python3       MySQL-python的代替项目，都依赖于libmysqlclient.so
 """
 import MySQLdb
 
@@ -15,7 +15,7 @@ connect=mysql.connector.connect
 
 
 """
-#pip install PyMySQL            #python3的支持 与MySQLdb兼容
+#pip install PyMySQL            #支持python3 与MySQLdb兼容，纯python实现，无需安装mysql相关库
 #pip install cryptography       #使用caching_sha2_password格式的密码则必须安装这个包（mysql8默认使用）
 
 import pymysql

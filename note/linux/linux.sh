@@ -1032,7 +1032,6 @@ crontab -e   ###编辑  使用方法与vi类似
 ##Linux在启动时，会自动执行/etc/rc.d目录下的初始化程序，可以把启动任务放到该目录下
 rc.local是在完成所有初始化之后执行的
 
-/usr/lib/systemd/system   #centos7 service文件位置
 
 通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
 chmod +x /etc/rc.d/init.d/simpleTest    使之可直接执行
@@ -1044,6 +1043,17 @@ chkconfig --level httpd 2345 off        设置在哪些级别关闭
 
 /etc/rc.d/rc0.d                #运行级别为0的启动项 通过链接到/etc/rc.d/init.d/下的文件设置
 /etc/rc.d/rc1.d                #运行级别为1的启动项
+
+
+#centos7 service文件位置
+systemctl
+将server放入这个目录下，如mysqld.service
+/usr/lib/systemd/system
+
+#重新加载即可
+systemctl daemon-reload
+systemctl enable mysqld.service
+systemctl is-enabled mysqld
 
 
 ##linux与window的文件传输 使用ZModem协议
@@ -1430,4 +1440,7 @@ lock
 #释放锁
 flock -u 7
 
+
+# 将文件缩小到指定大小，可以避免直接rm造成的io挤占
+truncate ${filename} -s 524280000
 

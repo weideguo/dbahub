@@ -10,7 +10,7 @@ dic={"name":"sysu","address":"ggggggg"}
 col.insert(dic)                 #insert_one()  insert_many()参数为list
 
 for item in col.find():			#可以传入字典参数进行条件查询 有find_one()
-	print item
+	print(item)
 	
 col.update({"name":"wwwwwwww"},{"set":{"name":"sysuuuuu"}})
 

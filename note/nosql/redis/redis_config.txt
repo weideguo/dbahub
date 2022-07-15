@@ -1,6 +1,6 @@
 ##慢查询配置设置
 slowlog-slower-than		    #慢查询时间
-slowlog-max-len			    #慢查询日志长度
+slowlog-max-len			    #慢查询日志长度，存储多少条慢查询日志
 
 #危险命令重命名 防止连接者使用
 rename-command flushAll ""

@@ -82,6 +82,9 @@ Alt+Shift+左键
 ctrl+shift+n
 
 
+Remote - SSH
+
+
 
 
 

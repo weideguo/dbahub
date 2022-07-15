@@ -85,6 +85,20 @@ directory. You must run this command with one of either the --locale,
 --exclude, or --all options.
 
 
+test运行测试集
+python manage.py test                                                    # 运行所有test开头的文件
+python manage.py test myapp                                              # 运行myapp目录下所有test开头的文件
+python manage.py test myapp.mymodule.tests                               # 运行myapp/mymodule/test文件
+python manage.py test myapp.mymodule.tests.MongoTest                     # 运行myapp/mymodule/test文件的MongoTest类
+python manage.py test myapp.mymodule.tests.MongoTest.test_current_op     # 运行myapp/mymodule/test文件的MongoTest类的test_current_op方法
+
+目录结构
+myapp
+├── mymodule
+│   ├── bbb.py
+│   └── tests.py
+├── tests.py
+└── aaa.py
 
 
 
