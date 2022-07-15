@@ -1,3 +1,10 @@
+gtid(global transaction identifier)
+
+gtid-mode={on|off}    				--设置是否启动gtid
+--gtid_executed='gtid_string'  		--设置
+--gtid_purged='gtid_string'			--设置清除之前的binlog
+
+
 show global variables like '%gtid%';
 
 SET GLOBAL gtid_purged="...";  # 当 global.gtid_executed 为空时可以设置

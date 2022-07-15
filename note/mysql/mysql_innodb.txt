@@ -1,0 +1,56 @@
+innoDB 存储引擎
+
+show variables like 'inndb%log%';   ----innoDB相关的日志
+.frm  表的结构定义
+.idb  表空间的数据文件     ---当启用多用表空间时，每个表会生成与表名相同的数据文件	
+
+
+row_format={compressed | dynamic}   ---创建时指定存储格式
+
+show table status like 'table_name'  ---查看表的状态 等同于查询information_schema.tables
+
+COMPACT    默认，性能瓶颈不在CPU时性能可以提高  Fixed-length columns greater than or equal to 768 bytes are encoded as variable-length columns, which can be stored off-page
+REDUNDANT  兼容旧版本  如 FIXED
+DYNAMIC    COMPACT的衍生，变长存储   can store long variable-length column values (for VARCHAR, VARBINARY, and BLOB and TEXT types) fully off-page，数据页中只存放20个字节的指针，实际的数据存放在Off Page中
+COMPRESSED COMPACT的衍生，压缩存储   
+
+
+
+innodb使用系统表空间存储内部数据字典及undo日志，所以使用多重表空间时数据文件(.ibd)不能随意移动
+
+rename table db1.table_name db2.table_name;    ---将表从一个数据库移动到另外一个数据库，只是修改数据字典中的定义而已
+
+
+ib_logfile   ---redo日志
+ib_data      ---系统表空间数据文件
+ibdata
+
+
+系统表空间
+	数据字典                     ---innodb的
+	doublewrite buffer           
+	change buffer				 ---更改的二级索引缓存，由buffer bool转写到系统表空间以防止丢失，回写到表空间后会清理
+	undo logs (可以设置使用单独的数据文件而不再系统表空间中)
+	表的数据(启用多重表空间时表的数据在单独的表空间) --innodb的
+
+
+change buffer
+	A special data structure that records changes to pages in secondary indexes.
+	DML语句的结果。
+	Changes are only recorded in the change buffer when the relevant page from the secondary index is not in the buffer pool.改变非聚集索引的数据，所在的页不在内存中。
+	包含delete buffering, insert buffering, purge buffering。(5.5之前只有insert buffering)
+innodb_change_buffering={none|inserts|deletes|changes|purges|all}  ---默认all
+innodb_change_buffer_max_size={0~50}  --默认25
+	change buffer占用buffer pool的比例
+
+
+
+配置参数
+innodb_file_per_table=1   ---启用多重表空间，有一个表对应一个表空间  为0时为使用独立表空间文件，只有一个表空间，为系统表空间，但可以有多个数据文件  系统表空间总是存在
+
+---启动后更改只对更改后的表生效
+
+---不启用多重表空间时，可以选择设置如下
+innodb_data_home_dir      ---指定系统表空间数据文件保存的目录
+innodb_data_file_path=datafile_spec[;datafile_spec1...]  	  ---系统表空间的数据文件  datafile_spec=file_name:file_size[:autoextend[:max:max_file_size]]
+

@@ -1,0 +1,5 @@
+mysql升级
+1.使用mysqldump从旧版导出，然后再倒入新版
+2.直接复制data目录，运行mysql_upgrade升级
+
+
