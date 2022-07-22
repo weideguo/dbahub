@@ -52,4 +52,14 @@ db.fsyncLock()      //加锁
 db.fsyncUnlock()    //释放锁
 
 
+sharding架构
+
+https://www.mongodb.com/docs/manual/tutorial/backup-sharded-cluster-with-database-dumps/
+4.2以及之后的版本不能用mongodump逐个备份分片实现全局一致备份
+
+4.0以及之前需要先关闭balancer再逐个分片备份
+use config
+sh.stopBalancer()
+
+
 

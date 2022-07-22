@@ -165,8 +165,13 @@ virtual  虚拟内存占用
 mapped   映射到内存的数据大小
 
 
+db.serverStatus().tcmalloc
 
+total_free_bytes = central_cache_free_bytes + transfer_cache_free_bytes + thread_cache_free_bytes
 
+tcmalloc cache=pageheap_free_bytes + total_free_byte。
+
+tcmalloc cache会还回操作系统
 
 
 文件

@@ -1,6 +1,6 @@
 全量备份
 #需要连接到数据库实例
-./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf /u03/xb_backup_dir
+./innobackupex --defaults-file=/u05/mysql5634/my.cnf --user=root --password=weideguo --host=127.0.0.1 --port=3307 --slave-info /u03/xb_backup_dir
 
 
 对备份文件应用日志
@@ -25,8 +25,19 @@
 #生成增量备份文件在/u03/xb_incre_backup_dir
 ./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf --incremental --incremental-basedir=/u03/xb_backup_dir/2017-01-16_14-54-07 /u03/xb_incre_backup_dir 
 
-
 --incremental-lsn=123456      #【--incremental-basedir】可由下xtrabackup_checkpoints的lsn代替指定
+
+
+差异增量备份
+    基于上次全备以及其他增量备份的备份
+    
+    --incremental-basedir=<上一次增量备份>
+
+累积增量备份
+    只基于上次全备的增量备份
+    
+    --incremental-basedir=<上一次全备> 
+
 
 
 
@@ -62,6 +73,8 @@ alter table recovery_table_demo discard tablespace;
 #导入表空间
 alter table recovery_table_demo import tablespace;
 
+# 手动备份idb以及cfg
+FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
 
 
 其他参数

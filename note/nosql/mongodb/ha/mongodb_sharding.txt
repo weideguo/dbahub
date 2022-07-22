@@ -88,6 +88,9 @@ sh.shardCollection("<database>.<collection>",{<shard key field>:1,...} )        
 // the index on the shard key
 // a compound index where the shard key is a prefix
 
+// 每个库都有自己的主分片，迁移库的主分片
+db.adminCommand( { movePrimary: <databaseName>, to: <newPrimaryShard> } )
+
 
 db.runCommand({listshards:1})  	###查看分片服务器的配置
 db.col_name.stats()				##查看collection的分片等信息
@@ -95,7 +98,7 @@ sh.status()                     ##查看数据分布
 
 
 # 查看balancer状态
-sh.getBalancerState(
+sh.getBalancerState()
 # 查看balancer锁信息
 db.locks.find({"_id" : "balancer"}).pretty()
 # 设置balance窗口
@@ -136,6 +139,7 @@ mongodb将数据分片为 Chunks。每个Chunk在shardkey上的范围是 [下限
 mongos / shard主 均需要设置账号
 config服务不能设置账号
 
+chunk 存储与config server的config库下
 
 //////////////////////////////////////////////////////////////
 // 4.4以及以后

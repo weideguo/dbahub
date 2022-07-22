@@ -1349,6 +1349,8 @@ cat ABC.tar.gz.* | tar -zxv
 #压缩过滤 多个目录可以用多个exclude
 tar -zcvf abcd.tar.gz --exclude=abcd/def abcd
 
+tar cvf - mypath | pigz -9 -p 3 > mypath.tgz
+并发压缩
 
 shc  将shell脚本编译成二进制二进制文件
 
