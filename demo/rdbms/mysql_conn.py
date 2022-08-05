@@ -22,6 +22,15 @@ import pymysql
 connect = pymysql.connect
 """
 
+# connect参数查看
+from MySQLdb.connections import Connection
+help(Connection)
+"""
+ |      autocommit
+ |        If False (default), autocommit is disabled.
+ |        If True, autocommit is enabled.
+ |        If None, autocommit isn't set and server default is used.
+"""
 
 #开启一个连接mysql中  show processlist 可以看到
 conn=connect(host="127.0.0.1", port=1039, user="test", passwd="test",db="test1", charset="utf8",connect_timeout=10)

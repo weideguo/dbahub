@@ -205,7 +205,7 @@ bin/mongod  --repair   #启动是修复数据库
 
 
 
-##慢查询分析
+##慢查询分析 
 db.setProfilingLevel(1,500)
 
 #0 不收集慢查询 
@@ -216,7 +216,7 @@ db.setProfilingLevel(1,500)
 
 db.getProfilingStatus()     #对当前库生效
 
-db.system.profile.find()	#查看慢查询语句
+db.system.profile.find()	#查看慢查询语句  每个库有自己的慢查询表
 
 db.system.profile.find().limit(10).sort({ts:1}).pretty()
 
@@ -224,7 +224,8 @@ db.system.profile.find().limit(10).sort({ts:1}).pretty()
 profile=1
 slowms=500
 
-
+# 设置慢查询表的大小
+db.createCollection( "system.profile", { capped: true, size:4000000 } )
 
 db.setProfilingLevel(2)
 

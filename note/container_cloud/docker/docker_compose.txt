@@ -37,3 +37,7 @@ docker-compose build <SERVICE>   #根据配置文件构建单个镜像
 
 默认每个docker-compose运行生成一个网络
 
+
+# 新版本
+docker compose
+

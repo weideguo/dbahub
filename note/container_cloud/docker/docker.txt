@@ -4,7 +4,11 @@
 
 容器可以使用ssh连接(不建议)
 
-
+安装
+yum install -y yum-utils
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum makecache fast
+yum -y install docker-ce docker-compose-plugin
 
 启动docker服务
 dockerd                 #1直接启动 
@@ -96,7 +100,8 @@ docker attach [OPTIONS] CONTAINER                                   #Attach to a
                                                                                                                                                                                                                                                                                                                                       
 docker exec -it <container-id> /bin/bash                            #进入容器 退出不会导致容器关闭                                                                   
 docker exec [OPTIONS] CONTAINER COMMAND [ARG...]                    
-                                                                                                                                        
+
+-u root  以root账号进入容器                                                                                                                                        
                   
 docker stop      <container_id>                                     ##停止
 docker restart   <container_id>                                     ##重启

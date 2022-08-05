@@ -144,7 +144,11 @@ git tag -d <tag-name>
 #推送本地标签的删除到远端 即删除远端仓库的标签
 git push origin :refs/tags/<tag-name>
  
-   
+#删除远端的分支 
+git push origin --delete dev_mysql_tablespace
+
+#远端分支重命名 
+git push origin :old_branch new_branch 
  
 #查看所有提交信息    
 git log    

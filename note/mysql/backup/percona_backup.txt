@@ -27,13 +27,16 @@
 
 --incremental-lsn=123456      #【--incremental-basedir】可由下xtrabackup_checkpoints的lsn代替指定
 
+from_lsn  备份起始的lsn
+to_lsn    备份覆盖的lsn  如果之后使用增量备份，则依赖于该lsn
 
-差异增量备份
+
+增量备份  incremental backup
     基于上次全备以及其他增量备份的备份
     
-    --incremental-basedir=<上一次增量备份>
+    --incremental-basedir=<上一次全量或增量备份>
 
-累积增量备份
+差异备份 differential backup
     只基于上次全备的增量备份
     
     --incremental-basedir=<上一次全备> 
@@ -101,12 +104,6 @@ FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
 
 
 
-增量备份
-    上一次 完全备份/增量备份之后 变化的部分的备份
-
-
-差异备份
-    上一次 完全备份之后 变化的部分的备份（相当于第一次增量备份）
 
 
 

@@ -4,7 +4,8 @@ mysql slave1--192.168.200.140:3307
 mysql slave2--192.168.200.140:3308
 MHA manage----192.168.200.129
 
-
+文档
+https://github.com/yoshinorim/mha4mysql-manager/wiki
 
 master-slave设置
 
@@ -87,6 +88,26 @@ master_log_pos=120
 
 MHA
 ###使用perl编写，需要预先安装perl的相应模块
+# rpm安装
+yum install perl-DBD-MySQL
+rpm -ivh mha4mysql-node-X.Y-0.noarch.rpm
+
+yum install perl-DBD-MySQL
+yum install perl-Config-Tiny
+yum install perl-Log-Dispatch
+yum install perl-Parallel-ForkManager
+
+rpm -ivh mha4mysql-node-X.Y-0.noarch.rpm
+rpm -ivh mha4mysql-manager-X.Y-0.noarch.rpm
+
+
+
+yum install -y perl-CPAN*
+perl -MCPAN -e "install DBD::mysql"
+perl -MCPAN -e "install Config::Tiny"
+perl -MCPAN -e "install Log::Dispatch"
+perl -MCPAN -e "install Parallel::ForkManager"
+
 
 
 MHA node编译安装
@@ -172,7 +193,28 @@ masterha_check_status --conf=/etc/masterha_default.cnf
 停止
 masterha_stop --conf=/etc/masterha_default.cnf
 
+手动提升一个slave为新master
+masterha_master_switch --conf=/etc/masterha_default.cnf \ 
+--new_master_host=10.0.0.1 --new_master_port=3306 \
+--orig_master_is_new_slave --master_state=alive 
 
+
+master节点：
+masterha_check_repl
+masterha_check_ssh
+masterha_check_status
+masterha_conf_host
+masterha_manager
+masterha_master_monitor
+masterha_master_switch
+masterha_secondary_check
+masterha_stop
+
+node节点：
+apply_diff_relay_logs
+filter_mysqlbinlog
+purge_relay_logs
+save_binary_logs
 
 
 

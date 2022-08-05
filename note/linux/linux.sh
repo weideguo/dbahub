@@ -136,16 +136,25 @@ cgroups
 /etc/security/limits.conf             ###配置文件修改，最大打开文件数，以及其他
 /etc/security/limits.d
 
+通过/etc/rc.local实现的开机启动配置不生效。可以直接往/etc/profile运行ulimt命令设置配置
 
+/proc/${pid}/limits                  ##对应进程的实际限制
 
-ulimit -a                            ###查看所有的限制
-ulimit -n 2048                        ##修改允许打开最大的文件数
-lsof | wc -l                        ##查看已经打开的文件数
-lsof -p pid                         ##查看进程打开的文件
-lsof -c mysql                                           ##查看对应进程名打开的文件
-lsof +L1                                                ##unlinked的文件信息
+ulimit -a                            ##查看所有的限制
+ulimit -n 2048                       ##修改允许打开最大的文件数
+lsof | wc -l                         ##查看已经打开的文件数
+lsof -p pid                          ##查看进程打开的文件
+lsof -c mysql                        ##查看对应进程名打开的文件
+lsof +L1                             ##unlinked的文件信息
 lsof +L/-L                                              ##打开或关闭文件的连结数计算，当+L没有指定时，所有的连结数都会显示(默认)；若+L后指定数字，则只要连结数小于该数字的信息会显示；连结数会显示在NLINK列。
 ulimit -Hn                          ##查看
+
+以下文件也可以控制ulimit
+/etc/systemd/system.conf
+/etc/systemd/user.conf
+/etc/systemd/system/
+/etc/systemd/user/
+
 
 #删除恢复 进程使用文件时删除文件的恢复
 lsof | grep       
@@ -230,7 +239,7 @@ xclock   ###验证display参数
 全局系统参数
 /etc/profile
 /etc/bashrc
-
+/etc/profile.d/
 
 .bash_history            ##history的信息，清空可以清除history的显示  
 
@@ -971,7 +980,7 @@ cat /proc/$pid/io      #查看进程的io的情况
     
 pidstat -r -p PID      #查看进程的内存使用    
     
-    
+iotop    
     
     
 badblocks -s -v sdb1   ##坏道检测
@@ -1327,6 +1336,9 @@ echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
 #日志滚动设置
 #逐日存放日志
 /etc/logrotate.d
+
+# 手动运行切换
+logrotate ${config_file}
 
 copytruncate模式 copy完成到truncate完成的中间数据会丢失
 
