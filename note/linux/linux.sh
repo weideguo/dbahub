@@ -818,6 +818,13 @@ pidof ${command}        ##查看当前命令的pid
 
 kill -HUP ${pid}        ##程序可能自定义处理这些信号而不是结束进程，从而实现重新加载配置等操作，这需要程序支持才能如此
 kill -SIGUSR1 ${pid}                
+
+                        ## kill默认用TERM
+kill -l                 ##列出所有信号名称
+stty -a                 ###查看信号对应的操作
+
+stty size               #查看终端的大小
+
     
 线程管理
 ps -T                    ##查看所有线程
@@ -855,8 +862,6 @@ l is mult-threaded
 
 
 ps -ely 
-
-
 
 ps -U user_name   #查看用户当前运行的进程
 
@@ -1064,6 +1069,8 @@ systemctl daemon-reload
 systemctl enable mysqld.service
 systemctl is-enabled mysqld
 
+#system stop的操作，调用kill
+man systemd.kill
 
 ##linux与window的文件传输 使用ZModem协议
 sz  将选定的文件发送到本地
@@ -1155,10 +1162,7 @@ hostname     ##查看主机名  【/etc/sysconfig/network】修改配置文件�
 netperf     ##测试网络带宽
 
 
-kill -l                     ##列出所有信号名称
-stty -a                        ###查看信号对应的操作
 
-stty size       #查看终端的大小
 
 
 关闭ICMP回应(不能使用ping命令连接)

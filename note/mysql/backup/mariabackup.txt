@@ -1,0 +1,14 @@
+# mariabackup恢复
+# mariadb 10.1引入，xtrabackup的分支
+# --apply-log-only 10.2以及之后不需要再使用该参数
+
+# 全备还原
+mariabackup --defaults-file=/etc/my.cnf --prepare --target-dir=<全备> 
+
+# 增备还原 # xtrabackup_checkpoints 文件会被更改
+mariabackup --defaults-file=/etc/my.cnf --prepare --target-dir=<全备>  --incremental-dir=<逐个增量备份>
+
+
+--copy-back | --move-back
+
+

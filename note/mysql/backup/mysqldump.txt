@@ -49,8 +49,8 @@ mysqldump -u root -pyy123456 -h 10.104.220.123 -P 3306 nwebauth -R > nwebauth.sq
 mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
 
 
-
-secure_auth        into outfile / load data infile 导出/导入是否要进行安全验证，即只能在secure_file_priv指定的目录
+        
+into outfile / load data infile 导出/导入是否要进行安全验证，即只能在secure_file_priv指定的目录
 secure_file_priv   导出/导入目录
 
 ----- 分割文件
