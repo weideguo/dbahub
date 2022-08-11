@@ -1,6 +1,7 @@
 ##初始设置
 ##在要执行git命令的主机上生成key 文件存在的目录 ~/.ssh
-ssh-keygen                    
+#ssh-keygen                    
+ssh-keygen -t ed25519 -C "2515717245@qq.com"
 
 #在github中设置密钥
 #生成ssh密钥对将公钥(.pub结尾)添加到github的 Settings -> SSH and GPG keys -> New SSH key
