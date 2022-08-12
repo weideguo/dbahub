@@ -74,6 +74,9 @@ case $flag in
 	;;
 esac
 
+if [[ $x ]] && [[ $x = xx ]];then 
+echo 111; 
+fi  
 
 
 
