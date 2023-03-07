@@ -62,8 +62,11 @@ form 元素的 action 属性       恶意利用 form 元素的特性来实施攻
 
 
 
-点击劫持   通过iframe引入并伪装成特定页面
-
+点击劫持 ClickJacking
+    通过<iframe>标签覆盖在网页上,视觉欺骗
+	Flash点击劫持
+	图片覆盖攻击
+    
 防御策略
     X-FRAME-OPTIONS 三个选项：
         DENY 表示任何网页都不能使用 iframe 载入该网页
@@ -72,9 +75,19 @@ form 元素的 action 属性       恶意利用 form 元素的特性来实施攻
     
     通过js判断以阻止其他页面载入 self.location != top.location
 
+	验证码
+	Referer Check
+	Anti CSRF Token
+	frame busting  使用javascript禁止iframe的嵌套
 
-
-
+输入检查
+    安全的编码函数   OWASP ESAPI(Open Web Application Security Project,Enterprise Security API)
+		HtmlEncode
+		    如：< 转换成 &lt;
+		JavascriptEncode
+ 		XMLEncode
+		JSONEncode
+		URLEncode
 
 GET 接口风险
 URL 中指定的参数经由 Referer 泄漏（浏览器访问下一url时把上一url当成referer，且包含url的参数，如果访问第三方url会导致这些参数值泄露，所以敏感请求不要使用GET方法，比如账号登陆，使用iframe时内层不会给外层发referer）
