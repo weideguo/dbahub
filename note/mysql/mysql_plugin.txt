@@ -1,0 +1,12 @@
+存储引擎
+存储引擎/插件安装/卸载
+SHOW VARIABLES LIKE 'plugin_dir';  				---查看共享库
+INSTALL PLUGIN archive SONAME 'ha_archive.so';  ---安装存储引擎 【ha_archive.so】为共享库下的动态链接库文件
+UNINSTALL PLUGIN archive;   					---卸载存储引擎 【show plugins】
+
+select * from mysql.plugin;
+
+
+#在启动中安装
+plugin_load=xxxx.so     ##指定加载动态库
+

@@ -10,7 +10,13 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到�
 
 ###远程主机生成一个在~/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
 ##设置完毕即可由本地使用私钥无密码登陆到远程主机 如果生成密钥对时没有设置密码
+文件权限必须设置
+chmod 755 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
 
+#设置允许使用公钥登录
+/etc/ssh/ssh_config
+PubkeyAuthentication yes
 
 ##如果生成密钥对时设置密码，则远程连接需要输入该密码  
 ##可以使用ssh-agent保存该密码 实现免密登录 用于管理多个私钥文件

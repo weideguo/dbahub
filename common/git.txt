@@ -1,6 +1,7 @@
 ##初始设置
 ##在要执行git命令的主机上生成key 文件存在的目录 ~/.ssh
-ssh-keygen                    
+#ssh-keygen                    
+ssh-keygen -t ed25519 -C "2515717245@qq.com"
 
 #在github中设置密钥
 #生成ssh密钥对将公钥(.pub结尾)添加到github的 Settings -> SSH and GPG keys -> New SSH key
@@ -144,7 +145,11 @@ git tag -d <tag-name>
 #推送本地标签的删除到远端 即删除远端仓库的标签
 git push origin :refs/tags/<tag-name>
  
-   
+#删除远端的分支 
+git push origin --delete dev_mysql_tablespace
+
+#远端分支重命名 
+git push origin :old_branch new_branch 
  
 #查看所有提交信息    
 git log    
@@ -181,7 +186,7 @@ git branch --list
 git branch -vv
 
 #删除分支
-git branch -d 0.0.1
+git branch -D 0.0.1
 
 
 #切换到分支 并清除所有提交的log
@@ -229,6 +234,18 @@ git rebase
 
 # git会继续应用(apply)余下的补丁（git pull出现冲突，处理冲突后运行）
 git rebase --continue
+
+
+#合并7f4dc225818e94b37d6f2da3285ef6c096eb1f68提交之前的commit成一个commit，执行改命令时必须所有文件都被commit
+git rebase -i 7f4dc225818e94b37d6f2da3285ef6c096eb1f68
+
+# 运行后设置并退出
+pick 2f1a707 sysbench压测支持
+s e6667f0 syebench配置设置   
+s d0b3bdd update
+s 5de57da update
+s e37cedb update
+
 
 
 # 在提交给上游分支之后，在合并上游分支，会导致合并信息超前于上游分支 （This branch is X commits ahead of Y.）

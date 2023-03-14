@@ -65,8 +65,13 @@ location /json_ip {
     return 200 "{\"ip\":\"$remote_addr\"}";
 }
 
+无 前缀匹配
+=  用于不包含正则表达式的uri前，与指定的模式精确匹配
+~  用于表示当前uri中包含了正则表达式，并且区分大小写 
+~* 用于表示当前uri中包含了正则表达式，并且不区分大小写
 
-#跨站点请求允许
+
+#跨站点请求允许 CORS Cross-Origin Resource Sharing
 add_header Access-Control-Allow-Origin *;
 add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
 add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';

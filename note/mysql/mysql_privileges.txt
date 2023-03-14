@@ -51,6 +51,12 @@ alter user ... account lock;
 alter user ... account unlock;
 
 
+proxy权限
+install plugin auth_test_plugin soname 'auth_test_plugin.so' 
+create user 'user2'@'host2' identified with auth_test_plugin soname as 'user1'@'user2';    
+--proxy_user只读参数，显示当前用户所使用的代理账号
+
+
 ##修改账号密码加密方式 8.0版本加密认证修改以兼容之前的连接程序
 ALTER USER 'root'@'localhost' IDENTIFIED with mysql_native_password BY '123456';
 ##创建旧的密码加密账号

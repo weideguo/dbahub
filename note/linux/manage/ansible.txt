@@ -41,3 +41,15 @@ cat playbook.yml   #playbook为yaml格式
 
 #使用playbook执行分发文件与命令
 ansible-playbook  playbook.yml
+
+
+#使用变量
+---
+- hosts: {{host}}
+  tasks:
+    - name: create file test
+      command: touch /tmp/abcdef
+
+#使用playbook执行分发文件与命令
+ansible-playbook  playbook.yml --extra-vars host=test2
+

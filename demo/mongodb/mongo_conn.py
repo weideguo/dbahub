@@ -10,7 +10,7 @@ dic={"name":"sysu","address":"ggggggg"}
 col.insert(dic)                 #insert_one()  insert_many()参数为list
 
 for item in col.find():			#可以传入字典参数进行条件查询 有find_one()
-	print item
+	print(item)
 	
 col.update({"name":"wwwwwwww"},{"set":{"name":"sysuuuuu"}})
 
@@ -113,7 +113,14 @@ from pymongo import WriteConcern
 WriteConcern(w=None, wtimeout=None, j=None, fsync=None)
 """
 
+"""
+对于sharding架构 多个mongos也是一样的使用
+连接为连接池，带有重连机制
 
+单个mongos节点关闭不会有影响
+shard主节点关闭，导致python程序插入卡住；但在进入mongos命令行可以插入。？
+
+"""
 
 
 

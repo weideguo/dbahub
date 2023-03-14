@@ -1,7 +1,7 @@
 #cofing:utf8
 """
 pip install MySQL-python==1.2.5   #暂时只支持python2  
-pip install mysqlclient           #支持python3
+pip install mysqlclient           #支持python3       MySQL-python的代替项目，都依赖于libmysqlclient.so
 """
 import MySQLdb
 
@@ -15,13 +15,22 @@ connect=mysql.connector.connect
 
 
 """
-#pip install PyMySQL            #python3的支持 与MySQLdb兼容
+#pip install PyMySQL            #支持python3 与MySQLdb兼容，纯python实现，无需安装mysql相关库
 #pip install cryptography       #使用caching_sha2_password格式的密码则必须安装这个包（mysql8默认使用）
 
 import pymysql
 connect = pymysql.connect
 """
 
+# connect参数查看
+from MySQLdb.connections import Connection
+help(Connection)
+"""
+ |      autocommit
+ |        If False (default), autocommit is disabled.
+ |        If True, autocommit is enabled.
+ |        If None, autocommit isn't set and server default is used.
+"""
 
 #开启一个连接mysql中  show processlist 可以看到
 conn=connect(host="127.0.0.1", port=1039, user="test", passwd="test",db="test1", charset="utf8",connect_timeout=10)

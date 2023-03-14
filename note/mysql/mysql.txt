@@ -2,17 +2,6 @@
 http://dev.mysql.com/doc/
 
 
-mysql --prompt="what_to_prompt"
-\\u		用户名
-\\h		主机名
-\\p		端口
-\\d		数据库名
-\\r		时间
-quit  ---退出客户端
-
-
-help command_name;  ----查询命令的使用格式
-
 select user();   ----查询当前用户
 select now(); 	 ----查询当前时间
 
@@ -56,7 +45,7 @@ show full processlist;
 mysqladmin -u roo -p processlist
 select id from information_schema.processlist where user='root'; 
 
-kill id   		---终止连接（在mysql中执行），information_schema.processlist的id
+kill id   		    ---终止连接（在mysql中执行），information_schema.processlist的id
 kill connection id	---终止连接 跟 kill id 一致
 kill query id		---终止查询，连接依旧保存
 
@@ -68,18 +57,6 @@ net_write_timeout                    			---The number of seconds to wait for a b
 connect_timeout									---The number of seconds that the mysqld server waits for a connect packet before responding with Bad handshake
 slave-net-timeout								---The number of seconds to wait for more data from the master before the slave considers the connection broken, aborts the read, and tries to reconnect.
 
-
-
-在不同的时间段查询两次取差值
-show status like 'queries'
-QPS=(Q1-Q2)/time
-
-questions也可以做一定的衡量，不包含存储过程执行的语句
-
---需要显式提交/回滚
-show status like 'Com_commit'
-show status like 'Com_rollback'
-TPS=(CC1+CR1-CC2-CR2)/time
 
 
 状态
@@ -101,26 +78,6 @@ show global variables max_user_connection 	 	----单个用户最大连接数
 	set @@session.wait_timeout=@@global.wait_timeout;	
 	
 
-存储引擎
-存储引擎/插件安装/卸载
-SHOW VARIABLES LIKE 'plugin_dir';  				---查看共享库
-INSTALL PLUGIN archive SONAME 'ha_archive.so';  ---安装存储引擎 【ha_archive.so】为共享库下的动态链接库文件
-UNINSTALL PLUGIN archive;   					---卸载存储引擎 【show plugins】
-
-select * from mysql.plugin;
-
-
-#在启动中安装
-plugin_load=xxxx.so     ##指定加载动态库
-
-
-proxy权限
-install plugin auth_test_plugin soname 'auth_test_plugin.so' 
-create user 'user2'@'host2' identified with auth_test_plugin soname as 'user1'@'user2';    
---proxy_user只读参数，显示当前用户所使用的代理账号
-
-
-
 
 CREATE TABLE t1 (c1 INT PRIMARY KEY) DATA DIRECTORY = '/alternative/directory';   --创建表时指定数据文件路径
 
@@ -136,87 +93,7 @@ create temporary table tmp_tablename ...        ---创建临时表，mysql临时
 创表时指定存储引擎
 create table table_name() engine=myisam;
 
-innoDB 存储引擎
-	show variables like 'inndb%log%';   ----innoDB相关的日志
-	.frm  表的结构定义
-	.idb  表空间的数据文件     ---当启用多用表空间时，每个表会生成与表名相同的数据文件	
-	
-	
-	row_format={compressed | dynamic}   ---创建时指定存储格式
-	
-	show table status like 'table_name'  ---查看表的状态 等同于查询information_schema.tables
-	
-	COMPACT    默认，性能瓶颈不在CPU时性能可以提高  Fixed-length columns greater than or equal to 768 bytes are encoded as variable-length columns, which can be stored off-page
-	REDUNDANT  兼容旧版本  如 FIXED
-	DYNAMIC    COMPACT的衍生，变长存储   can store long variable-length column values (for VARCHAR, VARBINARY, and BLOB and TEXT types) fully off-page，数据页中只存放20个字节的指针，实际的数据存放在Off Page中
-	COMPRESSED COMPACT的衍生，压缩存储   
-	
-    
-    
-	innodb使用系统表空间存储内部数据字典及undo日志，所以使用多重表空间时数据文件(.ibd)不能随意移动
-	
-	rename table db1.table_name db2.table_name;    ---将表从一个数据库移动到另外一个数据库，只是修改数据字典中的定义而已
-	
-	
-	ib_logfile   ---redo日志
-	ib_data      ---系统表空间数据文件
-	ibdata
-	
-	
-	系统表空间
-		数据字典                     ---innodb的
-		doublewrite buffer           
-		change buffer				 ---更改的二级索引缓存，由buffer bool转写到系统表空间以防止丢失，回写到表空间后会清理
-		undo logs (可以设置使用单独的数据文件而不再系统表空间中)
-		表的数据(启用多重表空间时表的数据在单独的表空间) --innodb的
-	
-    
-	change buffer
-		A special data structure that records changes to pages in secondary indexes.
-		DML语句的结果。
-		Changes are only recorded in the change buffer when the relevant page from the secondary index is not in the buffer pool.改变非聚集索引的数据，所在的页不在内存中。
-		包含delete buffering, insert buffering, purge buffering。(5.5之前只有insert buffering)
-	innodb_change_buffering={none|inserts|deletes|changes|purges|all}  ---默认all
-	innodb_change_buffer_max_size={0~50}  --默认25
-		change buffer占用buffer pool的比例
-	
-	
-	
-	配置参数
-	innodb_file_per_table=1   ---启用多重表空间，有一个表对应一个表空间  为0时为使用独立表空间文件，只有一个表空间，为系统表空间，但可以有多个数据文件  系统表空间总是存在
-	
-	---启动后更改只对更改后的表生效
-	
-	---不启用多重表空间时，可以选择设置如下
-	innodb_data_home_dir      ---指定系统表空间数据文件保存的目录
-	innodb_data_file_path=datafile_spec[;datafile_spec1...]  	  ---系统表空间的数据文件  datafile_spec=file_name:file_size[:autoextend[:max:max_file_size]]
-	
 
-	
-    innodb_fast_shutdown={0 | 1 | 2}    ---默认为 1
-	0 中止新的连接，等待会话关闭、事务结束，将缓冲区的数据写入磁盘。		对应oracle: shutdown normal
-	1 中止新的连接，关闭会话，将提交的数据写入数据文件，未提交的事务回滚。  对应oracle: shutdown immediate
-	2 中止新的连接，关闭会话，忽略当前所有操作。重启需要执行故障恢复，重新读取日志文件，回滚未提交的事务等。 	对应oracle: shutdown abort
-	
-	
-	
-ISAM (Indexed Sequential Access Method) 索引顺序访问方法
-MyISAM 存储引擎
-	.myi 索引文件
-	.myd 数据文件
-	.frm 存储表定义
-
-	存储格式 
-	fixed 		定长/静态   不包含变长的列(varchar/varbinary/blob/text)
-	dynamic 	动态		
-	compressed  压缩        创建只能使用myisampack，解压使用myisamchk，表是只读格式
-	fixed/dynamic创表时自动适配
-	row_format={fixed | dynamic}    ---创表时选择强制指定
-	
-	
-	myisamchk -ei table_name.myi  ---查看表的统计信息
-	myisamchk -ed table_name.myi  ---查看表表对象的链接数
-	
 	
 #通用表空间 >=5.7
 CREATE TABLESPACE tablespace_name
@@ -226,126 +103,9 @@ CREATE TABLESPACE tablespace_name
 
 CREATE TABLE tbl_name ... TABLESPACE [=] tablespace_name 
 ALTER TABLE tbl_name TABLESPACE [=] tablespace_name 
-	
-	
-	
-csv存储引擎 
-	
-	.csv 数据文件 以逗号分隔符存储
-
-db.opt  指定数据库的字符集和排序使用的字符集
-	
-	
-MyISAM和innodb区别
-MyISAM
-不支持事务
-查询、写入比innodb快
-不支持外键
-内存只加载索引的数据（叶子页和非叶子页），表的数据不加载
-只有表级锁
-
-If a MyISAM table has no holes in the data file (deleted rows in the middle), an INSERT statement can be executed to add rows to the end of the table at the same time that SELECT statements are reading rows from the table. 
-If there are multiple INSERT statements, they are queued and performed in sequence, concurrently with the SELECT statements. 
-新数据会被附加到数据文件的结尾，如果时常做一些UPDATE，DELETE操作之后，数据文件就不再是连续的，就是数据文件里出现了很多洞洞。
-concurrent_insert=0时，不允许并发插入功能。 
-concurrent_insert=1时，允许对没有洞洞的表使用并发插入，新数据位于数据文件结尾（缺省）。 
-concurrent_insert=2时，不管表有没有洞洞，都允许在数据文件结尾并发插入。 
-
-堆表
-索引的叶子几点记录表的地址（逻辑地址，移动文件之后索引依旧可以使用），由此实现回表查询。
 
 
-innodb
-支持事务	
-行锁、表锁	
-支持外键	
-内存加载索引以及表的数据，可以通过自适应hash技术实现在内存中实现回表查询
-
-索引组织表
-二级索引的叶子节点记录主键，由此查询clustr索引（即主键索引，innodb由主键组织存放）实现回表查询。
-
-	
-				  
-
-
-使用密码文件登录
-#mysql5.6后支持
-mysql_config_editor set --help		
-mysql_config_editor set --login-path=fastlogin --user=root --host=localhost --password --socket=/u02/mysql/data/my.sock	       ---- 在当前账号的家目录下生成一个隐藏加密文件.mylogin.cnf  
-mysql_config_editor print --all     ----查询创建的加密文件
-
-mysql --login-path=fastlogin   		----使用创建的密码文件登录		
-		
-
-		
-查询命令的使用格式
-mysql  --help
-mysqld --help
-mysqladmin  --help		
-
-perror err_code   ----查询错误代码的解释
-
-命令行中
-help contents  #由此提示逐层查看相关命令
-
-
-
-时区
-system_time_zone                  --服务器的时区，，默认由操作系统确定，不可以动态修改						  
-set global time_zone="+8:00"      --数据库实例当前的时区，设置后即影响mysql的时间，默认与system_time_zone一致
-set time_zone="+8:00"						  
-
-#配置文件中设置
-default-time-zone='timezone'
-	
-大小写
-lower_case_table_names=[0|1|2]      
-If set to 0, table names are stored as specified and comparisons are case sensitive. 
-If set to 1, table names are stored in lowercase on disk and comparisons are not case sensitive. 
-If set to 2, table names are stored as given but compared in lowercase. 
-This option also applies to database names and table aliases. 
-
-内容大小写敏感
-创建表时指
-
-column_name varchar(100) binary    ---由binary指定大小写敏感
-
-
-	
-正则表达式
-select * from table_name where column_name regexp 'regular_expression';		
-
-select * from mysql.user\G   -----查询结果按列打印
-	
 use database_name;   ---切换数据库
-
-表复制
-Insert into Table2(field1,field2,...) select value1,value2,... from Table1 ---要求table2存在
-select value1,value2 into table2 from table1;   --要求table2不存在
-
----将命令即输出写入文件中
-tee file_name.txt
-...
-notee
-
-
-
-gtid(global transaction identifier)
-
-gtid-mode={on|off}    				--设置是否启动gtid
---gtid_executed='gtid_string'  		--设置
---gtid_purged='gtid_string'			--设置清除之前的binlog
-
-
-
-mysqlshow [options] [db_name [table_name [col_name]]]		---显示数据库、表、字段的信息
-mysqlslap		---模拟对mysql服务器发出请求
-
-压测
-mysqlslap -u root -p -c 100 -i 10 -e innodb --create-schema='test' --query='select * from ddd' --number-of-queries=100
-
-
-mysqlcheck		---检查数据库、表、字段的存在、可访问情况，以及修复【repair】、分析【analyze】、优化【optimize】
 
 
 
@@ -359,7 +119,7 @@ SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEM
 #设置表的统计信息的收集计划
 ATER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECALC=1, ALGORITHM=INPLACE, LOCK=NONE; 
 					  
-##更新表的统计信息
+##更新表的统计信息 During the analysis, the table is locked with a read lock for InnoDB and MyISAM.
 analyze table table_name;
 
 ##修复myisam的表
@@ -383,58 +143,6 @@ delete语句不会回收磁盘空间，因而会出现大量碎片。使用trunc
 
 
 
-
-
-文件
-错误文件
-log_err/log-error
-
-socket文件
-Mysql有两种连接方式：
-（1）TCP/IP
-（2）socket    -----使用socket文件mysql.sock
-对mysql.sock来说，其作用是程序与mysqlserver处于同一台机器，发起本地连接时可用
-
-auto.cnf
-数据文件的根目录下，设置server_uuid
-
-
-mysql使用localhost登陆时是通过socket登陆
-
-
-日志
----可以输出到表或者文件
----启动参数【log-output】TABLE、FILE、NONE，可以多个以【，】隔开
----TABLE  对应general_log和slow_log两个表
----FILE   
-
-
-log_output='table'   ---'file' 'table,file'
-
-----general query log and slow query log output
-
-慢查询日志 (slow query log)  -----记录查询时间达到【min_examined_row_limit】、查询记录达到【long_query_time】的SQL语句
-【slow_query_log】   		 ----是否开启慢查询日志
-【show_query_log_file】      ----指定日志的路径及文件名
-
-mysqldumpslow   ---解析分析慢查询日志
-
-通用查询日志(general query log)   ---记录所有操作
-【general_log】    		----指定是否开启通用查询日志
-【general_log_file】    ----通用查询日志的路径及文件名
-
-	  
-					  
-
-
-
-mysql升级
-1.使用mysqldump从旧版导出，然后再倒入新版
-2.直接复制data目录，运行mysql_upgrade升级
-
-
-
-
 ##比较表的差异
 checksum table table_name;
 
@@ -449,16 +157,9 @@ select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的
 
 
 
-~/.mysql_history        #mysql命令行默认将命令行执行的命令记录于该文件
-
-ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防止sql泄露
-
-
-
 #mysql8 开始支持并行查询（在此之前单个sql都是由一个线程执行），只适用于聚簇索引的扫描，二级索引不适用。
 set innodb_parallel_read_threads=4;
 
 会提升count(*) \ check table 等操作
-
 
 

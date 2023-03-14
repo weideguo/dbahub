@@ -90,12 +90,23 @@ db.serverStatus()                   //查看状态信息
 
 	connections  //连接的信息
 
+db.hello()                          // 4.4.2: (and 4.2.10, 4.0.21, and 3.6.21)，一些集群信息
+
 db.currentOp()        				//查看当前连接信息,只列出有操作的
 db.currentOp({"$all":true})			//查看所有连接信息
 db.currentOp({"opid" : 1808430482}) //
 db.killOp({op:opid})			    //杀死操作
 
-
+// 查看当前正在创建索引的操作
+db.adminCommand(
+    {
+      currentOp: true,
+      $or: [
+        { op: "command", "command.createIndexes": { $exists: true }  },
+        { op: "none", "msg" : /^Index Build/ }
+      ]
+    }
+)
 
 db._adminCommand( {getCmdLineOpts: 1} )     //查看启动参数
 
@@ -154,8 +165,13 @@ virtual  虚拟内存占用
 mapped   映射到内存的数据大小
 
 
+db.serverStatus().tcmalloc
 
+total_free_bytes = central_cache_free_bytes + transfer_cache_free_bytes + thread_cache_free_bytes
 
+tcmalloc cache=pageheap_free_bytes + total_free_byte。
+
+tcmalloc cache会还回操作系统
 
 
 文件
@@ -189,7 +205,7 @@ bin/mongod  --repair   #启动是修复数据库
 
 
 
-##慢查询分析
+##慢查询分析 
 db.setProfilingLevel(1,500)
 
 #0 不收集慢查询 
@@ -200,7 +216,7 @@ db.setProfilingLevel(1,500)
 
 db.getProfilingStatus()     #对当前库生效
 
-db.system.profile.find()	#查看慢查询语句
+db.system.profile.find()	#查看慢查询语句  每个库有自己的慢查询表
 
 db.system.profile.find().limit(10).sort({ts:1}).pretty()
 
@@ -208,7 +224,8 @@ db.system.profile.find().limit(10).sort({ts:1}).pretty()
 profile=1
 slowms=500
 
-
+# 设置慢查询表的大小
+db.createCollection( "system.profile", { capped: true, size:4000000 } )
 
 db.setProfilingLevel(2)
 

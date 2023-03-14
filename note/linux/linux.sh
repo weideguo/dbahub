@@ -136,16 +136,25 @@ cgroups
 /etc/security/limits.conf             ###配置文件修改，最大打开文件数，以及其他
 /etc/security/limits.d
 
+通过/etc/rc.local实现的开机启动配置不生效。可以直接往/etc/profile运行ulimt命令设置配置
 
+/proc/${pid}/limits                  ##对应进程的实际限制
 
-ulimit -a                            ###查看所有的限制
-ulimit -n 2048                        ##修改允许打开最大的文件数
-lsof | wc -l                        ##查看已经打开的文件数
-lsof -p pid                         ##查看进程打开的文件
-lsof -c mysql                                           ##查看对应进程名打开的文件
-lsof +L1                                                ##unlinked的文件信息
+ulimit -a                            ##查看所有的限制
+ulimit -n 2048                       ##修改允许打开最大的文件数
+lsof | wc -l                         ##查看已经打开的文件数
+lsof -p pid                          ##查看进程打开的文件
+lsof -c mysql                        ##查看对应进程名打开的文件
+lsof +L1                             ##unlinked的文件信息
 lsof +L/-L                                              ##打开或关闭文件的连结数计算，当+L没有指定时，所有的连结数都会显示(默认)；若+L后指定数字，则只要连结数小于该数字的信息会显示；连结数会显示在NLINK列。
 ulimit -Hn                          ##查看
+
+以下文件也可以控制ulimit
+/etc/systemd/system.conf
+/etc/systemd/user.conf
+/etc/systemd/system/
+/etc/systemd/user/
+
 
 #删除恢复 进程使用文件时删除文件的恢复
 lsof | grep       
@@ -230,7 +239,7 @@ xclock   ###验证display参数
 全局系统参数
 /etc/profile
 /etc/bashrc
-
+/etc/profile.d/
 
 .bash_history            ##history的信息，清空可以清除history的显示  
 
@@ -778,6 +787,8 @@ tmp     临时目录（系统会自动删除）
 
 /etc/cron.daily/tmpwatch  tmp目录清空机制centos6以及以下
 
+# centos7 清理配置
+/usr/lib/tmpfiles.d/tmp.conf   
 
 进程管理
 ps -ef | grep java       ##查看有关与java的进程
@@ -827,6 +838,13 @@ pidof ${command}        ##查看当前命令的pid
 
 kill -HUP ${pid}        ##程序可能自定义处理这些信号而不是结束进程，从而实现重新加载配置等操作，这需要程序支持才能如此
 kill -SIGUSR1 ${pid}                
+
+                        ## kill默认用TERM
+kill -l                 ##列出所有信号名称
+stty -a                 ###查看信号对应的操作
+
+stty size               #查看终端的大小
+
     
 线程管理
 ps -T                    ##查看所有线程
@@ -865,8 +883,6 @@ l is mult-threaded
 
 ps -ely 
 
-
-
 ps -U user_name   #查看用户当前运行的进程
 
 ps -ejH   #查看进程树
@@ -879,6 +895,10 @@ pstree -p $pid | awk -F"[()]" '{print $2}'| xargs kill -9            #杀死进�
 
 
 top                     ##使用子命令H查看线程，Tasks数增多
+
+c cpu使用率排序
+M 内存排序
+
 
 ulimit -u                ##当前用户的最大线程数查看
 ulimit -u 2048            ##修改当前用户的最大线程数
@@ -901,6 +921,12 @@ free -m               ##内存与swap查看   ###SWAP用作虚存分区
     
     -buffer/cache =used-buffers-cached  程序占用的内存
     +buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
+
+    
+    centos7
+    total = used + free + buff/cache
+    available = free + buff/cache
+
 
 
 /proc/meminfo  #free命令信息来自于此
@@ -979,7 +1005,7 @@ cat /proc/$pid/io      #查看进程的io的情况
     
 pidstat -r -p PID      #查看进程的内存使用    
     
-    
+iotop    
     
     
 badblocks -s -v sdb1   ##坏道检测
@@ -1040,7 +1066,6 @@ crontab -e   ###编辑  使用方法与vi类似
 ##Linux在启动时，会自动执行/etc/rc.d目录下的初始化程序，可以把启动任务放到该目录下
 rc.local是在完成所有初始化之后执行的
 
-/usr/lib/systemd/system   #centos7 service文件位置
 
 通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
 chmod +x /etc/rc.d/init.d/simpleTest    使之可直接执行
@@ -1053,6 +1078,19 @@ chkconfig --level httpd 2345 off        设置在哪些级别关闭
 /etc/rc.d/rc0.d                #运行级别为0的启动项 通过链接到/etc/rc.d/init.d/下的文件设置
 /etc/rc.d/rc1.d                #运行级别为1的启动项
 
+
+#centos7 service文件位置
+systemctl
+将server放入这个目录下，如mysqld.service
+/usr/lib/systemd/system
+
+#重新加载即可
+systemctl daemon-reload
+systemctl enable mysqld.service
+systemctl is-enabled mysqld
+
+#system stop的操作，调用kill
+man systemd.kill
 
 ##linux与window的文件传输 使用ZModem协议
 sz  将选定的文件发送到本地
@@ -1144,10 +1182,7 @@ hostname     ##查看主机名  【/etc/sysconfig/network】修改配置文件�
 netperf     ##测试网络带宽
 
 
-kill -l                     ##列出所有信号名称
-stty -a                        ###查看信号对应的操作
 
-stty size       #查看终端的大小
 
 
 关闭ICMP回应(不能使用ping命令连接)
@@ -1195,7 +1230,7 @@ date |md5sum
 
 cat /dev/urandom | head -1 | md5sum 
 
-
+openssl rand -base64 10
 
 
 yum安装软件
@@ -1326,6 +1361,9 @@ echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
 #逐日存放日志
 /etc/logrotate.d
 
+# 手动运行切换
+logrotate ${config_file}
+
 copytruncate模式 copy完成到truncate完成的中间数据会丢失
 
 
@@ -1347,6 +1385,8 @@ cat ABC.tar.gz.* | tar -zxv
 #压缩过滤 多个目录可以用多个exclude
 tar -zcvf abcd.tar.gz --exclude=abcd/def abcd
 
+tar cvf - mypath | pigz -9 -p 3 > mypath.tgz
+并发压缩
 
 shc  将shell脚本编译成二进制二进制文件
 
@@ -1438,4 +1478,7 @@ lock
 #释放锁
 flock -u 7
 
+
+# 将文件缩小到指定大小，可以避免直接rm造成的io挤占
+truncate ${filename} -s 524280000
 

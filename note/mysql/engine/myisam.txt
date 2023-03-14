@@ -1,0 +1,47 @@
+ISAM (Indexed Sequential Access Method) 索引顺序访问方法
+MyISAM 存储引擎
+
+.myi 索引文件
+.myd 数据文件
+.frm 存储表定义
+
+存储格式 
+fixed 		定长/静态   不包含变长的列(varchar/varbinary/blob/text)
+dynamic 	动态		
+compressed  压缩        创建只能使用myisampack，解压使用myisamchk，表是只读格式
+fixed/dynamic创表时自动适配
+row_format={fixed | dynamic}    ---创表时选择强制指定
+
+
+myisamchk -ei table_name.myi  ---查看表的统计信息
+myisamchk -ed table_name.myi  ---查看表表对象的链接数
+    
+    
+MyISAM和innodb区别
+MyISAM
+不支持事务
+查询、写入比innodb快
+不支持外键
+内存只加载索引的数据（叶子页和非叶子页），表的数据不加载
+只有表级锁
+
+If a MyISAM table has no holes in the data file (deleted rows in the middle), an INSERT statement can be executed to add rows to the end of the table at the same time that SELECT statements are reading rows from the table. 
+If there are multiple INSERT statements, they are queued and performed in sequence, concurrently with the SELECT statements. 
+新数据会被附加到数据文件的结尾，如果时常做一些UPDATE，DELETE操作之后，数据文件就不再是连续的，就是数据文件里出现了很多洞洞。
+concurrent_insert=0时，不允许并发插入功能。 
+concurrent_insert=1时，允许对没有洞洞的表使用并发插入，新数据位于数据文件结尾（缺省）。 
+concurrent_insert=2时，不管表有没有洞洞，都允许在数据文件结尾并发插入。 
+
+堆表
+索引的叶子节点点记录表的地址（逻辑地址，移动文件之后索引依旧可以使用），由此实现回表查询。
+
+
+innodb
+支持事务	
+行锁、表锁	
+支持外键	
+内存加载索引以及表的数据，可以通过自适应hash技术实现在内存中实现回表查询
+
+索引组织表
+二级索引的叶子节点记录主键，由此查询clustr索引（即主键索引，innodb由主键组织存放）实现回表查询。
+

@@ -27,10 +27,10 @@ cfg.members[1].priority=2;
 rs.reconfig(cfg);
 
 
-##设置节点
+##设置节点 / 也可以通过这个方式在运行后调整节点的配置
 cfg = rs.conf()
-cfg.members[1].priority = 0           // 优先级，越高则主从切换时优先升为主
-cfg.members[1].hidden = true          // 阻止客户端连接到，隐藏节点可以在选主中参与投票，但不会被选中
+cfg.members[1].priority = 0           // 优先级，越高则主从切换时优先升为主，为0则不能选择为主。跨机房架构可以设置另外机房的节点priority为0。
+cfg.members[1].hidden = true          // 不会被客户端连接到，需要设置priority为0，隐藏节点可以在选主中参与投票，但不会被选为主
 cfg.members[1].slaveDelay = 3600      // 延迟复制，如果设置为延迟，则设置不被选取为主
 rs.reconfig(cfg)
 
@@ -54,8 +54,7 @@ config={_id:"mongo_repl",members:[
 ]	
 }
 
-##仲裁节点为可选
-##仲裁节点只能参与投票，不能升级为主节点
+
 
 设置tag set
 conf = rs.conf();
@@ -94,4 +93,29 @@ rs.add("192.168.200.140:27072")
 rs.add("192.168.200.140:27073")  
 
 ###仲裁节点添加，rs.addArb("192.168.200.140:27074")
+仲裁节点为可选
+仲裁节点只能参与投票，不能升级为主节点
+仲裁不存储实际数据，只是存储集群配置信息
+
+
+主节点宕机后再加入集群，会引起切换，根据priority重新选择。
+启动的节点根据priority选为主，即如果修改这个值，则可以立即新选择主。
+
+
+一主两从架构 PSS
+在主挂掉时可以顺利切换，业务可以读写
+主重新启动可以直接加入集群
+
+
+一主一从一仲裁架构 PSA
+主挂掉时，业务只可读，写被阻塞；rs.remove原来的主之后集群可以读写。因为PSA达不到写majority。
+
+删除的节点重新启动时不需要更改配置，但需要以下方式加入
+#5.0以后
+rs.reconfigForPSASet()   
+
+#4.4以及以前
+rs.reconfig() 重新设置新节点，且新节点 "priority" : 0,"votes" : 1，然后运行rs.reconfig()重新设置priority
+
+
 

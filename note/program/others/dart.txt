@@ -1,0 +1,12 @@
+flutter 跨平台UI包，使用dart语句
+
+
+void main() {
+  for (int i = 0; i < 5; i++) {
+    print("result is: "+(f(i,10).toString()));
+  }
+}
+
+int f(int a, int b){
+  return a+b;
+}

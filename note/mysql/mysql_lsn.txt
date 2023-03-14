@@ -3,6 +3,7 @@ LSN(Log Sequence Number)
 查看lsn
 show engine innodb status\G   ----在LOG的部分查看
 
+innodb 每一个页都记录自己的自己的lsn
 
 Log sequence number   已经写到log buffer中的lsn。              参考mtr_t::Command::finish_write函数。
 Log flushed up to     已经写到日志文件的redo的lsn。            参考log_write_flush_to_disk_low函数。

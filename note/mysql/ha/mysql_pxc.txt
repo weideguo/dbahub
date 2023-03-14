@@ -2,3 +2,6 @@ percona xtradb cluster
 
 
 galeracluster mariadb版本
+
+
+多主架构

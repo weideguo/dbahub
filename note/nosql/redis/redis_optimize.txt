@@ -1,0 +1,16 @@
+hot keys
+
+
+redis-cli --i 0.1 --hotkeys
+
+运行 monitor 命令，打印出所有正在被执行的命令，统计输出的结果
+
+
+
+
+big keys
+
+redis-cli --bigkeys 
+
+
+

@@ -1,3 +1,10 @@
+gtid(global transaction identifier)
+
+gtid-mode={on|off}    				--设置是否启动gtid
+--gtid_executed='gtid_string'  		--设置
+--gtid_purged='gtid_string'			--设置清除之前的binlog
+
+
 show global variables like '%gtid%';
 
 SET GLOBAL gtid_purged="...";  # 当 global.gtid_executed 为空时可以设置
@@ -11,4 +18,12 @@ set @@session.gtid_next="..."
 使用gtid，则 
 搭建主从不需要再设置position位置      change master to ...,master_auto_position=1
 使用binlog前滚不需要先设置开始位置
+
+
+
+# 主库的uuid
+select @@server_uuid;
+
+GTID组成
+主库的uuid+偏移量
 

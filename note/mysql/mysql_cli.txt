@@ -1,0 +1,23 @@
+mysql --prompt="what_to_prompt"
+\\u		用户名
+\\h		主机名
+\\p		端口
+\\d		数据库名
+\\r		时间
+quit  ---退出客户端
+
+
+help contents       -- 由此提示逐层查看相关命令
+help command_name;  -- 查询命令的使用格式
+
+
+status										----查看数据库的状态
+\s
+
+
+---将命令即输出写入文件中
+tee file_name.txt
+...
+notee
+
+

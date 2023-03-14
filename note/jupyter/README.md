@@ -25,3 +25,13 @@ pip install jupyterthemes
 jt -l
 jt -t chesterish
 ```
+
+```shell
+# docker中使用
+docker pull jupyter/base-notebook:latest
+
+# 映射到服务器8080
+docker run -d -p 8080:8888 -v /data/work:/home/jovyan/work jupyter/base-notebook:latest
+
+```
+

@@ -35,3 +35,10 @@ ft.search index1 "@title:123"
 
 ft.del index1 doc1
 
+
+##############################RedisBloom
+布隆过滤器
+
+BF.ADD newFilter foo
+BF.EXISTS newFilter foo
+

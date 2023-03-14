@@ -28,6 +28,10 @@ cpan> install DBD::mysql
 capn>o conf urllist push https://metacpan.org/
 cpan>o conf commit
 
+#卸载
+cpan>install App::pmuninstall
+pm-uninstall DBD::Oracle
+
 
 ##############################################
 cat > test.pl <<EOF

@@ -74,6 +74,9 @@ case $flag in
 	;;
 esac
 
+if [[ $x ]] && [[ $x = xx ]];then 
+echo 111; 
+fi  
 
 
 
@@ -348,3 +351,13 @@ echo -en "\b\b\b\b""f"     #\b 删除之前的字符
 
 printf #不换行输出
 
+# 如果aaa为空，则被赋值；否则保持为原来值
+: ${aaa:=bbb}
+
+#在一个2元命令中, 提供一个占位符, 表明后面的表达式, 不是一个命令
+: $((n=$n+1))
+
+
+# 去除前后空格
+echo " a a " | sed 's/^\s*//g' | sed 's/\s*$//g' 
+echo " a a " | awk '$1=$1'                    

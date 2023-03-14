@@ -1,0 +1,54 @@
+文件
+错误文件
+log_err/log-error
+
+socket文件
+Mysql有两种连接方式：
+（1）TCP/IP
+（2）socket    -----使用socket文件mysql.sock
+对mysql.sock来说，其作用是程序与mysqlserver处于同一台机器，发起本地连接时可用
+
+auto.cnf
+数据文件的根目录下，设置server_uuid
+
+
+mysql使用localhost登陆时是通过socket登陆
+
+
+日志
+---可以输出到表或者文件
+---启动参数【log-output】TABLE、FILE、NONE，可以多个以【，】隔开
+---TABLE  对应general_log和slow_log两个表
+---FILE   
+
+
+log_output='table'   ---'file' 'table,file'
+
+----general query log and slow query log output
+
+慢查询日志 (slow query log)  -----记录查询时间达到【min_examined_row_limit】、查询记录达到【long_query_time】的SQL语句
+【slow_query_log】   		 ----是否开启慢查询日志
+【show_query_log_file】      ----指定日志的路径及文件名
+
+mysqldumpslow   ---解析分析慢查询日志
+
+通用查询日志(general query log)   ---记录所有操作
+【general_log】    		----指定是否开启通用查询日志
+【general_log_file】    ----通用查询日志的路径及文件名
+
+
+db.opt  指定数据库的字符集和排序使用的字符集
+
+
+~/.mysql_history        #mysql命令行默认将命令行执行的命令记录于该文件
+
+ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防止sql泄露
+
+
+使用密码文件登录
+#mysql5.6后支持
+mysql_config_editor set --help		
+mysql_config_editor set --login-path=fastlogin --user=root --host=localhost --password --socket=/u02/mysql/data/my.sock	       ---- 在当前账号的家目录下生成一个隐藏加密文件.mylogin.cnf  
+mysql_config_editor print --all     ----查询创建的加密文件
+
+mysql --login-path=fastlogin   		----使用创建的密码文件登录		

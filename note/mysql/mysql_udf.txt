@@ -1,0 +1,34 @@
+UDF (use defined function)
+mysql.func
+
+create function func_name return string "mysql_function.so";		---由创建的动态连接库添加mysql的function
+
+####动态连接库创建
+####mysql.h在$mysql_home/include/mysql下
+####test_add.cpp
+
+#include <mysql.h>
+extern "C" long long testadd(UDF_INIT *initid,UDF_ARGS *args,char *is_null,char *error)
+{
+	int a=*((long long*)args->args[0]);
+	int b=*((long long*)args->args[1]);
+	return a+b;
+}
+extern "C" my_bool testadd_init(UDF_INIT *initid,UDF_ARGS *args,char *message)
+{
+	return 0;
+}
+
+###需要预先安装libmysqlclient-dev
+##编译
+g++ -shared -fPIC -l /usr/include/mysql -o test_add.so test_add.cpp   	###动态连接库的位置要确定
+cp test_add.so /usr/lib/mysql/plugin   									####在mysql中使用【SHOW VARIABLES LIKE 'plugin_dir'; 】查看要复制到的位置
+
+nm test_add.so		##可查看动态连接库中的函数
+
+mysql中使用
+create function testadd returns integer soname "test_add.so";
+select testadd(1,2);
+
+
+github.com/mysqludf

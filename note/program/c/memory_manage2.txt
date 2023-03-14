@@ -1,0 +1,20 @@
+ptmalloc   glibc默认的内存管理器
+tcmalloc   
+jemalloc
+
+
+内存管理库
+
+
+动态内存有4个函数：
+malloc、calloc、realloc，free
+c++额外使用 new、delete
+
+
+calloc在动态分配完内存后，自动初始化该内存空间为零，而malloc不做初始化，分配到的空间中的数据是随机数据。
+
+
+不同内存管理库的使用需要代码改动支持
+参考
+https://github.com/redis/redis/blob/6.2.7/src/zmalloc.h
+

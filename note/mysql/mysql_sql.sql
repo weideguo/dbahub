@@ -32,14 +32,18 @@ BINARY(M)    	  255字节				定长二进制字符串
 DATE       4  1000-01-01/9999-12-31 					YYYY-MM-DD     日期值 
 TIME       3  '-838:59:59'/'838:59:59'  				HH:MM:SS    时间值或持续时间 
 YEAR       1  1901/2155                 				YYYY         年份值 
-DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59 	YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化
+DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59 	YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化 DATETIME[(N)]  N为0到6，表示获取时间的秒的小数点后多少位
 TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时 			YYYYMMDD HHMMSS 混合日期和时间值，时间戳，当设置时区变化时，查询的结果也跟着变化
 
 
 BIT[(M)]   M=(1,64)            二进制格式 M为多少位
 JSON                           json格式 5.7.8以后支持
+int[(N)]                       只是影响命令行的默认显示格式，不影响读写的精度
 
-SERIAL           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE 的别称
+
+前者为后面的简写
+SERIAL                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE 的别称
+varchar(100) binary     varchar(100) CHARACTER SET XXX COLLATE YYY DEFAULT NULL
 
 
 https://dev.mysql.com/doc/refman/8.0/en/innodb-limits.html
@@ -258,60 +262,24 @@ ALTER TABLE table_name DROP CONSTRAINT constraint_name;
 ALTER TABLE tb_emp7 ADD CONSTRAINT constraint_name CHECK(<check_expr>); --如 num>0
 
 
-更改表的字段
+-- 更改表的字段
 ALTER TABLE table_name MODIFY column_name data_type;
 
 
-UDF (use defined function)
-mysql.func
 
-create function func_name return string "mysql_function.so";		---由创建的动态连接库添加mysql的function
+-- 正则表达式
+select * from table_name where column_name regexp 'regular_expression';		
 
-####动态连接库创建
-####mysql.h在$mysql_home/include/mysql下
-####test_add.cpp
-
-#include <mysql.h>
-extern "C" long long testadd(UDF_INIT *initid,UDF_ARGS *args,char *is_null,char *error)
-{
-	int a=*((long long*)args->args[0]);
-	int b=*((long long*)args->args[1]);
-	return a+b;
-}
-extern "C" my_bool testadd_init(UDF_INIT *initid,UDF_ARGS *args,char *message)
-{
-	return 0;
-}
-
-###需要预先安装libmysqlclient-dev
-##编译
-g++ -shared -fPIC -l /usr/include/mysql -o test_add.so test_add.cpp   	###动态连接库的位置要确定
-cp test_add.so /usr/lib/mysql/plugin   									####在mysql中使用【SHOW VARIABLES LIKE 'plugin_dir'; 】查看要复制到的位置
-
-nm test_add.so		##可查看动态连接库中的函数
-
-mysql中使用
-create function testadd returns integer soname "test_add.so";
-select testadd(1,2);
+select * from mysql.user\G   -----查询结果按列打印
 
 
-github.com/mysqludf
+-- 表复制
+Insert into Table2(field1,field2,...) select value1,value2,... from Table1 ---要求table2存在
+select value1,value2 into table2 from table1;   --要求table2不存在
 
 
 
-----空间占用查询
-----所有数据的大小：
-select concat(round(sum(data_length/1024/1024),2),'MB') as data from information_schema.tables;
-----指定数据库的大小：
-select concat(round(sum(data_length/1024/1024),2),'MB') as data from information_schema.tables where table_schema='schema_name';
-----指定数据库各表的大小：
-select TABLE_SCHEMA,TABLE_NAME,concat(round(sum(data_length/1024/1024/1024),2),'G') as data from information_schema.tables where TABLE_SCHEMA='schema_name' group by TABLE_NAME;
-
-
-
-注释(comment)
-查看
-
+-- 注释(comment)
 create table table_name(
 name varchar comment '名字',
 pid int comment '编号'

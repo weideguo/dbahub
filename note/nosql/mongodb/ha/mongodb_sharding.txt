@@ -79,10 +79,17 @@ sh.addShard("db_name.collection_name",key_name)
 
 db.runCommand({enablesharding:"db_name"})												###对db_name数据库进行分片	
 
-db.runCommand({shardcollection:"db_name.collection_name",key:{id:hashed}})				###collectiion_name的键id以hashed进行分片 表不为空时字段需要先创建索引？
-sh.shardCollection("<database>.<collection>",{<shard key field>: "hashed"})             ###哈希(hash)分片，对单列使用hash索引作为分片键
-sh.shardCollection("<database>.<collection>",{<shard key field>:1,...} )                ###范围(range)分片，可以使用多个字段作为分片键，并将数据划分为由分片键确定的连续范围
+// All sharded collections must have an index that supports the shard key. 
+db.runCommand({shardcollection:"db_name.collection_name",key:{id:hashed}})				###collectiion_name的键id以hashed进行分片 表不为空时字段需要先创建索引
+sh.shardCollection("<database>.<collection>",{<shard key field>: "hashed"})             ###hashed sharding 哈希(hash)分片，对单列使用hash索引作为分片键
+sh.shardCollection("<database>.<collection>",{<shard key field>:1,...} )                ###ranged sharding 范围(range)分片，可以使用多个字段作为分片键，并将数据划分为由分片键确定的连续范围 值代表长度
 
+// 唯一索引限制
+// the index on the shard key
+// a compound index where the shard key is a prefix
+
+// 每个库都有自己的主分片，迁移库的主分片
+db.adminCommand( { movePrimary: <databaseName>, to: <newPrimaryShard> } )
 
 
 db.runCommand({listshards:1})  	###查看分片服务器的配置
@@ -91,7 +98,7 @@ sh.status()                     ##查看数据分布
 
 
 # 查看balancer状态
-sh.getBalancerState(
+sh.getBalancerState()
 # 查看balancer锁信息
 db.locks.find({"_id" : "balancer"}).pretty()
 # 设置balance窗口
@@ -120,3 +127,26 @@ sh.splitAt( "db_name.collection_name", { field1:60, field2:60 })
 
 # 手工移动chunk，通过find条件，将这条记录所在的chunk移动到指定rs
 db.runCommand({moveChunk: "db_name.collection_name", find:{ field1:30, field2:30}, to: "s1"})
+
+
+
+mongodb将数据分片为 Chunks。每个Chunk在shardkey上的范围是 [下限, 上限) 
+后台的Balancer 将在不同分片之间搬移 chunk 来保证分片的数据量平衡
+
+数据先写入chunk，然后分裂实现平衡
+
+# 权限设置
+mongos / shard主 均需要设置账号
+config服务不能设置账号
+
+chunk 存储与config server的config库下
+
+//////////////////////////////////////////////////////////////
+// 4.4以及以后
+db.adminCommand( {
+   refineCollectionShardKey: "test.orders",
+   key: { customer_id: 1, order_id: 1 }
+} )
+
+
+

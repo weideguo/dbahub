@@ -53,6 +53,15 @@ mysql tpcc1000 < add_fkey_idx.sql
 mysqlslap mysql压测
 
 #使用自定义脚本测试
-mysqlslap -uroot -proot -h 127.0.0.1 -P 3306 --delimiter=";" --create="CREATE TABLE a (b int);INSERT INTO a VALUES (23)" --query="SELECT * FROM a" --concurrency=50 --iterations=200
+mysqlslap -uroot -proot -h 127.0.0.1 -P 3306 --delimiter=";" --create-schema=test --create="CREATE TABLE a (b int);INSERT INTO a VALUES (23)" --query="SELECT * FROM a" --concurrency=50 --iterations=200
 
 
+concurrency             #并发数
+number-of-queries       #一次循环总的执行次数（大概值，会分摊到每个并发）
+iterations              #循环次数
+
+
+输出
+Average    完成一次循环的平均耗时
+Minimum    
+Maximum 

@@ -1,0 +1,44 @@
+# MariaDB  10.3.4 以及以后支持
+# 类似于闪回表，可以查询任意时间点的表的数据
+
+# SQL:2011 定义语法
+CREATE TABLE t(
+   x INT,
+   start_timestamp TIMESTAMP(6) GENERATED ALWAYS AS ROW START,
+   end_timestamp TIMESTAMP(6) GENERATED ALWAYS AS ROW END,
+   PERIOD FOR SYSTEM_TIME(start_timestamp, end_timestamp)
+) WITH SYSTEM VERSIONING;
+
+# MariaDB 可以简写成如下，同时也可使用SQL:2011的方式创建
+CREATE TABLE t (
+   x INT
+) WITH SYSTEM VERSIONING;
+
+# 存在伪列
+SELECT x, ROW_START, ROW_END FROM t;
+
+# 查询这个时间点表的数据
+SELECT * FROM t FOR SYSTEM_TIME AS OF TIMESTAMP'2016-10-09 08:07:06';
+
+# 
+SELECT * FROM t FOR SYSTEM_TIME BETWEEN (NOW() - INTERVAL 1 YEAR) AND NOW();
+# including start, but excluding end.
+SELECT * FROM t FOR SYSTEM_TIME FROM '2016-01-01 00:00:00' TO '2017-01-01 00:00:00';
+
+# 历史的以及当前的
+SELECT * FROM t FOR SYSTEM_TIME ALL;
+
+# 使用innodb可以通过事务id精确查看
+SELECT * FROM t FOR SYSTEM_TIME AS OF TRANSACTION 12345;
+
+# 显示指定System-Versioned Table使用事务id记录
+CREATE TABLE t(
+   x INT,
+   start_trxid BIGINT UNSIGNED GENERATED ALWAYS AS ROW START,
+   end_trxid BIGINT UNSIGNED GENERATED ALWAYS AS ROW END,
+   PERIOD FOR SYSTEM_TIME(start_trxid, end_trxid)
+) WITH SYSTEM VERSIONING;
+
+
+# 参考 https://mariadb.com/kb/en/system-versioned-tables/
+可以用分区表分别存储不同时间段/长度的

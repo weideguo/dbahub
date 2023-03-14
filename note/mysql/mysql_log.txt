@@ -99,7 +99,7 @@ innodb_flush_log_at_trx_commit={0|1|2}   ---默认为1
 
 sync_binlog=n  ---0~4294967295为数字
 在n次提交后binlog刷新到磁盘
-0 提交时binlog不同步到磁盘
+0 提交时binlog不同步到磁盘，依赖操作系统刷新到磁盘，发起写动作，但存在缓存
 1 每次提交写将binglog写到磁盘
 
 
