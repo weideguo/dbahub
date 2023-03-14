@@ -725,6 +725,10 @@ Ctrl+g 列出光标所在行的行号。
 ?string        向后收索指定的字符
 n            收索下一个字符串
 
+:set ff?        #查看文件的格式
+:set ff=dos     #设置文件格式
+:set ff=unix 
+
 linux中的文件标识
 l是链接，相当于windows的快捷方式
 d是目录，相当于windows的文件夹
@@ -735,8 +739,24 @@ s套接文件，如mysql启动时生成的mysql.sock
 ln existingfile newfil       ###硬链接(hard link)  ##源文件删除后链接文件还可以读取
 ln -s existingfile newfile   ###软链接(soft link)   ###源文件删除后链接文件同时失效
 
+
+都是将两个文件关联，都不会增加额外的磁盘空间。
+硬连接对两个文件的node都加1，只有当node为1时的删除才是真正的删除，当node大于1，执行的删除只是标记为删除。
+因此可以通过硬连接来执行操作系统级删除，绕开应用级的删除时导致的应用负载增高。
+硬连接只能对文件执行，不能对文件夹。
+
+#查看文件的node
+ls -altr go1.18.linux-amd64.tar.gz | awk '{print $2}'
+
 if [ -h $newfile ];then echo 111; fi       #判断是否是链接
 readlink $newfile                          #读取链接的指向
+
+truncate-s ${i}M $filename                 #调整文件到多大
+
+#数字队列
+seq 200 -10 100   #倒序
+seq 10            #正序
+seq 200 +10 300   #正序
 
 linux文件夹
 bin     可执行文件（命令）所有用户
@@ -1247,7 +1267,7 @@ ipcs -q    ##查看message queue
 
 虚拟文件系统
 #可用于对指定目录进行容量限制
-dd if=/dev/zero of=/usr/disk-quota.ex4 count=4096 bs=1mb   #创建4G的文件
+dd if=/dev/zero of=/usr/disk-quota.ex4 count=4096 bs=1MB   #创建4G的文件
 mkfs -t ext4 -F /usr/disk-quota.ex4   #创建文件系统   -F 强制，不会检查是否是设备文件
 mount -o loop,rw,usrquota,grpquota /usr/disk-quota.ex4 /path/to/images/top/level    #挂载到容器目录
 

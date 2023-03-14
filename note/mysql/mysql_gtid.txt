@@ -3,7 +3,7 @@ show global variables like '%gtid%';
 SET GLOBAL gtid_purged="...";  # 当 global.gtid_executed 为空时可以设置
 
 
-set @@session.gtid_nex="..."
+set @@session.gtid_next="..."
 # 通过设置会话的gtid，mysql判定之后的事务是否执行
 # session.gtid_next <= global.gtid_executed 则不执行之后的事务
 # session.gtid_next >  global.gtid_executed 则执行之后的事务

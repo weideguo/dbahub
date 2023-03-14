@@ -145,6 +145,7 @@ stop slave;set global sql_slave_skip_counter=1;start slave;	  ----跳过的事�
 #在slave中 执行空事务实现复制跳过 
 STOP SLAVE;
 #<gtid-to-skip> 为binlog中需要跳过复制的gtid 即通过指定下一个事务的gtid，实现复制跳过
+#在主库直接mysqlbinlog命令还原binlog查看、或者在主库通过show binlog events in ... 查看、或者在从库通过show relaylog events in ... 查看
 SET SESSION GTID_NEXT = <gtid-to-skip>;    
 BEGIN; COMMIT;
 SET SESSION GTID_NEXT = AUTOMATIC;

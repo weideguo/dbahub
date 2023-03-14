@@ -30,6 +30,9 @@ REVOKE	撤销权限
 GRANT ALL PRIVILEGES ON *.* to 'weideguo'@'%' identified by 'weideguo' [with grant option] 
 REVOKE ALL PRIVILEGES on *.* FROM weideguo;
 
+库名的可用通配符 _  %     （ \ 转义如 "\_" ，_ 代指一个字符）
+表名只有通配符 * 或者固定表名
+
 --不要直接更改mysql.user表，因为更改的命令会被明文保存到日志 
 
 --密码会被修改保存到日志的语句

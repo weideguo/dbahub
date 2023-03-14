@@ -372,7 +372,7 @@ CHECK TABLE
 InnoDB, MyISAM, ARCHIVE, and CSV tables. 
 For MyISAM tables, the key statistics are updated as well.
 
-#消除碎片和链接
+#消除碎片和链接 online DDL
 optimize table table_name; 
 
 #innodb 使用以下语句代替 optimize
