@@ -6,6 +6,12 @@ slowlog-max-len			    #慢查询日志长度，存储多少条慢查询日志
 rename-command flushAll ""
 rename-command flushDB ""
 rename-command keys ""
+rename-command config ""    
+      
+#可能通过config set 修改如dir文件路径，写入精心构造的命令（如带有换行），从而实现写入危险文件到操作系统
+config set dir <猜测到的如php的目录>
+set x "\n\n<?php phpinfo();?>\n\n\n"
+config set dbfilename eval.php
 
 #RDB持久化
 #该机制是指在指定的时间间隔内将内存中的数据集快照写入磁盘。    
@@ -14,11 +20,21 @@ rename-command keys ""
 save 900 1         #900秒内有一个修改就保存
 save 300 10
 save 60 1000
-appendonly on      #不启用aof持久化
+appendonly no      #不启用aof持久化
 
 #AOF持久化
 #该机制将以日志的形式记录服务器所处理的每一个写操作，在Redis服务器启动之初会读取该文件来重新构建数据库，以保证启动后数据库中的数据是完整的。
 appendonly yes
 
+#aof文件是追加格式写入，因此不会出现整个文件损坏文件（字符串格式存储，可以手动清理部分命令实现在启动时选择性恢复数据）
+
+# aof可以循环写，以避免aof文件无限增大，因此aof只是相对于rdb更大
+auto-aof-rewrite-percentage 100
+
 #无持久化：配置文件中注释save
 #同时应用AOF和RDB
+
+
+#rdb、aof优劣
+#https://redis.io/docs/management/persistence/
+

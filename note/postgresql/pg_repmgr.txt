@@ -1,0 +1,66 @@
+https://repmgr.org/
+
+
+管理 pg 服务器集群内的复制和故障转移
+
+#每个pg节点启动一个后台进程
+repmgrd -f /etc/repmgr.conf -d
+
+
+#管理命令行
+repmgr 
+
+
+
+#主节点最小repmgr.conf
+    node_id=1
+    node_name='node1'
+    conninfo='host=node1 user=repmgr dbname=repmgr connect_timeout=2'
+    data_directory='/var/lib/postgresql/data'
+
+
+#从节点最小repmgr.conf
+	node_id=2
+	node_name='node2'
+	conninfo='host=node2 user=repmgr dbname=repmgr connect_timeout=2'
+	data_directory='/var/lib/postgresql/data'
+	
+	
+#########
+####主
+#初始化
+repmgr -f /etc/repmgr.conf primary register     #主节点登记
+#启动repmgrd
+
+
+repmgr -f /etc/repmgr.conf cluster show"        #查看节点信息
+
+
+####从
+#不进行任何初始化
+su - postgres -c "repmgr -h <primary-host> -U repmgr -d repmgr -f /etc/repmgr.conf standby clone --dry-run"    #运行判断主库是否可以复制
+su - postgres -c "repmgr -h <primary-host> -U repmgr -d repmgr -f /etc/repmgr.conf standby clone"              #复制主实例到从
+
+repmgr standby register       		#从节点登记
+
+
+
+####见证节点（不是必须）
+#1.正常初始化
+#2.启动repmgrd 
+repmgr witness register -h <primary-host>       #witness节点登记
+
+
+见证节点于主机部署于一个网络内，但不要在同一个主机
+见证节点仲裁哪台备机升主（选中）
+备机连不上主机了，就会连接见证节点
+如果也连接不上见证节点，那判断自己网络故障了
+如果能连上见证节点，则认为主机故障
+
+
+#########
+SELECT * FROM pg_stat_replication;                 #在主查看复制信息
+SELECT * FROM pg_stat_wal_receiver;                #在从查看复制信息
+
+
+SELECT * FROM repmgr.nodes;                        #查看所有节点

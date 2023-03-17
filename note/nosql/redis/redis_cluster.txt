@@ -29,6 +29,9 @@ redis-cluster-proxy [OPTIONS] [node1_host:node1_port,node2_host:node2_port,...]
 # 5.0以及以后使用这个操作cluster集群
 redis-cli --cluster help
 
+#列出所有节点
+redis-cli  cluster nodes
+
 子命令
 create  #创建集群
 redis-cli -a xxx --cluster create node1_host:node1_port node2_host:node2_port ...  --cluster-replicas 1

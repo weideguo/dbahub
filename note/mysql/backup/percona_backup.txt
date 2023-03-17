@@ -65,7 +65,10 @@ to_lsn    备份覆盖的lsn  如果之后使用增量备份，则依赖于该ls
 
 单表备份
 #仅适用innodb表
-./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf --export /u03/xb_backup_dir
+./innobackupex --user=root --password=weideguo --host=127.0.0.1 --port=3307 --defaults-file=/u05/mysql5634/my.cnf --databases="dbname1.tablename1 dbname2.tablename2" /u03/xb_backup_dir
+
+#--export 参数可以在恢复时生成可以接直接用于表空间还原的文件
+./innobackupex --apply-log --export /u03/xb_backup_dir
 
 还原
 #创建相同结构的表

@@ -62,4 +62,6 @@ use config
 sh.stopBalancer()
 
 
+sharding架构的其他备份方式
+https://github.com/Percona-Lab/mongodb_consistent_backup
 
