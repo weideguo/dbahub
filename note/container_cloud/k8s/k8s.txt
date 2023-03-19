@@ -94,20 +94,6 @@ kubectl describe cm <cm-name>
 kubectl edit cm <cm-name>
 
 
-#################################################################控制器
-replicaset  #副本集
-
-####################
-deployment 
-
-####################
-statefulset #有状态服务
-
-kubectl -n uat get sts
-
-kubectl rollout restart statefulset <pod-name>
-
-
 #################################################################
 #网络相关 services    通过apply yaml创建，通过selector指定绑定的app（先由控制器启动pod）
 #查看网络
@@ -128,19 +114,6 @@ Ingress
 控制器有各种类型，包括 Nginx，Contour，Istio等
 
 #################################################################
-#k8s节点中的进程
-
-Master 节点进程：
-kube-apiserver
-kube-controller-manager
-kube-scheduler
-
-
-非 master 节点进程：
-kubelet     和 Master 进行通信。
-kube-proxy  网络服务的网络代理
-
-
 
 基本对象：
 Pod
@@ -148,11 +121,4 @@ Service
 Volume
 Namespace
 
-
-控制器 控制器基于基本对象，并提供附加特性和便利特性。更高层次的抽象概念：
-ReplicaSet
-Deployment
-StatefulSet
-DaemonSet
-Job
 

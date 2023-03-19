@@ -14,10 +14,11 @@ node  物理机或虚拟机
 
 
 
-rancher kubernates管理平台
-
-
-
+kubernates管理平台 多集群管理 提供web操作界面
+rancher 
+wayne
+kubesphere
+Kuboard
 
 
 OpenShift (redhat paas, 基于k8s)

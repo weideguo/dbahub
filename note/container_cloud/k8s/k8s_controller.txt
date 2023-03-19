@@ -1,0 +1,23 @@
+控制器 控制器基于基本对象，并提供附加特性和便利特性。更高层次的抽象概念：
+ReplicaSet
+Deployment
+StatefulSet
+DaemonSet
+Job
+
+
+#################################################################控制器
+replicaset  #副本集
+
+####################
+deployment 
+
+####################
+statefulset #有状态服务
+
+kubectl -n uat get sts
+
+kubectl rollout restart statefulset <pod-name>
+
+
+

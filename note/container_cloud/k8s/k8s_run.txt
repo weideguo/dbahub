@@ -1,0 +1,28 @@
+#k8s节点中的进程
+
+Master 节点进程：
+kube-apiserver
+kube-controller-manager
+kube-scheduler
+
+
+非 master 节点进程：
+kubelet     和 Master 进行通信。
+kube-proxy  网络服务的网络代理
+
+
+1.24以后不再使用docker运行环境，直接使用containerd
+
+############部署#####################
+架构：
+单master多node
+多master多node
+
+
+安装 kubeadm 和kubelet
+
+yum install -y kubelet-1.26.0 kubeadm-1.26.0 kubectl-1.26.0
+
+
+
+
