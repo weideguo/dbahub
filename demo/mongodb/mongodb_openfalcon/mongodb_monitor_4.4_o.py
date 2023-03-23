@@ -37,7 +37,7 @@ for k in flat_dict.keys():
 
 ##########################################openfalcon数据转换#######################################################
 #读取配置文件获取 endpoint
-cmd= "cat /usr/local/7roadyw/agent/cfg.json | grep hostname"
+cmd= "cat /usr/local/XXXXyw/agent/cfg.json | grep hostname"
 x=subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE).stdout.read()
 endpoint=x.split("\"")[3]
 
