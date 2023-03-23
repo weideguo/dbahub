@@ -1,9 +1,24 @@
 第三方逻辑备份
+   
+原理
+
+flush tabls with read lock;
+show master status;                             -- 主线程获取binlog位点
+
+# 每个子线程
+设置session隔离级别为RR
+start transaction with consistent snapshot;
+开启线程开启事务并发读取                        -- 每个表只能一个线程读
+
+unlock tables;                                  -- 主线程释放锁（子线程并发开启事务后即可释放锁）   
+
+
+
+
 备份
 ./mydumper -u root -p weideguo -h 127.0.0.1 -R -B test -o /u03/mydumper_dir
 还原
 ./myloader -u root -p weideguo -h 127.0.0.1 -B wdg -d /u03/mydumper_dir
 
 	-t 					--线程数
-    
     
