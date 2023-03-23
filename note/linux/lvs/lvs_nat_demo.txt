@@ -96,7 +96,7 @@ vrrp_instance VI_1 {
     advert_int 1
     authentication {
         auth_type PASS
-        auth_pass 7road123
+        auth_pass XXXX123
     }
     virtual_ipaddress {
         172.16.2.250
@@ -111,7 +111,7 @@ vrrp_instance VI_2 {
     advert_int 1
     authentication {
         auth_type PASS
-        auth_pass 7road123
+        auth_pass XXXX123
     }
     virtual_ipaddress {
         192.168.2.250
@@ -170,7 +170,7 @@ vrrp_instance VI_1 {
     advert_int 1
     authentication {
         auth_type PASS
-        auth_pass 7road123456
+        auth_pass XXXX123456
     }
     virtual_ipaddress {
         172.16.2.250
@@ -185,7 +185,7 @@ vrrp_instance VI_2 {
     advert_int 1
     authentication {
         auth_type PASS
-        auth_pass 7road123456
+        auth_pass XXXX123456
     }
     virtual_ipaddress {
         192.168.2.250

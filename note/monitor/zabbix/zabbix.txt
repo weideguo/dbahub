@@ -167,7 +167,7 @@ ListenIP=127.0.0.1
 LogFile=/tmp/zabbix_agentd.log
 Server=127.0.0.1				###被动模式，允许访问的zabbix服务器
 ServerActive=127.0.0.1			###主动模式，向zabbix服务器发送数据
-Hostname=db1.yh.cn				###与web界面Configuration->Hosts->name一致
+Hostname=db1.xxx.com				###与web界面Configuration->Hosts->name一致
 LogFile=/tmp/zabbix_agentd.log
 ListenPort=10052
 
