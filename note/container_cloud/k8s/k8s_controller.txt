@@ -6,18 +6,26 @@ DaemonSet
 Job
 
 
-#################################################################控制器
-replicaset  #副本集
+#####################副本集
+replicaset  
 
-####################
-deployment 
 
-####################
-statefulset #有状态服务
+
+#####################有状态服务
+statefulset 
 
 kubectl -n uat get sts
 
 kubectl rollout restart statefulset <pod-name>
+
+
+
+####################
+deployment 
+
+
+
+
 
 
 

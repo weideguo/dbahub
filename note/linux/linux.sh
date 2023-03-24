@@ -1285,6 +1285,7 @@ rpm -Uvh package_name  ##升级指定程序
 rpm -i package.src.rpm        ##解压源码包，之后可以选择标准源码包安装相同操作
 rpm -e package_name         ##删除包
 
+rpm2cpio xxx.rpm | cpio -div   #解压rpm包
 
 
 

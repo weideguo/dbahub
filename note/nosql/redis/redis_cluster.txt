@@ -43,8 +43,34 @@ redis-cli -a xxx --cluster create node1_host:node1_port node2_host:node2_port ..
 
 
 
-# 手动切换cluster的主从（在一个从节点执行，只改变该节点的关联的主与从，不影响集群中的其他主从）
-cluster failover
+#####################################################################################################
+
+
+redis-cli -h 127.0.0.1 -p 7001 cluster nodes                                                                           #查看节点主从信息
+
+redis-cli --cluster del-node ip:port node_id                                                                           #删除节点 在主节点时只有为空时才能执行
+redis-cli --cluster add-node 127.0.0.1:7001 127.0.0.1:7000                                                             #加节点作为主  需要调整slot才能真正使用
+redis-cli --cluster add-node 127.0.0.1:7001 127.0.0.1:7000 --cluster-slave --cluster-master-id <master_id>             #加节点作为从
+
+redis-cli --cluster reshard 10.0.0.7:7007                                                                              #迁移slot，命令行交互操作实现
+
+
+##在从节点运行 主从切换（在一个从节点执行，只改变该节点的关联的主与从，不影响集群中的其他主从）
+CLUSTER FAILOVER
+
+
+CLUSTER FAILOVER [FORCE | TAKEOVER]
+FORCE         #尽快切换，不与主进行通信
+TAKEOVER      #FORCE的升级版，不需要其他节点同意即升为主
+
+
+#更换节点的master
+CLUSTER REPLICATE <master-node-id>
+
+
+
+
+
 
 # 6.2.0引入 类似于 cluster failover，用于sentinel环境
 failover     

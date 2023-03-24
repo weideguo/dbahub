@@ -225,14 +225,8 @@ bin/zabbix_get -s 127.0.0.1 -p 8099 -k key_name      #测试获取key的值
 
 
 
-
-
-
-
-
-
-
-
+包含zabbix对mysql监控的模板文件、使用的脚本
+percona-monitoring-plugins
 
 
 

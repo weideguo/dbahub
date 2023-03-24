@@ -4,7 +4,7 @@ LSM  Log Structured Merge
 提供更好的写与读性能但更改效率低，用于日志类数据
 
 
-InfluxDB 
+InfluxDB    golang 开源
 
 
 Kdb+

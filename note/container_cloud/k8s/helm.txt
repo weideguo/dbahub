@@ -1,15 +1,68 @@
-Chart       一个helm程序包，包含运行一个应用的工具和资源定义
-Release      在k8s集群上运行的一个chart实例
-Repository  用于存放和共享chart的仓库；http/https服务器（dockerhub \ harbor \）
+使用helm chart，则不需要手动构建和上传 Docker 镜像
+
+Chart       一个helm程序包，包含运行一个应用的工具和资源定义（类似于docker的镜像）
+Release     在k8s集群上运行的一个chart实例
+Repository  用于存放和共享chart的仓库；http/https服务器（dockerhub \ harbor \），其中存放打包的chart
 
 
+helm  命令行工具管理Chart
 helm --help
 
 #列出指定命名空间的Release
 helm -n <namespace> list 
 
 
-#查看chart仓库
-helm repo list
 
+
+#创建一个新的Chart模板，生成相关配置文件
+helm create <chart-name>
+
+# 编辑配置文件
+Chart.yaml 	 		用来定义Chart的基本信息，例如Chart的名称、版本、描述等。
+values.yaml	 		用来定义Chart的默认配置信息，例如容器镜像名称、版本、服务端口等。
+templates文件夹		
+charts文件夹     	存储依赖的其他charts
+
+
+
+helm install -f myvalues.yaml myredis ./redis                          # 安装部署，即运行chart `kubectl apply ...` 的代替
+															           
+helm package mychart/                                                  # 打包成一个chart归档，在当前目录生成.tgz文件
+															           
+helm chart save <chart名称> <仓库名称>/<chart名称>:<版本号>            # 打包生成.tgz文件
+
+# 动手上传到仓库 早期版本
+curl --data-binary "@mychart-0.1.0.tgz" <repository URL>/api/charts
+
+# 使用 Helm 上传到仓库
+helm push mychart-0.1.0.tgz my-repo                                    # Helm v2.3.0之后
+helm chart push my-repo/mychart:0.1.0                                  # Helm v3.x
+
+# 只是有一堆 Kubernetes 配置文件，想将它们打包成 Helm chart 并上传到仓库中，那么就需要使用 helm cm-push 命令
+helm cm-push my-config-map/ <chart仓库地址>                            # 将配置文件打包成 Helm chart 并上传到 Helm chart 仓库
+helm cm-push ./redis myrepo
+
+
+
+# 下载 .tgz文件到本地
+helm pull bitnami/redis
+
+
+
+# 仓库
+helm repo list                                                         # 列出仓库
+helm repo add [ repository-name] [ repository-address]                 # 添加仓库
+helm repo update                                                       # 更新本地仓库缓存
+helm search repo harbor                                                # 在仓库中搜索
+
+
+
+
+# 插件
+helm plugin install https://github.com/technosophos/helm-template
+helm plugin list
+
+
+
+                   
 

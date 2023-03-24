@@ -1,0 +1,75 @@
+show tag keys from tb_name;
+
+show field keys from tb_name;
+
+
+Fields 无索引
+tags 有索引
+
+
+表名存在特殊字符使用双引号包起来
+
+完整的表名格式
+"db_name".."measurement_name"
+"db_name"."schema_name"."measurement_name"
+
+SHOW RETENTION POLICIES     可以按照schema显示保留时间
+
+
+
+# 查询
+select * from tb_name order by time desc limit 10;
+
+
+SELECT <field_key>[,<field_key>,<tag_key>] FROM <measurement_name>[,<measurement_name>]
+
+#查看所有field
+SELECT *::field FROM "h2o_feet"
+
+
+SELECT_clause FROM_clause WHERE <conditional_expression> [(AND|OR) <conditional_expression> [...]]
+# WHERE filters data based on fields, tags, and/or timestamps.
+
+
+SELECT * FROM "h2o_feet" WHERE time > now() - 7d
+
+
+# measurement不存在是自动创建
+insert + measurement_name + "," + tag=value,tag=value + field=value,field=value
+
+
+# 通过插入时设置时间，实现对数据的修改
+INSERT pineapple value=1 '2015-08-18T23:00:00Z'
+INSERT pineapple,fresh=true value=1 1439938800000000000
+
+
+# 删除
+DELETE FROM "cpu"
+DELETE FROM "cpu" WHERE time < '2000-01-01T00:00:00Z'
+DELETE WHERE time < '2000-01-01T00:00:00Z'
+
+
+
+
+
+CRETE DATABASE WITH DURATION m REPLICATION 1 SHARD DURATION n;
+
+DROP MEASUREMENT  "cpu";
+
+
+
+
+
+CREATE CONTINUOUS QUERY <cq_name> ON <database_name>
+BEGIN
+  <cq_query>
+END
+
+语句中必须包含GROUP BY time()，一般用于 select into ，可以带有where
+
+
+SELECT 
+count(tag1) AS tag2 
+INTO "db1"."db1_90d"."measurement_name1" 
+ROM  "db1"."db1_90d"."measurement_name1" 
+GROUP BY time(1h) 

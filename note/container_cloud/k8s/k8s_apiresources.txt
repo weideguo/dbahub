@@ -1,0 +1,23 @@
+#列出所有API资源 即如 nodes pods namespaces 等所有资源的名字
+kubectl api-resources 
+
+通过yaml文件创建，然后可以在创建容器的yaml文件使用
+
+
+Namespace                 #
+ServiceAccountToken       #
+Pod                       # 一个或多个容器组成的容器组，容器间资源共享
+node                      # 物理机或虚拟机
+Volume                    # 类似于磁盘挂载到容器中
+PersistentVolume          # pod可以指定使用pv存储 
+PersistentVolumeClaim     # 首先需要创建一个PV，并将其分配给PVC，之后再将PVC分配给应用程序使用，一个PV可以被多个PVC使用，一个PVC只能请求一个PV
+Endpoints                 # 可以把外部的链接到k8s系统中（可以理解为引用外部资源，如将一个外部mysql连接到k8s中）
+Service                   # 部署一个内部虚拟IP，其他deployment可以链接。（可以简单理解为K8S的端口映射，如外部3444端口映射到pod应用中80端口）
+Secrets                   # 用于存储和管理一些敏感数据，比如密码，token，密钥等敏感信息。
+Deployment                # 部署一个Pod
+ConfigMap                 # 让镜像 和 应用的配置文件解耦
+Ingress                   # 使用ingress实现反向代理
+
+
+
+

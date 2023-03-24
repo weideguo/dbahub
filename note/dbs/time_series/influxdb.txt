@@ -1,0 +1,67 @@
+时序数据库
+
+
+名词概念
+https://docs.influxdata.com/influxdb/v1.8/concepts/glossary
+
+
+influxd          #服务器、备份、还原
+influx_tsm       #
+influx_stress    #压测
+influx_inspect   #格式转换
+influx           #客户端
+
+可以直接通过http访问
+query?db=my_db&q=select...
+
+
+show databases;
+
+use db_name
+
+show measurements
+
+
+
+SHOW RETENTION POLICIES [ON <database_name>]
+
+# 查看所有的CONTINUOUS QUERIES
+SHOW CONTINUOUS QUERIES     
+
+
+
+
+
+
+
+# 创建用户
+"CREATE USER" user_name "WITH PASSWORD" password [ "WITH ALL PRIVILEGES" ] .
+
+# 启用用户认证需要修改配置文件
+[http]auth-enabled = true
+
+
+
+
+
+# 重建tsi索引
+
+#关闭influxdb
+
+
+#删除文件
+删除_series文件夹 $path2data/<dbName>/_series
+删除index文件夹   $path2data/<dbName/<rpName>/<shardID>/index
+
+#运行重建
+influx_inspect buildtsi -datadir $path2data -waldir $path2wal
+
+#启动influxdb
+
+
+### 配置文件 /etc/influxdb/influxdb.conf
+[data]                    
+                          # The type of shard index to use for new shards.
+index-version = "inmem"   # 默认 索引使用内存 但数据也记录在文件，重启不会导致数据丢失
+index-version = "tsi1"    # 索引使用磁盘
+

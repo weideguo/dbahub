@@ -1,0 +1,17 @@
+kubectl apply -f my-deployment.yaml            # 对docker镜像的部署，即先有打包成docker镜像存在于仓库
+
+
+kubectl api-resources 可以查看 kind 字段
+
+--- 是指令的结束标记，可以通过该指令在同一个yaml文件中描述多个资源（k8s特殊用法，不是yaml标准）
+
+
+images 字段
+即对应一个docker镜像
+
+
+
+     
+
+
+
