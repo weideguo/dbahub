@@ -1,13 +1,13 @@
-#创建容器、volume等
-kubectl apply -f XXX.yaml
+
+#列出所有API资源 即如 nodes pods namespaces 等所有资源的名字
+kubectl api-resources
 
 
 #查看命名空间  默认命名空间的容器 default
-kubectl get namespace   
+kubectl get namespaces   
+kubectl describe namespace <namespace-name>
 
-
-#列出所有API资源
-kubectl api-resources
+get describe 对所有API资源都生效
 
 
 #获取所有节点（即物理机器）
@@ -17,23 +17,31 @@ kubectl get nodes -o wide
 kubectl describe node <node-name>
 
 
-
 #################################################################pod
 #创建pod 一个pod可以包含多个容器 共享物理资源
 kubectl apply -f my-pod.yaml
 
 
 #获取pod的信息
-kubectl get pod
+kubectl get pods -A
 
 #持续输出pod信息
 kubectl get pods -o wide -w
+
+#列出指定命名空间的容器
+kubectl -n test get pods
+kubectl -n test get pods -o wide
+
+-A          # 所有命名空间
+-o wide     # 输出格式
+-w          # 持续输出
+-n          # 指定命名空间
 
 #获取pod的详细信息
 kubectl describe pod <pod-name>
 
 #删除pod
-kubectl delete <pod-name>
+kubectl delete pod <pod-name>
 
 
 #查看 stdout 日志
@@ -48,43 +56,18 @@ kubectl cp <pod-name>:/bitnami/mysql/x.sql ./
 kubectl cp <pod-name>:$pwd $dir
 
 
-#列出指定命名空间的容器
-kubectl -n test get pods
-kubectl -n test get pods -o wide
-
-
 #进入pod命令行
 kubectl -n test exec -it <pod-name> -- bash
 
 kubectl exec (POD | TYPE/NAME) [-c CONTAINER] [flags] -- COMMAND [args...] [options]
 
 
+#列出当前pod使用的镜像
+kubectl get pods -o=custom-columns=NAME:.metadata.name,IMAGE:.spec.containers[*].image -A
 
 #################################################################
-pvc pv  （PersistentVolume和PersistentVolumeClaim）
 
-#查看pv pod可以指定使用pv存储
-kubectl get pv
-kubectl get pvc
-
-#修改指定容器的磁盘容量
-kubectl edit  pvc <pvc-name>      
-
-
-
-#################################################################
-#volume 通过yaml文件创建，类似于磁盘挂载到容器中，apply生成volume，然后可以在创建容器的yaml文件使用
-Secret                    #
-ConfigMap                 #让镜像 和 配置文件解耦
-Downward API              #
-ServiceAccountToken       #
-
-
-
-kubectl get secret
-kubectl describe secret <secret-name>
-
-
+#secret
 kubectl get secret
 kubectl describe secret <secret-name>
 
@@ -94,31 +77,12 @@ kubectl describe cm <cm-name>
 kubectl edit cm <cm-name>
 
 
-#################################################################
-#网络相关 services    通过apply yaml创建，通过selector指定绑定的app（先由控制器启动pod）
-#查看网络
-kubectl get svc
+#pv 
+kubectl get pv
+kubectl get pvc
 
-#端口转发
-kubectl get svc -o wide
+#修改指定容器的磁盘容量
+kubectl edit  pvc <pvc-name>      
 
-
-ClusterIP         默认分配的网络
-LoadBalancer      映射到LoadBalancer的端口
-NodePort          映射到物理机的端口（不推荐使用，因为物理机的ip可能会变）
-
-
-Ingress
-使用前先要安装对于的控制器
-多个服务的前端（有自己的ip）
-控制器有各种类型，包括 Nginx，Contour，Istio等
-
-#################################################################
-
-基本对象：
-Pod
-Service
-Volume
-Namespace
 
 
