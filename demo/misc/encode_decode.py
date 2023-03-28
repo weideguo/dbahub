@@ -1,8 +1,8 @@
 
 '''
 字符串在python内部表示是unicode
-decode是将其他编码转换成unicode
-encode是将unicode转换成其他编码
+decode是将其他编码的byte转换成unicode
+encode是将unicode转换成其他编码的byte
 
 
 直接输入的string常量会用系统缺省的编码方式来编码
