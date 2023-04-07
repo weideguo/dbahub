@@ -1,0 +1,32 @@
+tracer 提供tcp接口，应用通过此接口上传文件
+每个storage启动一个nginx，通过外部nginx聚合，实现统一入口下载文件，同时通过nginx实现负载均衡
+
+
+tracker  # 对应一个进程，通过tracker上传
+storage  # 对应一个进程，文件实际存储，对应一个storage处于一个group。额外启动nginx获取storage存储的文件。
+
+
+
+
+group    # 每个group可以有一个或多个storage服务，相同group的文件一样。不同group则不一样，通过不同group分片。
+
+
+
+
+# 单个storage的nginx配置
+location ~/group1/ {                    # 对应这个storage的group名字，通过storage处于不同或相同group，实现分片以及冗余备份
+    alias   /var/fdfs/data/;            #          
+    ngx_fastdfs_module;                 # 可以重定向文件连接到原服务器读取文件，避免错误。同一个group会有多台storage服务器之间需要进行文件复制，有同步延迟的问题。
+}	
+
+真正的请求路径为
+http://<my-example-host>/group1/M00/00/E3/aaaaaaaaaaabbbbbbbbbcccccccc.txt
+
+#storage配置文件中 确定 M00 （如果有其他path，则为M01...）
+store_path_count=1
+store_path0=/var/fdfs
+#store_path1=/var/fdfs2
+
+
+因为存在多个storage，可以用另外的nginx进行聚合，从而实现统一入口下载
+

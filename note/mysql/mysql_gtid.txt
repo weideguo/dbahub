@@ -22,6 +22,30 @@ set @@session.gtid_next="..."
 
 
 
+
+
+--只读参数 
+--全局参数
+--跟 SHOW MASTER STATUS 、SHOW SLAVE STATUS 的 Executed_Gtid_Set 相同
+--Previous_gtids_log_event of the newest binary log
+gtid_executed
+已经执行过的gtid集合
+
+
+--The set of all transactions that have been purged from the binary log.
+--GTIDs contained by the Previous_gtid_log_event of the oldest binary log. 
+gtid_purged
+已经清除的binlog，在主库中 show global variables like 'expire%'; 控制该值跟 gtid_executed 的差距，有binlog的保存机影响
+
+
+gtid_next
+会话级参数
+AUTOMATIC: Use the next automatically-generated global transaction ID.
+设置值时，设置当前会话下一个事务的gtid，从而影响 gtid_executed 的值，因此通过设置该值，实现复制跳过。
+
+
+
+
 # 主库的uuid
 select @@server_uuid;
 
