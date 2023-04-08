@@ -1,0 +1,48 @@
+yum安装软件
+yum (yellow dog update,modify)
+
+yum install package_name ##使用yum安装软件，安装包在配置文件中指定
+yum install vsftpd  ##安装软件，使用默认yum源
+yum remove vsftpd   ##卸载软件
+yum install --installroot=/usr/src/ vim   ###安装时指定安装路径
+yum install software_name --enablerepo=repo_name 
+###由指定yum源安装软件  【repo_name】对应/etc/yum.repos.d/下的文件中【[repo_name]】
+
+main 定义了全局配置选项，整个yum 配置文件应该只有一个main。常位于/etc/yum.conf 中。
+repository 每个源/服务器的具体配置，可以有一到多个。常位于/etc/yum.repos.d 目录下
+【repository设置】
+[serverid]   ##区别不同的repository
+name=Some name for this server   ##对reporitory的描述
+baseurl=url:##path/to/repository/  ###文件的获取路径，url可谓file、ftp、http三种
+enabled=1  ##设置为可用
+gpgcheck=1  ##可选，使用key检查安装包
+gpgkey=file:##/etc/pki/rpm-gpg/RPM-GPG-KEY-oracle   ###设置key
+
+yum update
+
+验证
+yum list all   ##查看yum设置是否正确，all可以为具体的包 
+
+yum/rpm涉及key的位置
+/etc/pki
+yum --import /etc/pki/xxx...
+rpm --import /etc/pki/xxx...
+
+yum install -downloadonly -downloaddir=/xxx docker   #只下载，不安装
+yum repolist   #查看repo
+yum clean all  #清除缓存
+yum makecache  #创建缓存
+
+
+
+rpm安装
+rpm -ivh package_name
+rpm -ivh --relocate /=/opt/temp xxx.rpm    ###安装时指定安装路径
+rpm -ivh --prefix= /opt/temp    xxx.rpm
+rpm -qa | grep vsftp   ##查看是否安装软件
+rpm -Uvh package_name  ##升级指定程序
+
+rpm -i package.src.rpm        ##解压源码包，之后可以选择标准源码包安装相同操作
+rpm -e package_name         ##删除包
+
+rpm2cpio xxx.rpm | cpio -div   #解压rpm包

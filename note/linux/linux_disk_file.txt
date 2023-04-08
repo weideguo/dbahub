@@ -153,3 +153,22 @@ resize2fs /dev/sdb1
 mount /dev/sdb1 /data
 
 ########################################################demo####################################
+#使用extundelete进行磁盘恢复
+yum install e2fsprogs*
+./configure
+make && make install
+
+fuser -m -u /u01            #identify processes using files or sockets  查看使用文件的进程，必须先杀死相关进程才能umount
+umount /dev/sdb1
+extundelete /dev/sdb1 --restore-all
+
+
+虚拟文件系统
+#可用于对指定目录进行容量限制
+dd if=/dev/zero of=/usr/disk-quota.ex4 count=4096 bs=1MB   #创建4G的文件
+mkfs -t ext4 -F /usr/disk-quota.ex4   #创建文件系统   -F 强制，不会检查是否是设备文件
+mount -o loop,rw,usrquota,grpquota /usr/disk-quota.ex4 /path/to/images/top/level    #挂载到容器目录
+
+
+quota                  #磁盘使用限制
+edquota                #编辑数据文件

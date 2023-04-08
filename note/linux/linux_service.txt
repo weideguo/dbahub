@@ -1,0 +1,34 @@
+/etc/rc.d/init.d/service_name    ### linux服务设置；如【service xxx start】为调用脚本时传入【start】参数
+
+
+开机启动设置
+/etc/rc.d   ###/etc目录下的相关设置是链接    
+##Linux在启动时，会自动执行/etc/rc.d目录下的初始化程序，可以把启动任务放到该目录下
+rc.local是在完成所有初始化之后执行的
+
+
+通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
+chmod +x /etc/rc.d/init.d/simpleTest    使之可直接执行
+chkconfig --add simpleTest              把该服务添加到配置当中
+chkconfig --list simpleTest             可以查看该服务进程的状态   显示不同级别的状态
+chkconfig --del httpd                   删除
+chkconfig --level httpd 2345 on         设置在哪些级别运行
+chkconfig --level httpd 2345 off        设置在哪些级别关闭
+
+/etc/rc.d/rc0.d                #运行级别为0的启动项 通过链接到/etc/rc.d/init.d/下的文件设置
+/etc/rc.d/rc1.d                #运行级别为1的启动项
+
+
+#centos7 service文件位置
+systemctl
+将server放入这个目录下，如mysqld.service
+/usr/lib/systemd/system
+
+#重新加载即可
+systemctl daemon-reload
+systemctl enable mysqld.service
+systemctl is-enabled mysqld
+
+#system stop的操作，调用kill
+man systemd.kill
+

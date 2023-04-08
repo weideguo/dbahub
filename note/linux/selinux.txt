@@ -1,0 +1,17 @@
+selinux
+配置文件/etc/sysconfig/selinux
+工作模式 SElinux=permissive
+强制（enfocing）：违反策略的行动都被禁止，并作为内核信息记录
+允许（permissive）：违反策略的行动不被禁止，但会产生警告信息
+禁用（disabled）：禁用SElinux，与不带SElinux的系统一样         
+/usr/sbin/sestatus -v      ##如果SELinux status参数为enabled即为开启状态
+getenforce                 ##也可以用这个命令检查
+setenforce 0                 ##临时关闭；1 为开启
+
+由selinux设置问题导致启动失败
+进入kernel选择界面，编辑kernel，添加 
+enforing=0
+
+
+传统的Linux系统安全，采用的是 DAC（自主访问控制方式），对应用户是否拥有某个资源的权限（读、写、执行）
+SELinux是部署在Linux系统中的安全增强功能模块，对进程和文件资源采用 MAC（强制访问控制方式）

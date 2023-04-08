@@ -1,0 +1,259 @@
+chattr     #在文件系统层对文件属性的更改 只能在超级用户使用
+A：即Atime，告诉系统不要修改对这个文件的最后访问时间。
+S：即Sync，一旦应用程序对这个文件执行了写操作，使系统立刻把修改的结果写到磁盘。
+a：即Append Only，系统只允许在这个文件之后追加数据，不允许任何进程覆盖或截断这个文件。如果目录具有这个属性，系统将只允许在这个目录下建立和修改文件，而不允许删除任何文件。
+b：不更新文件或目录的最后存取时间。
+c：将文件或目录压缩后存放。
+d：当dump程序执行时，该文件或目录不会被dump备份。
+D: 检查压缩文件中的错误。
+i：即Immutable，系统不允许对这个文件进行任何的修改。如果目录具有这个属性，那么任何的进程只能修改目录之下的文件，不允许建立和删除文件。
+s：彻底删除文件，不可恢复，因为是从磁盘上删除，然后用0填充文件所在区域。
+u：当一个应用程序请求删除这个文件，系统会保留其数据块以便以后能够恢复删除这个文件，用来防止意外删除文件或目录。
+t: 文件系统支持尾部合并（tail-merging）。
+X：可以直接访问压缩文件的内容。
+
+chattr +i dirname    #则不能对该文件夹进行任何修改
++ - =                #操作符
+
+lsattr  filename     #查看文件属性
+
+chmod
+- 第一组rwx：文件所有者的权限是读、写和执行
+- 第二组rw-：与文件所有者同一组的用户的权限是读、写但不能执行
+- 第三组r--：不与文件所有者同组的其他用户的权限是读不能写和执行
+可用数字表示为：r=4，w=2，x=1  因此rwx=4+2+1=7
+
+umask -S     ###查看用户创建文件时文件的默认权限
+umask 002    ###修改文件的默认权限，为 666-002
+             ###文件夹777-002
+
+tar –xvf file.tar        ##解压 tar包
+tar -xzvf file.tar.gz    ##解压tar.gz
+tar -xjvf file.tar.bz2   ##解压 tar.bz2
+压缩/解压
+bzip2 
+gzip    
+xz
+
+
+###查看
+cat
+more
+tail
+
+
+head -n 1  #前一行
+head -c 1  #前一个字符
+
+#最后一行
+awk 'END {print}'
+sed -n '$p'
+sed '$!N;$!D'
+awk '{b=$0}END{print b}'
+#最后2行
+awk '{b=a"\n"$0;a=$0}END{print b}'
+#最后3行
+awk '{b=a"\n"$0;a=c"\n"$0;c=$0}END{print b}'
+
+linux中的文件标识
+l是链接，相当于windows的快捷方式
+d是目录，相当于windows的文件夹
+c是字符设备文件，鼠标，键盘
+b是块设备，如硬盘
+s套接文件，如mysql启动时生成的mysql.sock
+
+ln existingfile newfil       ###硬链接(hard link)  ##源文件删除后链接文件还可以读取
+ln -s existingfile newfile   ###软链接(soft link)   ###源文件删除后链接文件同时失效
+
+
+都是将两个文件关联，都不会增加额外的磁盘空间。
+硬连接对两个文件的node都加1，只有当node为1时的删除才是真正的删除，当node大于1，执行的删除只是标记为删除。
+因此可以通过硬连接来执行操作系统级删除，绕开应用级的删除时导致的应用负载增高。
+硬连接只能对文件执行，不能对文件夹。
+
+#查看文件的node
+ls -altr go1.18.linux-amd64.tar.gz | awk '{print $2}'
+
+if [ -h $newfile ];then echo 111; fi       #判断是否是链接
+readlink $newfile                          #读取链接的指向
+
+
+
+
+/etc/cron.daily/tmpwatch  tmp目录清空机制centos6以及以下
+
+# centos7 清理配置
+/usr/lib/tmpfiles.d/tmp.conf  
+
+
+ELF  类Unix操作系统的二进制文件标准格式
+
+00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF............|
+
+头部恒为“.ELF”
+
+
+
+
+##第一个进程执行
+flock -n /tmp/.my.lock -c 'sleep 10 && echo 111'     
+
+##另外一个进程执行 获取锁失败 直接退出
+flock -n /tmp/.my.lock -c 'sleep 10 && echo 111'  
+
+
+##第一个进程执行
+flock -s /tmp/.my.lock -c 'sleep 10 && echo 111'     
+
+##另外一个进程执行，同时获取到锁
+flock -s /tmp/.my.lock -c 'sleep 10 && echo 111'  
+
+
+
+##第一个进程执行
+flock -x /tmp/.my.lock -c 'sleep 10 && echo 111'     
+
+##另外一个进程执行 需要等待第一个进程直接结束才能获取到锁
+flock -x /tmp/.my.lock -c 'sleep 10 && echo 111'  
+
+      
+#共享锁和排它锁不能同时存在 
+#如果出现，则跟两个排它锁情况一致
+
+
+
+#使用文件描述符实现锁
+lock() {
+  exec 7<>.lock
+  flock -n 7 || {
+    echo "Waiting for lock to release..."
+    flock 7
+  }
+}
+
+#加锁
+lock
+
+#释放锁
+flock -u 7
+
+
+# 将文件缩小到指定大小，可以避免直接rm造成的io挤占
+truncate ${filename} -s 524280000
+truncate -s ${i}M $filename                
+
+
+dos2unix    #dos的文本转换成unix的
+
+
+#分割压缩文件
+tar -zcvf ABCD.tar.gz ABCD | split -b 2000M -d -a 1 - ABCD.tar.gz
+
+split -b 2000M -d -a 1 ABCD.tar.gz ABCD.tar.gz.
+
+cat ABC.tar.gz.* | tar -zxv
+
+#压缩过滤 多个目录可以用多个exclude
+tar -zcvf abcd.tar.gz --exclude=abcd/def abcd
+
+tar cvf - mypath | pigz -9 -p 3 > mypath.tgz
+并发压缩
+
+file -i file_name  查看文件的编码，但是否为utf8-bom查看不出
+
+
+
+cmp filename1 filename2                        ###逐位比较两个文件
+diff                                           ###逐行比
+
+basename $path/filename                        ###从全录路径中提取文件名
+basename $path/filename.txt    .txt            ###从全录路径中提取文件名并去掉后缀
+ 
+
+
+diff  file_old file_new > file_update.patch   #生成补丁文件
+patch -p0 file_old     file_update.patch      #应用补丁文件 不能多次应用
+
+
+diff -Naru test test_new  > test.patch        #对比目录  使用git时 git diff > my.patch
+
+mv test
+patch -p1 < test.patch                        #因为对比时是在目录外对比，因此打补丁时要忽略一级目录
+ 
+
+#二进制对比
+xdelta3 -s SOURCE TARGET > OUT                #生成补丁
+xdelta3 -d -s SOURCE OUT TARGET_NEW           #打补丁成新文件
+ 
+
+##正则表达
+"sinosy_${DATE}_*.log"    双引号可以禁止通配符扩展，但是允许变量扩展。
+'sinosy_${DATE}_*.log'    同时禁止通配符扩展与变量扩展。
+sinosy_${DATE}_\*.log    使用转义字符——反斜杠，也可以防止扩展。
+
+
+创建临时文件夹模拟回收站
+myrm(){ D=/tmp/$(date +%Y%m%d%H%M%S); mkdir -p $D; mv "$@" $D && echo "moved to $D ok"; }
+alias rm='myrm'
+unalias commad    ###删除别名
+
+
+
+filename1 -nt filename2   #文件filename1比filename2更新
+filename1 -ot filename2   #文件filename1比filename2更旧
+
+-z $string  字符长度为0
+-n $string  字符长度非0
+
+十六进制
+hexdump -C file_name   #输出规范的十六进制和ASCII码
+xxd
+
+编码转换
+iconv
+
+#编码转换 原utf8文件file1 转成gbk的file2
+iconv -c -f utf-8 -t gbk file1 -o file2
+
+#命令行中utf8转成gbk 需要预先设置好命令行的输入格式
+echo -n "中文" | iconv -c -f utf-8 -t gbk
+
+
+#删除恢复 进程使用文件时删除文件的恢复
+lsof | grep       
+获取进程（PID列）        $pid
+文件描述符（FD列的数字）  $fd
+
+ll /proc/$pid/fd/$fd               #只要文件存在 可以cat并重定向恢复
+
+test -d 'path_name1' || mkdir 'path_name2'     
+###【test -d】判断路径是否为目录
+###前一条件为假则执行后面的语句
+
+
+
+
+find ./ -name "file_name"  ##当前文件以名字查找
+find ./ -name "*test*" –type f -exec rm -rf {} \;    ###查找当前目录下指定文件并删除 ##【-exec command ;】匹配后执行command
+find ./ -name "*test*" –type d                       ###查找当前目录下指定的目录
+find ./ -type f -ctime +14 -exec rm -rf {} \;        ##查找时间离现在大于14天的文件，删除
+
+find ./ ! -path "./aaa"                              #! 过滤
+
+-maxdepth   #目录深度指定
+
+
+
+- 可看成特殊的文件？
+echo "aaa" | cat -
+echo "aaa" | cat --
+echo "aaa" | cat 
+
+
+tee filename         ##将输入写入文件中
+
+echo "xyz" > filename       ###清空文件并写入
+echo "xyz" >> filename      ###在尾部追加写入
+
+dirname $path1/filename.txt            ###显示文件的父目录
+

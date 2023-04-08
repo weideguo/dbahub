@@ -102,6 +102,22 @@ anon_mkdir_write_enable=YES   打开匿名用户创建文件夹功能
 赋予匿名用户上传使用的文件夹以写权限
 chmod 777 /var/ftp/pub/文件夹
 
+vim /etc/vsftpd/chroot_list  
+#将dengftp添加到此文件中，这样打开ftp 的时候自动定位到根目录下
+service vsftpd restart 
+
+ftp模式
+! 执行外壳命令 如 !ls
+delete
+mdelete
+put
+mput
+get
+mget
+
+
+
+
 NFS（Network File System）linux系统之间使用的文件共享协议，通常适用于局域网内共享
 主流版本：NFSv2、NFSv3、NFSv4
 NFS服务默认需要使用RPC服务，所以使用NFS服务必须保证系统rpc服务打开：

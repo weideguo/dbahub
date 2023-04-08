@@ -1,3 +1,14 @@
+ping           ##测试网络连接  
+host、dig      ##测试DNS解析 
+ip route       ##显示路由表
+traceroute     ##追踪到达目标地址的网络路径 
+mtr            ##网络质量测试 
+netperf        ##测试网络带宽
+
+
+#DNS设置 设置直接生效
+/etc/resolv.conf
+
 ###################################################################################
 #以下只在当前生效 重启生效需要设置对应文件
 ifconfig lo:1 192.168.59.200 netmask 255.255.255.255               #增加虚拟网卡
@@ -128,5 +139,35 @@ Seq=自己的上一个Seq + len
      <----------------[FIN] 
 [ACK]---------------->
 
+
+
+
+
+关闭ICMP回应(不能使用ping命令连接)
+
+临时设置
+#设置为0，开启；1，关闭
+echo 0 >/proc/sys/net/ipv4/icmp_echo_ignore_all
+
+永久设置
+#vim /etc/sysctl.conf
+net.ipv4.icmp_echo_ignore_all=1
+
+
+
+开启器端路由转发功能
+vi /etc/sysctl.conf
+net.ipv4.ip_forward = 1
+
+#将经过自己的流量转发到真正的目标地址
+echo 1 > /proc/sys/net/ipv4/ip_forward
+sysctl -w net.ipv4.ip_forward=1
+
+
+
+tcpdump 导出后的文件可以使用wireshark打开
+
+#traffic control 流量控制
+tc
 
 

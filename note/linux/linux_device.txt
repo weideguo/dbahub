@@ -27,4 +27,3 @@ innodb_data_file_path = /dev/<blockdev>:2Graw
 是指可以从设备的任意位置读取一定长度数据的设备。块设备包括硬盘、磁盘、U盘和SD卡等。
 
 
-网络设备：网卡

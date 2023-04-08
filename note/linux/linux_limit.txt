@@ -1,0 +1,30 @@
+资源限制
+ulimit
+cgroups
+/proc/cgroups 
+
+##修改最大文件描述符
+/etc/security/limits.conf             ###配置文件修改，最大打开文件数，以及其他
+/etc/security/limits.d
+
+通过/etc/rc.local实现的开机启动配置不生效。可以直接往/etc/profile运行ulimt命令设置配置
+
+/proc/${pid}/limits                  ##对应进程的实际限制
+
+ulimit -a                            ##查看所有的限制
+ulimit -n 2048                       ##修改允许打开最大的文件数
+lsof | wc -l                         ##查看已经打开的文件数
+lsof -p pid                          ##查看进程打开的文件
+lsof -c mysql                        ##查看对应进程名打开的文件
+lsof +L1                             ##unlinked的文件信息
+lsof +L/-L                           ##打开或关闭文件的连结数计算，当+L没有指定时，所有的连结数都会显示(默认)；若+L后指定数字，则只要连结数小于该数字的信息会显示；连结数会显示在NLINK列。
+ulimit -Hn                           ##查看
+
+ulimit -u                            ##当前用户的最大线程数查看
+ulimit -u 2048                       ##修改当前用户的最大线程数
+
+以下文件也可以控制ulimit
+/etc/systemd/system.conf
+/etc/systemd/user.conf
+/etc/systemd/system/
+/etc/systemd/user/

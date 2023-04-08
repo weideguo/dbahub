@@ -1,6 +1,39 @@
 首行,代表使用的命令，相应目录必须正确
 #!/bash/sh  
 
+shc  将shell脚本编译成二进制二进制文件
+
+shell执行方式
+1、产生新的shell执行相应的shell scripts。
+    使用方式是在scripts文件中加入  #!/bin/sh
+2、不产生新的shell，在当前shell下执行一切命令。
+    source命令，使用"."类似,当前进程执行
+    exec以新的进程代替原来的进程，PID保持不变
+加入【&】在执行脚本后面实现后台运行
+nohup command_nam &  ##在后台运行命令command_name
+
+在shell中使用配置文件，使用filename文件中的变量
+. filename
+
+stdbuf -oL    ${command} > out.log
+#以行为缓冲单位重定向命令的输出，即命令输出一行，写入文件一行
+
+###先扫描命令行进行变量替换，然后再执行命令 
+eval SOME_COMMAND       
+`SOME_COMMAND`
+$(SOME_COMMAND)
+
+
+echo "this is a ${var}"    # 变量得到替换，如果存在可执行命令块则执行
+echo 'this is a ${var}'    # 不存在变量替换，亦不执行任何命令
+
+${command} > out.file 2>&1        ####将错误的输出定向到标准输出
+
+0    标准输入。键盘输入，并返回在前端。
+1    标准输出。正确返回值，输出到前端。【1>】可以直接表示成【>】， &1表示1通道
+2    标准出错。错误返回值，输出到前端。
+
+; 表示语句的结束，一行中出现多语句时使用
 
 
 SHELL脚本
@@ -18,6 +51,10 @@ $1-$n #添加到Shell的各参数值。$1是第1参数、$2是第2参数…。
 
 
 
+#数字队列
+seq 200 -10 100   #倒序
+seq 10            #正序
+seq 200 +10 300   #正序
 
 
 函数
@@ -119,6 +156,11 @@ z_ip[1]="123"
 z_ip[2]="234"
 echo ${z_ip[1]}
 echo ${z_ip[@]}
+
+
+list的使用
+ip=($ip1 $ip2 $ip3)        ###以空格分割
+${ip:1:2 }                 ###显示list中下标1到2的元素
 
 
 
@@ -361,3 +403,5 @@ printf #不换行输出
 # 去除前后空格
 echo " a a " | sed 's/^\s*//g' | sed 's/\s*$//g' 
 echo " a a " | awk '$1=$1'                    
+
+

@@ -1,0 +1,17 @@
+网络设备：网卡
+
+
+GPU
+
+lspci | grep -i vga      #查看显卡信息
+
+lshw -C display
+
+
+lspci | grep -i vga   ##查看显卡
+lspci | grep -i net   ##查看网卡
+lspci -v -s 
+
+lspci 查看PCI设备
+lsusb 查看USB设备）
+lsblk 查看块设备

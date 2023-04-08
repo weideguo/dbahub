@@ -1,0 +1,59 @@
+用户管理、权限管理
+passwd testuser    ##给已创建的用户设置密码
+userdel testuser   ##删除用户
+rm -rf testuser    ##删除目录
+
+#非交互模式更改密码 只能在root账号使用
+echo 'new_passwd' | passwd --stdin auser
+
+groupadd group_name  ###添加组
+groupmod group_name  ###修改组
+groupdel group_name  ###删除组
+useradd –s /sbin/nologin –d /var/www/ dengftp
+#注-s /sbin/nologin是让其不能登陆系统，-d 是指定用户目录为/var/www/ 
+#添加用户时可以使用【-g、-G】参数关联到对应的组
+chown –R user_name:group_name /var/www/   #注:将用户目录及其子目录的所有和所属的组设置为dengftp
+chmod 774 /var/www/
+chgrp group_name file_name  ###修改文件所属组
+chmod -R 774 /var/www/  ###更改目录及目录下所有文件的权限
+id -a user ###查看user所属的组
+usermod    ##修改用户的信息，如修改所属组、home文件、密码、uid
+usermod -a -G new_group username  #添加从组
+usermod -G "" username            #移除所有从组
+usermod -g primary_group username #修改主组
+
+userdel user_name ##删除用户   (加 -r 删除用户目录）
+/etc/passwd  ##保存用户信息  LOGNAME:PASSWORD:UID:GID:USERINFO:HOME:SHELL UID为0则为root账号同一用户级别
+/etc/shadow  ##保存用户密码
+/etc/group   ##保存组信息
+
+
+/etc/shadow 文件字段说明
+帐号名称 ：root 
+加密后的密码              （星号代表帐号被锁定，双叹号表示这个密码已经过期了，密码格式$id$salt$encrypted）
+上次修改密码的日期：      （ 1/1/1970 起的天数）
+最小修改时间间隔：        （0表示可在任何时间修改） 
+密码需要被重新变更的天数：（99999） 
+密码变更前提前几天警告：
+密码过期后的宽限天数：    
+账号失效时间：            （ 1/1/1970 起的天数）
+保留条目
+
+/etc/group 字段说明
+用户组名称
+用户组密码
+GID
+用户列表，每个用户之间用“,”号分割；本字段可以为空；如果字段为空表示用户为GID的用户名；
+
+
+
+ACL（access control list）                ###现对与chmod管理粒度更细
+mount -o acl /dev/sda5 /mnt               ###ACL需要在挂载文件的时候打开ACL功能
+getfacl file_name                         ###查看一个文件的ACL设置
+setfacl -m u:username:rwx file_name       ###设置用户权限
+setfacl -m g:groupname:--x file_name      ###设置组权限
+setfacl -x u:username file_name           ####删除ACL设置
+
+
+tune2fs -o +acl /dev/sda        ###ext2/ext3/ext4文件系统增加acl功能
+

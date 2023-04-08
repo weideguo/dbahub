@@ -1,0 +1,183 @@
+iostat -d -x -k 1 10    ##查看io信息间隔一秒查询，查10次
+
+-d #只显示disk的信息
+-c #只显示cpu的信息
+
+    %util  #在统计时间内（所有处理io的时间/总时间）
+
+cat /proc/$pid/io      #查看进程的io的情况
+    
+
+iotop        
+badblocks -s -v sdb1   ##坏道检测
+hdparm sdb1            ##磁盘信息获取
+
+
+sar                 ###系统活动信息
+
+
+/proc/meminfo       ##内存信息
+/proc/cpuinfo       ##查看CPU信息
+/proc/interrupts    ##中断信息
+
+
+
+pidstat -r -p PID   #查看进程的内存使用   
+prtconf -m          ##AIX查看物理内存
+prtconf             ##查看物理参数
+prtconf | more      ##分页查看                     
+free -m             ##内存与swap查看   ###SWAP用作虚存分区
+    
+    total   总内存
+    used    已经使用的内存
+    free    空闲内存
+    shared  当前废弃不用的内存
+    buffer  buffer cache内存
+    cached  page cache内存
+    available 列显示还可以被应用程序使用的物理内存大小
+    
+    
+    -buffer/cache =used-buffers-cached  程序占用的内存
+    +buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
+
+    
+    centos7
+    total = used + free + buff/cache
+    available = free + buff/cache
+
+
+
+/proc/meminfo  #free命令信息来自于此
+
+
+
+
+top                    ###查看系统运行状态   AIX使用topas
+###top的内部命令 在执行top后输入
+c    ##cpu使用率排序
+M    ##内存排序
+h    ##帮助说明
+    %us user cpu time   执行用户进程的时间
+    %sy system cpu time 在内核空间运行的cpu时间
+    %ni user nice cpu time (% CPU time spent on low priority processes)
+    %id idle cpu time
+    %wa io wait cpu time (% CPU time spent in wait)
+    %hi hardware irq (% CPU time spent serving/handling hardware interrupts)
+    %si software irq (% CPU time spent serving/handling spftware interrupts)
+    %st steal time (% CPU time in involuntary wait by virtual while hypervisor is servicing another processor)
+
+    
+    VIRT virtual memory usage  
+    RES resident memory usage
+    SHR shared memory 
+    DATA 数据占用的内存
+    
+    RES-SHR  计算进程占用物理内存
+    
+    
+    VIRT:
+    It includes all code, data and shared libraries plus pages that have been swapped out and pages that have been mapped but not used.
+    进程"需要"虚拟内存大小，包括进程使用的库、代码、数据。是一个假象的内存空间，在程序运行过程中虚拟内存空间中需要被访问的部分会被映射到物理内存空间中。虚拟内存空间大只能表示程序运行过程中可访问的空间比较大，不代表物理内存空间占用也大。
+
+f 选择显示的内容    
+
+    
+cat /proc/stat            #%Cpu从此计算
+
+cpu usage=(idle2-idle1)/(cpu2-cpu1)*100 
+cpu usage=[(user_2 +sys_2+nice_2) - (user_1 + sys_1+nice_1)]/(total_2 - total_1)*100;
+
+cat /proc/cpuinfo | grep processor | wc -l   ##cpu核数
+
+
+cat /proc/loadavg         # load average 从此计算   1=100%
+    
+lavg_1      1-分钟平均负载
+lavg_5      5-分钟平均负载
+lavg_15     15-分钟平均负载
+nr_running  在采样时刻，运行队列的任务的数目，与/proc/stat的procs_running表示相同意思
+nr_threads  在采样时刻，系统中活跃的任务的个数（不包括运行已经结束的任务）
+last_pid    最大的pid值，包括轻量级进程，即线程。
+ 
+ 
+Linux的系统负载指运行队列的平均长度，也就是等待CPU的平均进程数。 
+    
+Load值=CPU核数，这是最理想的状态，没有任何竞争，一个任务分配一个核，最充分利用cpu。实际情况应该低于 0.7*cpu核数。
+
+CPU控制
+/sys/devices/system/cpu/
+
+echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
+
+
+OOM out-of memory                         ##系统会杀掉一些进程以释放内存
+OOM内核参数设置  
+/etc/sysctl.conf                          ##修改该文件中对应的值
+sysctl -p                                 ##使修改生效
+sysctl vm.overcommit_memory=1             ##直接使内核参数生效
+sysctl -a                                 ##列出所有内核参数值
+
+echo 0 > /proc/sys/vm/swapping            ##禁用所有进程使用swap 直接生效 重启失效
+vm.swapping=0                             ###/etc/sysctl.conf中修改禁用swap
+
+cat /proc/sys/vm/swappiness               ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
+vm.swappiness=10                          ##修改swap的使用权重
+
+swapoff -a  #临时关闭swap
+##编辑/etc/fstab实现固定设置
+
+SWAP分区异常使用
+ 程序内存泄露  
+ NUMA使用不当
+处理方法 重启OS
+
+mysqld --memlock                ##内存锁定             
+
+         
+/proc/$pid/smaps                    ##查看进程的swap的使用
+/proc/$pid/maps
+
+cat /proc/$pid/smaps | grep "Swap"     ##查看swap，需要先相加起来
+cat /proc/$pid/status | grep "Swap"    ##查看swap
+
+pmap -d $pid 
+代码段、数据段、堆、文件映射区域、栈
+虚拟地址空间使用情况
+
+pmap pid                            ##查看指定pid使用的内存
+
+
+透明巨型页
+echo never > /sys/kernel/mm/transparent_hugepage/enabled    #修改巨型页的使用
+vm.nr_hugepage=hugepage_num     ##使用hugepage  巨型页
+
+透明巨型页的参数
+cat /proc/meminfo | grep Huge
+需要使用swap时，内存页被分割为4kb
+
+x86的默认内存页大小是4kb，可以使用2mb或者更大的巨型页
+
+echo 2000 > /proc/sys/vm/nr_hugepages  #修改巨型页的数量
+
+numactl             ##控制进程与共享存储的numa技术
+
+numactl --interleave=all ${command}
+#当当前cpu没有可以分配的内存，可以使用其他cpu的内存。all表示所有
+#不设置时当达到cpu的分配阈值，即使系统还有空余内存，也不分配给当前cpu，而选择使用SWAP
+
+
+SMP  symmetic multi processing                对称多处理系统
+MPP  massvie parallel processor                大规模并行处理
+NUMA non uniform memory access architecture        非统一内存访问
+
+
+vmstat                ###查看虚拟内存swap si/so 表示与物理内存的交换
+vmstat -S m 1        ###隔1秒显示一次
+
+##增加swap分区  重启后失效
+dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建一个大文件，内容全为0
+/sbin/mkswap /home/swap  ##执行命令
+/sbin/swapon /home/swap  ##执行命令
+/usr/swap/swapfile  /swap   swap    defaults    0 0   ##编辑/etc/fstab实现固定设置
+
+
