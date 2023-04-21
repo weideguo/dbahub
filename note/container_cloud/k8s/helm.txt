@@ -18,17 +18,17 @@ helm -n <namespace> list
 helm create <chart-name>
 
 # 编辑配置文件
-Chart.yaml 	 		用来定义Chart的基本信息，例如Chart的名称、版本、描述等。
-values.yaml	 		用来定义Chart的默认配置信息，例如容器镜像名称、版本、服务端口等。
-templates文件夹		
-charts文件夹     	存储依赖的其他charts
+Chart.yaml              用来定义Chart的基本信息，例如Chart的名称、版本、描述等。
+values.yaml             用来定义Chart的默认配置信息，例如容器镜像名称、版本、服务端口等。
+templates文件夹         
+charts文件夹            存储依赖的其他charts
 
 
 
 helm install -f myvalues.yaml myredis ./redis                          # 安装部署，即运行chart `kubectl apply ...` 的代替
-															           
+                                                                       
 helm package mychart/                                                  # 打包成一个chart归档，在当前目录生成.tgz文件
-															           
+                                                                       
 helm chart save <chart名称> <仓库名称>/<chart名称>:<版本号>            # 打包生成.tgz文件
 
 # 动手上传到仓库 早期版本

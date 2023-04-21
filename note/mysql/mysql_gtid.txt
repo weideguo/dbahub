@@ -19,7 +19,8 @@ set @@session.gtid_next="..."
 使用gtid，则 
 搭建主从不需要再设置position位置      change master to ...,master_auto_position=1
 使用binlog前滚不需要先设置开始位置
-
+# 新建主从时需要设置
+set global gtid_purged=...
 
 
 
@@ -35,7 +36,7 @@ gtid_executed
 --The set of all transactions that have been purged from the binary log.
 --GTIDs contained by the Previous_gtid_log_event of the oldest binary log. 
 gtid_purged
-已经清除的binlog，在主库中 show global variables like 'expire%'; 控制该值跟 gtid_executed 的差距，有binlog的保存机影响
+已经清除的binlog，在主库中 show global variables like 'expire%'; 控制该值跟 gtid_executed 的差距，由binlog的保存机制影响
 
 
 gtid_next

@@ -57,7 +57,7 @@ with transaction.atomic():
 SqlWorkflow.objects.filter(id=35).values('is_manual').first() 
 
 #select is_manual,bbb from SqlWorkflow where id=35 ;
-SqlWorkflow.objects.get(id=35).values_list('is_manual','bbb')
+SqlWorkflow.objects.filter(id=35).values_list('is_manual','bbb')
 
 #get 结果只有一个
 #先select * from from SqlWorkflow; 然后再在python中过滤
@@ -69,3 +69,5 @@ my_object.objects.using('other_db')
 my_object.save(using='other_db')
 
 
+# 加上query查看具体执行SQL语句
+print(SqlWorkflow.objects.filter(id=35).values_list('is_manual','bbb').query)

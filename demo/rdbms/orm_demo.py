@@ -42,6 +42,7 @@ if __name__ == "__main__":
 
 
     ## select       
+    ## with_only_columns([aa,bb])  #select aa,bb from ...
     return session.query(News).get(10)   #使用主键？ 
     return session.query(News).filter_by(is_vaild=True)
 

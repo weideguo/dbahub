@@ -119,6 +119,10 @@ AlterManager
 # 启动 AlterManager 用于告警发送 （prometheus在启动时设置--alertmanager.url以关联AlterManager）
 docker run -d -p 9093:9093 \
 --name alertmanager \
--v /home/chenqionghe/promethues/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml \
+-v /data/promethues/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml \
 prom/alertmanager
+
+
+promethues 的 rule.yaml 控制达到哪个阈值发送告警
+AlterManager具体实现告警信息发送（调用外部接口等）
 

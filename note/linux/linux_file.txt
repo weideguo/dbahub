@@ -180,6 +180,7 @@ diff -Naru test test_new  > test.patch        #对比目录  使用git时 git di
 mv test
 patch -p1 < test.patch                        #因为对比时是在目录外对比，因此打补丁时要忽略一级目录
  
+patch -R -p1 < test.patch                     #补丁回滚
 
 #二进制对比
 xdelta3 -s SOURCE TARGET > OUT                #生成补丁

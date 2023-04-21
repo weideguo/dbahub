@@ -13,7 +13,7 @@ reduce_result=reduce(f2,h)
 print('map: '+str(map_result))
 print('reduce '+str(reduce_result))
 
-
+list(map_result)
 
 f=lambda x,y,z:x*y*z
 	

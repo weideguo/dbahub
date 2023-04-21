@@ -109,6 +109,8 @@ ssh C
 #不分顺序 只需要设置即可
 
 
+scp -o proxycommand="ssh proxy_ip nc %h %p" filename root@target_ip:/tmp
+
 
 重启ssh
 service sshd restart

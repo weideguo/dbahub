@@ -144,8 +144,8 @@ stop slave;set global sql_slave_skip_counter=1;start slave;	  ----跳过的事�
 
 #在slave中 执行空事务实现复制跳过 
 STOP SLAVE;
-SET SESSION GTID_NEXT = <gtid-to-skip>;                 # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:2009911511
-BEGIN; COMMIT;
+SET SESSION GTID_NEXT = <gtid-to-skip>;                 # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:2009911511   要为已经执行的gtid+1
+BEGIN; COMMIT;                                          # 这个事务的gtid即为上面设置的值，执行这个之后 在改实例 show master status 立即体现，因为改gtid已经存在，索引binlog中这个gtid对应的事务不再执行
 SET SESSION GTID_NEXT = AUTOMATIC;
 START SLAVE;
 
@@ -153,14 +153,15 @@ START SLAVE;
 # 在主库直接mysqlbinlog命令还原binlog查看、或者在主库通过show binlog events in ... 查看、或者在从库通过show relaylog events in ... 查看
 # 或 slave slave status\G 中获取 Master_UUID 、 Executed_Gtid_Set ，通过 Master_UUID 确定最后执行的gtid偏移量，拼接成要跳过的gtid（级联复制时需要参考Retrieved_Gtid_Set确定binlog真正的来源master）
 
-show global variables like 'gtid_executed';             # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:1-2009911511 
+show global variables like 'gtid_executed';             # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:1-2009911510 已经执行过的gtid
                                                     
 Executed_Gtid_Set                                       # slave slave status\G ，值与 gtid_executed 相同
 
 
-#设置从库开始复制gtid
+# 新建从实例时需要运行
+# 设置从库开始复制gtid
 reset master;
-set global gtid_purged=<gtid-to-begin-replication>      # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:1-2009911511 
+set global gtid_purged=<gtid-to-begin-replication>      # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:1-2009911510   在主库 show master status 可以确定该值，即已经执行的gtid，在复制时跳过
 CHANGE MASTER TO ... master_auto_position=1;
 start slave;
 

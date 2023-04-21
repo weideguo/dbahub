@@ -6,12 +6,10 @@ dim  维表数据      存储数据字典
 
 
 ads  application data service 
-dm   data market                 高度汇总      提供报表数据  由ods edm计算
 
+dm   data market                 高度汇总      提供报表数据  由ods edm计算     包含 dws dwm dwd
 dws  data warehouse summary 
-
 dwm  data warehouse middle
-
 dwd  data warehouse detail 
 
 ods  operational data store 原始数据层
