@@ -29,6 +29,8 @@ systemctl daemon-reload
 systemctl enable mysqld.service
 systemctl is-enabled mysqld
 
+systemctl disable mysqld.service
+
 #system stop的操作，调用kill
 man systemd.kill
 

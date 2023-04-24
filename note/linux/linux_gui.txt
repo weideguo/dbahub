@@ -1,8 +1,8 @@
 linux下display参数设置
-1 vncserver   ##启动vnc(virtual network computer)
-2 export DISPLAY=localhost:n  ##n为1中的启动信息 export DISPLAY=:0.0 
-3 xhost +x  ## x可以为主机或用户名，如local:oracle，即指定为本地的oracle用户可以图像界面 不指定x为允许所有
-DISPLAY hostname:displaynumber.screennumber  ##DISPLAY参数设置，使用xmanager连接
+1 vncserver                                           ## 启动vnc(virtual network computer)
+2 export DISPLAY=localhost:n                          ## n为1中的启动信息 export DISPLAY=:0.0 
+3 xhost +x                                            ## x可以为主机或用户名，如local:oracle，即指定为本地的oracle用户可以图像界面 不指定x为允许所有
+DISPLAY hostname:displaynumber.screennumber           ## DISPLAY参数设置，使用xmanager连接
 
 xclock   ###验证display参数
 

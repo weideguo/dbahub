@@ -23,9 +23,9 @@ eval SOME_COMMAND
 `SOME_COMMAND`
 $(SOME_COMMAND)
 
-
-echo "this is a ${var}"    # 变量得到替换，如果存在可执行命令块则执行
-echo 'this is a ${var}'    # 不存在变量替换，亦不执行任何命令
+echo "${VAR:-default_value}"      # 如果变量没有定义，则使用默认值
+echo "this is a ${var}"           # 变量得到替换，如果存在可执行命令块则执行
+echo 'this is a ${var}'           # 不存在变量替换，亦不执行任何命令
 
 ${command} > out.file 2>&1        ####将错误的输出定向到标准输出
 
