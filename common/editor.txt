@@ -81,6 +81,8 @@ Alt+Shift+左键
 打开另一个窗口
 ctrl+shift+n
 
+全局搜索
+ctrl+shif+f
 
 Remote - SSH
 

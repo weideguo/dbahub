@@ -27,8 +27,12 @@ scrape_configs:
   - job_name: "prometheus"
 
     static_configs:
-      - targets: ["localhost:9090"]               # 持续pull的端口 
- 
+      - targets: ["localhost:9090"]                        # 持续pull的端口 
+    
+  - job_name: 'prometheus2'
+    file_sd_configs:                                       # 自动从目录中获取配置，无需重启
+        - files: ['/etc/prometheus/sd_config/*.yml']
+          refresh_interval: 5s
  
 # promethus 也可以通过http的get方法传递参数给exporter
  

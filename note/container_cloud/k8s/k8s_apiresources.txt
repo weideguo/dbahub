@@ -1,8 +1,7 @@
 #列出所有API资源 即如 nodes pods namespaces 等所有资源的名字
 kubectl api-resources 
 
-通过yaml文件创建，然后可以在创建容器的yaml文件使用
-
+东西都叫资源 Resource，创建容器的yaml文件使用，yaml里的字段 kind 
 
 Namespace                 #
 ServiceAccountToken       #
@@ -16,7 +15,15 @@ Service                   # 部署一个内部虚拟IP，其他deployment可以�
 Secrets                   # 用于存储和管理一些敏感数据，比如密码，token，密钥等敏感信息。
 Deployment                # 部署一个Pod
 ConfigMap                 # 让镜像 和 应用的配置文件解耦
-Ingress                   # 使用ingress实现反向代理
+Ingress                   # 使用ingress实现反向代理  需要先安装相应controller，如traefik
+
+
+CRD Custom Resource Definition 用户自定义资源
+crd也是通过yaml安装
+
+kubectl get crd -A
+
+
 
 
 

@@ -1,5 +1,6 @@
-kubectl apply -f my-deployment.yaml            # 对docker镜像的部署，即先有打包成docker镜像存在于仓库
+kubectl apply -f my-deployment.yaml            # 对docker镜像的部署，即先有打包成docker镜像存在于仓库。不存在则创建；已经存在则更新
 
+kubectl create -f my-deployment.yaml           # 不存在则创建；已经存在则报错
 
 kubectl api-resources 可以查看 kind 字段
 

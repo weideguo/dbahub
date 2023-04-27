@@ -166,10 +166,6 @@ file -i file_name  查看文件的编码，但是否为utf8-bom查看不出
 cmp filename1 filename2                        ###逐位比较两个文件
 diff                                           ###逐行比
 
-basename $path/filename                        ###从全录路径中提取文件名
-basename $path/filename.txt    .txt            ###从全录路径中提取文件名并去掉后缀
- 
-
 
 diff  file_old file_new > file_update.patch   #生成补丁文件
 patch -p0 file_old     file_update.patch      #应用补丁文件 不能多次应用
@@ -256,5 +252,5 @@ tee filename         ##将输入写入文件中
 echo "xyz" > filename       ###清空文件并写入
 echo "xyz" >> filename      ###在尾部追加写入
 
-dirname $path1/filename.txt            ###显示文件的父目录
+
 

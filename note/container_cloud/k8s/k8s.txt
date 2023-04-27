@@ -17,6 +17,8 @@ kubectl get nodes -o wide
 kubectl describe node <node-name>
 
 
+kubectl get deploy -A
+
 #################################################################pod
 #创建pod 一个pod可以包含多个容器 共享物理资源
 kubectl apply -f my-pod.yaml

@@ -5,7 +5,7 @@ model   SQL Server为用户数据库提供的样板，新的用户数据库都�
 tempdb  一个共享的工作空间，SQL Server中的所有数据库都可以使用它。它为临时表和其他临时工作提供了一个存储区。
 
 
-sql server management stutio      图形管理工具
+sql server management stutio      图形管理工具（可以单独安装）
 
 sqlcmd    sql server命令行
 :help  #查看帮助
@@ -21,6 +21,8 @@ GO 在批处理结束和任何缓存 Transact-SQL 语句执行时发出信号。
 #
 sqlcmd -S 127.0.0.1,2433 -E -Q "insert into ..." 
 
+sqlcmd -U da -P sa_password_word -H 127.0.0.1 
+
 -E 使用可信连接
 
 
@@ -32,7 +34,45 @@ select * from sysdatabases;
 select * from sysobjects where xtype='u';
 
 
+# 查看支持的字符集
+select * from ::fn_helpcollations() ;
+select * from ::fn_helpcollations() where name like 'Chines%';
 
+# 当前字符编码
+SELECT SERVERPROPERTY('Collation');
+
+# 库的字符编码
+SELECT name,collation_name FROM sys.databases;
+
+# 修改库的字符编码  
+ALTER DATABASE db_name COLLATE Chinese_PRC_CI_AS;
+
+
+
+Chinese_PRC：针对大陆简体字UNICODE的排序规则。
+CI：CaseSensitivity，指定不区分大小写。
+AS：AccentSensitivity，指定区分重音。
+英文1占字节，中文2占字节
+
+-- 2019才支持utf8？
+Chinese_PRC_CI_AS_UTF8
+
+
+# 单用户模式
+ALTER DATABASE [db_name] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+# 修改字符集 collation
+ALTER DATABASE [db_name] COLLATE Chinese_PRC_CI_AS;
+
+# 多用户模式
+ALTER DATABASE [db_name] SET MULTI_USER;
+
+
+整个实例的字符编码修改需要在启动时setup设置？
+修改库的字符编码需要重新创建表才剩下
+
+
+交互模式执行要输出go
 
 
 
@@ -86,8 +126,8 @@ sys.tables
 information_schema
 
 
-select * from DB_NAME.SHEMA_NAME.TABLE_NAME;
-select * from [DB_NAME].[SHEMA_NAME].[TABLE_NAME];           #[]指定字符串没有特殊意义？如mysql的``?
+select * from DB_NAME.SHEMA_NAME.TABLE_NAME;                 # schema_name为dbo可以不写， 如 test_db..test_tb
+select * from [DB_NAME].[SHEMA_NAME].[TABLE_NAME];           # []指定字符串没有特殊意义？如mysql的``?
 
 
 
@@ -194,3 +234,26 @@ GO
 --recover the database:  
 RESTORE DATABASE AdventureWorks2012 WITH RECOVERY;  
 GO  
+
+
+
+# linux下安装
+
+# 设置
+curl -o /etc/yum.repos.d/mssql-server.repo https://packages.microsoft.com/config/rhel/7/mssql-server-2019.repo
+yum install -y mssql-server
+
+# 配置 会自动启动？
+sudo /opt/mssql/bin/mssql-conf setup
+
+systemctl status mssql-server
+
+
+# sqlcmd安装
+curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/7/prod.repo
+yum install -y mssql-tools unixODBC-devel
+
+
+export PATH=$PATH:/opt/mssql/bin:/opt/mssql-tools/bin
+
+

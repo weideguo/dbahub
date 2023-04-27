@@ -1,4 +1,7 @@
-控制器 控制器基于基本对象，并提供附加特性和便利特性。更高层次的抽象概念：
+控制器 
+控制器基于基本对象，并提供附加特性和便利特性。更高层次的抽象概念。最终都是运行成pod。
+
+
 ReplicaSet
 Deployment
 StatefulSet
@@ -6,13 +9,8 @@ DaemonSet
 Job
 
 
-#####################副本集
-replicaset  
-
-
-
-#####################有状态服务
-statefulset 
+#####################
+statefulset 用于有状态服务，更方便使用pv、pvc
 
 kubectl -n uat get sts
 
@@ -21,11 +19,17 @@ kubectl rollout restart statefulset <pod-name>
 
 
 ####################
-deployment 
+deployment 可以控制pod的副本
+
+
+
+#####################副本集
+replicaset  
 
 
 
 
-
+####################
+ingress  网络相关，提供代理、负载均衡
 
 

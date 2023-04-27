@@ -27,6 +27,26 @@ echo "${VAR:-default_value}"      # 如果变量没有定义，则使用默认�
 echo "this is a ${var}"           # 变量得到替换，如果存在可执行命令块则执行
 echo 'this is a ${var}'           # 不存在变量替换，亦不执行任何命令
 
+
+#  从左边算起第一个
+## 从左边算起最后一个
+%  从右边算起第一个
+%% 从右边算起最后一个
+
+
+a="/abc/def.txt.tar"
+echo ${a#*/}      # abc/def.txt.tar  左边起第一个/以及之前的字符删除
+echo ${a##*/}     # def.txt.tar      左边起最后一个/以及之前的字符删除
+echo ${a%.*}      # /abc/def.txt     右边算起第一个.以及之后的字符删除
+echo ${a%%.*}     # /abc/def         右边算起最后一个.以及之后的字符删除
+
+＊  表示要删除的内容，它位于指定的字符的左边还是右边
+
+basename $path/filename                        # 从全录路径中提取文件名
+basename $path/filename.txt    .txt            # 从全录路径中提取文件名并去掉后缀
+dirname  $path/filename.txt                    # 显示文件的目录 
+
+
 ${command} > out.file 2>&1        ####将错误的输出定向到标准输出
 
 0    标准输入。键盘输入，并返回在前端。
