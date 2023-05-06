@@ -240,6 +240,8 @@ find ./ ! -path "./aaa"                              #! 过滤
 -maxdepth   #目录深度指定
 
 
+stat $path       # 查看目录 访问、修改的时间 等信息
+
 
 - 可看成特殊的文件？
 echo "aaa" | cat -

@@ -101,6 +101,8 @@ netstat -nat                  ##连接数查看
 
 netstat -ntlpa                ##查看连接      
 
+ss                            ##类似于netstat
+
 
 
 CLOSED	     没有使用这个套接字[netstat 无法显示closed状态]
@@ -171,3 +173,6 @@ tcpdump 导出后的文件可以使用wireshark打开
 tc
 
 
+tcpkill
+
+tcpkill -9 -i ens33 host 192.168.85.1 and port 49627

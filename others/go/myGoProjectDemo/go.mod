@@ -1,4 +1,4 @@
-module github.com/zouzhicun/myGoProjectDemo
+module github.com/weideguo/myGoProjectDemo
 
 go 1.13
 

@@ -1,0 +1,11 @@
+#备份与迁移
+elasticdump 
+https://github.com/elasticsearch-dump/elasticsearch-dump
+
+
+# 原生导出 支持导出到其他es集群
+put /_reindex
+{
+...
+}
+

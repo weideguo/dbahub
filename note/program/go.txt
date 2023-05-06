@@ -76,7 +76,7 @@ go env GOPATH        #查看GOPATH
 mkdir myGoProject 
 cd myGoProject 
 
-go mod init github.com/zouzhicun/myGoProject  #初始化当前文件夹，go.mod文件
+go mod init github.com/weideguo/myGoProject  #初始化当前文件夹，go.mod文件
 
 #在代码中通过 import 引入依赖包
 ```go
@@ -85,7 +85,7 @@ import (
     
     "github.com/gin-gonic/gin"                         #依赖第三方包 ，运行时自动下载
     
-    "github.com/zouzhicun/myGoProject/myutils"         #引入自己的包，即当前目录下存在myutils，import时需要在目录前加上完整项目名（go.mod中指定）
+    "github.com/weideguo/myGoProject/myutils"         #引入自己的包，即当前目录下存在myutils，import时需要在目录前加上完整项目名（go.mod中指定）
 )
 
 ```

@@ -87,8 +87,9 @@ uname -r 	            			###查看使用的内核
 sysctl -p  		  		            ##使修改生效
 sysctl vm.overcommit_memory=1		###直接使内核参数生效
 
+sysctl -w vm.overcommit_memory=1    #写入配置文件，还需要运行 sysctl -p使生效
+
+sysctl -a                           #查看当前生效的参数
 
 
-
-
-
+/proc/sys                           #内核参数运行值，可以查看、修改立即生效

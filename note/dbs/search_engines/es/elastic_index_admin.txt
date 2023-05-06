@@ -1,0 +1,162 @@
+GET _cat/shards/indexName                         #查看索引的分片信息
+
+
+#查看索引的信息 分片、副本
+get indexName/_settings
+
+
+#设置索引的信息
+PUT indexName
+{
+    "settings": {
+        "number_of_shards": 5,                     #分片数         最好跟节点数相同，可以确保数据可以随着节点扩展
+        "number_of_replicas" : 2                   #分片的副本数   单个节点还额外存多少份，可以保证当节点发生故障时数据依旧可用
+    }
+}
+
+
+
+#加载数据到内存
+PUT /indexName
+{
+  "settings": {
+    "index.store.preload": ["nvd", "dvd"]
+  }
+}
+
+
+
+nvd 该文件中存储了影响相关度分数的因素
+dvd 存储了文档的数据
+tim 文档字典
+doc 发布清单
+dim 点数据
+
+
+get city/_settings                               #查看索引city的信息
+
+{
+  "city" : {                                     #
+    "settings" : {                               #
+      "index" : {                                #
+        "refresh_interval" : "30s",              #文档的变化并不是立即对搜索可见，根据刷新时间再更新。 -1 关闭刷新，可以动态设置。
+        "number_of_shards" : "1",                #
+        "translog" : {                           #
+          "sync_interval" : "5s",                #translog多久被同步到磁盘并提交一次。默认5秒。这个值不能小于100ms。
+          "durability" : "async"                 #
+        },                                       #
+        "provided_name" : "city",                #
+        "max_result_window" : "65536",           #
+        "creation_date" : "1603767449382",       #
+        "unassigned" : {                         #
+          "node_left" : {                        #
+            "delayed_timeout" : "5m"             #
+          }                                      #
+        },                                       #
+        "number_of_replicas" : "1",              #
+        "uuid" : "57ojEprqRGKIzKg3jb6R9A",       #
+        "version" : {                            #
+          "created" : "7050199"                  #
+        }
+      }
+    }
+  }
+}
+
+
+
+出translog的作用就是保证ES数据不丢失。
+为了保证性能，插入ES的数据并不会立刻落盘，而是首先存放在内存当中，等到条件成熟后触发flush操作，内存中的数据才会被写入到磁盘当中。
+translog保留了这些数据的操作日志，在ES服务重启的时候，会读取translog，恢复这部分数据。
+
+index.translog.flush_threshold_ops      执行多少次操作后执行一次flush，默认无限制
+index.translog.flush_threshold_size     translog的大小超过这个参数后flush，默认512mb
+index.translog.flush_threshold_period   多长时间强制flush一次，默认30m
+index.translog.interval                 多久去检测一次translog是否满足flush条件
+
+
+refresh操作：
+所有在内存缓冲区中的文档被写入到一个新的segment中，但是没有调用fsync，因此内存中的数据可能丢失
+segment被打开使得里面的文档能够被搜索到
+清空内存缓冲区
+    
+    
+post indexName/_refresh           #手动刷新
+
+
+
+#mapping 数据类型
+
+#查看所有文档的数据类型
+GET _mapping
+
+#查看文档的数据类型
+GET test/_mapping
+
+
+#创建文档并设置数据类型，如果不创建，则在插入时创建并自动设置数据类型
+PUT test
+{
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text"
+      },
+      "name": {
+        "type": "keyword"
+      },
+      "age": {
+        "type": "integer"
+      }
+    }
+  }
+}
+
+#增加mapping
+PUT test/_mapping
+{
+  "properties": {
+    "agex": {
+      "type": "text"
+    }
+  }
+}
+
+
+#不能修改mapping
+
+
+
+
+#模板
+#包预设字段的定义  即xx字段是yy类型   索引的主分片、拷贝分片、刷新时间、自定义分析器等
+#索引可使用预定义的模板进行创建，这个模板称作Index templates
+
+get _template                 #查看所有模板
+get _template/template_name   #查看指定模板
+
+
+PUT /_template/template_1
+{ "template" : "*",                                                     #匹配的索引，匹配则使用该模板
+"order" : 0,                                                            #当属性等配置出现不一致的，以order的最大值为准，order默认值为0，order越大，优先级越高 
+"settings" : { "number_of_shards" : 1 },                                #
+"mappings" : { "type1" : { "_source" : { "enabled" : false } } }        #
+}
+
+PUT /_template/template_2
+{ "template" : "te*", 
+"order" : 1, 
+"settings" : { "number_of_shards" : 1 }, 
+"mappings" : { "type1" : { "_source" : { "enabled" : true } } }
+} 
+
+
+mapping的字段
+_all       主要指的是AllField字段，我们可以将一个或多个都包含进来，在进行检索时无需指定字段的情况下检索多个字段。
+_source    主要指的是SourceField字段。_source字段在我们进行检索时相当重要，如果在{"enabled" : false}情况下默认检索只会返回ID， 你需要通过Fields字段去到索引中去取数据，效率不是很高。但是enabled设置为true时，索引会比较大，这时可以通过Compress进行压缩和inclueds、excludes来在字段级别上进行一些限制，自定义哪些字段允许存储。
+properties 这是最重要的步骤，主要针对索引结构和字段级别上的一些设置。 
+
+
+
+
+

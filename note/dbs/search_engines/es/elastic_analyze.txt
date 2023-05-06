@@ -1,0 +1,62 @@
+#分词器 搜索引擎的倒排索引依赖分词器
+
+#查看分词
+POST _analyze
+{
+  "analyzer": "standard",                                                  
+  "text": "live long and prosperous, long long time a ago"
+}
+
+
+#创建索引时设置分词器以及字段类型
+PUT new_index
+{
+	"settings": {
+		"analysis": {
+			"analyzer": {
+				"my_analyzer": {                       #自定义分词器名称     
+					"type": "custom",                  #custom即为自定义分词器
+					"tokenizer": "standard",           #
+					"filter": [
+						"lowercase",
+						"asciifolding"
+					]
+				}
+			}
+		}
+	},
+	"mappings": {
+		"properties": {
+			"title": {
+				"type": "text",
+				"analyzer": "my_analyzer"               #指定分词器
+			},                                          
+			"content": {                                
+				"type": "text",                         
+				"analyzer": "whitespace"                #指定分词器
+			}
+		}
+	}
+}
+
+
+内置分词器
+Standard Analyzer   默认分词器，按词切分，小写处理
+Simple Analyzer     按照非字母切分(符号被过滤), 小写处理
+Stop Analyzer       小写处理，停用词过滤(the,a,is)
+Whitespace Analyzer 按照空格切分，不转小写
+Keyword Analyzer    不分词，直接将输入当作输出
+Patter Analyzer     正则表达式，默认\W+(非字符分割)
+Language            提供了30多种常见语言的分词器
+Customer Analyzer   自定义分词器
+
+
+#分词器安装
+./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.1.0/elasticsearch-analysis-ik-7.1.0.zip
+
+
+分析器（analyzer）都由三种构件块组成的：
+character filters    #过滤字符 如html的标签
+tokenizers           #分词 
+token filters        #分词后的转换 如大小写转换
+

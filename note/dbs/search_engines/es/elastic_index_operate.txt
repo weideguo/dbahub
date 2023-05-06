@@ -173,8 +173,6 @@ POST test/_delete_by_query
 curl -XGET "http://$localhost:9200/_cat/health"
 curl -XGET "http://$localhost:9200/_cat/health?v"
 
-from表示从第几行开始
-size表示查询多少条文档
 
 
 #列出所有索引

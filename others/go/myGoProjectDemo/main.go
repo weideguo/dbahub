@@ -3,7 +3,7 @@ package main
 import (
     "github.com/gin-gonic/gin"
 
-    "github.com/zouzhicun/myGoProjectDemo/myutils"
+    "github.com/weideguo/myGoProjectDemo/myutils"
 )
 
 func main() {
