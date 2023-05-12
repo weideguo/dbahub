@@ -231,7 +231,7 @@ ffff ffff                    #FIL_PAGE_NEXT	            下一个数据页的偏
 
 
 ibd数据文件初始大小为96K，每16K增加到1M，然后每1M增加（即1extent=1M）
-
+创建表时存在非主键索引，每一个索引初始值加16K
 
 
 FIL_PAGE_TYPE:

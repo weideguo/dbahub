@@ -24,6 +24,16 @@ GET ${indice}
 #查看indices的数据 只返回部分
 GET ${indice}/_search
 
+#分页
+#
+from
+size
+
+#
+scroll=5m   #_scroll_id缓存5分钟 返回_scroll_id，下一次使用该值滚动
+
+
+
 #使用id查询indices的数据
 GET ${indice}/_doc/${_id}
 

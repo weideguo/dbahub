@@ -1,4 +1,4 @@
-tracer 提供tcp接口，应用通过此接口上传文件
+tracker 提供tcp接口，应用通过此接口上传文件 / 也可以直接通过tracker下载文件，从而不需要额外的nginx
 每个storage启动一个nginx，通过外部nginx聚合，实现统一入口下载文件，同时通过nginx实现负载均衡
 
 

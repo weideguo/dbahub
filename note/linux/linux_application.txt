@@ -145,8 +145,9 @@ NFS协议2049，RPC为111端口，才能正常使用NFS
 NFS服务的共享配置文件/etc/exports
 每个共享占用一行，格式：共享目录     允许的各户主机(选项)
 如：/linuxcast-nfs    192.168.1.1（ro,async）
-配置好共享后，使用以下命令启动：
-service nfs start 或 export -r
+配置好共享后，使用以下命令使配置生效：
+service nfs start 
+exportfs -r
 查看共享详细信息
 showmount -e
 客户端可以通过mount命令挂载NFS共享：

@@ -236,7 +236,7 @@ git rebase
 git rebase --continue
 
 
-#合并7f4dc225818e94b37d6f2da3285ef6c096eb1f68提交之前的commit成一个commit，执行改命令时必须所有文件都被commit
+#合并7f4dc225818e94b37d6f2da3285ef6c096eb1f68提交之前的commit成一个commit，执行改命令时必须所有文件都被commit（不包含该commit）
 git rebase -i 7f4dc225818e94b37d6f2da3285ef6c096eb1f68
 
 # 运行后设置并退出
