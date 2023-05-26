@@ -1,0 +1,3 @@
+yum install libmysqlclient-dev
+mysql_config                        #一个脚本
+mysql_config --version

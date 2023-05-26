@@ -4,7 +4,7 @@ prometheus
 
 基于HTTP采用pull方式收集数据 
   输出被监控组件信息的HTTP接口被叫做exporter。可以自行实现或者已提供的，在被监控的机器运行，已提供的支持监控如Nginx、MySQL、Linux系统信息。
-pushgateway 接受push服务，Prometheus稍后再pull，相当于缓存
+
 
 # 启动
 docker run -d -p 9090:9090 prom/prometheus
@@ -108,10 +108,7 @@ Summary     摘要               {quantile="<φ>"}              特殊情况的H
 
 
 
-Grafana  图形展示
 
-# 启动 grafana 用于展示prometheus的数据（也可以展示其他数据源的数据，在grafana可以选择不同的数据源）
-docker run -d -p 3000:3000 grafana/grafana
 
 
 
@@ -130,3 +127,19 @@ prom/alertmanager
 promethues 的 rule.yaml 控制达到哪个阈值发送告警
 AlterManager具体实现告警信息发送（调用外部接口等）
 
+
+
+
+pushgateway 
+接受push服务，相当于特殊的exporter，Prometheus稍后再pull，相当于缓存告警
+
+get接口
+/metrics            #提供给Prometheus的接口
+/api/v1/metrics     #查看具体metrics的信息，
+
+post/put接口
+#应用、脚本主动推送告警信息使用的接口
+
+
+delete接口
+# 删除metric，过期的metric不会自动删除，因此需要手动删除

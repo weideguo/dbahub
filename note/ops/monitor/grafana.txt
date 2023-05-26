@@ -1,0 +1,12 @@
+告警图形展示
+
+# 启动 grafana 用于展示prometheus的数据（也可以展示其他数据源的数据，在grafana可以选择不同的数据源）
+docker run -d -p 3000:3000 grafana/grafana
+
+
+通过查询设置展示，同时可以设置告警
+
+
+
+
+

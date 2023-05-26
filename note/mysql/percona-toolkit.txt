@@ -26,3 +26,11 @@ pt-table-sync
 #用来修复多个实例之间数据的不一致。内部集成了pt-table-checksum的校验功能
 
 
+# 同步并删除
+pt-archiver --source h=127.0.0.1,u=test,p='test',D='test',t=t1 --dest h=127.0.0.1,u=test,p='test',D='test',t=t1_old --where "id <= 10000" --limit=1000 --txn-size 2000 --progress 5000 --charset=utf8 --sleep 1 --no-version-check --bulk-delete --bulk-insert
+
+
+# 只删除
+pt-archiver --source h=127.0.0.1,u=test,p='test',D='test',t=t1  --where "id <= 10000" --limit=1000 --txn-size 2000 --progress 5000 --charset=utf8 --sleep 1 --no-version-check --bulk-delete 
+
+

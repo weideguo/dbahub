@@ -91,8 +91,10 @@ docker export $container_id >> /home/export.tar                     ###容器转
 cat /home/export.tar | docker import - $image_name:$version         ###容器导出的文件转成镜像
 tar cv --files-from /dev/null | docker import - scratch             #scrach是专有名字 为空镜像 可以用作其他的基础镜像                                                                        
 
+docker save -o $image_name $repository:$tag
 docker save $image_name >> /home/save.tar                           ###镜像转成文件
 docker load < /home/save.tar                                        ###镜像导出的文件转成镜像
+
 
                                          
 docker attach <container-id>                                        #进入容器 需要使用 ctrl+p ctrl+q 退出，否则容器会关闭                                                                  

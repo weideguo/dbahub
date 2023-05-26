@@ -21,6 +21,9 @@ perf record -p $pid
 # 解析并查看perf.data内容
 perf script -i perf.data > perf.log && less perf.log
 
+# 查看调用栈
+perf top -p $pid
+perf top -p $thread_id
 
 
 ############################################################################gdb启动程序并进行调试

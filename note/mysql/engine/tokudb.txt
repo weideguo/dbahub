@@ -1,3 +1,9 @@
+fractal树索引
+
+高压缩比，适合写多改动少的，用于归档数据
+
+
+
 #检查是否启用透明巨型页
 cat /sys/kernel/mm/transparent_hugepage/enabled
 
@@ -11,5 +17,6 @@ plugin-load=ha_tokudb
 
 
 MySQL> INSTALL SONAME 'ha_tokudb';        #启用tokudb存储引擎
+
 
 

@@ -89,6 +89,9 @@ nsenter     #管理namespace
 
 arping -c 3 -U -I eth0 192.168.10.100							###更新arp
 
+arping -c 4 -s ${vip} -I ${netword_card} ${gateway}             ###向网关通知vip的更新
+
+
 
 #静态域名解析
 /etc/hosts
