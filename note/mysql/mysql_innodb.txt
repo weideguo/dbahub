@@ -16,6 +16,34 @@ COMPRESSED COMPACT的衍生，压缩存储
 
 
 
+
+
+
+行格式压缩
+... row_format=compressed
+
+
+启页压缩（独立表空间才支持）
+CREATE TABLE t1 (c1 INT) COMPRESSION="zlib";
+
+ALTER TABLE t1 COMPRESSION="zlib";               -- zlib lz4
+OPTIMIZE TABLE t1;
+
+ALTER TABLE t1 COMPRESSION="None";
+
+
+使用 ROW_FORMAT=COMPRESSED 则不会被页压缩
+启页压缩依赖文件系统 hole punching
+压缩比由innodb_page_size与文件系统的块大小的比值确定（innodb的一个page压缩到文件系统的block，如果压缩后的超过block的大小，则失败）
+
+
+控制压缩级别，越大则cpu消耗越高但压缩效果越好
+innodb_compression_level
+
+
+
+
+
 innodb使用系统表空间存储内部数据字典及undo日志，所以使用多重表空间时数据文件(.ibd)不能随意移动
 
 rename table db1.table_name db2.table_name;    ---将表从一个数据库移动到另外一个数据库，只是修改数据字典中的定义而已
