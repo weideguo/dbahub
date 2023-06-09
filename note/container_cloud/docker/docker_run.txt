@@ -7,22 +7,27 @@ docker run -it --name my_docker_name --link docker_name:alias_name image_name /b
 
 docker run -it centos7 /bin/sh                                                                   #使用镜像创建新容器并进入shell，quit退出时会结束容器   【 ctl+p ctl+q】退出时不结束容器
 
-    -i   #交互模式
-    -t   #分配一个伪终端(pseudo-TTY)
-    -d   #后台进行方式运行            #紧跟的命令不能发生退出 否则容器会停止   
-    -p 8080:80               #容器的80映射到主机8080
-    -p 127.0.0.1:8080:80            #端口绑定到127.0.0.1:8080
-    --expose 80 81            ##开放一组端口
-    --user user_name          ##使用镜像中指定用户启动容器
-    
-    -v <conteiner path>        ##挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
-    -v <host path>:<container pth>   ##将主机的目录挂载到容器的目录
-    --env XXX=YYY                    ##可以有多个--env
+    -i                               #交互模式
+    -t                               #分配一个伪终端(pseudo-TTY)
+    -d                               #后台进行方式运行                  #紧跟的命令不能发生退出 否则容器会停止   
+    -p 8080:80                       #容器的80映射到主机8080
+    -p 127.0.0.1:8080:80             #端口绑定到127.0.0.1:8080
+    --expose 80 81                   #开放一组端口
+    --user user_name                 #使用镜像中指定用户启动容器
+                                   
+    -v <conteiner path>              #挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
+    -v <host path>:<container pth>   #将主机的目录挂载到容器的目录
+    --env XXX=YYY                    #可以有多个--env
         --restart                     
-            no             #不自动启动容器
-        always         #一直尝试启动直到成功
-        on-failure:10  #尝试10次都失败后不再启动
+            no                       #不自动启动容器
+        always                       #一直尝试启动直到成功
+        on-failure:10                #尝试10次都失败后不再启动
+        
 #容器内服务自自动  
 通过linux的服务自启动方式实现，即写入/etc/rc.local或者相关文件？    
 通过Dockerfiler中设置启动命令 
 
+
+docker port <container_id>          # 列出端口映射
+
+docker port <container_id>  8080    # 更改端口映射

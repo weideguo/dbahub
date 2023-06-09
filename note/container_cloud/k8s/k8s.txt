@@ -16,8 +16,14 @@ kubectl get nodes -o wide
 #获取节点详细信息
 kubectl describe node <node-name>
 
-
 kubectl get deploy -A
+
+
+-A          # 所有命名空间
+-o          # 输出格式 -o wide ：输出包含网络信息 -o yaml ：输出运行使用的yaml配置
+-w          # 持续输出
+-n          # 指定命名空间
+
 
 #################################################################pod
 #创建pod 一个pod可以包含多个容器 共享物理资源
@@ -34,10 +40,6 @@ kubectl get pods -o wide -w
 kubectl -n test get pods
 kubectl -n test get pods -o wide
 
--A          # 所有命名空间
--o wide     # 输出格式
--w          # 持续输出
--n          # 指定命名空间
 
 #获取pod的详细信息
 kubectl describe pod <pod-name>

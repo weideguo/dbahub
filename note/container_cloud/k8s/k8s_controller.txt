@@ -2,12 +2,6 @@
 控制器基于基本对象，并提供附加特性和便利特性。更高层次的抽象概念。最终都是运行成pod。
 
 
-ReplicaSet
-Deployment
-StatefulSet
-DaemonSet
-Job
-
 
 #####################
 statefulset 用于有状态服务，更方便使用pv、pvc
@@ -17,19 +11,30 @@ kubectl -n uat get sts
 kubectl rollout restart statefulset <pod-name>
 
 
-
 ####################
-deployment 可以控制pod的副本
-
-
-
-#####################副本集
-replicaset  
-
+configmap  存放配置文件的具体内容，其他controller通过引用configmap实现配置加载（如deploy控制器可以使用configmap实现启动时修改配置文件）
 
 
 
 ####################
-ingress  网络相关，提供代理、负载均衡
+deployment 更好的部署pod，如可以控制pod的副本数
+
+
+####################
+DaemonSet  每个node运行一个pod，如日志收集程序需要在每个node运行
+
+
+#####################
+replicaset 可以控制副本集
+
+
+#####################
+Job  运行一次性任务
+
+
+####################
+ingress  网络相关，提供代理、负载均衡。
+先运行 service / svc ，使得可以通过固定name访问pod，即使pod重新部署，只要配置的name不变
+然后运行ingress，通过name固定绑定pod，实现固定ip（即ingress的ip）映射到pod
 
 

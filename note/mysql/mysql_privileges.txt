@@ -14,8 +14,10 @@ mysql.tables_priv	---表的权限
 ---创建用户
 create user user_name identified by user_password;
 create user user_name identified by password 'encrypt_password';   --使用密码的加密串创建账号 
-create user user_name@'host_ip' identified by user_password;  --设置用户并限定登陆ip或主机名，
-RENAME USER old_name TO new_name;   ----更改用户名
+create user user_name@'host_ip' identified by user_password;       --设置用户并限定登陆ip或主机名
+RENAME USER old_name TO new_name;                                  --更改用户名
+
+... IDENTIFIED WITH 'mysql_native_password' AS '*03C445B25C8D34C170CA5EA3C34616E743F11758';   --5.7以及之后
 
 ---role使用 mysql8.0以上支持
 create role ...                     ---角色可以授权给用户
@@ -53,7 +55,7 @@ alter user ... account unlock;
 
 proxy权限
 install plugin auth_test_plugin soname 'auth_test_plugin.so' 
-create user 'user2'@'host2' identified with auth_test_plugin soname as 'user1'@'user2';    
+create user 'user2'@'host2' identified with auth_test_plugin soname as 'user1'@'host1';    
 --proxy_user只读参数，显示当前用户所使用的代理账号
 
 

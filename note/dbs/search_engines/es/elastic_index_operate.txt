@@ -164,8 +164,13 @@ POST test/_doc
 
 
 #######删除
+#删除整个索引
 DELETE test
 
+#使用通配符删除多个索引
+DELETE *test*
+
+curl -XDELETE http://$localhost:9200/*test*
 
 #按条件删除
 POST test/_delete_by_query   

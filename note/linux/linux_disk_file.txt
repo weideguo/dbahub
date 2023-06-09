@@ -6,6 +6,7 @@ df -T
 
 tune2fs -l /dev/sda3 | grep Block  ##查看文件系统block等
 
+getconf PAGESIZE                   ##查看文件系统块大小
 
 dd ##把指定的输入文件拷贝到指定的输出文件中
 
