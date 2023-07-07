@@ -1,3 +1,21 @@
+sql server 配置管理器
+
+
+
+sql server management stutio      图形管理工具（可以单独安装）
+
+
+
+
+文件
+.mdf primary data file
+.ndf secondary data files
+.ldf log data files
+
+每个数据库是以两个文件存放的，一个后缀名为mdf，是数据文件，另一个后缀名为ldf，为日志文件
+
+
+
 系统数据库
 master  用于记录所有SQL Server系统级别的信息，这些信息用于控制用户数据库和数据操作。
 msdb    由 Enterprise Manager和Agent使用，记录着任务计划信息、事件处理信息、数据备份及恢复信息、警告及异常信息。
@@ -5,7 +23,6 @@ model   SQL Server为用户数据库提供的样板，新的用户数据库都�
 tempdb  一个共享的工作空间，SQL Server中的所有数据库都可以使用它。它为临时表和其他临时工作提供了一个存储区。
 
 
-sql server management stutio      图形管理工具（可以单独安装）
 
 sqlcmd    sql server命令行
 :help  #查看帮助
@@ -15,11 +32,11 @@ GO 在批处理结束和任何缓存 Transact-SQL 语句执行时发出信号。
 
 
 #安装cygwin时在shell中命令的位置
-"/cygdrive/C/Program Files/Microsoft SQL Server/90/Tools/binn/SQLCMD.EXE" -S 127.0.0.1,2433 -E -Q "select ..." 
+"/cygdrive/C/Program Files/Microsoft SQL Server/90/Tools/binn/SQLCMD.EXE" -S 127.0.0.1,1433 -E -Q "select ..." 
 
 
 #
-sqlcmd -S 127.0.0.1,2433 -E -Q "insert into ..." 
+sqlcmd -S 127.0.0.1,1433 -E -Q "insert into ..." 
 
 sqlcmd -U da -P sa_password_word -H 127.0.0.1 
 

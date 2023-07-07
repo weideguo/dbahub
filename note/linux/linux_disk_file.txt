@@ -1,8 +1,21 @@
 磁盘管理
-du -sk directory_name  ##目录及子目录的总大小
-df -k  ##磁盘的使用情况
-file -s /dev/sda1   ###查看文件系统的类型
+du -sk directory_name  # 目录及子目录的总大小
+df -k                  # 磁盘的使用情况
+file -s /dev/sda1      # 查看文件系统的类型
 df -T
+df -i                  # 查看inode
+inode存储文件的元数据
+inode编号
+文件类型
+文件的链接数目
+属主的ID (UID)
+属主的组 ID (GID)
+文件的大小
+文件所使用的磁盘块的实际数目
+最近一次修改的时间
+最近一次访问的时间
+最近一次更改的时间
+
 
 tune2fs -l /dev/sda3 | grep Block  ##查看文件系统block等
 

@@ -1,4 +1,4 @@
 dev tools -> console  直接命令行查询es的数据
 
-
+Management -> Index Management  查看所有的索引列表
 

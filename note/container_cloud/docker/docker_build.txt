@@ -7,4 +7,4 @@ docker build - < Dockfile                                            #使用Dock
 docker build -f <dockerfile name>  .                               
 docker build -f Dockerfile .          
 
-
+docker build --build-arg INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ --build-arg TRUSTED_HOST=mirrors.aliyun.com  -t image_name:TAG_name . 

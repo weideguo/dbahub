@@ -126,8 +126,15 @@ vm.swapping=0                             ###/etc/sysctl.conf中修改禁用swap
 cat /proc/sys/vm/swappiness               ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
 vm.swappiness=10                          ##修改swap的使用权重
 
-swapoff -a  #临时关闭swap
+swapoff -a  #临时关闭swap 会将swap加载到物理内存
 ##编辑/etc/fstab实现固定设置
+
+swapon -a   #启用swap
+
+
+mkswap  在一个文件或者设备上建立交换分区，需要挂载之后swap才生效
+
+
 
 SWAP分区异常使用
  程序内存泄露  
@@ -184,3 +191,18 @@ dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建�
 /usr/swap/swapfile  /swap   swap    defaults    0 0   ##编辑/etc/fstab实现固定设置
 
 
+
+
+网络
+iperf 
+# 网络性能测试 带宽、延迟抖动和数据包丢失
+
+# 服务端
+iperf -s -p 12345 -i 1 -M
+
+# 客户端
+iperf -c $server_ip -p 12345 -i 1 -t 10 -w 20K
+
+
+nethogs
+#查看实时流量速度

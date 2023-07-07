@@ -137,7 +137,11 @@ filter:
 --slave_skip_errors	                                          ----on/off或者其他 必须在启动时设置
 stop slave;set global sql_slave_skip_counter=1;start slave;	  ----跳过的事件数 可以直接在mysql运行时执行
 
+replicate-do-db 在配置文件中写时必须一行对应一个库，多个库则使用多行。binlog为row格式时，不在对应库的跨库DML可以被复制，但不在对应库的跨库DDL不能；为statement时不在对应库的跨库SQL不会被复制。
 
+replicate-wild-do-table binlog为statement时，使用这个代理库级别复制过滤可能更安全，从而实现对跨库操作的支持。
+
+库级别过滤为空或者匹配库级别过滤，才会继续匹配表级别过滤
 
 
 使用master_auto_position复制跳过

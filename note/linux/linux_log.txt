@@ -30,3 +30,5 @@ logrotate ${config_file}
 
 copytruncate模式 copy完成到truncate完成的中间数据会丢失
 
+# 查看操作系统报错信息
+dmesg -T  

@@ -1,4 +1,5 @@
 时序数据库
+TSM数存储数据 Time-Structured Merge Tree
 
 
 名词概念

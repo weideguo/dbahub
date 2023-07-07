@@ -11,6 +11,17 @@ EOF
 
 chmod 755 test.cgi
 
+
+# 获取地址栏传递的参数
+query_string=$QUERY_STRING
+
+# 获取post的body
+if [ $REQUEST_METHOD = "POST" ];then
+# query_string=`cat`
+query_string=`tee`
+fi
+
+
 #启动httpd 
 service httpd start
 
@@ -31,3 +42,47 @@ int main(void)
 EOF
 
 gcc test.c -o test.cgi
+
+#include <stdlib.h>
+
+// 请求的类型
+getenv("REQUEST_METHOD")
+
+// 获取地址栏传递的参数
+getenv("QUERY_STRING")
+
+
+getenv("CONTENT_LENGTH") 
+// 获取post的body
+// cpp
+if(!strcmp(getenv("REQUEST_METHOD"),"POST"))
+{
+    char *lenstr;
+    long len;
+    lenstr = getenv("CONTENT_LENGTH"); 
+    sscanf(lenstr,"%ld",&len)
+    
+    char post_str[256];
+    char* buff = (char*)malloc(size);  
+    fgets(post_str, len+1, stdin);
+    // post_str 需要进行额外处理？
+}
+
+
+
+// cpp
+char post_str[256];
+cin>>post_str;
+
+
+
+// HTTP-REFERER    
+// REMOTE-HOST     
+// REQUEST-METHOD  
+// SCRIPT-NAME     
+// QUERY-STRING    
+// CONTENT-TYPE    
+// CONTENT-LENGTH  
+
+
+

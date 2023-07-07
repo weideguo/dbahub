@@ -1,0 +1,4 @@
+bin/elasticsearch -d        # 后台启动
+
+
+

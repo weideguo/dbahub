@@ -15,6 +15,13 @@ tags 有索引
 
 SHOW RETENTION POLICIES     可以按照schema显示保留时间
 
+DROP RETENTION POLICY <retention_policy_name> ON <database_name>
+
+ALTER RETENTION POLICY <retention_policy_name> ON <database_name> DURATION <duration> REPLICATION <n> [SHARD DURATION <duration>] [DEFAULT]
+
+
+shardGroupDuration 根据这个值自动shard
+
 
 
 # 查询
