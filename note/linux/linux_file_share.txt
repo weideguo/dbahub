@@ -1,0 +1,307 @@
+FTP（File Transfer Protocol）标准端口：20[数据接口]、21[指令接口]
+连接模式：
+ 主动模式（active mode）：服务端主动向客户端发起数据连接
+ 被动模式：客户端主动向服务端发起数据连接，通常用在存在服务端与客户端间存在防火墙的情况下
+FTP服务程序vsftp（Very Secure  ）
+sftpd相关配置文件：
+/etc/vsftpd/vsftpd.conf ? ?     vsftpd主配置文件
+/etc/vsftpd/ftpusers ? ? ? ?    黑名单
+/etc/vsftpd/user_list ? ? ?     控制名单（由配置文件控制器是白名单还是黑名单）
+/var/ftp                        ftp共享目录
+/var/ftp/xferlog                日志
+
+vsftpd使用用户作为管理单位
+ 正常用户（系统用户）
+ 匿名用户（anonymous）
+ 虚拟用户（ftp-only）
+命令lftp登陆ftp,-u 可以指定用户
+ 如：lftp 127.0.0.1
+get 下载
+put 上传
+上传下载文件都在登陆时的目录
+修改配置文件开启匿名用户上传，在/etc/vsftpd/vsftpd.conf中修改
+anonymous_enable=YES          开启匿名用户
+anon_upload_enable=YES        打开匿名用户上传功能
+anon_mkdir_write_enable=YES   打开匿名用户创建文件夹功能
+赋予匿名用户上传使用的文件夹以写权限
+chmod 777 /var/ftp/pub/文件夹
+
+vim /etc/vsftpd/chroot_list  
+#将dengftp添加到此文件中，这样打开ftp 的时候自动定位到根目录下
+service vsftpd restart 
+
+ftp模式
+! 执行外壳命令 如 !ls
+delete
+mdelete
+put
+mput
+get
+mget
+
+
+
+
+NFS（Network File System）linux系统之间使用的文件共享协议，通常适用于局域网内共享
+主流版本：NFSv2、NFSv3、NFSv4
+NFS服务默认需要使用RPC服务，所以使用NFS服务必须保证系统rpc服务打开：
+service rpcbind start
+chkconfig rpcbind on
+启动NFS
+service nfs start
+chkconfig nfs on
+
+# centos7
+systemctl start rpcbind
+systemctl enable rpcbind
+# 
+systemctl start nfs
+systemctl enable nfs
+
+
+NFS使用5个端口，其中4个是动态的及rpc服务的端口，动态端口无法通过防火墙，需要配置NFS使用指定的静态端口
+配置文件/etc/sysconfig/nfs,添加静态端口设置：
+MOUNT_PORT="4001"       挂载使用端口     
+STATD_PORT="4002"       状态使用端口
+LOCKD_TCPPORT="4003"    TCP使用端口
+LOCKD_UDPPORT="4004"    UDP使用端口
+NFS协议2049，RPC为111端口，才能正常使用NFS
+NFS服务的共享配置文件/etc/exports
+每个共享占用一行，格式：共享目录     允许的各户主机(选项)
+如：/demo-nfs    192.168.1.1（ro,async）
+配置好共享后，使用以下命令使配置生效：
+service nfs start 
+exportfs -r
+查看共享详细信息
+showmount -e
+客户端可以通过mount命令挂载NFS共享：
+mount -t nfs 192.168.1.1:/path-in-nfs-server /path-in-mount-2-server
+
+常用NFS共享参数：
+ro（只读）
+rw（读写共享）
+sync（所用操作返回前必须已经写入磁盘）
+async（操作可以延迟写入磁盘）
+wdelay（延迟写操作，等待更多的写操作一起执行）
+no_wdelay（关闭写延迟，需要与sync同时使用）
+root_squash（防止远程root用户使用root权限对共享进行访问）
+no_root_squash（关闭root_aquash）
+挂载使用-o指定挂载选项
+启动时自动挂载，修改配置文件/etc/fstab
+如：192.168.1.1:/demo-nfs /mnt nfs default 0 0
+
+
+
+
+
+
+
+SMB（Sever Message Block）协议是windows种使用的文件共享协议，linux通过samba服务实现
+主要功能：
+ 通过SMB协议进行文件共享
+ 通过SMB协议进行打印共享
+ 加入一个windows 2000/2003/2008域环境
+ 通过windows 域环境进行认证 
+SMB协议有称CIFS（Common Internet File System）
+安装samba：yum install -y samba
+samba拥有三个服务：
+ smbd 提供问价及打印共享功能，使用139、445端口
+ nmbd 提供NetBIOS支持，使用137端口
+ winbindd 提供针对windows2000/2003/2008的用户及组信息的解析功能
+windows客户端在浏览器中连接：
+\\192.168.1.100
+linux图形界面连接：
+smb://192.168.1.100
+linuxCLI连接：
+smbclient//192.168.1.100/demo-smb -U demo
+挂载smb共享：
+mount -t cifs //192.168.1.100/demo-smb /mnt -o username=demo,password="demo"
+samba主配置文件
+/etc/samba/smb.conf
+作为独立服务器时，samba使用linux用户作为用户，但密码需要单独创建
+samba安全模式
+ User-Level   默认安全模式，使用用户名、密码进行认证
+ Share-Level  只需要密码即可访问共享
+配置文件分为三部分：
+ -[global]   定义全局性配置
+ -[homes]    定义对用户家目录的共享配置
+ -[printers] 定义打印机共享配置
+global配置：
+ 配置工作信息：
+ workgroup=demo
+ server string=this is demo workgroup
+ 配置安全信息：
+ security=user
+ 支持的安全模式：
+ -user     默认
+ -share    创建匿名共享时
+ -domain
+ -ads
+ -server
+为通过smb协议访问家目录的用户创建samba密码
+smbpasswd -a demo[用户]
+启动samba服务
+service smb start
+通过向/etc/samba/smb.conf添加配置创建独立共享
+[demo-share]
+comment = This is a demo.net samba share
+path = /demo-share 共享路径
+valid users = demo nash_su  可用用户
+public = no                      是否为开放共享
+browsable = yes                  是否可浏览
+writable = yes                   是否可写
+create mask = 0765               默认创建文件权限
+创建匿名共享
+[global]
+security=share
+common=******
+path=/demo-pub
+read only=yes
+guest only=yes
+检查samba配置文件语法是否正确
+testparm
+查看有哪些共享
+smbclient -L 192.168.1.100
+
+
+
+
+curl  ##运行url，如下载文件
+
+curl -d "p1=v1&p2=v2" "http://example"  #post
+
+curl -k    #忽略https未信任证书错误
+
+curl -u user:name ...
+# 等同于
+base64_str=`echo user:name | base64`
+curl -H "Authorization: Basic ${base64_str}" ...
+
+
+
+wget  ##通过url下载
+scp local_file remote_username@remote_ip:remote_filefolder   ##从本地复制到远端，反过来即为远端复制到本地
+
+scp -oPort=3600 -r ...
+-oPort -P       ##指定使用的端口
+-r              ##复制目录
+-C                ##压缩传输
+
+-o              ##与ssh的使用一致
+-oPort=3600
+-o "Port 3600"  ##格式跟~/.ssh/config的一致
+
+
+sshpass -p my_password scp ...
+sshpass -p my_password ssh ...
+ssh [user@]hostname [command]   #远程执行
+
+
+压缩传输
+
+scp -C filename remote_user@remote_host:remote_path
+
+scp -oStrictHostKeyChecking=no -P 16333 -Cr filename remote_user@remote_host:remote_path
+
+#带压缩
+rsync -zav --rsh='ssh -p 22' filename remote_user@remote_host:remote_path
+
+#非交互传输
+rsync -av dirname --rsh='sshpass -p ssh_password ssh -p 22'  root@172.16.2.150:/root/test
+
+#非交互传输 自动接受未知的主机
+rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no -p 22'  root@172.16.2.150:/root/test
+
+
+-z 压缩
+
+--bwlimit 限制带宽
+
+#断点续传 中断时再次启动默认会删除传输到一半的文件 可以选择以下参数实现断点续传
+--partial
+--partial-dir=DIR         #指定一个目录缓存传到一半的文件
+-P
+
+
+
+rsync
+两种模式
+C/S 
+    server
+        rsync --daemon --config=/data/rsyncd.conf
+    client
+        rsync -azvrP path_to_send rsync://remote_user@remote_host:port/block_name        ##block_name为server端配置文件中的块名
+        
+命令行（使用ssh协议）
+        rsync [OPTION]... SRC [SRC]... [USER@]HOST::DEST             ##从源端（SRC，可以多个）同步文件到目的端（DEST）
+
+
+客户端    
+rsync rsyncd.secrets --password-file=test.secrets rsync://remote_user@remote_host:port/block_name    
+    
+使用密码文件权限必须其他账号不能访问（只是对于rsync模式有效，ssh模式不能使用密码文件）    
+    
+#进入stfp交互模式
+sftp -o Port=22  root@10.10.1.10
+ #在本地执行
+ lpwd
+ lcd
+ lls
+ #对远端主机执行
+ pwd
+ cd
+ ls
+ #上传下载
+ get remote_file local_path
+ put local_file remote_path
+
+
+#实时文件同步
+inotify-tools 监听文件然后使用rsync推送文件
+
+
+
+nc
+###端口扫描
+nc -v -w 2 -z 192.168.5.230 21               
+
+##扫描udp端口
+nc -u 127.0.0.1 9000
+nc -u -z -v -w 2 127.0.0.1 9000    #非交互模式
+
+###监听端口
+nc -lp 65500                   ###旧版
+nc -l 65500                    ###新版
+nc --udp -l 65500            ###新版 默认使用TCP协议
+
+nc -lp 65500  &                ##后台运行
+nc -l -w 10000 6500 &        ##
+
+
+#使用不同网卡/ip监听  同一主机中相同端口不同ip之间不互相冲突，即可以同时监听  ipA:portX ipB:portX
+nc -l 192.168.253.128  12345
+nc -lv 192.168.253.128  12345
+nc -lv 127.0.0.1 12345
+
+###远程复制 host2到host1
+##1234为端口，没有限制;操作步骤有要求
+host1: nc -l 1234 > text.txt
+host2: nc host1_ip 1234 < text.txt      
+
+host1: nc -l 1234 | tar zxvf -
+host2: tar zcvf - text.txt | nc host1_ip 1234
+
+###聊天
+host1: nc -lp 1234
+host2: nc host1_ip 1234
+
+
+nc传输
+host2传输到host1
+host1: nc -l 1234 | tar zxvf -
+host2: tar zcvf - test | nc 192.168.1.176 1234
+
+
+###操作memcached
+print "get key_name" | nc $ip_address $port
+

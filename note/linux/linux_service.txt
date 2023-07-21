@@ -23,6 +23,7 @@ chkconfig --level httpd 2345 off        设置在哪些级别关闭
 systemctl
 将server放入这个目录下，如mysqld.service
 /usr/lib/systemd/system
+/etc/systemd/system
 
 #重新加载即可
 systemctl daemon-reload
@@ -33,4 +34,5 @@ systemctl disable mysqld.service
 
 #system stop的操作，调用kill
 man systemd.kill
+
 

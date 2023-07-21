@@ -135,7 +135,9 @@ if [[ $x ]] && [[ $x = xx ]];then
 echo 111; 
 fi  
 
-
+# 判断字符串非空
+if [[ -n ${str} ]];then
+fi
 
 ###逐个获取脚本后的参数 opt不是关键字，可以使用任意名字
 for opt do

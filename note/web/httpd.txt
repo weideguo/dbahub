@@ -76,4 +76,67 @@ linux自带httpd
 
 
 
+Apache特点
+动态的、预创建的进程
+动态模块加载
+虚拟主机
+SSL主机
+安装apache：
+yum install -y httpd
+启动apache：
+service httpd start
+默认使用80端口（http）和443端口(https)
+主配置文件
+/etc/httpd/conf/httpd.conf
+模块配置文件：
+/etc/httpd/conf.d
+日志：
+/var/log/httpd
+默认跟目录 /var/www/html
+主配置文件常用配置如下：
+ KeepAlive off                                           TCP保活配置
+ MaxKeepAliveRequests 100                                一个TCP连接允许的最大请求数
+ KeepAliveTimeout 15                                     一个TCP连接最长空闲时间
+ Listen 80                                               默认监听端口
+ LoadModule auth_basic_module modules/mod_auth_basic.so  模块加载
+ User apache                                             apache服务所使用用户
+ Group apache                                            apache服务所使用组
+ ServerAdmin root@linuxcast.net                          管理员邮箱
+ DocumentRoot “/var/www/html”                          网站根目录
+ DirectoryIndex index.html index.html.var                默认首页
+配置文件语法检查
+service httpd configtest
+apachectl configtest
+httpd -t
 
+虚拟主机
+默认apache的配置只提供一个网站服务，可以配置apache服务器为多个网站提供服务，称为虚拟主机
+虚拟主机分为两种：
+ 基于IP的虚拟主机
+ 基于域名的虚拟主机
+SSL的虚拟主机必须使用基于IP的虚拟主机
+apache虚拟主机配置如下：
+NameVirtualHost *:80 ?
+<VirtualHost *:80>
+	ServerName www1.linuxcast.net（服务器名称）
+	ServerAdmin root@linuxcast.net（管理员邮箱）
+	DocumentRoot /var/www/linuxcast-1（根目录位置）
+</VirtualHost>
+<VirtualHost *:80>
+	ServerName www2.linuxcast.net
+	ServerAdmin root@linuxcast.net
+	DocumentRoot /var/www/linuxcast-2
+</VirtualHost>?
+必须确保apache用户对目录有权限
+chown apache filename
+
+用户认证：
+1. 创建认证使用的用户名密码数据库：
+htpasswd -cm /etc/httpd/.htpasswd(密码保存文件) linuxcast（用户）
+2. 对指定目录打开认证功能：
+<Directory /var/www/linuxcast-1>
+	AuthName “LinuxCast Auth”?
+	AuthType basic
+	AuthUserFile /etc/httpd/.htpasswd（密码文件）
+	Require valid-user
+</Directory>
