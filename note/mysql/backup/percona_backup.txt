@@ -82,6 +82,10 @@ alter table recovery_table_demo import tablespace;
 # 手动备份idb以及cfg
 FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
 
+分区表可以单个分区导入
+  | DISCARD PARTITION {partition_names | ALL} TABLESPACE
+  | IMPORT PARTITION {partition_names | ALL} TABLESPACE
+  
 
 其他参数
 --compact	 			###不备份secondary索引，压缩备份；应用日志时需要重建索引【--rebuild-indexes】，设置重建线程【--rebuild-threads=n】

@@ -1,2 +1,8 @@
-通过主从复制从mysqlbinlog获取变化的数据，转成json格式，存入其他系统，如消息队列kafka
+基于mysql binlog增量数据订阅和消费
+模拟成mysql slave从源mysql抽取binlog，转成json格式
+
+存入其他系统，如消息队列kafka
+同步到不同类型的数据库
+mysql的异地同步（主集群 -> 从集群）
+
 

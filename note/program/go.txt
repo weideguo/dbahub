@@ -109,8 +109,6 @@ import 引用的位置
 
 
 ##########################
-go mod download	   根据go.mod文件下载依赖包到本地（默认为 GOPATH/pkg/mod 目录）
-go mod tidy        直接下载依赖的包到本地（默认为 GOPATH/pkg/mod 目录）
 
 go.mod    #go mod init 生产文件
 go.sum    #go run/build 由 go.mod 生产，并下载对应依赖项
@@ -127,6 +125,16 @@ go mod verify      校验依赖
 go mod why         解释为什么需要依赖
 
 
+go work            
+
+go work init myWorkSpace                                                 # 创建go.work文件
+cd myWorkSpace/myGoProject && go mod init example.com/myGoProject        # 在myWorkSpace下创建项目myGoProject
+
+cd myWorkSpace
+go work use ./myGoProject                                                # 通过这种方式引入包，可以指定依赖包位于当前目录下 
+go work use ./ABC                                                        # 假设项目中需要这个包，下载于当前目录，通过这种方式指定依赖包位置
+                                                      
+go run example.com/myGoProject                                           # 在myWorkSpace运行依赖于go.work文件，只能调试运行？
 
 
 ####godep来管理目录  #旧版本go使用 新项目使用go mod代替（go1.13之后）
