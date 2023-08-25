@@ -1,0 +1,3 @@
+日志收集
+filebeat -> kakfa -> logstash -> elaticsearch
+

@@ -1,0 +1,12 @@
+进程管理 用于自动拉起进程
+/usr/bin/supervisord -c /etc/supervisord.conf
+
+
+supervisorctl status all                            # 查看所有进程状态
+supervisorctl stop   all                            # 停止所有进程
+supervisorctl start  all                            # 启动所有进程
+supervisorctl restart all                           # 重启所有进程
+supervisorctl reoload all                           # 重载所有进程
+
+
+

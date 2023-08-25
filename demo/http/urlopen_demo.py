@@ -23,3 +23,9 @@ u=urlopen('https://github.com/rest-client/rest-client/archive/master.zip')
 f.write(u.read())
 f.close()
 
+
+# 关闭https证书检查
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+

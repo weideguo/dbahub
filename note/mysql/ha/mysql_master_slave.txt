@@ -166,6 +166,7 @@ Executed_Gtid_Set                                       # slave slave status\G �
 # 设置从库开始复制gtid
 reset master;
 set global gtid_purged=<gtid-to-begin-replication>      # aaaaaa-bbbb-cccc-dddd-eeeeeeeee:1-2009911510   在主库 show master status 可以确定该值，即已经执行的gtid，在复制时跳过
+show master status;                                     # 应该跟gtid_purged设置的值一致
 CHANGE MASTER TO ... master_auto_position=1;
 start slave;
 

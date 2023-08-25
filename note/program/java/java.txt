@@ -214,7 +214,7 @@ Class.forName("com.mysql.jdbc.Driver");      // 数据库连接驱动加载  如
 
 
 
-
+jps -v     # 查看jvm启动的参数
 
 
 

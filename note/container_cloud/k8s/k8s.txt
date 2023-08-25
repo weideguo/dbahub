@@ -9,12 +9,16 @@ kubectl describe namespace <namespace-name>
 
 get describe 对所有API资源都生效
 
+# 查看命名空间下的所有资源
+kubectl get all -n <namespace-name>
 
 #获取所有节点（即物理机器）
 kubectl get node
 kubectl get nodes -o wide
 #获取节点详细信息
 kubectl describe node <node-name>
+#获取node下的所有pod
+kubectl get pods -A -o wide --field-selector spec.nodeName=<node-name>
 
 kubectl get deploy -A
 

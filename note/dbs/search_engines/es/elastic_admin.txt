@@ -38,7 +38,7 @@ PUT hot_warm_test_index/_settings
 }
 
 
-
+# 磁盘空间超过90%会自动设置所有索引只读
 # 只读解锁 即设置所有索引的相关属性
 curl -XPUT -H "Content-Type: application/json" http://ip:9200/_all/_settings -d '{"index.blocks.read_only_allow_delete": "false"}'
 

@@ -71,3 +71,5 @@ kubectl apply -f <yaml-file-name>
 kubectl get ingress
 
 
+kubectl get pods -A | grep ingress    # 每个node运行一个？
+

@@ -34,3 +34,7 @@ pt-archiver --source h=127.0.0.1,u=test,p='test',D='test',t=t1 --dest h=127.0.0.
 pt-archiver --source h=127.0.0.1,u=test,p='test',D='test',t=t1  --where "id <= 10000" --limit=1000 --txn-size 2000 --progress 5000 --charset=utf8 --sleep 1 --no-version-check --bulk-delete 
 
 
+# 按照一定规则killmysql线程
+# 如执行时间超过多久
+pt-kill 
+

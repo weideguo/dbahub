@@ -84,6 +84,7 @@ f 选择显示的内容
 top -H                    #查看线程的运行状态
 top -H  -p $pid
 
+top -b -n 1               #非交互模式
     
 cat /proc/stat            #%Cpu从此计算
 
