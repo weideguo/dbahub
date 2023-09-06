@@ -1,0 +1,4 @@
+关闭selinux
+关闭swap空间
+设置ulimit
+关闭防火墙/开通端口
