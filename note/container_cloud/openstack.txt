@@ -1,0 +1,10 @@
+OpenStack
+虚拟化环境的管理和控制
+
+Nova        计算服务
+Swift       存储服务
+Glance      镜像服务
+Keystone    认证服务
+Horizon     UI服务
+
+

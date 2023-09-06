@@ -1,0 +1,36 @@
+
+openvz
+操作系统级别的虚拟化技术，是底层操作系统上的一层应用。
+
+
+虚拟化
+VPS(virtual private server) 虚拟专用服务器
+xen
+    Xen pv
+    Xen hvm
+Paravirtual (PV)   半虚拟化
+Hardware Virtual Machine (HVM)  硬件虚拟机
+pv只能用于linux内核的系统，效率更高；
+hvm可以虚拟所有常见操作系统hvm可以虚拟所有常见操作系统(可以使用windows)，理论效率比pv略低
+hvm需要cpu虚拟化指令支持(CPU必须开启Intel VT or AMD -V)，pv无此要求。
+
+
+virtualbox
+vmware
+    esxi
+kvm    
+
+    
+云 cloud
+
+IaaS(Infrastructure-as-a-Service) 基础设施即服务。
+提供虚拟主机
+
+PaaS(Platform-as-a-Service) 平台即服务。
+提供应用程序运行所需要的环境。如Java web应用需要的tomcat。
+
+
+SaaS(Software-as-a-Service)：软件即服务
+提供软件服务，如邮箱，面向普通用户。
+
+    
