@@ -1,0 +1,3 @@
+半同步插件
+semisync_master.so
+semisync_slave.so

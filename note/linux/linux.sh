@@ -109,6 +109,8 @@ env|grep -i SSH_CONNECTION|awk '{print $3}'
 
 
 hostname       ##查看主机名  【/etc/sysconfig/network】修改配置文件实现修改主机名，使用【hostname new_hostname】临时修改主机名
+hostname -I    #查看ip  受/etc/hosts的配置影响
+ostname -i
 
 
 echo "xxx" | xargs                          ##设置标准输出
@@ -160,8 +162,8 @@ pwd                     ###显示当前目录
 md5sum                  ##计算文件的MD5
 
 sha1sum
-
 sha256sum
+sha512sum
 
 base64编码
 echo "AAA@#$" | base64

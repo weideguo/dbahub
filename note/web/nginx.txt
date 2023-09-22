@@ -20,7 +20,7 @@ upstream mytomcats {         ###设置集群
     
 server {
     listen       80;
-    server_name  localhost;      
+    server_name  localhost;             # 一台主机可以多个server的端口相同，通过server_name映射不同的域名，dns配置不同域名对应这个主机，通过域名访问时会依此进行匹配
 
     ###可以有多个location，【/】也可以使用【~ (\.jsp)|(\.do)$】指定特定页面的代理
     location / {                        

@@ -24,6 +24,7 @@ mysql --ssl-ca=ca.pem \
 8.0 默认都以ssl加密传输 （因为默认会配置ssl参数）
 默认自动动服务端获取公钥（需要先在服务段配置ssl相关配置 ssl_ca ssl_cert ssl_key，如果不配置则不加密）
 
+5.7 启用ssl时客户端可以无需设置秘钥（单向SSL？），也可以设置使用秘钥（双向SSL？）
 
 mysql 
 --ssl-mode=DISABLED              --指定不使用ssl进行连接  caching_sha2_password/mysql_native_password 都可控制不使用ssl
@@ -38,3 +39,4 @@ mysql_ssl_rsa_setup 命令可以快速生成密钥对
 # 设置使用的密码插件
 default_authentication_plugin = "caching_sha2_password"              # mysql_native_password 
 
+5.7.28 以及之后默认使用openssl，因此默认支持SSL，之前的则需要在编译设置使用openssl

@@ -24,4 +24,4 @@ unlock tables;                                  -- 主线程释放锁（子线�
     
     -B new_db_name  -s old_db_name      --myloader导入时更改库名
     
-    
+    --less-locking

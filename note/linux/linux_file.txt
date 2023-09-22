@@ -23,6 +23,14 @@ chmod
 - 第三组r--：不与文件所有者同组的其他用户的权限是读不能写和执行
 可用数字表示为：r=4，w=2，x=1  因此rwx=4+2+1=7
 
+
+调用者会暂时获得该文件的所有者权限，且该权限只在程序执行的过程中有效
+chmod u+s filename   # 设置SUID位
+chmod u-s filename   # 去掉SUID设置
+chmod g+s filename   # 设置SGID位
+chmod g-s filename   # 去掉SGID设置
+
+
 umask -S     ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002
              ###文件夹777-002
@@ -239,6 +247,12 @@ find ./ ! -path "./aaa"                              #! 过滤
 
 -maxdepth   #目录深度指定
 
+-ctime
+-mtime
+-atime
+带有+则为n天前的所有时间
+不带则只是n天前的具体一天
+带有-则为当前到n天前的所有时间
 
 stat $path       # 查看目录 访问、修改的时间 等信息
 

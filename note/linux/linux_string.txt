@@ -3,6 +3,7 @@ awk -F':' '{print $1}' filename        ####使用分割符":"分割并显示每�
 awk -F":" '{print $1}' filename
 awk -F":" '/exp/{print $1}'            ###查找符合exp的行并进行分割，可以使用正则表达式
 awk '/exp/'
+awk '{print $NF}'                      # 最后一个字符串
 
 awk '{sum += $1};END {print sum}'   ##计算数字总和
 

@@ -1,0 +1,16 @@
+账号登录失败限制
+
+INSTALL PLUGIN connection_control SONAME 'connection_control.so';
+INSTALL PLUGIN connection_control_failed_login_attempts SONAME 'connection_control.so';
+
+
+show variables like 'connection_control%';
+
+
+# 配置文件
+plugin-load-add=connection_control.so
+connection-control=FORCE_PLUS_PERMANENT
+connection-control-failed-login-attempts=FORCE_PLUS_PERMANENT
+
+
+

@@ -39,3 +39,7 @@ etcdctl put /key_name "key_value"
 etcdctl get /key_name 
 etcdctl mk /key_name "key_value"	
 etcdctl update /key_name "key_value"
+# 备份
+etcdctl snapshot save /path4save/backup_file
+# 恢复
+etcdctl snapshot restore /path4save/backup_file
