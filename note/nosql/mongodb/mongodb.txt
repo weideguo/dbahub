@@ -240,4 +240,6 @@ echo 'db.currentOp({$all:true})' | bin/mongo --quiet | more
 db.runCommand({ compact: <collection name> })
 
 
+# 新的客户端
+mongosh mongodb://127.0.0.1:27017
 

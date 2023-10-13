@@ -21,6 +21,8 @@ ClusterIP         默认分配的网络
 LoadBalancer      映射到LoadBalancer的端口
 NodePort          映射到物理机的端口（不推荐使用，因为物理机的ip可能会变） nodeIP:nodePort 运行容器的ip、容器暴露/映射的端口
 
+# entpoint
+kubectl get ep
 
 
 

@@ -38,3 +38,8 @@ ingress  网络相关，提供代理、负载均衡。
 然后运行ingress，通过name固定绑定pod，实现固定ip（即ingress的ip）映射到pod
 
 
+####################
+service / svc
+对pod进行网络绑定，使得可以通过固定name访问pod，或者通过endpoint访问pod
+
+

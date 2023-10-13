@@ -100,3 +100,7 @@ ctrl+b 后翻一页
 
 %所有行
 !xxd  外部程序调用
+
+
+:set paste   # 避免复制时格式变乱
+:set nopaste

@@ -67,6 +67,9 @@ kubectl cp <pod-name>:$pwd $dir
 #进入pod命令行
 kubectl -n test exec -it <pod-name> -- bash
 
+-c <container-name>   # 如果省略，则默认为第一个容器，当一个pod有多个容器时应该指定这个值
+
+
 kubectl exec (POD | TYPE/NAME) [-c CONTAINER] [flags] -- COMMAND [args...] [options]
 
 

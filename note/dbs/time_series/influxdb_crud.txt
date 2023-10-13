@@ -1,10 +1,17 @@
 show tag keys from tb_name;
+show tag values from tb_name with key="xxx"
 
 show field keys from tb_name;
 
+tags   有索引
+fields 无索引
+point  记录
+series 
 
-Fields 无索引
-tags 有索引
+show series on <database> from <measurement>
+
+tb_name,tag1=v01,tag2=v02,...
+tb_name,tag1=v11,tag2=v12,...
 
 
 表名存在特殊字符使用双引号包起来
@@ -56,7 +63,7 @@ DELETE FROM "cpu" WHERE time < '2000-01-01T00:00:00Z'
 DELETE WHERE time < '2000-01-01T00:00:00Z'
 
 
-
+ TZ('Asia/Shanghai')
 
 
 CRETE DATABASE WITH DURATION m REPLICATION 1 SHARD DURATION n;
@@ -80,3 +87,9 @@ count(tag1) AS tag2
 INTO "db1"."db1_90d"."measurement_name1" 
 ROM  "db1"."db1_90d"."measurement_name1" 
 GROUP BY time(1h) 
+
+
+# 表数据复制 
+# 配合 drop measurement ... 实现表重命名
+SELECT * INTO db_2..new_cpu FROM db_1..cpu group by *
+

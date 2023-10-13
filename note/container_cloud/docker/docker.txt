@@ -57,6 +57,8 @@ docker info                                                         ##查看默�
 docker ps -a                                                        ##查看容器 包括停止的
 docker ps                                                           ##查看生成的容器
 
+docker stats                                                        # 查看容器使用的资源
+
 docker images                                                       # 显示已经存在的镜像
 
 docker pull image_tag                                               # 下拉镜像 image_tag如centos:6  hub.docker.com/explore中查看

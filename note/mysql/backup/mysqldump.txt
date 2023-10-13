@@ -93,6 +93,8 @@ LOAD DATA LOCAL INFILE '/etc/passwd' INTO TABLE aaa;
 [ESCAPED BY 'char']							   --转义
 
 
+[CHARACTER SET charset_name]                   -- 对查询结果进行字符集转换，如导出成csv可能要设置为gkb以适应windows系统
+
 
 ----- xml
 mysql --xml -e 'select ...' > filename;   ----导出xml

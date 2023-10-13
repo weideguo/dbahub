@@ -12,6 +12,19 @@ influx_stress    #压测
 influx_inspect   #格式转换
 influx           #客户端
 
+# 启动
+influxd run -config <path>
+
+# 备份
+influxd backup -portable -db example-db  /path/to/backup-directory
+
+# 还原
+influxd restore -portable -db example-db /path/to/backup-directory
+
+# 查看默认配置
+influxd config
+
+
 可以直接通过http访问
 query?db=my_db&q=select...
 
@@ -29,7 +42,7 @@ SHOW RETENTION POLICIES [ON <database_name>]
 # 查看所有的CONTINUOUS QUERIES
 SHOW CONTINUOUS QUERIES     
 
-
+show QUERIES;
 
 
 
@@ -65,4 +78,8 @@ influx_inspect buildtsi -datadir $path2data -waldir $path2wal
                           # The type of shard index to use for new shards.
 index-version = "inmem"   # 默认 索引使用内存 但数据也记录在文件，重启不会导致数据丢失
 index-version = "tsi1"    # 索引使用磁盘
+
+
+
+
 

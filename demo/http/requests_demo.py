@@ -24,6 +24,7 @@ r.text
 
 #post
 #post(url, data=None, json=None, **kwargs)
+#为复合字典类型时使用json，直接使用，无须转成字符串
 payload = dict(key1='value1', key2='value2')
 r = requests.post('http://httpbin.org/post', data=payload)
 print(r.text)
