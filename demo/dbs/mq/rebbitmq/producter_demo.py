@@ -4,7 +4,8 @@ import pika
 username = "guest"                                                                                    
 pwd = "guest"
 cred = pika.PlainCredentials(username, pwd)
-conn = pika.BlockingConnection(pika.ConnectionParameters("192.168.59.132", credentials=cred))   
+#conn = pika.BlockingConnection(pika.ConnectionParameters("192.168.59.132", credentials=cred))   
+conn = pika.BlockingConnection(pika.ConnectionParameters(host=["192.168.59.132:5672"], credentials=cred))   
 channel = conn.channel()                                                                             
 
 

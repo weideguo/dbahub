@@ -8,3 +8,8 @@ Keystone    认证服务
 Horizon     UI服务
 
 
+支持热迁移
+即包括内部应用不关闭
+
+libvirt 
+

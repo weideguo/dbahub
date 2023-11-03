@@ -120,6 +120,7 @@ SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEM
 ATER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECALC=1, ALGORITHM=INPLACE, LOCK=NONE; 
 					  
 ##更新表的统计信息 During the analysis, the table is locked with a read lock for InnoDB and MyISAM.
+# 执行期间 read lock, 最后需要flush lock
 analyze table table_name;
 
 ##修复myisam的表

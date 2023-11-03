@@ -1,11 +1,14 @@
-gpg GnuPG
+pgp Pretty Good Privacy
+
+gpg为pgp的开源实现
+
+gpg GnuPG   Gnu Privacy Guard
 
 #非对称的加密工具 可以选用RSA算法
 
 
-dd if=/dev/sda of=/dev/zero
 
-#生成密钥 生成过程需要设置足够熵值 可以使用dd写数据倒空文件
+#生成密钥 生成过程需要设置足够熵值 可以使用dd写数据到空文件
 gpg --gen-key
 
 

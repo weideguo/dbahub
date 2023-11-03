@@ -1,7 +1,15 @@
+1、启动pod（用pod、deploy方式）
+2、设置svc绑定pod
+3、设置ingress域名绑定svc
+4、外部dns设置域名解析到任意一个node（或者再做一层nginx对多个node进行负载均衡，然后域名解析到这个nginx，通过nginx转发给node）
+5、通过域名即可访问pod的应用
+
+
+
 Calico  容器、虚拟机、宿主机之间的网络连接
 
 
-coredns    svc使用
+coredns    svc使用    只需要启动coredns的pod即可
 
 
 
@@ -22,7 +30,7 @@ LoadBalancer      映射到LoadBalancer的端口
 NodePort          映射到物理机的端口（不推荐使用，因为物理机的ip可能会变） nodeIP:nodePort 运行容器的ip、容器暴露/映射的端口
 
 # entpoint
-kubectl get ep
+container_cloud/k8s/k8s_network.txt
 
 
 
@@ -46,7 +54,7 @@ metadata:
   name: example-ingress
 spec:
   rules:
-    - host: example.com                             # 需要额外设置DNS解析主机名称
+    - host: example.com                             # 需要额外设置DNS解析主机名称（解析到任意一个node）
       http:
         paths:
           - path: /app1
