@@ -68,17 +68,23 @@ insert into tb_name(column_name) values(b'101');
     select bin(column_name) from tb_name;
 
 select 0x21;
-select unhex('21');
+select unhex('21');    # 16进制字符串转成二进制数据
 
 select CONV('10000', 2, 16);   #任意进制之间转换 如二进制转16进制
 select b'10'<<2;   #左移
 select b'10'>>2;   #右移
 select ~b'100';    #取反
 
+create table c(id int,data longblob);  
+insert into c values(1,x'e4b8ade69687');
+select CONVERT(data using utf8mb4) from c;
+
+
 SELECT col->"$.json_filed_name" FROM t_name;    #查询json的制订字段
 UPDATE t_name SET col = json_set(col,'$.json_filed_name','xxyy1') ...     #增加/修改json中字段
 json_remove(col,'$.json_filed_name')                                      #删除json中字段
 JSON_EXTRACT(col,'$.json_filed_name')                                     #提取字段
+
 
 -- 函数
 JSON_APPEND() JSON_ARRAY_INSERT() JSON_UNQUOTE() JSON_ARRAY()

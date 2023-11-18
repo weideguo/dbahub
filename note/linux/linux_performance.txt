@@ -11,6 +11,7 @@ cat /proc/$pid/io      #查看进程的io的情况
 iotop        
 badblocks -s -v sdb1   ##坏道检测
 hdparm sdb1            ##磁盘信息获取
+fio                    ##磁盘读写性能测试
 
 
 sar                 ###系统活动信息

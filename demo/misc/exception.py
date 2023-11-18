@@ -56,3 +56,55 @@ def uncaughtExceptionHandler(type_, value, traceback):
 
 
 sys.excepthook = uncaughtExceptionHandler
+
+
+try:
+    # 可能会发生异常的代码块
+except :
+    print("do something for execption")
+
+
+try:
+    # 可能会发生异常的代码块
+except 异常类型 as 别名:
+    print(别名)
+
+    
+
+try:
+    # 可能会发生异常的代码块
+except (异常类型1,异常类型2,异常类型3) as 别名:
+    print(别名) 
+
+
+def f():
+    try:
+        raise KeyboardInterrupt
+        #print("nothing wrong")
+    except:
+        print("something wrong happen")     # 出现或者不出现异常都运行这里
+    finally:
+        print('Goodbye, world!')
+    
+    print(111)                               # 有正确的异常处理，则会运行这里以及之后的
+    
+
+def f():
+    try:
+        raise KeyboardInterrupt
+    finally:
+        print('Goodbye, world!')
+    
+    print(111)                             # 没有的异常处理，则不会运行这里以及之后的
+    
+    
+# 内置异常类型    
+Exception
+RuntimeError
+TypeError
+NameError
+OSError 
+ConnectionError    
+ZeroDivisionError   
+
+   

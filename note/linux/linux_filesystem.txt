@@ -4,3 +4,7 @@ ext4
 xfs 
 zfs
 Btrfs 
+
+# 查看文件系统的类型
+file -s /dev/sda1          # lvm下查看不出
+df -T                  

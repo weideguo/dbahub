@@ -1,0 +1,6 @@
+dragonfly  兼容redis
+
+aerospike  支持内存、磁盘混合存储的kv数据库
+
+
+PMem persistent memory

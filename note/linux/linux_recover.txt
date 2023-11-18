@@ -1,0 +1,10 @@
+#使用extundelete进行磁盘恢复
+yum install e2fsprogs*
+./configure
+make && make install
+
+fuser -m -u /u01            #identify processes using files or sockets  查看使用文件的进程，必须先杀死相关进程才能umount
+umount /dev/sdb1
+extundelete /dev/sdb1 --restore-all
+
+

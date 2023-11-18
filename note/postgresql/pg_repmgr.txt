@@ -33,7 +33,7 @@ repmgr -f /etc/repmgr.conf primary register     #主节点登记
 #启动repmgrd
 
 
-repmgr -f /etc/repmgr.conf cluster show"        #查看节点信息
+repmgr -f /etc/repmgr.conf cluster show         #查看节点信息
 
 
 ####从
