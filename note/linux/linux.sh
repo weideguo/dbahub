@@ -92,6 +92,9 @@ gnome-session  ##gnome情况
 /etc/profile.d/
 
 .bash_history            ##history的信息，清空可以清除history的显示  
+history -c
+history -w               #按照顺序输入这两个命令，可清空所有会话的history
+
 
 
 env  显示所有环境变量

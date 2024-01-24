@@ -59,3 +59,8 @@ discovery.zen.ping.unicast.hosts: ["es-master1.myhost.com:9300","es-master2.myho
 # 在配置文件设置节点的冷热属性
 node.attr.hotwarm_type: hot　　　      # 标识为热数据节点　
 
+
+
+cluster.routing.allocation.disk.watermark.low:  85%             # 不会将分片分配给磁盘使用率超过该值的节点
+cluster.routing.allocation.disk.watermark.high: 90%             # 将分片从磁盘使用率高于该值的节点中重新定位
+cluster.routing.allocation.disk.watermark.flood_stage: 95%      # 达到该值则会对索引加只读锁

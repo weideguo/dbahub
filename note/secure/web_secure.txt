@@ -122,6 +122,8 @@ CGI风险
 fiddler
 http抓包工具
 
+burp suite 
+http抓包、重放
 
 
 

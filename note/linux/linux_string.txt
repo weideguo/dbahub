@@ -17,6 +17,8 @@ sed [-nefri] 'command' filename             ####编辑文字  删除、替换
 sed 's/lintxt1/linetxt2/g'    filename        ####替换字符 将文件中的linetxt1替换成linetxt2 可以使用正则表达式
 sed 's|lintxt1|linetxt2|g'    filename
 sed '/linetxt/d' filename                    ####删除匹配的行  将配备linetxt的行删除 可以使用正则表达式
+sed -i "1,200d"  filename                    # 删除前200行             
+sed -i "1d"  filename                        # 删除第一行 
 
 
 ${str#exp}                 ###字符串str截去exp，截取操作可以使用类似命令

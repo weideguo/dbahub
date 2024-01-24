@@ -245,6 +245,10 @@ scan 0 match log* count 10000
 match 匹配
 count 单次用于查询的key的数量 不是返回值的数量
 
+redis通配符 keys match 可以使用
+*    任意多个字符
+?    单个字符
+[ ]  括号内的某个字符
 
 #CAS(check and set)
 

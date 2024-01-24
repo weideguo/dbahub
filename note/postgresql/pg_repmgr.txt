@@ -43,6 +43,7 @@ su - postgres -c "repmgr -h <primary-host> -U repmgr -d repmgr -f /etc/repmgr.co
 
 repmgr standby register       		#从节点登记
 
+重启时出现 `this node is marked as inactive and cannot be used as a failover target`，则使用 repmgr standby register -F 重新登记，然后再启动repmgrd即可
 
 
 ####见证节点（不是必须）

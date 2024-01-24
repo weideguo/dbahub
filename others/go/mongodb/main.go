@@ -6,7 +6,7 @@ import (
     "gopkg.in/mgo.v2"
     "gopkg.in/mgo.v2/bson"
 )
-
+// 项目过期，不要再使用这个连接方式
 func main() {
     mongodb_uri := "mongodb://dba:dba@127.0.0.1:27017/admin"     //strings $filename  #编译后还是可以看到明文信息
     session, err := mgo.Dial(mongodb_uri)

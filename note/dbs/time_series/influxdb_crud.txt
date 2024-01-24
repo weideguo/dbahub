@@ -48,7 +48,7 @@ SELECT_clause FROM_clause WHERE <conditional_expression> [(AND|OR) <conditional_
 SELECT * FROM "h2o_feet" WHERE time > now() - 7d
 
 
-# measurement不存在是自动创建
+# measurement不存在时自动创建，没有专门的创建语句
 insert + measurement_name + "," + tag=value,tag=value + field=value,field=value
 
 

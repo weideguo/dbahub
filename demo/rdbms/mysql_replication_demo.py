@@ -31,7 +31,7 @@ def main():
         only_events=[DeleteRowsEvent, WriteRowsEvent, UpdateRowsEvent],
         blocking=True)
     
-    #mysql server主动推binlog？
+    #
     for binlogevent in stream:
         for row in binlogevent.rows:
             event = {"schema": binlogevent.schema, "table": binlogevent.table}
