@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--加载动画-->
+<html>
+
+<head>
+  <title> demo </title>
+  <meta charset="utf-8" />
+ <!-- 
+ 动画来源
+ https://css-loaders.com/
+ -->
+  <style>
+
+.loader {
+  width: 60px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side,#000 90%,#0000);
+  background: 
+    var(--_g) 0%   50%,
+    var(--_g) 50%  50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+    20%{background-position:0%   0%, 50%  50%,100%  50%}
+    40%{background-position:0% 100%, 50%   0%,100%  50%}
+    60%{background-position:0%  50%, 50% 100%,100%   0%}
+    80%{background-position:0%  50%, 50%  50%,100% 100%}
+}
+
+  </style>
+</head>
+
+<body>
+  <div id="demo" class="loader" style="margin-top: 100px; margin-left: 100px">
+  </div>
+  <button type="button" style="margin-top: 100px" onclick="buttionAction()">切换</button>
+  <script type="text/javascript">
+  function removeAction(){
+    document.getElementById("demo").classList.remove("loader");
+  }  
+  function setAction(){
+    document.getElementById("demo").classList.add("loader");
+  }
+  var i=0;
+  function buttionAction(){
+    i=i+1;
+    console.log(i);
+    if (i%2 === 1) {
+      removeAction();
+    } else {
+      setAction();
+    }
+  }
+  // 在实际使用时可以用在请求后端获取到数据后关闭动画
+  </script>
+</body>
+
+</html>

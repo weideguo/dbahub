@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--涂鸦背景-->
+<html>
+
+<head>
+  <title> demo </title>
+  <meta charset="utf-8" />
+
+  <style>
+
+  </style>
+  <script src="./css-doodle.min.js"></script>
+  <!--script src="https://unpkg.com/css-doodle@0.37.3/css-doodle.min.js"></script-->
+  <!--
+  https://css-doodle.com/
+  -->
+</head>
+
+<body>
+<div style="width:500px; height:500px">
+<!--
+<css-doodle>
+@grid: 20 / 100vmax / #0a0c27;
+@content: @unicode.r(0x2500, 0x257f);
+color: hsla(@r360, 70%, 70%, @r.9);
+font-size: 8vmin;
+font-family: sans-serif;
+
+</css-doodle>-->
+
+<css-doodle>
+  <style>
+    @grid: 1 / 100vw 100vh / #125cde;
+    @content: @svg(
+      viewBox: -50 -50 100 100 p -20;
+      circle*500 {
+        fill: hsl(@calc(120-90*@sin.n), 80%, 50%);
+        r: @sqrt(@n/60);
+        cx: $(@n*.618^4 * cos(2π*@n*.618));
+        cy: $(@n*.618^4 * sin(2π*@n*.618));
+      }
+    );
+  </style>
+</css-doodle>
+</div>
+  <script type="text/javascript">
+
+  </script>
+</body>
+
+</html>
