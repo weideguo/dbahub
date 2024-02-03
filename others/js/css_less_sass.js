@@ -16,6 +16,10 @@ p:after  {}
 a:hover::before 
 a:hover::after 
 
+选择器
+.  class
+#  id
+
 
 CSS3 动画
 

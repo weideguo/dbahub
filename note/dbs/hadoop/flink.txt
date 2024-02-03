@@ -67,7 +67,8 @@ bin/pyflink-shell.sh local examples/python/table/batch/word_count.py            
 
 
 
-
+#处理流程
+消息队列/日志文件 -> flink -> 存储 -> 数据展示
 
 
 
