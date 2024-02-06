@@ -1,0 +1,29 @@
+# 查看表的表的健康状态
+SHOW PROC '/cluster_health/tablet_health'\G
+
+
+ADMIN SHOW REPLICA STATUS FROM example_tbl;
+
+# 查看表的副本信息
+ADMIN SHOW REPLICA DISTRIBUTION FROM example_tbl
+
+
+SHOW TABLETS FROM example_tbl
+
+
+# 查看表的alter进度状态
+SHOW ALTER TABLE COLUMN 
+
+# 取消alter
+CANCEL ALTER TABLE COLUMN FROM tbl_name;
+
+
+BE 扩容后，Doris 会自动根据负载情况，进行数据均衡，期间不影响使用。
+
+ALTER SYSTEM DROPP BACKEND "be_host:be_heartbeat_service_port";         -- 直接删除backend，不进行数据迁移，节点的数据会不可用，不要使用改方式
+
+ALTER SYSTEM DECOMMISSION BACKEND "be_host:be_heartbeat_service_port";  -- 该命令用于安全删除 BE 节点。命令下发后，Doris 会尝试将该 BE 上的数据向其他 BE 节点迁移，当所有数据都迁移完成后，Doris 会自动删除该节点
+
+
+
+

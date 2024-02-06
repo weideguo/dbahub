@@ -1,0 +1,53 @@
+# 查看所有的授权
+SHOW ALL GRANTS;
+
+CREATE USER test_user IDENTIFIED BY 'xxxxxxxxx';
+GRANT SELECT_PRIV ON *.*.* TO test_user;
+
+
+
+# 导出
+SELECT * from tb1 WHERE tb1_data = '2023-09' 
+INTO OUTFILE "file:///data/tb1_20231106_"
+FORMAT AS CSV
+("column_separator" = "val1", "line_delimiter" = "val2", ...)
+
+
+文件相关的属性
+    column_separator: 列分隔符，只支持csv格式。<version since="1.2.0">支持多字节分隔符，如："\\x01", "abc"
+    line_delimiter: 行分隔符，只支持csv格式。<version since="1.2.0">支持多字节分隔符，如："\\x01", "abc"
+    max_file_size: 单个文件大小限制，如果结果超过这个值，将切割成多个文件, max_file_size取值范围是[5MB, 2GB], 默认为1GB。（当指定导出为orc文件格式时，实际切分文件的大小将是64MB的倍数，如：指定max_file_size = 5MB, 实际将以64MB为切分；指定max_file_size = 65MB, 实际将以128MB为切分）
+    delete_existing_files: 默认为false，若指定为true,则会先删除file_path指定的目录下的所有文件，然后导出数据到该目录下。例如："file_path" = "/user/tmp", 则会删除"/user/"下所有文件及目录；"file_path" = "/user/tmp/", 则会删除"/user/tmp/"下所有文件及目录
+    file_suffix: 指定导出文件的后缀
+    
+
+CREATE TABLE IF NOT EXISTS example_tbl
+(
+    `user_id` LARGEINT NOT NULL COMMENT "用户id",
+    `date` DATE NOT NULL COMMENT "数据灌入日期时间",
+    `city` VARCHAR(20) COMMENT "用户所在城市",
+    `age` SMALLINT COMMENT "用户年龄",
+    `sex` TINYINT COMMENT "用户性别",
+    `last_visit_date` DATETIME REPLACE DEFAULT "1970-01-01 00:00:00" COMMENT "用户最后一次访问时间",
+    `cost` BIGINT SUM DEFAULT "0" COMMENT "用户总消费",                                                        -- 创建表时字段指定聚合的类型
+    `max_dwell_time` INT MAX DEFAULT "0" COMMENT "用户最大停留时间",                                           -- 创建表时字段指定聚合的类型
+    `min_dwell_time` INT MIN DEFAULT "99999" COMMENT "用户最小停留时间"                                        -- 创建表时字段指定聚合的类型
+)
+AGGREGATE KEY(`user_id`, `date`, `city`, `age`, `sex`)                                                         
+DISTRIBUTED BY HASH(`user_id`) BUCKETS 1                                                                       -- 按照多少个桶分区
+PROPERTIES (                                                                                                   -- 
+"replication_allocation" = "tag.location.default: 1"                                                           -- 根据 Tag 设置副本分布情况
+);
+
+
+# 类似于远程表
+CREATE CATALOG test_catalog PROPERTIES (
+    "type"="jdbc",
+    "user"="doris",
+    "password"="doris_passwd",
+    "jdbc_url" = "jdbc:mysql://10.0.0.1:3306/dbtest",
+    "driver_url" = "mysql-connector-j-8.0.32.jar",
+    "driver_class" = "com.mysql.jdbc.Driver"
+);
+
+    

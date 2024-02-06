@@ -1,0 +1,50 @@
+<!DOCTYPE html lang="zh-CN">
+<!--
+实现照片放大展示
+https://github.com/fancyapps/ui
+https://fancyapps.com/panzoom/
+-->
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
+</head>
+<body>
+
+
+<div>
+    
+    <a href="big-pic.jpg" data-fancybox="gallery" data-caption="图片1">
+        <img src="small-pic.jpg" />
+    </a>
+    
+    <a href="big-pic1.jpg" data-fancybox="gallery" data-caption="图片2">
+        <img src="small-pic1.jpg" />
+    </a>
+    
+</div>
+
+<script>
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // Your custom options for a specific gallery
+    });
+
+// Fancybox.bind(document.getElementById("gallery-wrap"), "[data-fancybox]", {
+   // Your custom options
+// });
+
+// const container = document.getElementById("myPanzoom");
+// 
+// new Panzoom(container, {
+//   l10n: Panzoom.l10n.cn,
+// }, {
+//   Toolbar
+// });
+      
+</script>
+
+</body>
+</html>

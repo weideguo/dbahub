@@ -1,0 +1,11 @@
+动态修改配置
+ADMIN SET FRONTEND CONFIG ("fe_config_name" = "fe_config_value");
+
+ADMIN SET FRONTEND CONFIG ("enable_concurrent_update" = "true");
+
+
+配置查看
+ADMIN SHOW FRONTEND CONFIG like '%update%'; 
+
+
+

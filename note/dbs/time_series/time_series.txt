@@ -4,7 +4,7 @@ LSM  Log Structured Merge
 提供更好的写与读性能但更改效率低，用于日志类数据
 
 
-InfluxDB    golang 开源
+InfluxDB    
 
 
 Kdb+
@@ -23,6 +23,8 @@ OpenTSDB     使用hbase存储
 
 
 M3DB
+
+TDengine
 
 ------------------------------------------------
 时序的      易于插入 不需要约束检测，数据组织比较简单

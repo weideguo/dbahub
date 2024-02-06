@@ -42,17 +42,6 @@ kingshard
 分库分表 个人项目
 
 
-shardingsphere    apache项目              
-sharding-JDBC
-    分库分表jdbc
-    非单独服务，jar包提供给程序端使用
-
-ShardingSphere-Proxy
-    透明代理，用于连接数据实例
-
-ShardingSphere-Agent
-
-
 
 tungsten-replicator
 支持多种数据库的复制工具
