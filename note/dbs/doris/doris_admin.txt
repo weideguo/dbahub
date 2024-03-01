@@ -8,6 +8,10 @@ ADMIN SHOW REPLICA STATUS FROM example_tbl;
 ADMIN SHOW REPLICA DISTRIBUTION FROM example_tbl
 
 
+# 修改表的副本数
+ALTER TABLE example_tbl SET ("replication_num" = "2");  
+
+
 SHOW TABLETS FROM example_tbl
 
 

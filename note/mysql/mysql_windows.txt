@@ -1,0 +1,15 @@
+使用命令行界面安装mysql
+
+mysqld --install "MySQL" --defaults-file="full_path_to_mysql\my.ini"
+# --install 注册windows服务
+
+
+mysqld --initialize --console
+# --console 日志输出到控制台
+
+
+net start mysql
+# 使用windows服务启动mysql
+
+
+

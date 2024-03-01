@@ -58,3 +58,7 @@ setfacl -x u:username file_name           ####删除ACL设置
 
 tune2fs -o +acl /dev/sda        ###ext2/ext3/ext4文件系统增加acl功能
 
+
+last               #查看登录信息
+/var/log/wtmp      #登录信息记录于此
+

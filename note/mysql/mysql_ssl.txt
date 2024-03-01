@@ -30,8 +30,13 @@ mysql
 --ssl-mode=DISABLED              --指定不使用ssl进行连接  caching_sha2_password/mysql_native_password 都可控制不使用ssl
 --get-server-public-key          --从服务端获取公钥 使用caching_sha2_password可能需要使用 mysql8引入
 
- 
+
+# 账号级别设置ssl 
 create user ... require ssl;
+create user ... require none;
+
+alter user  ... require ssl;
+alter user  ... require none;
 	
 mysql_ssl_rsa_setup 命令可以快速生成密钥对
 

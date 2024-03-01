@@ -39,6 +39,8 @@ PROPERTIES (                                                                    
 "replication_allocation" = "tag.location.default: 1"                                                           -- 根据 Tag 设置副本分布情况
 );
 
+"replication_num"= "3"    -- 设置副本数 会自动转换成 "replication_allocation" = "tag.location.default:3"
+
 
 # 类似于远程表
 CREATE CATALOG test_catalog PROPERTIES (
@@ -50,4 +52,10 @@ CREATE CATALOG test_catalog PROPERTIES (
     "driver_class" = "com.mysql.jdbc.Driver"
 );
 
-    
+# 通过http导入文件    
+curl --location-trusted -u "${USER}":"${PASSWORD}" \
+        -H "column_separator:|" \
+        -H "columns:column_name1,column_name2,column_name3" \
+        -T "$@" http://"${FE_HOST}":"${FE_HTTP_PORT}"/api/"${DB}"/lineorder/_stream_load
+        
+        

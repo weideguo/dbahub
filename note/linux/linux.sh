@@ -121,10 +121,7 @@ ps -ef | grep xxx | xargs kill -9
 xargs - build and execute command lines from standard input
 
 
-date -d @141231322   #时间戳换成时间
-date +%s             #显示时间戳
-date "+%Y-%m-%d %H:%M:%S"  #显示时间
-date -R                    #显示时区
+
 
 #查看时区
 ll /etc/timezone

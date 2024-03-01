@@ -6,6 +6,9 @@ fe
 # 启动
 ./bin/start_fe.sh --daemon
 
+web端口 8030
+mysql协议端口 9030
+
 
 be
 实际数据存储节点

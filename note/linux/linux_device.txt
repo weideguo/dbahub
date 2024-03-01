@@ -15,3 +15,4 @@ lspci -v -s
 lspci 查看PCI设备
 lsusb 查看USB设备）
 lsblk 查看块设备
+lscpu 查看cpu

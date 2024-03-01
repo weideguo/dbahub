@@ -1,0 +1,13 @@
+# 查看所有的授权
+SHOW ALL GRANTS;
+
+# 修改当前账号的密码
+SET PASSWORD = PASSWORD('abce11111111')           
+
+
+# 创建账号与授权
+# test_user@'%'
+CREATE USER test_user IDENTIFIED BY 'abc1111111';
+GRANT SELECT_PRIV ON *.*.* TO test_user;
+
+

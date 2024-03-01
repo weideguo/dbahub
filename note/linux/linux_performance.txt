@@ -114,6 +114,8 @@ CPU控制
 
 echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
 
+mpstat  查看cpu的统计信息
+
 
 OOM out-of memory                         ##系统会杀掉一些进程以释放内存
 OOM内核参数设置  

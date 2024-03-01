@@ -27,6 +27,9 @@ repmgr
 	
 	
 #########
+# 关闭
+repmgr -f /etc/repmgr.conf daemon stop
+
 ####主
 #初始化
 repmgr -f /etc/repmgr.conf primary register     #主节点登记

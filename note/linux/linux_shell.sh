@@ -327,9 +327,24 @@ read arg_name						##从终端读取数据赋值给变量，可以有多个变�
 
 x=`date +%Y`   ###执行命令后将结果保存在变量中
 x=$(date +%Y)
-date -d "20230801 1 next month" +"%Y%m"
-date -d "20230801 1 days ago" +"%Y%m%d"
-date --date='2 days ago' +"%Y%m%d"
+date -d @141231322                         #时间戳换成时间
+date +%s                                   #显示时间戳
+date "+%Y-%m-%d %H:%M:%S"                  #显示时间
+date -R                                    #显示时区
+date -d "2023-08-01 1 month"
+date -d "2023-08-01 -1 month"
+date -d "2023-08-01 11:11:12 2 day"
+date -d "2023-08-01 11:11:12 2 day ago"
+date -d "2 days ago" 
+date -d "-1 month 2 day"
+date -d "-1 month 2 day ago"
+date -d "-1 week"                          #前一周
+date -d "1 mon"                            #下一个星期一
+date -d "1 tus"                            #
+date -d "1 wed"                            #
+date -d "1 thu"                            #
+date -d "1 fri"                            #
+
 
 
 trap '' 1 2 3 15 			###忽略信号，在脚本中使用
