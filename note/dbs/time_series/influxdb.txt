@@ -24,6 +24,9 @@ influxd restore -portable -db example-db /path/to/backup-directory
 # 查看默认配置
 influxd config
 
+端口
+8086 客户端连接，http
+8088 备份、恢复数据的RPC
 
 可以直接通过http访问
 query?db=my_db&q=select...
@@ -46,13 +49,14 @@ show QUERIES;
 
 
 
-
+SHOW USERS
 
 # 创建用户
-"CREATE USER" user_name "WITH PASSWORD" password [ "WITH ALL PRIVILEGES" ] .
+CREATE USER user_name WITH PASSWORD password [ WITH ALL PRIVILEGES ] .
 
 # 启用用户认证需要修改配置文件
-[http]auth-enabled = true
+[http]
+auth-enabled = true
 
 
 

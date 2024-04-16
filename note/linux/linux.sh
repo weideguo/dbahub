@@ -113,7 +113,9 @@ env|grep -i SSH_CONNECTION|awk '{print $3}'
 
 hostname       ##查看主机名  【/etc/sysconfig/network】修改配置文件实现修改主机名，使用【hostname new_hostname】临时修改主机名
 hostname -I    #查看ip  受/etc/hosts的配置影响
-ostname -i
+hostname -i
+
+hostnamectl set-hostname $new_hostname
 
 
 echo "xxx" | xargs                          ##设置标准输出

@@ -6,7 +6,11 @@ iostat -d -x -k 1 10    ##查看io信息间隔一秒查询，查10次
     %util  #在统计时间内（所有处理io的时间/总时间）
 
 cat /proc/$pid/io      #查看进程的io的情况
-    
+
+/proc/diskstats                   # 磁盘io信息
+/sys/block/${device_name}/stat    # 磁盘io信息
+
+https://www.kernel.org/doc/Documentation/iostats.txt    
 
 iotop        
 badblocks -s -v sdb1   ##坏道检测
@@ -20,7 +24,6 @@ sar                 ###系统活动信息
 /proc/meminfo       ##内存信息
 /proc/cpuinfo       ##查看CPU信息
 /proc/interrupts    ##中断信息
-
 
 
 pidstat -r -p PID   #查看进程的内存使用   

@@ -10,6 +10,7 @@ document.getElementsByName("myInput")            //通过名称获取元素     
 document.getElementsByTagName("div") 		      //通过元素类型获取元素 如<div></div>	
 document.getElementsByTagNameNS(ns,name)				 
 
+document.getElementsByTagName("html")[0].setAttribute("style","filter: grayscale(1);")  //设置整个页面为灰色
 
 // 绑定动作
 // <input id="btn" type="button" onclick="func1();" />   <!--html中绑定动作-->

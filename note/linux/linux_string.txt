@@ -13,26 +13,28 @@ awk '{x[$1]+=1} END{for( i in x ){print x[i]"    "i}}'                          
 
 
 
-sed [-nefri] 'command' filename             ####编辑文字  删除、替换  
+sed [-nefri] 'command' filename               ####编辑文字  删除、替换  
 sed 's/lintxt1/linetxt2/g'    filename        ####替换字符 将文件中的linetxt1替换成linetxt2 可以使用正则表达式
-sed 's|lintxt1|linetxt2|g'    filename
-sed '/linetxt/d' filename                    ####删除匹配的行  将配备linetxt的行删除 可以使用正则表达式
-sed -i "1,200d"  filename                    # 删除前200行             
-sed -i "1d"  filename                        # 删除第一行 
-
-
-${str#exp}                 ###字符串str截去exp，截取操作可以使用类似命令
-
-cut -d '#' -f 1 filename                    ###以"#"分割字符串并获取第一个值
+sed 's|lintxt1|linetxt2|g'    filename        
+sed '/linetxt/d' filename                     ####删除匹配的行  将配备linetxt的行删除 可以使用正则表达式
+sed -i "1,200d"  filename                     # 删除前200行             
+sed -i "1d"  filename                         # 删除第一行 
+                                              
+                                              
+${str#exp}                                    # 字符串str截去exp，只能截去前面匹配的部分
+${str:1}                                      # 字符串str截去第一个字符
+${str:7:5}                                    # 截去多少个字符，保留多少个字符（可以为负数）
+                                              
+cut -d '#' -f 1 filename                      ###以"#"分割字符串并获取第一个值
  
-grep -o 'exp' filename                         ###查找只符合exp中的字符串，可以使用正则表达式  不用-o则匹配行
+grep -o 'exp' filename                        ###查找只符合exp中的字符串，可以使用正则表达式  不用-o则匹配行
 grep -oP "(?<=//).*?(?=/)"                    ###-P perl类型的正则表达式，支持零宽断言
 
 grep -v "exp" filename                        ###反向选择，获取不包含exp的行
 
-grep -C 5 "foo" file    #显示file文件里匹配foo字串那行以及上下5行
-grep -B 5 "foo" file    #显示foo及前5行
-grep -A 5 "foo" file    #显示foo及后5行
+grep -C 5 "foo" file                          # 显示file文件里匹配foo字串那行以及上下5行
+grep -B 5 "foo" file                          # 显示foo及前5行
+grep -A 5 "foo" file                          # 显示foo及后5行
 
 tr '.' '_'    filename                        ##将【.】替换为【_】，-d为删除
 tr -s " " filename                            ##去除空格

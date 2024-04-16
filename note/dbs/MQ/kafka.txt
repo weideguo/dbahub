@@ -66,3 +66,10 @@ bin/kafka-server-start.sh -daemon config/server.properties
 
 # 查看指定topic的信息
 ./bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092  --describe --topic <topic_name>
+
+# 创建topic
+./bin/kafka-topics.sh --create --zookeeper <Zookeeper quorum> --replication-factor <number of replicas> --partitions <number of partitions> --topic <topic name>
+
+# replication-factor    副本数
+# partitions            分区数
+

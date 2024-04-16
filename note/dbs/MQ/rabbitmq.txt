@@ -23,3 +23,5 @@ Exchange、Queue、Message 可以设置持久化
 
 Message发送至Exchange 
 Exchange将Message发送给Queue
+
+通过镜像队列实现集群高可用（管理界面、命令行、http api均可设置）
