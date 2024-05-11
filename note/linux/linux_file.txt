@@ -189,12 +189,6 @@ patch -R -p1 < test.patch                     #补丁回滚
 #二进制对比
 xdelta3 -s SOURCE TARGET > OUT                #生成补丁
 xdelta3 -d -s SOURCE OUT TARGET_NEW           #打补丁成新文件
- 
-
-##正则表达
-"sinosy_${DATE}_*.log"    双引号可以禁止通配符扩展，但是允许变量扩展。
-'sinosy_${DATE}_*.log'    同时禁止通配符扩展与变量扩展。
-sinosy_${DATE}_\*.log    使用转义字符——反斜杠，也可以防止扩展。
 
 
 创建临时文件夹模拟回收站

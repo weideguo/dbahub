@@ -1,34 +1,47 @@
 #k8s节点中的进程
 
 Master 节点进程：
-kube-apiserver
+kube-apiserver                使用etcd，提供http接口
 kube-controller-manager
 kube-scheduler
 
 
 非 master 节点进程：
-kubelet     和 Master 进行通信。
+kubelet     和 Master的kube-apiserver 进行通信
 kube-proxy  网络服务的网络代理
+
 
 
 1.24以后不再使用docker运行环境，直接使用containerd
 
 ############部署#####################
 架构：
-单master多node
-多master多node
+单master多node     
+多master多node    （通过负载均衡如keepalive实现多个kube-apiserver高可用）
 
 
 安装 kubeadm 和kubelet
 
 yum install -y kubelet-1.26.0 kubeadm-1.26.0 kubectl-1.26.0
 
-
+# master节点初始化
+# kubeadm init phase upload-certs --upload-certs
+kubeadm init ...
 
 #节点加入
 # 在master运行
 kubeadm toke create --print-join-command
 # 根据上面的输出命令，在要加入集群的服务器运行
+kubeadm join <master-ip>:6443 ...
+
+# 作为另外master加入
+kubeadm join <master-ip>:6443 --token <token> 
+	--discovery-token-ca-cert-hash <discovery-token-ca-cert-hash>
+    --control-plane --certificate-key <certificate-key>
+
+# 作为node加入
+kubeadm join <master-ip>:6443 --token <token> 
+	--discovery-token-ca-cert-hash <discovery-token-ca-cert-hash>
 
 
 # 删除节点
@@ -37,6 +50,10 @@ kubectl delete node <node name>
 # 节点上运行
 kubeadm reset
 
+# 驱逐pod
+kubectl drain
 
+# 标记为不可调度
+kubectl cordon
 
-
+kubectl uncordon

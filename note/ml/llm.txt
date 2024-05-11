@@ -1,0 +1,21 @@
+预训练模型 外部开源的模型，如 Qwen1.5-7B-chat 、Llama-2-7b-chat
+
+微调数据   自行构建的数据集合
+```
+# 格式如
+{
+    "instruction": "你是谁？",
+    "input":"",
+    "output":"家父是大理寺少卿甄远道。"
+}
+```
+
+预训练模型 + 微调数据 =》训练出lora数据
+
+
+预训练模型 + lora数据 =》自定义llm
+
+
+---------------------------------------------------
+LoRA: Low-rank Adaptation of Large Language Models
+

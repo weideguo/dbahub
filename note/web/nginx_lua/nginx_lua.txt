@@ -1,0 +1,20 @@
+location / {
+    # 使用lua
+    access_by_lua_file /usr/local/lua/mytest.lua;
+}
+
+############
+安装 ngx_http_lua_module 模块或者使用 openresty
+
+############
+# lua中nginx的参数获取
+ngx.req.get_headers()      # 字典
+ngx.var.remote_addr        # 字符串
+ngx.var.http_user_agent
+ngx.location
+
+# 写日志文件
+ngx.log(ngx.ERR, msg, ex)
+
+# 
+ngx.exit(ngx.HTTP_FORBIDDEN)

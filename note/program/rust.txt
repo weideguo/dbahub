@@ -8,5 +8,6 @@ cargo new rust_demo
 cd rust_demo
 cargo build
 
- 
 
+# 依赖包 
+https://crates.io/

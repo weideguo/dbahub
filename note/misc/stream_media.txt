@@ -1,10 +1,22 @@
 #流媒体协议
-RTMP
+RTMP Real-Time Messaging Protocol
 tcp
 
-
-RTSP
+RTSP Real Time Streaming Protocol
 tcp
+
+SRT Secure Reliable Transport
+udp
 
 httpflv
 http
+
+
+
+
+HTTP Live Streaming
+
+
+Dynamic Adaptive Streaming over HTTP
+
+
