@@ -62,6 +62,10 @@ conn.commit()             #对应mysql的commit
 cursor.close()
 
 
+conn.autocommit(True)     #设置自动提交，默认False 
+conn.begin()              #开启事务
+conn.close()              #关闭连接
+
 #执行存储过程
 cursor.callproc('proc_name', args=())        
 

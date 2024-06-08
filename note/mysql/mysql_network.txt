@@ -1,7 +1,11 @@
 connect_timeout      TCP三次握手超时时间
-wait_timeout         建立连接后无交互
-interactive_timeout  建立连接交互后
+wait_timeout         非交互连接等待事件的时间，即超过这么多时间没有任何操作会被断开
+interactive_timeout  交互连接等待事件的时间
 net_read_timeout     client----->MySQL Server 的超时时间
 net_write_timeout    client<-----MySQL Server 的超时时间
 
+# 连接api
+MYSQL *mysql_real_connect(MYSQL *mysql, const char *host, const char *user, const char *passwd, const char *db, unsigned int port, const char *unix_socket, unsigned long client_flag)
+client_flag
+client_flag 为CLIENT_INTERACTIVE时，即为交互连接，超时时间为interactive_timeout
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--countdown css-->
+<html>
+
+<head>
+  <title> 使用css实现倒数 </title>
+  <meta charset="utf-8" />
+  </head>
+
+<style>
+@property --n {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes count {
+  from { --n: 5; }
+  to { --n: 0; }
+}
+.timer:hover::after {
+  animation: 5s linear count;
+  animation-fill-mode: forwards;
+  counter-reset: n calc(0 + var(--n));
+  content: counter(n);
+}
+.timer::after{
+  display: block;
+  content: '';
+  line-height: 200px;
+  height: 1lh;
+  aspect-ratio: 1 / 1;
+  font-size: 92pt;
+  text-align: center;
+  border: 1px dashed black;
+}
+.timer{
+  place-self: center;
+}
+h2 {
+  margin-bottom: 0;
+}
+body {
+  display: grid;
+  height: 100vh;
+  row-gap: 40px;
+  place-content: center;
+  // user-select: none;
+  // -moz-user-select: none;
+  // -webkit-user-select: none;
+  font-family: 'crimson text';  
+  margin: 0;
+}
+</style>
+
+<body>
+<h2>Hover over the below box to see the countdown</h2>
+<div class=timer></div>
+
+
+<script type="text/javascript">
+
+//onload=()=>{
+//  if(!CSS.registerProperty) { 
+//    document.querySelector('body').innerHTML = '<br><span style="font-size:14pt;width:300px">CSS <span style="font-family:courier">@property</span> is not supported in this browser, so this example is not shown. Try Chrome :) </span>'; 
+//    
+//  } 
+//}
+
+</script>
+
+</body>
+
+</html>

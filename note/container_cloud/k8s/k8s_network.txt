@@ -54,7 +54,7 @@ metadata:
   name: example-ingress
 spec:
   rules:
-    - host: example.com                             # 需要额外设置DNS解析主机名称（解析到任意一个node）
+    - host: example.com                             
       http:
         paths:
           - path: /app1
@@ -81,5 +81,9 @@ kubectl apply -f <yaml-file-name>
 kubectl get ingress
 
 
-kubectl get pods -A | grep ingress    # 每个node运行一个？
+kubectl get pods -A | grep ingress    
 
+# 每个node运行一个ingress的pod，即一个nginx进程
+
+创建一个ingress资源即增加一条nginx的配置
+通过域名访问到nginx，nginx则由域名转到对应的服务（原理为通过server_name确定是要配置哪个配置）

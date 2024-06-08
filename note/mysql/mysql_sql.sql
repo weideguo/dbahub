@@ -265,7 +265,8 @@ ALTER TABLE table_name ADD CONSTRAINT constraint_name UNIQUE (column1,column2);
 撤销约束
 ALTER TABLE table_name DROP CONSTRAINT constraint_name;
 
-ALTER TABLE tb_emp7 ADD CONSTRAINT constraint_name CHECK(<check_expr>); --如 num>0
+-- 8.0.16以及之后才生效，之前可以运行但不生效
+ALTER TABLE table_name ADD CONSTRAINT constraint_name CHECK(<check_expr>); --如 num>0
 
 CREATE TABLE COURSE(
     Cno CHAR(4) PRIMARY KEY,
@@ -274,10 +275,8 @@ CREATE TABLE COURSE(
     CONSTRAINT my_ref FOREIGN KEY(Cpno) REFERENCES COURSE (Cno)   -- 可以同一个表，也可以其他表
 );
 
-
 -- 更改表的字段
 ALTER TABLE table_name MODIFY column_name data_type;
-
 
 
 -- 正则表达式

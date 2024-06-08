@@ -62,3 +62,7 @@ a=={}     --不能用此判断
 
 
 -- pairs(t)
+
+a={a="aaaa",b="vvvv"}
+print(a.a)
+print(a["a"])

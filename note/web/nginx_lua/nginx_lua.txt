@@ -1,7 +1,20 @@
 location / {
     # 使用lua
+    # access_by_lua_block { -- lua code }
     access_by_lua_file /usr/local/lua/mytest.lua;
 }
+
+init_by_lua*               初始化 nginx 和预加载 lua
+init_worker_by_lua*        每个工作进程被创建时执行，用于启动一些定时任务
+ssl_certificate_by_lua*    对 https 请求的处理，即将启动下游 https 连接的 SSL 握手时执行
+set_by_lua*                设置 nginx 变量
+rewrite_by_lua*            
+access_by_lua*             
+content_by_lua*            
+balancer_by_lua*           upstream 转发前
+header_filter_by_lua*      处理响应头
+body_filter_by_lua*        处理响应体
+log_by_lua*                记录访问日志
 
 ############
 安装 ngx_http_lua_module 模块或者使用 openresty
@@ -18,3 +31,8 @@ ngx.log(ngx.ERR, msg, ex)
 
 # 
 ngx.exit(ngx.HTTP_FORBIDDEN)
+
+
+ngx.req.set_header("authorization", "xxxx")
+ngx.req.set_body_data
+

@@ -22,11 +22,9 @@ service docker start    #2使用service docker start启动
 
 /etc/docker/daemon.json                                     ##配置文件路径
 
-{ "bip": "192.168.0.1/16" }         # 容器使用的网段
+"bip": "192.168.0.1/16"             # 容器使用的网段
+"graph": "/data/docker"             # 镜像、容器使用的路径 默认/var/lib/docker
 
-
-
-/var/lib/docker/                                            ##启动的容器对应文件所在的目录
 
 cd /var/lib/docker/ && find ./ -name $filename -type f      ##查看退出容器的文件，可以修改文件（尽量不要如此，使用数据卷代替）
 
