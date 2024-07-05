@@ -1,0 +1,27 @@
+meilisearch
+由rust编写的搜索引擎
+
+# 启动
+./meilisearch-linux-amd64 --master-key=77369c62e7ca4ad86f5c7505dd057546
+
+
+# 导入
+curl \
+  -X POST 'http://127.0.0.1:7700/indexes/movies/documents?primaryKey=id' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer 77369c62e7ca4ad86f5c7505dd057546' \
+  --data-binary @movies.json
+  
+
+# 查看任务状态
+curl \
+  -X GET 'http://127.0.0.1:7700/tasks/0' \
+  -H 'Authorization: Bearer 77369c62e7ca4ad86f5c7505dd057546'
+
+
+# 搜索
+curl \
+  -X POST 'http://127.0.0.1:7700/indexes/movies/search' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer 77369c62e7ca4ad86f5c7505dd057546' \
+  --data-binary '{ "q": "botman" }'

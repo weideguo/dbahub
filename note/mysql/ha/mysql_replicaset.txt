@@ -10,7 +10,7 @@ MySQL Shell
 角色分为Primary和Secondary
     Primary 即传统意义上的 Master，一个副本集只允许一个
     Secondary 即 Slave，允许一个或多个
-
+    组成MGR集群 MySQL Group Replication
 
 
 MySQL Shell 使用TCP连接MySQL服务

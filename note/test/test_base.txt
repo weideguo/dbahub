@@ -2,3 +2,11 @@ e2e test end to end 模拟真实用户行为验证功能
 system test         功能测试、性能测试、恢复测试、安全测试、压力测试、容量测试、可用性测试、备份测试、网络测试等
 integration test
 unit test
+
+
+运行环境
+dev 开发环境
+sit System Integration Test
+uat User Acceptance Test
+pre 预发布环境
+prd 生产环境

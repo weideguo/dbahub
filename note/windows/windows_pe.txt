@@ -1,0 +1,5 @@
+Portable Executable
+windows可执行文件的文件格式
+exe
+dll
+

@@ -80,6 +80,7 @@ BEGIN
 END
 
 语句中必须包含GROUP BY time()，一般用于 select into ，可以带有where
+CQ的执行间隔跟GROUP BY time()一样，如GROUP BY time(1h)，时间范围只为当前时间到一个时间周期之前，不是所有数据。
 
 
 SELECT 

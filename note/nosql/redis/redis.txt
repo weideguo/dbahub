@@ -104,6 +104,13 @@ PUBLISH redisChat "weideguo is a greate guy"
 UNSUBSCRIBE  channel1  ###退订channel1
 
 
+特殊channel
+配置文件设置 notify-keyspace-events Ex
+
+SUBSCRIBE __keyevent@0__:expired    #监听数据库0中的过期事件    
+
+
+
 ##交互模式中执行 lua代码
 EVAL "return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}" 2 key1 key2 first second
 eval "return redis.call('set','foo','bar')" 0
@@ -171,13 +178,15 @@ SUNION key1 key2             ###并集
 SPOP key                     ###弹出一个随机值
                              
                              
-有序集合 zset(SortedSet)     通过score排序 member要唯一
-ZADD key 0 value1            ## zadd key score member
-ZADD key 1 value2            
-ZRANGE key 0 100             ###开始下标，显示数目
-ZRANGEBYSCORE key 0 100      ###开始下标，结束下标
-ZCARD key                    ###查看集合的元素个数
-ZREM key member              ###移除元素
+有序集合 zset(SortedSet)     通过score排序 member唯一
+ZADD zkey 6 member1          ## zadd key score member
+ZADD zkey 5 member2            
+ZRANGE zkey 0 100            ###获取排序列表，从第几个到第几个
+ZRANGEBYSCORE zkey 0 100     ###获取排序列表，根据score过滤
+ZCARD zkey                   ###查看集合的元素个数
+ZREM zkey member1            ###移除元素
+ZSCORE zkey member2          ###获取成员的值   
+ZINCRBY zkey 2 member2       ###给成员的值增加，可以使用负数
 
 
 SCAN  ##迭代当前数据库中的数据库键

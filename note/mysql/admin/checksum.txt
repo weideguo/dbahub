@@ -1,0 +1,22 @@
+-- 一个主从一致性校验思路 参考pt-table-checksum
+
+-- 都在主实例主动执行
+CREATE TABLE `checksum_test` (
+  `db` char(64) NOT NULL,
+  `tbl` char(64) NOT NULL,
+  `chunk` int(11) NOT NULL,
+  `this_crc` char(40) NOT NULL,
+  `master_crc` char(40) DEFAULT NULL,
+  PRIMARY KEY (`db`,`tbl`,`chunk`)
+) ENGINE=InnoDB;
+
+set transaction_isolation='REPEATABLE-READ';
+set binlog_format=statement;
+-- @@server_uuid 可以替换为计算chechsum的函数，通过主从传输实现在主、从分别计算
+replace into checksum_test(db,tbl,chunk,this_crc)  values('db1','tb1',1,@@server_uuid); 
+
+-- 将函数的计算结果赋给变量，可以通过查询获取函数计算结果，实现主的计算结果传输到从
+set @this_crc=@@server_uuid;
+update checksum_test set master_crc=@this_crc where db='db1' and tbl='tb1' and chunk=1 ;
+
+-- 通过对比两个字段的结果，即可校验主从的一致性

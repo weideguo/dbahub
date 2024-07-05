@@ -21,8 +21,8 @@ omicron         bryanh                  guest1
     password          # 原始密码，通过明文传输               
     gss               #
     sspi              #
-    ident             #
-    peer              #
+    ident             # 使用操作系统的认证，在操作系统切换到对应名字的账号，即可登录数据库。可以通过tcp连接
+    peer              # 与ident类似，只能本地使用unix socket连接
     ldap              #
     radius            #
     cert              #

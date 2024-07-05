@@ -9,7 +9,7 @@ echo 'new_passwd' | passwd --stdin auser
 groupadd group_name  ###添加组
 groupmod group_name  ###修改组
 groupdel group_name  ###删除组
-useradd –s /sbin/nologin –d /var/www/ dengftp
+useradd –s /sbin/nologin –d /var/www/ testuser
 #注-s /sbin/nologin是让其不能登陆系统，-d 是指定用户目录为/var/www/ 
 #添加用户时可以使用【-g、-G】参数关联到对应的组
 chown –R user_name:group_name /var/www/   #注:将用户目录及其子目录的所有和所属的组设置为dengftp
