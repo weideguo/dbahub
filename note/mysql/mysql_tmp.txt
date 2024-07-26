@@ -32,7 +32,8 @@ CREATE TEMPORARY TABLE tmp_table1(id int);
 
 
 
- 
+show global variables like 'tmp_table_size' ; 
+show global variables like 'max_heap_table_size' ;
 如果临时表中需要存储的数据量超过了上限（ tmp-table-size 或 max-heap-table-size 中取其大者），会生成基于磁盘的临时表。
 
 

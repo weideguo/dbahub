@@ -18,7 +18,10 @@ create user user_name@'host_ip' identified by user_password;       --设置用�
 RENAME USER old_name TO new_name;                                  --更改用户名
 
 ... IDENTIFIED WITH 'mysql_native_password' AS '*03C445B25C8D34C170CA5EA3C34616E743F11758';   --5.7以及之后
+                ... 'caching_sha2_password' AS 0xAAAAAAAAAAAAAAAA;                            --使用16进制数据
 
+select user,host,hex(authentication_string) from mysql.user where plugin='caching_sha2_password';                
+                
 ---role使用 mysql8.0以上支持
 create role ...                     ---角色可以授权给用户
 

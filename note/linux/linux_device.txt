@@ -16,3 +16,9 @@ lspci 查看PCI设备
 lsusb 查看USB设备）
 lsblk 查看块设备
 lscpu 查看cpu
+
+lscpu  | grep 'Socket(s)' | awk '{print $NF}'   # 多少颗物理数量CPU
+lscpu  | grep 'Core(s)'   | awk '{print $NF}'   # 每颗CPU多少核
+lscpu  | grep 'Thread(s)' | awk '{print $NF}'   # 每核线程数
+三者相乘即为总的线程数，即top命令实现的cpu数
+

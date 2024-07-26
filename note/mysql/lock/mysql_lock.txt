@@ -168,19 +168,19 @@ show engine innodb status\G     --可查看锁的信息
 通过创建表实现监控，删除则关闭监控 兼容旧版本<=5.5  5.6可以使用performance_schema下的表查看
 		
 标准监控（Standard InnoDB Monitor）：监视活动事务持有的表锁、行锁；事务锁等待；线程信号量等待；文件IO请求；buffer pool统计信息；InnoDB主线程purge和change buffer merge活动
-CREATE TABLE innodb_monitor （a INT） ENGINE=INNODB;
+CREATE TABLE innodb_monitor (a INT) ENGINE=INNODB;
 DROP TABLE innodb_monitor;	
 	
 锁监控（InnoDB Lock Monitor）：提供额外的锁信息。
-CREATE TABLE innodb_lock_monitor （a INT） ENGINE=INNODB;
+CREATE TABLE innodb_lock_monitor (a INT) ENGINE=INNODB;
 DROP TABLE innodb_lock_monitor;						  
 	
 表监控（InnoDB Table Monitor）：显示内部数据字典的内容。						  
-CREATE TABLE innodb_table_monitor （a INT） ENGINE=INNODB;
+CREATE TABLE innodb_table_monitor (a INT) ENGINE=INNODB;
 DROP TABLE innodb_table_monitor;
 
 表空间监控（InnoDB Tablespace Monitor）：显示共享表空间中的文件段以及表空间数据结构配置验证。						  
-CREATE TABLE innodb_tablespace_monitor （a INT） ENGINE=INNODB;
+CREATE TABLE innodb_tablespace_monitor (a INT) ENGINE=INNODB;
 DROP TABLE innodb_tablespace_monitor;
 
 
@@ -189,6 +189,9 @@ DROP TABLE innodb_tablespace_monitor;
 select * from information_schema.innodb_locks;         -- 废弃
 select * from information_schema.innodb_lock_waits;    -- 废弃
 select * from information_schema.innodb_trx;
+
+select * from sys.schema_table_lock_waits;
+select * from sys.innodb_lock_waits;
 
 select p.id,p.TIME,p.command from information_schema.innodb_trx t join information_schema.processlist p where t.trx_mysql_thread_id=p.id;
 

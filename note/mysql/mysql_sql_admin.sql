@@ -20,3 +20,14 @@ show status like 'Com_commit'
 show status like 'Com_rollback'
 TPS=(CC1+CR1-CC2-CR2)/time
 
+--可以用从库的来判断主库的TPS，因为复制时都带有事务标识（但从库不复制rollback信息）
+
+show global status like 'Com_%'
+
+
+
+-- 慢查询数量
+show status like 'Slow_queries'
+
+
+SHOW ENGINE PERFORMANCE_SCHEMA STATUS;   -- 查看PERFORMANCE_SCHEMA库的内存使用情况

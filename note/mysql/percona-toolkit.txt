@@ -38,3 +38,13 @@ pt-archiver --source h=127.0.0.1,u=test,p='test',D='test',t=t1  --where "id <= 1
 # 如执行时间超过多久
 pt-kill 
 
+
+# 持续执行 `SHOW ENGINE INNODB STATUS` 获取死锁的信息
+pt-deadlock-logger h=host,P=port,u=user  --dest h=save_host,P=save_port,u=save_user,D=test_db,t=deadlocks --ask-pass
+
+pt-deadlock-logger h=host,P=port,u=user,p=passwd  --dest h=save_host,P=save_port,u=save_user,p=save_passwd,D=test_db,t=deadlocks
+
+--create-dest-table  创建存储死锁信息的表
+--interval           轮询间隔，默认30秒  
+--daemonize          
+

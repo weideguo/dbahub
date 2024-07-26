@@ -2,9 +2,9 @@
 mysql                       --5.7以及以上的使用innodb存储引擎 之前的则使用myisam 
 information_schema			--视图。 
 performance_schema          --视图。 需要设置 performance_schema = on
-sys                         --对performance_schema的视图
+sys                         --对performance_schema的视图  
 
-
+形如 host_summary 为 x$host_summary 的格式化
 
 
 ##表大小

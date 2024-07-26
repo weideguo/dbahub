@@ -27,5 +27,9 @@ window.top      //顶层窗口
 window.self     //前窗口自身
 window.parent   //父窗口
 
-
-
+// 关闭页面前进行提示
+window.addEventListener('beforeunload', function (e) {  
+  var confirmationMessage = '';  
+  (e || window.event).returnValue = confirmationMessage;
+  return confirmationMessage; 
+});

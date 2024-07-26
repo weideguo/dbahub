@@ -189,6 +189,17 @@ displayPosition=function(pos){
 navigator.geolocation.getCurrentPosition(displayPosition)
 
 
+function getDataFromJson(jsonFilename) {
+  // 从json文件读取数据 如传入 'my1.json'
+  fetch(jsonFilename)
+    .then(response => response.json())
+    .then(data => {
+      // 转成js对象
+      console.log(data);
+    })
+    .catch(error => console.error('Error :', error));
+}
+  
 
 /////////////////////
 <script async defer src="http://myhost/my.js"> 

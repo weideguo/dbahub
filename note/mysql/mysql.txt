@@ -116,6 +116,9 @@ When innodb_stats_on_metadata is enabled, InnoDB updates non-persistent statisti
 SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEMA.TABLES or INFORMATION_SCHEMA.STATISTICS tables. 
 (These updates are similar to what happens for ANALYZE TABLE.) 
 
+表的统计信息查询
+select * from mysql.innodb_table_stats;
+
 #设置表的统计信息的收集计划
 ATER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECALC=1, ALGORITHM=INPLACE, LOCK=NONE; 
 					  

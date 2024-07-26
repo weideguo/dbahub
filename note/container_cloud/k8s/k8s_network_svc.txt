@@ -1,0 +1,37 @@
+coredns    svc使用    只需要启动coredns的pod即可
+
+
+#网络相关 services 
+#查看网络
+kubectl get svc
+
+
+kubectl get svc -o wide
+显示的CLUSTER-IP只能在集群内使用
+
+
+通过创建svc，集群内不同的容器可以通过name访问
+
+
+# endpoints
+kubectl get endpoints
+
+
+``` yaml
+kind: Service
+spec:
+  ports:
+  - name: my_svc_name
+    nodePort: 21234                   # 映射后的端口
+    port: 1234                        # 应用原始端口
+    protocol: TCP
+    targetPort: 1234
+  selector:                           # 通过selector指定绑定的应用
+    app: pod_or_deploy_name
+  type: NodePort                      # 任意一个节点的ip:nodePort即可访问svc映射的服务
+  
+```
+
+ClusterIP         默认分配的网络
+NodePort          映射到物理机的端口 任意一个节点的ip:nodePort
+LoadBalancer      映射到LoadBalancer的端口

@@ -6,33 +6,6 @@
 
 
 
-Calico  容器、虚拟机、宿主机之间的网络连接
-
-
-coredns    svc使用    只需要启动coredns的pod即可
-
-
-
-#网络相关 services    通过apply yaml创建，通过selector指定绑定的app（先由控制器启动pod）
-#查看网络
-kubectl get svc
-
-#端口转发
-kubectl get svc -o wide
-
-通过创建svc，不同的容器可以通过name访问
-
-
-
-
-ClusterIP         默认分配的网络
-LoadBalancer      映射到LoadBalancer的端口
-NodePort          映射到物理机的端口（不推荐使用，因为物理机的ip可能会变） nodeIP:nodePort 运行容器的ip、容器暴露/映射的端口
-
-# entpoint
-container_cloud/k8s/k8s_network.txt
-
-
 
 
 常用的Ingress控制器有：
@@ -47,6 +20,7 @@ Kong
 
 Ingress配置通过主机名称(example.com)和路径名(/app1和/app2)，将外部请求路由到两个服务(app1-service和app2-service)上
 
+``` yaml
 # example_ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -71,7 +45,7 @@ spec:
                 name: app2-service
                 port:
                   number: 80
-
+```
 
 
 #应用到Kubernetes集群中：

@@ -544,8 +544,8 @@ select .. from a where c1,c2 in ( select a1.c1,a1.c2 from a1 ... )         #mysq
 
 
 分区表
-SELECT * FROM p1 PARTITION (p0[,p1])；     							#从指定分区查询
-EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10；			#查看从分区表的执行信息
+SELECT * FROM p1 PARTITION (p0[,p1]);     							#从指定分区查询
+EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10;			#查看从分区表的执行信息
 ALTER TABLE tr DROP PARTITION p2;	                              	#删除分区，针对RANGE/LIST分区
 ALTER TABLE tr ADD PARTITION (PARTITION p_name …);   				#增加分区，针对RANGE/LIST分区
 ALTER TABLE members REORGANIZE PARTITION p0,p1,p2,p3 INTO (
