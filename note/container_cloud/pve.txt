@@ -1,0 +1,5 @@
+pve
+Proxmox Virtual Environment
+虚拟化平台，依赖于kvm，相对于openstack更轻量简单，使用专有的宿主机
+
+

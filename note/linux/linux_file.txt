@@ -209,6 +209,7 @@ filename1 -ot filename2   #文件filename1比filename2更旧
 十六进制
 hexdump -C file_name   #输出规范的十六进制和ASCII码
 xxd
+xxd $infile | more
 
 编码转换
 iconv

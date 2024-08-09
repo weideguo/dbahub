@@ -22,15 +22,17 @@ gpg --gen-revoke [用户ID]
 
 
 #删除
-gpg --delete-key  [用户ID]
+gpg --delete-key  [用户ID]            # 删除公钥
+gpg --delete-secret-keys [用户ID]     # 删除私钥
 
 
 #导出公钥 指定公钥或私钥的用户id都只导出公钥
 gpg --armor --output public-key.txt --export [用户ID]
+#导出私钥
+gpg -a -o private-file.key --export-secret-keys [用户ID]
 
 
-
-#导入公钥
+#导入公钥/私钥
 gpg --import [密钥文件]
 
 

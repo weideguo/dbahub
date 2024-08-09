@@ -9,3 +9,4 @@ a.out
 *.so
 go.sum
 .ipynb_checkpoints/
+*.o

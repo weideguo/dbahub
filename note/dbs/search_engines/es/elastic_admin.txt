@@ -18,6 +18,7 @@ get /_cat/shards                     #查看分片状态 为UNASSIGNED这表示�
 红色，表示至少一个主分片以及它的全部副本分片均不可用。集群处于红色状态意味着已有部分数据不可用，搜索只能返回部分数据，而分配到丢失分片上的请求会返回异常。
 
 黄色则设置副本为0，恢复后再修改成其他值
+curl -XPUT 'http://elasticsearch_host:port/index_prefix*/_settings' -H 'Content-Type: application/json' -d'{"number_of_replicas":0}'
 
 红色修复
 

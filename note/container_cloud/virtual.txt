@@ -20,17 +20,3 @@ vmware
     esxi
 kvm    
 
-    
-云 cloud
-
-IaaS(Infrastructure-as-a-Service) 基础设施即服务。
-提供虚拟主机
-
-PaaS(Platform-as-a-Service) 平台即服务。
-提供应用程序运行所需要的环境。如Java web应用需要的tomcat。
-
-
-SaaS(Software-as-a-Service)：软件即服务
-提供软件服务，如邮箱，面向普通用户。
-
-    

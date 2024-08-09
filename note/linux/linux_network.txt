@@ -163,6 +163,7 @@ netstat -nlt | grep 3306
 netstat -nat                  ##连接数查看
 
 netstat -ntlpa                ##查看连接      
+netstat -nulpa                ##查看udp端口
 
 ss                            ##类似于netstat
 
