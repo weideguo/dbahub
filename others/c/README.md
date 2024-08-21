@@ -63,7 +63,7 @@ func.cpp     ###类函数的实现，包含头文件
 #编译成动态链接库
 g++ func.cpp -fPIC -shared -o libcall_func.so                 
 #使用动态链接库
-g++ newcpp.cpp -o newcpp  –L/root/src/lib –lcall_func_so    
+g++ newcpp.cpp -o newcpp  -L/root/src/lib -lcall_func_so    
 
 #指定使用的头文件编译
 g++ -shared -fPIC -I /usr/include/mysql -o call_func_add.so call_func_add.cpp

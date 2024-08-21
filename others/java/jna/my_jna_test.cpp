@@ -17,6 +17,6 @@ void  say(wchar_t* pValue){
 
 /*
 编译成dll
-g++ -Wall -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -Id:/java/include –Id:/java/include/win32 -shared -o TestDll.dll my_jna_test.c
+g++ -Wall -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -Id:/java/include -Id:/java/include/win32 -shared -o TestDll.dll my_jna_test.c
 
 */

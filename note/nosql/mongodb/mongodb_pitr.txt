@@ -7,7 +7,7 @@ bin/mongodump --host 127.0.0.1:27017 --oplog -o full_backup_dir
 
 备份oplog
 oplog是记录mongodb的操作，类似于mysql的binlog，可用于数据的时间点恢复。oplog是固定大小，默认为磁盘的5%。可以通过设置参数--oplogSize调整。
-以mongod –master启动时，oplog为local库下的oplog.$main。
+以mongod -master启动时，oplog为local库下的oplog.$main。
 对于副本集，oplog为local库下oplog.rs。
 
 

@@ -35,7 +35,7 @@ umask -S     ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002
              ###文件夹777-002
 
-tar –xvf file.tar        ##解压 tar包
+tar -xvf file.tar        ##解压 tar包
 tar -xzvf file.tar.gz    ##解压tar.gz
 tar -xjvf file.tar.bz2   ##解压 tar.bz2
 压缩/解压
@@ -236,8 +236,8 @@ test -d 'path_name1' || mkdir 'path_name2'
 
 
 find ./ -name "file_name"  ##当前文件以名字查找
-find ./ -name "*test*" –type f -exec rm -rf {} \;    ###查找当前目录下指定文件并删除 ##【-exec command ;】匹配后执行command
-find ./ -name "*test*" –type d                       ###查找当前目录下指定的目录
+find ./ -name "*test*" -type f -exec rm -rf {} \;    ###查找当前目录下指定文件并删除 ##【-exec command ;】匹配后执行command
+find ./ -name "*test*" -type d                       ###查找当前目录下指定的目录
 find ./ -type f -ctime +14 -exec rm -rf {} \;        ##查找时间离现在大于14天的文件，删除
 
 find ./ ! -path "./aaa"                              #! 过滤

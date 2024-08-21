@@ -123,7 +123,7 @@ hadoop fsck ...
 #重新加载配置文件 
 #用于配置更改时 如增加节点/删除节点
 hdfs dfsadmin -refreshNodes
-yarn rmadmin –refreshNodes
+yarn rmadmin -refreshNodes
 
 
 

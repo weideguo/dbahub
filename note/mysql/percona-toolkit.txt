@@ -6,7 +6,7 @@ yum install perl perl-devel perl-Time-HiRes perl-DBI perl-DBD-MySQL
 bin/pt-online-schema-change --alter="add key(openId,status)" --execute u=root,p=,h=10.66.137.197,P=3306,D=wxkf,t=tbFans_bak
 
 
-pt–table-checksum
+pt-table-checksum
 #在主库运行。在主库、从库的表进行checksum，判断数据是否一致。执行过的sql语句记录到binlog。不在意从库延时，延迟多少，计算的校验值都一样。
 pt-table-checksum --nocheck-replication-filters --no-check-binlog-format --replicate=test.checksum --databases=mydatabase --tables=mytable --chunk_size=100 h=127.0.0.1,u=root,P=3306  
 
