@@ -90,7 +90,7 @@ master1      master2   |   service salt-master start    |  #grep ^[a-z] /etc/sal
 ------------           |                                |  
 |          |           |                                |  
 minion11     minion12  |   service salt-minion start    |  #grep "^[a-Z]" /etc/salt/minion
-					   |                                |  master: <master1-ip or master2-ip>
+                       |                                |  master: <master1-ip or master2-ip>
 
 
 

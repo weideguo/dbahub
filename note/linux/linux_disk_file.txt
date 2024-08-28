@@ -82,7 +82,7 @@ vgcreate vg_name /dev/sdb1                 ###创建名为vg_name的vg(Volume Gr
 lvcreate -L 1000M lv_name vg_name          ##创建lv(Logical Volume)
 
 vgextend vg_name /dev/hda6                 #扩展vg_name
-lvextend –L 1G /dev/vg_name/lv_name        #扩展LV
+lvextend -L 1G /dev/vg_name/lv_name        #扩展LV
 resize2fs /dev/vg_name/lv_name             ###更新文件系统
 
 xfs_growfs /dev/vg_name/lv_name            ###xfs文件系统使用这个替代  resize2fs
@@ -105,7 +105,7 @@ vgmove vg_name                ##删除vg
 lvmove /dev/vg_name/lv_name   ###删除lv
 
 
-###################################新增分区######################
+###################################新增分区######################小于等于2T
 
 
 #将物理磁盘分区 进入交互模式操作 新建分区（请谨慎操作）
@@ -121,8 +121,6 @@ mount /dev/sdb2 /data1
 #添加分区信息（用于在启动时进行挂载磁盘操作，之前的挂载操作重启后失效）
 echo '/dev/sdb2 /data1 ext3 defaults 0 0' >> /etc/fstab
 
-
-
 ###################################扩容已有分区######################
 
 
@@ -137,6 +135,35 @@ resize2fs /dev/sdb1
 
 #挂载分区到指定目录（原来的数据不会丢失）
 mount /dev/sdb1 /data
+
+###################################新增分区######################没有2T限制
+yum install -y parted          # 安装parted工具
+
+parted /dev/sdc                # 对磁盘进行分区
+    # 在parted命令
+    mklabel gpt                # 设置分区格式为GPT分区
+    mkpart primary 1 100%      # 划分一个主分区、分区名为primary且100%容量给到第一个分区
+    align-check optimal 1      # 查看是否对齐
+    print
+    quit                       # 退出
+
+partprobe                      # 重读分区
+fdisk -lu
+fdisk -lu /dev/sdc             # 查看分区信息
+mkfs -t xfs /dev/sdc1          # 给第一个分区创建文件系统
+
+
+blkid /dev/sdc1                # 查看uuid信息
+echo 'UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /data xfs defaults 0 0'  >> /etc/fstab          # 设置开机自动挂载分区
+
+mount -a                       # 挂载磁盘，使用/etc/fstab的信息
+
+###################################扩容已有分区######################
+umount /data                   # 卸载  或者运行 umount /dev/sdc1 
+parted /dev/sdc                #
+    resizepart 1 100%          # 扩容第一个分区
+
+mount -a                       # 重新挂载
 
 ############################################################################################
 虚拟文件系统

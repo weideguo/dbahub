@@ -78,12 +78,12 @@ seq 200 +10 300   #正序
 
 
 函数
-xyz()				  ##可在前面添加function前缀
+xyz()                 ##可在前面添加function前缀
 {
-	let a=$1+$2+$3    ##参数为 $1,$2,$3...以此类推，let指定后面为数学计算，可用((a=$1+$2+$3))代替
-	return $a		  ##函数返回值，运行函数后使用$?获取
+    let a=$1+$2+$3    ##参数为 $1,$2,$3...以此类推，let指定后面为数学计算，可用((a=$1+$2+$3))代替
+    return $a         ##函数返回值，运行函数后使用$?获取
 }
-xyz 1 4 5            ##执行函数，后面为参数
+xyz 1 4 5             ##执行函数，后面为参数
 echo $?               ##输出返回值
 
 for                   ##for循环，可以使用((i=0;i<10;i++))
@@ -96,7 +96,7 @@ do
 ....
 done
 
-while				  ##while循环，可以使用((i<10))
+while                  ##while循环，可以使用((i<10))
 do
 ...
 done
@@ -120,15 +120,15 @@ else echo "nnn"
 fi
 
 case $flag in
-	start)
-	${command1}
-	;;
-	stop|shutdown)
-	${command2}
-	;;
-	*)
-	${command3}
-	;;
+    start)
+    ${command1}
+    ;;
+    stop|shutdown)
+    ${command2}
+    ;;
+    *)
+    ${command3}
+    ;;
 esac
 
 if [[ $x ]] && [[ $x = xx ]];then 
@@ -141,7 +141,7 @@ fi
 
 ###逐个获取脚本后的参数 opt不是关键字，可以使用任意名字
 for opt do
-	echo $opt
+    echo $opt
 done
 
 shift 参数移动，用于逐个获取参数
@@ -166,7 +166,7 @@ arr=($a)
 IFS=$OLD_IFS
 for s in ${arr[@]}
 do
-	echo $s
+    echo $s
 done
 
 
@@ -194,7 +194,7 @@ ccc
 if test (表达式为真)    ###判断  判断文件是否存在等
 touch filename  ##创建文件
 
-if [ -z $dc ];then 	 ##字符长度为0
+if [ -z $dc ];then      ##字符长度为0
 echo "not exist"; 
 else 
 echo "exist"; 
@@ -210,20 +210,20 @@ fi
 
 
 
-${command1} && ${command2}     #前面执行成功才执行后面的语句
-${command1} || ${command2}	   #前面执行失败才执行后面的语句
+${command1} && ${command2}       #前面执行成功才执行后面的语句
+${command1} || ${command2}       #前面执行失败才执行后面的语句
 
 
 
 
-mkfifo my_pipe  					##创建管道，"|"为无名管道
+mkfifo my_pipe                       ##创建管道，"|"为无名管道
 
 ###进程一
-echo "abcd" > my_pipe				###写入管道时没有读取操作，写入操作会停滞
+echo "abcd" > my_pipe                ###写入管道时没有读取操作，写入操作会停滞
 ###进程3二
-cat my_pipe							###读取管道时没有数据，读取操作会停滞
+cat my_pipe                          ###读取管道时没有数据，读取操作会停滞
 
-rm -rf my_pipe						###删除管道
+rm -rf my_pipe                       ###删除管道
 
 
 posix标准要求每次打开文件时必须使用当前进程的最小可用文件描述符。
@@ -231,19 +231,19 @@ posix标准要求每次打开文件时必须使用当前进程的最小可用文
 
 文件描述符
 /proc/self/fd
-0	stdin
-1	stdout
-2	stderr
+0    stdin
+1    stdout
+2    stderr
 
 使用exec自定定义、绑定文件操作符  
 #管道可以跨进程看到
 #文件描述符只能当前进程看到
 exec 200<>my_pipe   ###对文件200的操作等同于对管道my_pipe的操作。使用绑定文件可以避免停滞
-			
-echo >&200			###以管道使用，输入空行，不停滞
-read -u200			###读取管道，以行读取，如果读取不到则停滞
-					
-exec 200>&-			###关闭绑定
+            
+echo >&200            ###以管道使用，输入空行，不停滞
+read -u200            ###读取管道，以行读取，如果读取不到则停滞
+                    
+exec 200>&-           ###关闭绑定
 exec 200<$-
 
 
@@ -254,7 +254,7 @@ exec >$file         #将标准输出写入普通文件
 exec 3<$file        #将普通文件内容写入管道3
 
 
-read -u${n}			###从描述符号位n的文件中读取。缺省为0，即为stdin。
+read -u${n}         ###从描述符号位n的文件中读取。缺省为0，即为stdin。
 
 
 
@@ -317,17 +317,17 @@ exec 100>&-
 exec 100<$-
 
 
-x=`cat`				###脚本中从输入获取字符串
+x=`cat`                ###脚本中从输入获取字符串
 
-read -p "prompt" arg	###输出提示，将输入值传给arg。没有arg则传入REPLY
+read -p "prompt" arg    ###输出提示，将输入值传给arg。没有arg则传入REPLY
 
-cat filename | while read line		###将文件读入line中，line为变量
+cat filename | while read line        ###将文件读入line中，line为变量
 do
 ${command} $line
 done
 
-read arg_name						##从终端读取数据赋值给变量，可以有多个变量名
--p "you commemt"	输出提示字符
+read arg_name                        ##从终端读取数据赋值给变量，可以有多个变量名
+-p "you commemt"    输出提示字符
 
 
 x=`date +%Y`   ###执行命令后将结果保存在变量中
@@ -352,14 +352,14 @@ date -d "1 fri"                            #
 
 
 
-trap '' 1 2 3 15 			###忽略信号，在脚本中使用
+trap '' 1 2 3 15               ###忽略信号，在脚本中使用
 
-trap 'commands' signals 	###接收到信号时执行commands
+trap 'commands' signals        ###接收到信号时执行commands
 
-trap "echo 'hello'" INT		###键盘ctrl+c，执行echo hello命令
+trap "echo 'hello'" INT        ###键盘ctrl+c，执行echo hello命令
 
 
-set -Eeuo pipefail          ##脚本头部使用 当运行出现错误时结束脚本（默认会继续运行）
+set -Eeuo pipefail             ##脚本头部使用 当运行出现错误时结束脚本（默认会继续运行）
 
 
 trap cleanup SIGINT SIGTERM ERR EXIT        #发起ctrl+c/运行出现错误/运行结束 执行特定操作，如脚本的清理操作
@@ -370,11 +370,11 @@ cleanup() {
 }
 
 ()、(())、[]、[[]]、{}
-()      ##在括号中的命令组，为一个子shell;初始化数组
-(())    ##用于计算数值结果，变量可不用加$,
-[]	    ##条件测试
-[[]]	##
-{}		##代码块，如{command1;command2;...}；参数扩展,如 ${xyz}	
+()        ##在括号中的命令组，为一个子shell;初始化数组
+(())      ##用于计算数值结果，变量可不用加$,
+[]        ##条件测试
+[[]]      ##
+{}        ##代码块，如{command1;command2;...}；参数扩展,如 ${xyz}    
 
 
 

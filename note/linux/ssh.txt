@@ -1,12 +1,12 @@
-ssh (secure shell)   	###远程登录
+ssh (secure shell)       ###远程登录
 ssh信息保存在/home/user_name目录下.ssh隐藏文件夹内
 
 
 #host1免密登录host2
 #host1
-ssh-keygen -t rsa -b 2048			###生成ssh密钥对 ~/.ssh/id_rsa.pub ~/.ssh/id_rsa
+ssh-keygen -t rsa -b 2048            ###生成ssh密钥对 ~/.ssh/id_rsa.pub ~/.ssh/id_rsa
 #host2
-ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip		###安装公钥到远程主机  可以直接复制host1的 ~/.ssh/id_rsa.pub 到host2的 ~/.ssh/authorized_keys
+ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip        ###安装公钥到远程主机  可以直接复制host1的 ~/.ssh/id_rsa.pub 到host2的 ~/.ssh/authorized_keys
 
 ###远程主机生成一个在~/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
 ##设置完毕即可由本地使用私钥无密码登陆到远程主机 如果生成密钥对时没有设置密码
@@ -120,11 +120,11 @@ secureCRT密钥连接linux
 使用secureCRT创建密钥 tool->create public key
 将生成的公钥Identity.pub复制到linux的/home/user_name/.ssh/authorized_keys   
 
-在linux下配置/etc/ssh/sshd_config			##默认已经设置，无需更改
-RSAAuthentication yes						##启用RSA认证登陆
-PubkeyAuthentication yes					##启用RSA公钥
-AuthorizedKeysFile .ssh/authorized_keys		###文件名称对应.ssh下的公钥
-PasswordAuthentication no					###禁用密码登陆
+在linux下配置/etc/ssh/sshd_config            ##默认已经设置，无需更改
+RSAAuthentication yes                        ##启用RSA认证登陆
+PubkeyAuthentication yes                     ##启用RSA公钥
+AuthorizedKeysFile .ssh/authorized_keys      ###文件名称对应.ssh下的公钥
+PasswordAuthentication no                    ###禁用密码登陆
 
 
 
@@ -137,14 +137,14 @@ root@notty            #scp sftp连接时的标识
 #压缩传输
 #本地传到远端
 tar czv filename | ssh user@host 'tar filename'                                   #本地压缩，传到远端解压
-gzip -c filename | ssh remote_user@remote_host gunzip > filename		          
+gzip -c filename | ssh remote_user@remote_host gunzip > filename                  
 tar czf - filename | ssh remote_user@remote_host tar xzf - -C remote_path
 tar czf - filename | ssh -p 222 remote_user@remote_host tar xzf - -C remote_path  #ssh不是使用默认22端口时指定端口
 
 #远端传到本地
 ssh user@host 'tar cz filename' | tar xzv                               #远端执行压缩，传到本地解压
 ssh remote_user@remote_host gzip -c filename | gunzip -c > filenme      #
-ssh remote_user@remote_host gzip -c filename > filenme.gz				#传输后不解压
+ssh remote_user@remote_host gzip -c filename > filenme.gz                #传输后不解压
 
 
 
