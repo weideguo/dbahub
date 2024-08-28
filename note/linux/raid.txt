@@ -36,7 +36,7 @@ Megacli -PDList -aALL                                                  查看硬
 Megacli -AdpBbuCmd -aAll                                               查看电池信息                                                                      
 Megacli -FwTermLog -Dsply -aALL                                        查看raid卡日志                                                                     
 Megacli -adpCount                                                      显示适配器个数                                                                      
-Megacli -AdpGetTime –aALL                                              显示适配器时间                                                                      
+Megacli -AdpGetTime -aALL                                              显示适配器时间                                                                      
 Megacli -AdpAllInfo -aAll                                              显示所有适配器信息                                                                     
 Megacli -LDInfo -LALL -aAll                                            显示所有逻辑磁盘组信息                                                                      
 Megacli -PDList -aAll                                                  显示所有的物理信息                                                                      
