@@ -50,7 +50,7 @@ make
 make install
 
 ####删除编译安装时生成的数据目录，使用旧版mysql的数据
-rm -rf /u05/mysql5634/data						
+rm -rf /u05/mysql5634/data                        
 cp -R  /u05/mysql5530/data /u05/mysql5634/data
 ###修改/u05/mysql5634/data/my.cnf
 [mysqld]

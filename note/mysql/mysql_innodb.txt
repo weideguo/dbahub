@@ -2,7 +2,7 @@ innoDB 存储引擎
 
 show variables like 'inndb%log%';   ----innoDB相关的日志
 .frm  表的结构定义
-.idb  表空间的数据文件     ---当启用多用表空间时，每个表会生成与表名相同的数据文件	
+.idb  表空间的数据文件     ---当启用多用表空间时，每个表会生成与表名相同的数据文件    
 
 
 row_format={compressed | dynamic}   ---创建时指定存储格式
@@ -55,21 +55,21 @@ ibdata
 
 
 系统表空间
-	数据字典                     ---innodb的
-	doublewrite buffer           
-	change buffer				 ---更改的二级索引缓存，由buffer bool转写到系统表空间以防止丢失，回写到表空间后会清理
-	undo logs (可以设置使用单独的数据文件而不再系统表空间中)
-	表的数据(启用多重表空间时表的数据在单独的表空间) --innodb的
+    数据字典                     ---innodb的
+    doublewrite buffer           
+    change buffer                ---更改的二级索引缓存，由buffer bool转写到系统表空间以防止丢失，回写到表空间后会清理
+    undo logs (可以设置使用单独的数据文件而不再系统表空间中)
+    表的数据(启用多重表空间时表的数据在单独的表空间) --innodb的
 
 
 change buffer
-	A special data structure that records changes to pages in secondary indexes.
-	DML语句的结果。
-	Changes are only recorded in the change buffer when the relevant page from the secondary index is not in the buffer pool.改变非聚集索引的数据，所在的页不在内存中。
-	包含delete buffering, insert buffering, purge buffering。(5.5之前只有insert buffering)
+    A special data structure that records changes to pages in secondary indexes.
+    DML语句的结果。
+    Changes are only recorded in the change buffer when the relevant page from the secondary index is not in the buffer pool.改变非聚集索引的数据，所在的页不在内存中。
+    包含delete buffering, insert buffering, purge buffering。(5.5之前只有insert buffering)
 innodb_change_buffering={none|inserts|deletes|changes|purges|all}  ---默认all
 innodb_change_buffer_max_size={0~50}  --默认25
-	change buffer占用buffer pool的比例
+    change buffer占用buffer pool的比例
 
 
 
@@ -80,5 +80,5 @@ innodb_file_per_table=1   ---启用多重表空间，有一个表对应一个表
 
 ---不启用多重表空间时，可以选择设置如下
 innodb_data_home_dir      ---指定系统表空间数据文件保存的目录
-innodb_data_file_path=datafile_spec[;datafile_spec1...]  	  ---系统表空间的数据文件  datafile_spec=file_name:file_size[:autoextend[:max:max_file_size]]
+innodb_data_file_path=datafile_spec[;datafile_spec1...]        ---系统表空间的数据文件  datafile_spec=file_name:file_size[:autoextend[:max:max_file_size]]
 

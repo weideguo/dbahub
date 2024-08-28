@@ -18,9 +18,9 @@ show global variables like 'max_user_connections';        ---单个用户最大�
 时区
 default-time-zone='timezone'
 
-show variables like 'system_time_zone'      --服务器的时区，默认由操作系统确定，不可以动态修改						  
+show variables like 'system_time_zone'      --服务器的时区，默认由操作系统确定，不可以动态修改                          
 set global time_zone="+8:00"                --数据库实例当前的时区，设置后即影响mysql的时间，默认与system_time_zone一致
-set time_zone="+8:00"						  
+set time_zone="+8:00"                          
 
 
     
@@ -38,9 +38,9 @@ innodb_fast_shutdown=[0 | 1 | 2]
 1 (the default), InnoDB skips these operations at shutdown, a process known as a fast shutdown. 
 2, InnoDB flushes its logs and shuts down cold, as if MySQL had crashed; no committed transactions are lost, but the crash recovery operation makes the next startup take longer.
 
-0 中止新的连接，等待会话关闭、事务结束，将缓冲区的数据写入磁盘。		对应oracle: shutdown normal
+0 中止新的连接，等待会话关闭、事务结束，将缓冲区的数据写入磁盘。        对应oracle: shutdown normal
 1 中止新的连接，关闭会话，将提交的数据写入数据文件，未提交的事务回滚。  对应oracle: shutdown immediate
-2 中止新的连接，关闭会话，忽略当前所有操作。重启需要执行故障恢复，重新读取日志文件，回滚未提交的事务等。 	对应oracle: shutdown abort
+2 中止新的连接，关闭会话，忽略当前所有操作。重启需要执行故障恢复，重新读取日志文件，回滚未提交的事务等。     对应oracle: shutdown abort
 
 
 

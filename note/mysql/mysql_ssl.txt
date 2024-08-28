@@ -14,11 +14,11 @@ mysql --ssl-ca=ca.pem \
        --ssl-key=client-key.pem
 
 --ssl-mode
-	PREFERRED             默认，根据情况确定是否使用ssl连接
-	REQUIRED              必须使用ssl连接
-	VERIFY_CA             必须使用ssl连接，同时验证CA
-	VERIFY_IDENTITY       必须使用ssl连接，同时验证CA，同时验证客户端的主机host name？
-	DISABLED              不使用ssl连接
+    PREFERRED             默认，根据情况确定是否使用ssl连接
+    REQUIRED              必须使用ssl连接
+    VERIFY_CA             必须使用ssl连接，同时验证CA
+    VERIFY_IDENTITY       必须使用ssl连接，同时验证CA，同时验证客户端的主机host name？
+    DISABLED              不使用ssl连接
 
 5.7以及以下 如果不启动ssl，则连接后的传输以明文传输
 8.0 默认都以ssl加密传输 （因为默认会配置ssl参数）
@@ -37,7 +37,7 @@ create user ... require none;
 
 alter user  ... require ssl;
 alter user  ... require none;
-	
+    
 mysql_ssl_rsa_setup 命令可以快速生成密钥对
 
 

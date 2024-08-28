@@ -221,13 +221,13 @@ Upon receiving acknowledgment, the master returns a result to the client, which 
 
 
 
-rpl_semi_sync_master_enabled		         启用半同步
-rpl_semi_sync_slave_enabled			         启用半同步
-rpl_semi_sync_master_wait_point		         after_sync after_commit    
-rpl_semi_sync_master_timeout		         超过多少时间从没有响应则退化为异步复制
-rpl_semi_sync_master_trace_level		     semisynchronous replication debug trace level on the master    	
-rpl_semi_sync_master_wait_for_slave_count	 至少等待多少个slave确认复制
-rpl_semi_sync_master_wait_no_slave			 on 发生退化到异步复制，恢复后再继续回复为半同步复制
+rpl_semi_sync_master_enabled                    启用半同步
+rpl_semi_sync_slave_enabled                     启用半同步
+rpl_semi_sync_master_wait_point                 after_sync after_commit    
+rpl_semi_sync_master_timeout                    超过多少时间从没有响应则退化为异步复制
+rpl_semi_sync_master_trace_level                semisynchronous replication debug trace level on the master        
+rpl_semi_sync_master_wait_for_slave_count       至少等待多少个slave确认复制
+rpl_semi_sync_master_wait_no_slave              on 发生退化到异步复制，恢复后再继续回复为半同步复制
 
 
 mysql8 undo

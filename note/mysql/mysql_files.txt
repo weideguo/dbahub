@@ -26,15 +26,15 @@ log_output='table'   ---'file' 'table,file'
 
 ----general query log and slow query log output
 
-慢查询日志 (slow query log)  -----记录查询时间达到【min_examined_row_limit】、查询记录达到【long_query_time】的SQL语句
-【slow_query_log】   		 ----是否开启慢查询日志
-【show_query_log_file】      ----指定日志的路径及文件名
+慢查询日志 (slow query log)   -----记录查询时间达到【min_examined_row_limit】、查询记录达到【long_query_time】的SQL语句
+【slow_query_log】            ----是否开启慢查询日志
+【show_query_log_file】       ----指定日志的路径及文件名
 
 mysqldumpslow   ---解析分析慢查询日志
 
 通用查询日志(general query log)   ---记录所有操作
-【general_log】    		----指定是否开启通用查询日志
-【general_log_file】    ----通用查询日志的路径及文件名
+【general_log】                   ----指定是否开启通用查询日志
+【general_log_file】              ----通用查询日志的路径及文件名
 
 
 db.opt  指定数据库的字符集和排序使用的字符集
@@ -47,8 +47,8 @@ ln -f -s /dev/null ~/.mysql_history    #使用空文件的软连接代替，防�
 
 使用密码文件登录
 #mysql5.6后支持
-mysql_config_editor set --help		
-mysql_config_editor set --login-path=fastlogin --user=root --host=localhost --password --socket=/u02/mysql/data/my.sock	       ---- 在当前账号的家目录下生成一个隐藏加密文件.mylogin.cnf  
+mysql_config_editor set --help        
+mysql_config_editor set --login-path=fastlogin --user=root --host=localhost --password --socket=/u02/mysql/data/my.sock           ---- 在当前账号的家目录下生成一个隐藏加密文件.mylogin.cnf  
 mysql_config_editor print --all     ----查询创建的加密文件
 
-mysql --login-path=fastlogin   		----使用创建的密码文件登录		
+mysql --login-path=fastlogin        ----使用创建的密码文件登录        

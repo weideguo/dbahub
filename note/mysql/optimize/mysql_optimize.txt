@@ -21,7 +21,7 @@ set profiling=1    --启用profile
 show profiles;     --查看记录的语句
 show profile all;  --查看所有的语句的执行性能分析
 show profile for query <query_id>;   --查看指定语句的执行性能分析
-	
+    
     
     
 

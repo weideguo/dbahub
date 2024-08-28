@@ -6,8 +6,8 @@ MyISAM 存储引擎
 .frm 存储表定义
 
 存储格式 
-fixed 		定长/静态   不包含变长的列(varchar/varbinary/blob/text)
-dynamic 	动态		
+fixed       定长/静态   不包含变长的列(varchar/varbinary/blob/text)
+dynamic     动态        
 compressed  压缩        创建只能使用myisampack，解压使用myisamchk，表是只读格式
 fixed/dynamic创表时自动适配
 row_format={fixed | dynamic}    ---创表时选择强制指定
@@ -37,9 +37,9 @@ concurrent_insert=2时，不管表有没有洞洞，都允许在数据文件结�
 
 
 innodb
-支持事务	
-行锁、表锁	
-支持外键	
+支持事务    
+行锁、表锁    
+支持外键    
 内存加载索引以及表的数据，可以通过自适应hash技术实现在内存中实现回表查询
 
 索引组织表

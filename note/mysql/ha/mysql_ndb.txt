@@ -32,7 +32,7 @@ hostname=192.168.65.140
 
 #####mgmd的管理端
 bin/ndb_mgm
-	show  #查看mgmd的状态
+    show  #查看mgmd的状态
 
 #####ndbd节点
 bin/ndbd --initial-start --ndb-connectstring=192.168.65.138
@@ -51,7 +51,7 @@ datadir         = /u02/mysql-cluster_mysqld1/data
 user            = weideguo
 port            = 3306
 socket          = /tmp/mysql.sock
-ndbcluster							#启用ndbcluster存储引擎
+ndbcluster                          #启用ndbcluster存储引擎
 ndb-connectstring=192.168.65.138    #指向mgm
 
 [mysql_cluster]

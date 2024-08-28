@@ -8,8 +8,8 @@ INSTALL SONAME 'server_audit';
 SHOW GLOBAL VARIABLES LIKE '%server_audit%';                                -- 查看审计相关参数
 
 server_audit_events="connect,query,table,query_ddl,query_dml,query_dcl"     ---设置审计的事件，可以选择一种或多种
-server_audit_incl_users=root 												---设置审计包含的对象   或者使用【server_audit_excl_users】审计不包含的对象
-server_audit_logging=on														---启动审计 如果不设置其他参数，默认记录所有操作
+server_audit_incl_users=root                                                ---设置审计包含的对象   或者使用【server_audit_excl_users】审计不包含的对象
+server_audit_logging=on                                                     ---启动审计 如果不设置其他参数，默认记录所有操作
 
 
 

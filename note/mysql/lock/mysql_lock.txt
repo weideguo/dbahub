@@ -19,29 +19,29 @@ latches   闩
 
         
 record-level lock：
-record lock		--锁住一行记录（行锁）
-gap lock 		
+record lock        --锁住一行记录（行锁）
+gap lock         
 --锁住一段范围的记录（间隙锁） 
 gap lock可以同时加，不可其中一个转变为意向锁，
 即可在for update中加入gap锁，但其中一个事务在插入时则被阻塞。
-next-key lock	--前两者效果的叠加
+next-key lock    --前两者效果的叠加
 
-        X	        IX	        S	        IS
-X	Conflict	Conflict	Conflict	Conflict
-IX	Conflict	Compatible	Conflict	Compatible
-S	Conflict	Conflict	Compatible	Compatible
-IS	Conflict	Compatible	Compatible	Compatible						  
+        X            IX            S            IS
+X    Conflict    Conflict      Conflict      Conflict
+IX   Conflict    Compatible    Conflict      Compatible
+S    Conflict    Conflict      Compatible    Compatible
+IS   Conflict    Compatible    Compatible    Compatible                          
 
 
 innodb的锁
 
 Shared Locks Exclusive Locks
-	A shared （S） lock permits the transaction that holds the lock to read a row.
-	An exclusive （X） lock permits the transaction that holds the lock to update or delete a row.
+    A shared （S） lock permits the transaction that holds the lock to read a row.
+    An exclusive （X） lock permits the transaction that holds the lock to update or delete a row.
 
 ???
 当我们向一张表加入表级锁的时候，这时候我们必须去表中每一行去遍历，看看对应的行是否已经用到对应的锁。
-IX，IS是表级锁，不会和行级的X，S锁发生冲突。只会和表级的X，S发生冲突						  
+IX，IS是表级锁，不会和行级的X，S锁发生冲突。只会和表级的X，S发生冲突                          
 意向锁是在添加行锁之前添加。
 当再向一个表添加表级X锁的时候
 如果没有意向锁的话，则需要遍历所有整个表判断是否有行锁的存在，以免发生冲突
@@ -52,30 +52,30 @@ IX，IS是表级锁，不会和行级的X，S锁发生冲突。只会和表级�
 一个事务在需要获取资源的锁定时，如果该资源已经被排他锁占用，则数据库会自动给该事务申请一个该表的意向锁。
 如果自己需要一个共享锁定，就申请一个意向共享锁。
 如果需要的是某行（或者某些行）的排他锁定，则申请一个意向排他锁。
-				  
-						  
+                  
+                          
 Intention Locks
-	Intention shared （IS）: Transaction T intends to set S locks on individual rows in table t.
-	Intention exclusive （IX）: Transaction T intends to set X locks on those rows.
+    Intention shared （IS）: Transaction T intends to set S locks on individual rows in table t.
+    Intention exclusive （IX）: Transaction T intends to set X locks on those rows.
 
 Record Locks
 
 Gap Locks
-	
+    
 Next-Key Locks
-						  
+                          
 Insert Intention Locks
-	An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
+    An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
 
 
-AUTO-INC Locks				   	 ---表中有auto_increment键时在插入产生的锁
-	【innodb_autoinc_lock_mode】 ---变量确定自动增长锁类型
-	
+AUTO-INC Locks                        ---表中有auto_increment键时在插入产生的锁
+    【innodb_autoinc_lock_mode】 ---变量确定自动增长锁类型
+    
 InnoDB行锁是通过给索引上的索引项加锁来实现 只有通过索引条件检索数据，InnoDB才使用行级锁，否则InnoDB将使用表锁。
-	 
+     
 
-SELECT ... LOCK IN SHARE MODE;		----- sets an IS lock
-SELECT ... FOR UPDATE;				----- sets an IX lock  ??
+SELECT ... LOCK IN SHARE MODE;        ----- sets an IS lock
+SELECT ... FOR UPDATE;                ----- sets an IX lock  ??
 If you use 【FOR UPDATE】 with a storage engine that uses page or row locks， rows examined by the query are write-locked until the end of the current transaction. 
 Using 【LOCK IN SHARE MODE】 sets a shared lock that permits other transactions to read the examined rows but not to update or delete them
 
@@ -84,24 +84,24 @@ Using 【LOCK IN SHARE MODE】 sets a shared lock that permits other transaction
 读写分离
 
 设置只读
-set global read_only=1;   	    ----1为只读；0为读写；super用户依然可以写入
+set global read_only=1;           ----1为只读；0为读写；super用户依然可以写入
 
 -----解锁
-unlock tables;     				---开启事务先前有【lock tables】时，解锁时隐式提交事务
+unlock tables;                     ---开启事务先前有【lock tables】时，解锁时隐式提交事务
 
 
 flush tables;   --刷数据到磁盘  Closes all open tables, forces all tables in use to be closed, and flushes the query cache. 
 FLUSH TABLES tbl_name [， tbl_name];      --细粒度flush
 
 ---flush加锁  为刷数据到磁盘且加锁 因此可以进行文件级别备份
-flush tables with read lock;    						----全局锁。锁住所有的表。加锁实现super用户也不能写入
+flush tables with read lock;                            ----全局锁。锁住所有的表。加锁实现super用户也不能写入
 
-FLUSH TABLES tbl_name [, tbl_name] ... WITH READ LOCK;	---对指定的表加锁，获取后其他事务只能读，先加排他元数据锁，然后关闭表缓存，重新打开表，获取锁，降级元数据锁为共享元数据锁。
+FLUSH TABLES tbl_name [, tbl_name] ... WITH READ LOCK;    ---对指定的表加锁，获取后其他事务只能读，先加排他元数据锁，然后关闭表缓存，重新打开表，获取锁，降级元数据锁为共享元数据锁。
 FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;      ---只对innodb有效，获取后其他事务只能读，获取共享元数据锁，此后可以直接复制cfg（如果没有cfg文件在恢复时有告警）、idb文件以进行表空间级备份
 
 -- 普通加锁
-LOCK TABLES `table_name` WRITE;							---添加写锁，其他事务不可再加锁，其他事务不能读表
-lock tables `table_name` read;							---添加读锁，其他事务可以再加读锁，其他事务可以读表
+LOCK TABLES `table_name` WRITE;                            ---添加写锁，其他事务不可再加锁，其他事务不能读表
+lock tables `table_name` read;                            ---添加读锁，其他事务可以再加读锁，其他事务可以读表
 
 select * from table_name where ... for update;   
 
@@ -109,13 +109,13 @@ select * from table_name where ... for update;
 ---一个会话只能同时有一个锁，以最后加的锁为当前状态；
 ---开启事务【start transaction】时会释放会话拥有的锁
 ---加锁时隐式提交会话先前的事务
-LOCK TABLES												
+LOCK TABLES                                                
     tbl_name [[AS] alias] lock_type
     [， tbl_name [[AS] alias] lock_type] ...
 
 lock_type:
-    READ [LOCAL]				--获取读锁
-  | [LOW_PRIORITY] WRITE		--获取写锁
+    READ [LOCAL]                --获取读锁
+  | [LOW_PRIORITY] WRITE        --获取写锁
 
 
 show open tables    #查看表的锁状态 
@@ -161,25 +161,25 @@ To ensure that the binary log can be used to re-create the original tables， My
 set global innodb_status_output_locks=on;
 set global innodb_status_output=on;      
 
-show engine innodb status\G     --可查看锁的信息						  
-						  
+show engine innodb status\G     --可查看锁的信息                          
+                          
 --innodb-status-file      #在启动命令行中加入 定时输出show engine innodb status\G 到文件
-	
+    
 通过创建表实现监控，删除则关闭监控 兼容旧版本<=5.5  5.6可以使用performance_schema下的表查看
-		
+        
 标准监控（Standard InnoDB Monitor）：监视活动事务持有的表锁、行锁；事务锁等待；线程信号量等待；文件IO请求；buffer pool统计信息；InnoDB主线程purge和change buffer merge活动
 CREATE TABLE innodb_monitor (a INT) ENGINE=INNODB;
-DROP TABLE innodb_monitor;	
-	
+DROP TABLE innodb_monitor;    
+    
 锁监控（InnoDB Lock Monitor）：提供额外的锁信息。
 CREATE TABLE innodb_lock_monitor (a INT) ENGINE=INNODB;
-DROP TABLE innodb_lock_monitor;						  
-	
-表监控（InnoDB Table Monitor）：显示内部数据字典的内容。						  
+DROP TABLE innodb_lock_monitor;                          
+    
+表监控（InnoDB Table Monitor）：显示内部数据字典的内容。                          
 CREATE TABLE innodb_table_monitor (a INT) ENGINE=INNODB;
 DROP TABLE innodb_table_monitor;
 
-表空间监控（InnoDB Tablespace Monitor）：显示共享表空间中的文件段以及表空间数据结构配置验证。						  
+表空间监控（InnoDB Tablespace Monitor）：显示共享表空间中的文件段以及表空间数据结构配置验证。                          
 CREATE TABLE innodb_tablespace_monitor (a INT) ENGINE=INNODB;
 DROP TABLE innodb_tablespace_monitor;
 

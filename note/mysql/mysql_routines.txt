@@ -17,8 +17,8 @@ show create trigger `trigger_name`;
 show create event `myevent`;
 
 
-select * from mysql.proc        		 ---查看存储过程的信息
-show procedure core procedure_name		 
+select * from mysql.proc                 ---查看存储过程的信息
+show procedure core procedure_name         
 
 show procedure status [like 'patten']    ---查看存储过程的状态
 

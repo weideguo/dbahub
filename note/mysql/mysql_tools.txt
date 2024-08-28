@@ -1,16 +1,16 @@
-mysqlshow [options] [db_name [table_name [col_name]]]		---显示数据库、表、字段的信息
-mysqlslap		---模拟对mysql服务器发出请求
+mysqlshow [options] [db_name [table_name [col_name]]]        ---显示数据库、表、字段的信息
+mysqlslap        ---模拟对mysql服务器发出请求
 
 压测
 mysqlslap -u root -p -c 100 -i 10 -e innodb --create-schema='test' --query='select * from ddd' --number-of-queries=100
 
 
-mysqlcheck		---检查数据库、表、字段的存在、可访问情况，以及修复【repair】、分析【analyze】、优化【optimize】
+mysqlcheck        ---检查数据库、表、字段的存在、可访问情况，以及修复【repair】、分析【analyze】、优化【optimize】
 
 查询命令的使用格式
 mysql  --help
 mysqld --help
-mysqladmin  --help		
+mysqladmin  --help        
 
 perror err_code   ----查询错误代码的解释
 

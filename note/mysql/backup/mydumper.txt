@@ -20,7 +20,7 @@ unlock tables;                                  -- 主线程释放锁（子线�
 还原
 ./myloader -u root -p weideguo -h 127.0.0.1 -B wdg -d /u03/mydumper_dir
 
-	-t 					--线程数
+    -t                     --线程数
     
     -B new_db_name  -s old_db_name      --myloader导入时更改库名
     

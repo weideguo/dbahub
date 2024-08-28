@@ -1,5 +1,5 @@
 mysql mem = 
-  key_buffer_size 						--缓存MyISAM的Index block		   
+  key_buffer_size                       --缓存MyISAM的Index block           
 + innodb_buffer_pool_size               --innodb的缓冲，缓冲数据和索引      
 + innodb_additional_mem_pool_size       --用于存放数据字典等的内存池  5.7以及以后不再支持   
 + innodb_log_buffer_size                --日志的缓冲（ ib_logfile files that make up the redo log）       
@@ -8,13 +8,13 @@ mysql mem =
 + tmp_table_size                        --maximum size of internal in-memory temporary tables 
 
 +
-  max_connections 						--最大连接数      每个session占用内存的部分，出现oom可能是这部分的问题。会话使用的内存不会被释放，以便后续的复用
-* (read_buffer_size 					--顺序读取数据缓存区 
-+ read_rnd_buffer_size         			--随机读取数据
+  max_connections                         --最大连接数      每个session占用内存的部分，出现oom可能是这部分的问题。会话使用的内存不会被释放，以便后续的复用
+* (read_buffer_size                     --顺序读取数据缓存区 
++ read_rnd_buffer_size                     --随机读取数据
 + sort_buffer_size                      --
 + join_buffer_size                      --
 + binlog_cache_size                     --
-+ thread_stack           				--存放线程的信息   
++ thread_stack                           --存放线程的信息   
 )
 
 
@@ -64,7 +64,7 @@ Key_blocks_used    #使用block的高水位线(hight-water mark)
 
 参数优化
 myisam
-key_buffer_size 	--缓存MyISAM的Index block	
+key_buffer_size     --缓存MyISAM的Index block    
 open_table_cache    --可以由状态Opened_tables确定，
 myisam_sort_buffer_size   --加快myisam的插入速度
 

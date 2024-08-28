@@ -7,34 +7,34 @@ bin/mysql_install_db --basedir=/u05/mysql5172 --datadir=data
 
 
 (5.5/5.6)
-cmake   ---需要配置其他参数   									   
-make										 
-make install								   
+cmake   ---需要配置其他参数                                          
+make                                         
+make install                                   
 scripts/mysql_install_db --datadir=data_path    -----5.5/5.6初始化数据库，必须指定数据文件的路径  在mysql安装的根目录执行  默认读取/etc/my.cnf的配置
 scripts/mysql_install_db --defaults-file=where_you_my.cnf     ----如果有参数文件，直接用参数文件  
 
-cmake . -DCMAKE_INSTALL_PREFIX=/u01/mysql		     	
-		-DSYSCONFDIR=/u01/mysql/data
-		-DMYSQL_DATADIR=/u01/mysql/data
-		-DMYSQL_UNIX_ADDR=/u01/mysql/data/mysqld.sock
-		
+cmake . -DCMAKE_INSTALL_PREFIX=/u01/mysql                 
+        -DSYSCONFDIR=/u01/mysql/data
+        -DMYSQL_DATADIR=/u01/mysql/data
+        -DMYSQL_UNIX_ADDR=/u01/mysql/data/mysqld.sock
+        
 
-default_setting		
+default_setting        
 
--DCMAKE_INSTALL_PREFIX=$prefix			---安装目录，默认为/usr
--DINSTALL_SBINDIR=$prefix/bin			---可执行文件路径
--DSYSCONFDIR=/etc/my.cnf				----配置文件的目录
--DMTSQL_DATADIR=/var/lib/mysql			----数据文件路径
--DMYSQL_UNIX_ADDR=/tmp/mysqld.sock		----socket文件				
--DMYSQL_USER=mysql						----默认用户
+-DCMAKE_INSTALL_PREFIX=$prefix            ---安装目录，默认为/usr
+-DINSTALL_SBINDIR=$prefix/bin             ---可执行文件路径
+-DSYSCONFDIR=/etc/my.cnf                  ----配置文件的目录
+-DMTSQL_DATADIR=/var/lib/mysql            ----数据文件路径
+-DMYSQL_UNIX_ADDR=/tmp/mysqld.sock        ----socket文件                
+-DMYSQL_USER=mysql                        ----默认用户
 -DEFAULT_CHARSET=utf-8
 -DEFAULT_COLLATION=utf8_general_ci
--DEABLED_LOCAL_INFILE=ON				----本地文件导入支持
+-DEABLED_LOCAL_INFILE=ON                ----本地文件导入支持
 -DWITH_INNOBASE_STROTAGE_ENGINE=1
 -DWITH_PARTION_STORAGE_ENEGINE=1
 -DWITH_PERFSCHEMA_STORAGE_ENGINE=1
 -DWITH_READLINE=ON
--DWITH_SSL={ssl_type|path_name}			----启用SSL
+-DWITH_SSL={ssl_type|path_name}            ----启用SSL
 
 
 -DWITH_BOOST=xxx           --指定boost的目录
@@ -53,30 +53,30 @@ cmake . -LH    ---查看cmake的选项
 
 
 
-	
+    
 linux
-	启动mysql服务
-		mysqld或mysqld_safe或mysqld_multi
-		mysqld_safe --defaults-file=/etc/my.cnf   ----指定配置文件的位置，是【mysqld】的脚本封装，可以做到自动拉起，更安全
-	mysql命令行中运行系统命令
-		system {sys_command}    ----{sys_command}为系统命令
-		system clear   ---清屏 
+    启动mysql服务
+        mysqld或mysqld_safe或mysqld_multi
+        mysqld_safe --defaults-file=/etc/my.cnf   ----指定配置文件的位置，是【mysqld】的脚本封装，可以做到自动拉起，更安全
+    mysql命令行中运行系统命令
+        system {sys_command}    ----{sys_command}为系统命令
+        system clear   ---清屏 
 
-mysql命令	   
-	【-h hostname -P port_num】 --tcp连接  mysql -u root -p  
-	【-S socket_file】          --socket文件连接 等同于tcp连接中的localhost形式登录
-	多个账号规则匹配时，以最精确配备优先。如以sock文件连接时，以localhost优先，其次%，最后127.0.0.1
+mysql命令       
+    【-h hostname -P port_num】 --tcp连接  mysql -u root -p  
+    【-S socket_file】          --socket文件连接 等同于tcp连接中的localhost形式登录
+    多个账号规则匹配时，以最精确配备优先。如以sock文件连接时，以localhost优先，其次%，最后127.0.0.1
 
 
 
 
 mysqld --skip-grant-tables     -----安全模式启动  可用于在忘记密码时进行修改
-	
+    
 mysqld_multi --defualts-extra-file=my.cnf start 1,2,3
----	启动对个实例，需要使用不同端口、数据文件等
+---    启动对个实例，需要使用不同端口、数据文件等
 1,2,3 对应配置文件my.cnf中[server1] [server2] [server3]
 
-		
+        
 my.cnf文件 --windows下为my.ini  
 ---启动参数文件，默认设置端口号为3306
 

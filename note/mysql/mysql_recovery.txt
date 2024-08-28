@@ -1,22 +1,22 @@
 强制启动
 innodb_force_recovery={0-6}    
-	0 	--默认 正常启动，有crash recovery过程
-	1	
-	2
-	3
-	4
-	5
-	6
+    0     --默认 正常启动，有crash recovery过程
+    1    
+    2
+    3
+    4
+    5
+    6
 
 跳过回滚
-杀死mysql，使用	innodb_force_recovery=3 启动
-	
+杀死mysql，使用    innodb_force_recovery=3 启动
+    
 myisam-recover-options    #启动时恢复myisam表
 
 
 myisamcheck     ---检查myisam表
-	-o  ---修复myisam的表
-	-r  ---更快速修复，如失败，使用-o
+    -o  ---修复myisam的表
+    -r  ---更快速修复，如失败，使用-o
 
 myisamchk -r table_name.myi
 

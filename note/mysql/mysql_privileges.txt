@@ -1,16 +1,16 @@
 MySQL用户管理
 用户信息保存在 mysql.user表中
-	mysql.user的host字段
-	所有主机：%
-	精确的主机或IP地址：www.weideguocom 或 192.168.1.1
-	使用"*"通配符：*.weideugo.com
-	指定同一网段： 192.168.1.0/255.255.255
-	
-mysql.uesr			---实例的权限
-mysql.db 			---存储数据库的权限
-mysql.tables_priv	---表的权限
-	
-	
+    mysql.user的host字段
+    所有主机：%
+    精确的主机或IP地址：www.weideguocom 或 192.168.1.1
+    使用"*"通配符：*.weideugo.com
+    指定同一网段： 192.168.1.0/255.255.255
+    
+mysql.uesr           ---实例的权限
+mysql.db             ---存储数据库的权限
+mysql.tables_priv    ---表的权限
+    
+    
 ---创建用户
 create user user_name identified by user_password;
 create user user_name identified by password 'encrypt_password';   --使用密码的加密串创建账号 
@@ -29,8 +29,8 @@ create role ...                     ---角色可以授权给用户
 set password [for user_name]=password('user_password');
 update mysql.user set password=password('user_password') where user='user_name';
 
-GRANT	授予权限
-REVOKE	撤销权限
+GRANT    授予权限
+REVOKE    撤销权限
 
 GRANT ALL PRIVILEGES ON *.* to 'weideguo'@'%' identified by 'weideguo' [with grant option] 
 REVOKE ALL PRIVILEGES on *.* FROM weideguo;
@@ -42,7 +42,7 @@ REVOKE ALL PRIVILEGES on *.* FROM weideguo;
 
 --密码会被修改保存到日志的语句
 CREATE USER ... IDENTIFIED BY ...
-ALTER USER ... IDENTIFIED BY ...  				--5.7之后才有
+ALTER USER ... IDENTIFIED BY ...                  --5.7之后才有
 GRANT ... IDENTIFIED BY ...
 SET PASSWORD ...
 SLAVE START ... PASSWORD = ...
@@ -73,8 +73,8 @@ caching_sha2_password
 
 grant usage on ...       --usage 代表无权限，用于在创建用户时使用
 
-flush privileges	---使修改的权限生效
-show grants			---查看当前用户被授予的权限
+flush privileges    ---使修改的权限生效
+show grants            ---查看当前用户被授予的权限
 show grants for db_user;
 
 show privileges     ---查看所有的权限

@@ -144,32 +144,32 @@ python py_innodb_page_info.py /data/mysql2/data/test2/t.ibd -v
 
                              #该页的位置为 0xc000~0xffff = 16K  
                              #file header 38字节
-2805 4911                    #FIL_PAGE_SPACE	        该页的checksum值             
+2805 4911                    #FIL_PAGE_SPACE            该页的checksum值             
 0000 0003                    #FIL_PAGE_OFFSET           该页在表空间中的页偏移量                    
-ffff ffff                    #FIL_PAGE_PREV	            上一个数据页的偏移量，在此为无上一页    
-ffff ffff                    #FIL_PAGE_NEXT	            下一个数据页的偏移量，在此为无下一页
-000 0000 011e 1cfa           #FIL_PAGE_LSN	            该页最后被修改的LSN    
-45bf                         #FIL_PAGE_TYPE	            类型为数据页   类型：FIL_PAGE_INDEX, FIL_PAGE_UNDO_LOG, FIL_PAGE_INODE, FIL_PAGE_IBUF_FREE_LIST
+ffff ffff                    #FIL_PAGE_PREV             上一个数据页的偏移量，在此为无上一页    
+ffff ffff                    #FIL_PAGE_NEXT             下一个数据页的偏移量，在此为无下一页
+000 0000 011e 1cfa           #FIL_PAGE_LSN              该页最后被修改的LSN    
+45bf                         #FIL_PAGE_TYPE             类型为数据页   类型：FIL_PAGE_INDEX, FIL_PAGE_UNDO_LOG, FIL_PAGE_INODE, FIL_PAGE_IBUF_FREE_LIST
 0000 0000 0000 0000          #FIL_PAGE_FILE_FLUSH_LSN   独立表空间中为0
-0000 0202                    #FIL_PAGE_ARCH_LOG_NO	   	该页属于哪一个表空间
+0000 0202                    #FIL_PAGE_ARCH_LOG_NO      该页属于哪一个表空间
 
 
                              #page header  56字节
-0002                         #PAGE_N_DIR_SLOTS	 Page Directory有2个Slot，每个Slot占用2Byte，因此范围为0xfff4~0xfff7
-00c3                         #PAGE_HEAP_TOP	     Free Space开始位置的偏移量，0xc000+00c3=0xc0c3
-8004                         #PAGE_N_HEAP	     Compact时，初始值为0x8002，该页拥有行记录数为0x8004-0x8002=0x02
-0000                         #PAGE_FREE	         指向可重用空间的首指针，无可重用空间，该值为0
-0000                         #PAGE_GARBAGE	     已标记为删除（deleted_flag）的记录的字节数
-00ac                         #PAGE_LAST_INSERT	 最后插入记录的位置 0xc000+0x00ac=0xc0ac  直接指向最后个记录ROWID
-0002                         #PAGE_DIRECTION   	 插入的方向，PAGE_LEFT(0x01)，PAGE_RIGHT(0x02)，PAGE_NO_DIRECTION(0x05) PAGE_RIGHT，通过自增主键的方式插入行记录
-0001                         #PAGE_N_DIRECTION	 一个方向上连续插入记录的数量
-0002                         #PAGE_N_RECS        该页中记录（User Record）的数量
-0000 0000 0000 0000          #PAGE_MAX_TRX_ID	 修改该页的最大事务ID（仅在辅助索引中定义）              
-0000                         #PAGE_LEVEL	     该页在索引树中位置 0000代表叶子节点  否则为非叶子节点 最大值为根节点
-0000 0000 0000 0323          #PAGE_INDEX_ID	     索引ID 表示该页属于哪个索引
-0000 0202 0000 0002 00f2     #PAGE_BTR_SEG_LEAF	 B+Tree叶子节点所在Leaf Node Segment的Segment Header    （space id 4字节；page no 4字节；页内偏移量 2字节）
-0000 0202 0000 0002 0032     #PAGE_BTR_SEG_TOP	 B+Tree非叶子节点所在Non-Leaf Node Segment的Segment Header         
-                                                  	        
+0002                         #PAGE_N_DIR_SLOTS      Page Directory有2个Slot，每个Slot占用2Byte，因此范围为0xfff4~0xfff7
+00c3                         #PAGE_HEAP_TOP         Free Space开始位置的偏移量，0xc000+00c3=0xc0c3
+8004                         #PAGE_N_HEAP           Compact时，初始值为0x8002，该页拥有行记录数为0x8004-0x8002=0x02
+0000                         #PAGE_FREE             指向可重用空间的首指针，无可重用空间，该值为0
+0000                         #PAGE_GARBAGE          已标记为删除（deleted_flag）的记录的字节数
+00ac                         #PAGE_LAST_INSERT      最后插入记录的位置 0xc000+0x00ac=0xc0ac  直接指向最后个记录ROWID
+0002                         #PAGE_DIRECTION        插入的方向，PAGE_LEFT(0x01)，PAGE_RIGHT(0x02)，PAGE_NO_DIRECTION(0x05) PAGE_RIGHT，通过自增主键的方式插入行记录
+0001                         #PAGE_N_DIRECTION      一个方向上连续插入记录的数量
+0002                         #PAGE_N_RECS           该页中记录（User Record）的数量
+0000 0000 0000 0000          #PAGE_MAX_TRX_ID       修改该页的最大事务ID（仅在辅助索引中定义）              
+0000                         #PAGE_LEVEL            该页在索引树中位置 0000代表叶子节点  否则为非叶子节点 最大值为根节点
+0000 0000 0000 0323          #PAGE_INDEX_ID         索引ID 表示该页属于哪个索引
+0000 0202 0000 0002 00f2     #PAGE_BTR_SEG_LEAF      B+Tree叶子节点所在Leaf Node Segment的Segment Header    （space id 4字节；page no 4字节；页内偏移量 2字节）
+0000 0202 0000 0002 0032     #PAGE_BTR_SEG_TOP      B+Tree非叶子节点所在Non-Leaf Node Segment的Segment Header         
+                                                              
                                                       
                              # 每个数据页中都有两个虚拟的行记录，用来限定记录（User Record）的边界（Infimum为下界，Supremum为上界）
                              #Infimum 虚拟的行记录 
@@ -209,7 +209,7 @@ ffff ffff                    #FIL_PAGE_NEXT	            下一个数据页的偏
 
                              
                              #Page Directory
-                             #PAGE_N_DIR_SLOTS	Page Directory有2个Slot，每个Slot占用2Byte，因此Page Directory范围为0xfff4~0xfff7 
+                             #PAGE_N_DIR_SLOTS    Page Directory有2个Slot，每个Slot占用2Byte，因此Page Directory范围为0xfff4~0xfff7 
 0070 0063                    #指针称为Slot或Directory Slot，每个Slot占用2Byte
                              #0xc000+0x0063=0xc063   最后两字节  指向的是Infimum Record
                              #0xc000+0x0070=0xc070   最初两字节  指向的是Supremum Record

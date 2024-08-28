@@ -72,12 +72,12 @@ b) 释放MDL_EXCLUSIVE锁
 
 
 
-SHARED_UPGRADABLE	    共享升级锁	    0	  一般在执行DDL时在on-line情况下会产生该锁
-EXCLUSIVE	            排他锁       X	1	  一般在执行DDL时会产生该锁
-SHARED_NO_READ_WRITE	排他锁       X	1	  执行lock tables xxx write产生该锁
-SHARED_WRITE	        意向排他锁   IX	2	  一般执行DML的更新语句 或 select ... for update产生该锁
-SHARED_READ	            意向共享锁   IS	2.5	  select ... lock in share mode产生该锁(8.0版本以后使用select...for share)
-SHARED_READ_ONLY	    共享锁       S	3	  执行lock tables xxx read产生该锁
+SHARED_UPGRADABLE       共享升级锁        0      一般在执行DDL时在on-line情况下会产生该锁
+EXCLUSIVE               排他锁       X    1      一般在执行DDL时会产生该锁
+SHARED_NO_READ_WRITE    排他锁       X    1      执行lock tables xxx write产生该锁
+SHARED_WRITE            意向排他锁   IX   2      一般执行DML的更新语句 或 select ... for update产生该锁
+SHARED_READ             意向共享锁   IS   2.5    select ... lock in share mode产生该锁(8.0版本以后使用select...for share)
+SHARED_READ_ONLY        共享锁       S    3      执行lock tables xxx read产生该锁
 
 
 

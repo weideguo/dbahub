@@ -1,4 +1,4 @@
-在线DDL	
+在线DDL    
 
 #rebuild
 #5.5以及以下不支持online DDL
@@ -12,9 +12,9 @@ ALTER TABLE tbl_name ENGINE=InnoDB, ALGORITHM=INPLACE, LOCK=NONE;
 
 5.5或5.1在使用innodb plugin
 fast index creation
-sql语句无需更改	
-	
-	
+sql语句无需更改    
+    
+    
 online ddl 5.6之后的特性
 innodb_online_alter_log_max_size 
 Specifies an upper limit on the size of the temporary log files used during online DDL operations for InnoDB tables. This log file stores data inserted, updated, or deleted in the table during the DDL operation.
@@ -36,16 +36,16 @@ ALTER TABLE ...,ALGORITHM=INPLACE
 ALTER TABLE ...,ALGORITHM=COPY
 
 
-alter table t1 add b int ,ALGORITHM=INPLACE,lock=none;	
+alter table t1 add b int ,ALGORITHM=INPLACE,lock=none;    
 #同一张表同时执行alter语句，后面的语句会被阻塞，因为要等metadata lock
 
-alter table add key(c) ,ALGORITHM=copy,lock=exclusive;	
+alter table add key(c) ,ALGORITHM=copy,lock=exclusive;    
 #lock只能选择shared(默认)、exclusive
 
 
-ALTER TABLE tbl_name FORCE	
-	
-	
+ALTER TABLE tbl_name FORCE    
+    
+    
 
 --设置进度记录
 UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES' WHERE NAME = 'stage/sql/altering table';

@@ -88,20 +88,20 @@ FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
   
 
 其他参数
---compact	 			###不备份secondary索引，压缩备份；应用日志时需要重建索引【--rebuild-indexes】，设置重建线程【--rebuild-threads=n】
+--compact                 ###不备份secondary索引，压缩备份；应用日志时需要重建索引【--rebuild-indexes】，设置重建线程【--rebuild-threads=n】
 
---stream	 			###流备份
+--stream                 ###流备份
 
-	--stream=tar ./ | gzip - > backup.tar.gz    #边备份边压缩。
+    --stream=tar ./ | gzip - > backup.tar.gz    #边备份边压缩。
 
---rsync					##对所有的非innodb表的数据文件使用一次复制（cp），而不是逐个文件；不能与【--stream】一起使用
-	
---parallel=n			##备份的线程数	
-	
---slave-info  			##将【change master to ...】的信息备份存放在"xtrabackup_slave_info"文件中
---safe-slave-backup		##备份时关闭sql_thread，备份结束后自动启动sql_thread
+--rsync                    ##对所有的非innodb表的数据文件使用一次复制（cp），而不是逐个文件；不能与【--stream】一起使用
+    
+--parallel=n               ##备份的线程数    
+    
+--slave-info               ##将【change master to ...】的信息备份存放在"xtrabackup_slave_info"文件中
+--safe-slave-backup        ##备份时关闭sql_thread，备份结束后自动启动sql_thread
 
---compress              ##单个文件压缩  增量备份也可以使用压缩 因为只是用checkpoint对比变化的page
+--compress                 ##单个文件压缩  增量备份也可以使用压缩 因为只是用checkpoint对比变化的page
 
 原理
 基于innodb crash-recovery机制

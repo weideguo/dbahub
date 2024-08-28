@@ -1,4 +1,4 @@
-mysqldump   	----导出成SQL文件或平面文件备份   --执行SQL脚本命令【source】【 mysql < filename.sql 】
+mysqldump       ----导出成SQL文件或平面文件备份   --执行SQL脚本命令【source】【 mysql < filename.sql 】
 
 
 
@@ -6,46 +6,46 @@ mysqldump   	----导出成SQL文件或平面文件备份   --执行SQL脚本命�
 mysqldump -u root -pyy123456 -h 10.104.220.123 -P 3306 nwebauth -R > nwebauth.sql   ----【-R】配备存储、函数过程
 
 
-	--master-data[=1|2]		----导出中带有change master to... 语句
+    --master-data[=1|2]        ----导出中带有change master to... 语句
                             show master status 不具备事务性，因此加--master-data参数时需要 FLUSH TABLES WITH READ LOCK ，然后查询binlog的pos，然后释放锁，然后再通过查询导出数据。
                             Percona Server 可以通过 SHOW STATUS LIKE 'binlog_snapshot_%' 查询binlog的pos，无需加锁。？
-	-t					---不导出建表语句
-	-d					---不导出插入数据语句
-	-T	--tab=name		---将表以分割文件导出
-	-X					---导出成xml结构
-	--add-drop-table=false  ---不导出drop table if exist语句
-	--single-transaction              	
-		一致性导出，以单事务导出
-		ALTER TABLE, DROP TABLE, RENAME TABLE,TRUNCATE TABLE 会对导出有影响
-		This option sets the transaction isolation mode to REPEATABLE READ and 
-		sends a START TRANSACTION SQL statement to the server before dumping data. 
-		
-	--quick
-		 It forces mysqldump to retrieve rows for a table from the server a row at a time rather than 
-		 retrieving the entire row set and buffering it in memory before writing it out.
-	
-	To dump large tables, combine the --single-transaction option with the --quick option.
-	
-	--lock-all-tables					
-		Locks all tables across all databases.  锁定实例所有库的表
-		
-	--lock-tables
-		Lock all tables for read. 锁定单个库的所有表
-		For each dumped database, lock all tables to be dumped before dumping them.
-		
-	--add-locks         
-		Add locks around INSERT statements. 导出sql中带有lock语句
-	
-	--set-gtid-purged={on|off|auto}     -----SET @@GLOBAL.GTID_PURGED是否导出，5.6新增以兼容低版本
-	
-	--where="column>x"				    -----导出表的时候进行表记录的选择
-	
-	--ignore-table                      -----排除某张表
-	
-	--ingore-table=dbname.tb_name  导出时排出某张表，多张表时重复使用这个参数，精确匹配
-	
-	
-	
+    -t                    ---不导出建表语句
+    -d                    ---不导出插入数据语句
+    -T    --tab=name      ---将表以分割文件导出
+    -X                    ---导出成xml结构
+    --add-drop-table=false  ---不导出drop table if exist语句
+    --single-transaction                  
+        一致性导出，以单事务导出
+        ALTER TABLE, DROP TABLE, RENAME TABLE,TRUNCATE TABLE 会对导出有影响
+        This option sets the transaction isolation mode to REPEATABLE READ and 
+        sends a START TRANSACTION SQL statement to the server before dumping data. 
+        
+    --quick
+         It forces mysqldump to retrieve rows for a table from the server a row at a time rather than 
+         retrieving the entire row set and buffering it in memory before writing it out.
+    
+    To dump large tables, combine the --single-transaction option with the --quick option.
+    
+    --lock-all-tables                    
+        Locks all tables across all databases.  锁定实例所有库的表
+        
+    --lock-tables
+        Lock all tables for read. 锁定单个库的所有表
+        For each dumped database, lock all tables to be dumped before dumping them.
+        
+    --add-locks         
+        Add locks around INSERT statements. 导出sql中带有lock语句
+    
+    --set-gtid-purged={on|off|auto}     -----SET @@GLOBAL.GTID_PURGED是否导出，5.6新增以兼容低版本
+    
+    --where="column>x"                    -----导出表的时候进行表记录的选择
+    
+    --ignore-table                      -----排除某张表
+    
+    --ingore-table=dbname.tb_name  导出时排出某张表，多张表时重复使用这个参数，精确匹配
+    
+    
+    
 mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
 
 
@@ -66,8 +66,8 @@ lines terminated by "\r\n";
 
 
 -- 导入  
-mysqlimport		
-									
+mysqlimport        
+                                    
 load data infile 'file_name' into table 'table_name' [export_options];     --账号需要有file权限 并且设置secure_file_priv正确  文件在mysql所在的服务器上
 
 load data local infile ...;               --导入不需要额外设置 文件在执行命令的当前客户机上
@@ -88,9 +88,9 @@ LOAD DATA LOCAL INFILE '/etc/passwd' INTO TABLE aaa;
 
 
 ---export_options
-[{FIELDS | COLUMNS} [TERMINATED BY 'string']   --字段分割符
-[[OPTIONALLY] ENCLOSED BY 'char']			   --字段包围符
-[ESCAPED BY 'char']							   --转义
+[{FIELDS | COLUMNS} [TERMINATED BY 'string']    --字段分割符
+[[OPTIONALLY] ENCLOSED BY 'char']               --字段包围符
+[ESCAPED BY 'char']                             --转义
 
 
 [CHARACTER SET charset_name]                   -- 对查询结果进行字符集转换，如导出成csv可能要设置为gkb以适应windows系统
@@ -128,11 +128,11 @@ FLUSH TABLES ...FOR EXPORT       --innodb 可以复制文件 .ibd  .cfg（执行
 
 
 可移植表空间
-	--启用多重表空间
-	--创建相同结构的表，抛弃表空间  可以不相同，可以通过.cfg还原
-	ALTER TABLE tbl_name DISCARD TABLESPACE;
-	--使用原有的数据文件导入表空间 复制 .ibd  .cfg 文件到数据目录
-	ALTER TABLE tbl_name IMPORT TABLESPACE;
+    --启用多重表空间
+    --创建相同结构的表，抛弃表空间  可以不相同，可以通过.cfg还原
+    ALTER TABLE tbl_name DISCARD TABLESPACE;
+    --使用原有的数据文件导入表空间 复制 .ibd  .cfg 文件到数据目录
+    ALTER TABLE tbl_name IMPORT TABLESPACE;
 
 
 

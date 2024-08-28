@@ -65,19 +65,19 @@ SET GLOBAL server_audit_logging=ON
 ```
 ```
 #日志格式
-timestamp	    Time at which the event occurred. If syslog is used, the format is defined by syslogd.
-syslog_host	    Host from which the syslog entry was received.
-syslog_ident	For identifying a system log entry, including the MariaDB server.
-syslog_info	    For providing information for identifying a system log entry.
-serverhost	    The MariaDB server host name.
-username	    Connected user.
-host	        Host from which the user connected.
-connectionid	Connection ID number for the related operation.
-queryid	        Query ID number, which can be used for finding the relational table events and related queries. For TABLE events, multiple lines will be added.
-operation	    Recorded action type: CONNECT, QUERY, READ, WRITE, CREATE, ALTER, RENAME, DROP.
-database	    Active database (as set by USE).
-object	        Executed query for QUERY events, or the table name in the case of TABLE events.
-retcode	        Return code of the logged operation.
+timestamp       Time at which the event occurred. If syslog is used, the format is defined by syslogd.
+syslog_host     Host from which the syslog entry was received.
+syslog_ident    For identifying a system log entry, including the MariaDB server.
+syslog_info     For providing information for identifying a system log entry.
+serverhost      The MariaDB server host name.
+username        Connected user.
+host            Host from which the user connected.
+connectionid    Connection ID number for the related operation.
+queryid         Query ID number, which can be used for finding the relational table events and related queries. For TABLE events, multiple lines will be added.
+operation       Recorded action type: CONNECT, QUERY, READ, WRITE, CREATE, ALTER, RENAME, DROP.
+database        Active database (as set by USE).
+object          Executed query for QUERY events, or the table name in the case of TABLE events.
+retcode         Return code of the logged operation.
 ```
 参考文档 https://mariadb.com/kb/en/mariadb-audit-plugin/
 

@@ -38,12 +38,12 @@ mysqld --defaults-file=$mysql_cluster_home/my.cnf    -----启动sql节点  或�
 
 
 关闭
-sql节点				 mysqladmin
-管理节点、data节点	 ndb_mgm命令行中的shutdown命令	
+sql节点                 mysqladmin
+管理节点、data节点      ndb_mgm命令行中的shutdown命令    
 
 
 
 MHA(master high availability) mysql master-slave的自动切换
 需要额外的软件
-MHA node		在所有mysql节点上安装
-MHA manage		
+MHA node        在所有mysql节点上安装
+MHA manage        

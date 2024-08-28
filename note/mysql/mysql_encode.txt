@@ -1,13 +1,13 @@
 在命令行中查询当前连接所用的字符集show variables like '%char%';
 
 主要字符集参数说明
-参数	参考文档中的解释	说明
-character_set_client	The character set for statements that arrive from the client.	客户端传输语句到服务端所用的字符集。
-character_set_connection	used for literals that do not have a character set introducer and for number-to-string conversion.	用于转换没有字符集引导头的字符串、数字到字符串的转换。
-character_set_database	used by the default database.	显示当前所在数据库的默认字符集。动态参数，由mysql更改。不要手动修改。
-character_set_results	used for returning query results such as result sets or error messages to the client.	用于返回结果或错误信息到客户端。
-character_set_server	The server's default character set.	实例默认的字符集，创建数据库、创建表时如果不指定字符集，则使用默认字符集
-character_set_system	used for storing identifiers. The value is always utf8.	用于存储标识符，恒为utf8。
+参数    参考文档中的解释    说明
+character_set_client    The character set for statements that arrive from the client.    客户端传输语句到服务端所用的字符集。
+character_set_connection    used for literals that do not have a character set introducer and for number-to-string conversion.    用于转换没有字符集引导头的字符串、数字到字符串的转换。
+character_set_database    used by the default database.    显示当前所在数据库的默认字符集。动态参数，由mysql更改。不要手动修改。
+character_set_results    used for returning query results such as result sets or error messages to the client.    用于返回结果或错误信息到客户端。
+character_set_server    The server's default character set.    实例默认的字符集，创建数据库、创建表时如果不指定字符集，则使用默认字符集
+character_set_system    used for storing identifiers. The value is always utf8.    用于存储标识符，恒为utf8。
 
 三个关键参数character_set_client、character_set_connection、character_set_results
 即影响实际数据存储、交互的字符编码。
@@ -42,8 +42,8 @@ mysql在启动时使用参数skip-character-set-client-handshake
 SHOW CHARACTER SET;   ---查看MySQL支持的字符集：
 show collation;       ---查看排序字符集
 编码属性：
-character set		存储使用的字符集
-collation			排序、对比使用的字符集
+character set        存储使用的字符集
+collation            排序、对比使用的字符集
 查看MySQL当前使用的字符集：
 SHOW VARIABLES LIKE "characrer_set%"
 SHOW VARIABLES LIKE "collation%"
@@ -51,16 +51,16 @@ SHOW VARIABLES LIKE "collation%"
 --创建数据库时指定默认字符集：
 CREATE DATABASE database_name DEFAULT CHARACTER SET char_set1 DEFAULT COLLATION char_set2;
 --修改字符集
-ALTER  DATABASE database_name CHARACTER SET char_set1 COLLATION char_set2;	--修改数据库默认的字符集：
-alter table table_name convert to character set char_set1;			        --转换表的默认字符集，已有的数据会被转变，如果表的转换存储字符集不兼容，可能导致数据丢失
+ALTER  DATABASE database_name CHARACTER SET char_set1 COLLATION char_set2;    --修改数据库默认的字符集：
+alter table table_name convert to character set char_set1;                    --转换表的默认字符集，已有的数据会被转变，如果表的转换存储字符集不兼容，可能导致数据丢失
 alter table table_name DEFAULT CHARSET=utf8;                                --To change only the default character set for a table
 alter table table_name change column_name1 column_name1 blob;
 
 alter table table_name convert to CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci; 
 
-latin1 	单字节编码
+latin1     单字节编码
 GBK     中文二字节，英文一字节
-utf8	中文三字节，英文一字节
+utf8    中文三字节，英文一字节
 
 
 设置MySQL默认编码：配置文件中

@@ -36,7 +36,7 @@ slave1  ###server2
  pid-file=/u01/mysql_slave1/data/mysqld.pid
  log_bin=mysql-bin
  relay-log=mysql-relay-bin
- relay_log_purge=0					             ###设置中继日志手动清理，防止主从切换时新的master因删除中继日志导致slave丢失事务
+ relay_log_purge=0                                 ###设置中继日志手动清理，防止主从切换时新的master因删除中继日志导致slave丢失事务
  explicit_defaults_for_timestamp=1
 
 
@@ -52,7 +52,7 @@ slave2 ###server3
  pid-file=/u01/mysql_slave2/data/mysqld.pid
  log_bin=mysql-bin
  relay-log=mysql-relay-bin
- relay_log_purge=0					
+ relay_log_purge=0                    
  explicit_defaults_for_timestamp=1
 
 
@@ -62,7 +62,7 @@ cd $mysql_master_home
 ./mysqld --defaults-file=../data/my.cnf &
 ./mysql -u root -p -h 127.0.0.1 --port 3306 --prompt="master > "
 
-show master status;				
+show master status;                
 
 ###slave1
 cd $mysql_slave1_home
@@ -78,11 +78,11 @@ cd $mysql_slave2_home
 slave1和slave2设置复制
 ###mysql命令行中设置复制信息
 change master to 
-master_host='192.168.200.129',				----不要写成127.0.0.1，mha会报错
+master_host='192.168.200.129',                ----不要写成127.0.0.1，mha会报错
 master_port=3306,
-master_user='replication1',						
-master_password='replication1',				
-master_log_file='mysql-bin.000002',		
+master_user='replication1',                        
+master_password='replication1',                
+master_log_file='mysql-bin.000002',        
 master_log_pos=120
 
 
@@ -141,11 +141,11 @@ MHA manage配置文件 (MHA node无需配置文件，在每个mysql节点上安�
 ###可以写另外的配置文件配合默认配置文件使用，参数中指定额外的配置文件即可
 
 [server default]
-user=weideugo												###msyql slave中用于执行change master的账号与密码，应该有对应权限
-password=weideguo							
-repl_user=replication1										###用于msql master中用于复制的账号与密码
-repl_password=replicatin1					
-ssh_user=weideguo											###MHA manager 用于连接mysql的系统用户，需要预先设置ssh。默认使用当前运行MHA manager的系统用户
+user=weideugo                                                ###msyql slave中用于执行change master的账号与密码，应该有对应权限
+password=weideguo                            
+repl_user=replication1                                        ###用于msql master中用于复制的账号与密码
+repl_password=replicatin1                    
+ssh_user=weideguo                                            ###MHA manager 用于连接mysql的系统用户，需要预先设置ssh。默认使用当前运行MHA manager的系统用户
 manager_workdir=/u03/masterha
 manager_log=/u03/masterha/mha_manager.log
 remoute_workdir=/u03/masterha
@@ -159,7 +159,7 @@ master_binlog_dir="/u01/mysql/data"
 [server2]
 hostname=192.168.200.129
 port=3307
-candidate_master=1								          	 ###候选master必须启用二进制日志
+candidate_master=1                                               ###候选master必须启用二进制日志
 master_binlog_dir="/u01/mysql_slave1/data"
 
 [server3]
@@ -179,7 +179,7 @@ master_binlog_dir="/u01/mysql_slave2/data"
 ###在192.168.200.129上
 检查
 cd /usr/local/bin
-masterha_check_ssh --conf=/etc/masterha_default.cnf			 ####即使使用默认配置文件也要指出
+masterha_check_ssh --conf=/etc/masterha_default.cnf             ####即使使用默认配置文件也要指出
 masterha_check_repl --conf=/etc/masterha_default.cnf
 
 
