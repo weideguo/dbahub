@@ -4,6 +4,13 @@ interactive_timeout  交互连接等待事件的时间
 net_read_timeout     client----->MySQL Server 的超时时间
 net_write_timeout    client<-----MySQL Server 的超时时间
 
+
+net_read_timeout     ---The number of seconds to wait for more data from a connection before aborting the read.
+net_write_timeout    ---The number of seconds to wait for a block to be written to a connection before aborting the write.
+connect_timeout      ---The number of seconds that the mysqld server waits for a connect packet before responding with Bad handshake
+slave-net-timeout    ---The number of seconds to wait for more data from the master before the slave considers the connection broken, aborts the read, and tries to reconnect.
+
+
 # 连接api
 MYSQL *mysql_real_connect(MYSQL *mysql, const char *host, const char *user, const char *passwd, const char *db, unsigned int port, const char *unix_socket, unsigned long client_flag)
 client_flag

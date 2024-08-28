@@ -2,161 +2,65 @@
 http://dev.mysql.com/doc/
 
 
-select user();   ----查询当前用户
-select now(); 	 ----查询当前时间
+select user();     ----查询当前用户
+select now();      ----查询当前时间
 
-status										----查看数据库的状态
+status                                        ----查看数据库的状态
 show status
-show engines;  								-----查看提供的引擎
-show variables like '%storage_engine%';  	----查看存储引擎
-show create table table_name;  				-----查看某个表的创表语句，可查看使用的引擎
-show table status like "%table_name%"\G     -----查看表的状态信息
+show engines;                                 -----查看提供的引擎
+show variables like '%storage_engine%';       ----查看存储引擎
+show create table table_name;                 -----查看某个表的创表语句，可查看使用的引擎
+show table status like "%table_name%"\G       -----查看表的状态信息
 
-show variables like '%port%';    			----查看端口信息
-show variables like '%version%';    		----查看版本
-show warnings\G;   							---显示告警
+show variables like '%port%';                 ----查看端口信息
+show variables like '%version%';              ----查看版本
+show warnings\G;                              ---显示告警
 show errors\G
 
 
 
-flush hosts;        ----清空主机缓存，当ip发生改变需要执行，以及清空连接失败的计数
-FLUSH LOGS;			----closes and reopens all log files
+flush hosts;           ----清空主机缓存，当ip发生改变需要执行，以及清空连接失败的计数
+FLUSH LOGS;            ----closes and reopens all log files
 
-	flush BINARY logs;
-	flush ENGINE logs;
-	flush ERROR logs;
-	flush GENERAL logs;
-	flush RELAY logs;
-	flush SLOW logs;
+    flush BINARY logs;
+    flush ENGINE logs;
+    flush ERROR logs;
+    flush GENERAL logs;
+    flush RELAY logs;
+    flush SLOW logs;
 
 
 
 show open status
 
-desc table_name										--查看表字段
-show fields from table_name like column_name;		--查看特定字段
+desc table_name                                        --查看表字段
+show fields from table_name like column_name;          --查看特定字段
 
-select now()			--时间
+select now()            --时间
 select sysdate()
 
 ----查看连接信息
-show processlist;   		   				
-show full processlist;   			
+show processlist;                              
+show full processlist;               
 mysqladmin -u roo -p processlist
 select id from information_schema.processlist where user='root'; 
 
-kill id   		    ---终止连接（在mysql中执行），information_schema.processlist的id
-kill connection id	---终止连接 跟 kill id 一致
-kill query id		---终止查询，连接依旧保存
+kill id               ---终止连接（在mysql中执行），information_schema.processlist的id
+kill connection id    ---终止连接 跟 kill id 一致
+kill query id         ---终止查询，连接依旧保存
 
-
-
-show variable like 'wait_timeout'               ---空闲连接的在被关闭前的秒
-net_read_timeout                     			---The number of seconds to wait for more data from a connection before aborting the read.
-net_write_timeout                    			---The number of seconds to wait for a block to be written to a connection before aborting the write.
-connect_timeout									---The number of seconds that the mysqld server waits for a connect packet before responding with Bad handshake
-slave-net-timeout								---The number of seconds to wait for more data from the master before the slave considers the connection broken, aborts the read, and tries to reconnect.
-
-
-
-状态
-show global status like 'Max_used_connections'  ---查看历史最大连接数  
-show global status like 'Threads_connected'		---查看当前连接数
-show global variables max_connections         	----最大连接数
-show global variables max_user_connection 	 	----单个用户最大连接数
-
-
-
-
-设置实例参数
-1.修改my.cnf文件并重启
-2.设置全局变量
-	set global variables_name=variables_value;
-3.设置会话变量
-	set [local|session] variables_name=variables_value;
-4.会话变量设置为全局变量的值
-	set @@session.wait_timeout=@@global.wait_timeout;	
-	
-
-
-CREATE TABLE t1 (c1 INT PRIMARY KEY) DATA DIRECTORY = '/alternative/directory';   --创建表时指定数据文件路径
-
-ln -s existingfile newfile			---使用连接重定向数据文件，系统命令，只能对MyISAM的数据文件使用（数据文件[.myd]和索引文件[.myi]，格式文件[.fem]不能使用连接）
-
-
-create temporary table tmp_tablename ...        ---创建临时表，mysql临时表只在当前会话有效，结束会话临时表就被drop。mysql只有会话级临时表，没有事务级临时表。
-
-临时表使用tmp参数指定的目录存放
-内部临时表（如使用join等操作产生的驱动表）默认使用内存存放，除存在大字段（blob/text）或其他特殊情况。
-
-
-创表时指定存储引擎
-create table table_name() engine=myisam;
-
-
-	
-#通用表空间 >=5.7
-CREATE TABLESPACE tablespace_name
-    [ADD DATAFILE 'file_name']
-    [FILE_BLOCK_SIZE = value]
-        [ENGINE [=] engine_name]
-
-CREATE TABLE tbl_name ... TABLESPACE [=] tablespace_name 
-ALTER TABLE tbl_name TABLESPACE [=] tablespace_name 
 
 
 use database_name;   ---切换数据库
 
 
 
-#自动统计参数
-innodb_stats_*
-myisam_stats_*					  
-When innodb_stats_on_metadata is enabled, InnoDB updates non-persistent statistics when metadata statements such as 
-SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEMA.TABLES or INFORMATION_SCHEMA.STATISTICS tables. 
-(These updates are similar to what happens for ANALYZE TABLE.) 
-
-表的统计信息查询
-select * from mysql.innodb_table_stats;
-
-#设置表的统计信息的收集计划
-ATER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECALC=1, ALGORITHM=INPLACE, LOCK=NONE; 
-					  
-##更新表的统计信息 During the analysis, the table is locked with a read lock for InnoDB and MyISAM.
-# 执行期间 read lock, 最后需要flush lock
-analyze table table_name;
-
-##修复myisam的表
-repair table table_name;    
-
-MyISAM, ARCHIVE, and CSV tables.
-
-#checks a table or tables for errors.
-CHECK TABLE 
-InnoDB, MyISAM, ARCHIVE, and CSV tables. 
-For MyISAM tables, the key statistics are updated as well.
-
-#消除碎片和链接 online DDL
-optimize table table_name; 
-
-#innodb 使用以下语句代替 optimize
-alter table table_name engine=innodb;
-
-
-delete语句不会回收磁盘空间，因而会出现大量碎片。使用truncate相当语句drop+create，因此磁盘空间得到释放。
-
-
-
-##比较表的差异
-checksum table table_name;
-
-
 
 --信息查看
-information_schema.partitions;	
-information_schema.tables;	
-	
-select replace(convert(v using ascii),'?','')  from qwe;   	--使用不兼容的字符转换实现去掉字段中的中文
+information_schema.partitions;    
+information_schema.tables;    
+    
+select replace(convert(v using ascii),'?','')  from qwe;       --使用不兼容的字符转换实现去掉字段中的中文
 
 
 

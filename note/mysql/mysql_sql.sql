@@ -2,38 +2,38 @@ mysql数据类型
 （1字节8位）
 数据类型        字节       范围（有符号）               范围（无符号）          用途 
 TINYINT        1字节        (-128,127)                     (0,255)            小整数值 
-SMALLINT       2字节    	(-32 768,32 767)               (0,65 535)         大整数值 
-MEDIUMINT      3字节    	(-8 388 608,8 388 607)         (0,16 777 215)     大整数值 
-INT			   4字节   		(-2 147 483 648,2 147 483 647) (0,4 294 967 295)  大整数值 
-BIGINT         8字节   		(-9 233 372 036 854 775 808,9 223 372 036 854 775 807) (0,18 446 744 073 709 551 615) 极大整数值 
+SMALLINT       2字节        (-32 768,32 767)               (0,65 535)         大整数值 
+MEDIUMINT      3字节        (-8 388 608,8 388 607)         (0,16 777 215)     大整数值 
+INT            4字节        (-2 147 483 648,2 147 483 647) (0,4 294 967 295)  大整数值 
+BIGINT         8字节        (-9 233 372 036 854 775 808,9 223 372 036 854 775 807) (0,18 446 744 073 709 551 615) 极大整数值 
 
-FLOAT          4字节   		(-3.402 823 466 E+38,1.175 494 351 E-38),0,(1.175 494 351 E-38,3.402 823 466 351 E+38) 0,(1.175 494 351 E-38,3.402 823 466 E+38) 单精度浮点数值 
-DOUBLE         8字节 		(1.797 693 134 862 315 7 E+308,2.225 073 858 507 201 4 E-308),0,(2.225 073 858 507 201 4 E-308,1.797 693 134 862 315 7 E+308) 0,(2.225 073 858 507 201 4 E-308,1.797 693 134 862 315 7 E+308) 双精度浮点数值
+FLOAT          4字节        (-3.402 823 466 E+38,1.175 494 351 E-38),0,(1.175 494 351 E-38,3.402 823 466 351 E+38) 0,(1.175 494 351 E-38,3.402 823 466 E+38) 单精度浮点数值 
+DOUBLE         8字节        (1.797 693 134 862 315 7 E+308,2.225 073 858 507 201 4 E-308),0,(2.225 073 858 507 201 4 E-308,1.797 693 134 862 315 7 E+308) 0,(2.225 073 858 507 201 4 E-308,1.797 693 134 862 315 7 E+308) 双精度浮点数值
 
-FLOAT(p)	   4 bytes if 0 <= p <= 24, 8 bytes if 25 <= p <= 53
+FLOAT(p)       4 bytes if 0 <= p <= 24, 8 bytes if 25 <= p <= 53
 
 DECIMAL[(M),(N)]  默认M为10，最大为65，N最大值为30 NUMERIC类型与之相同，整数与分数分开存储，4字节存储9位（10进制转换成二进制的占用）
 DECIMAL(5,2)      -999.99 to 999.99
 
-CHAR[(M)]         255字符          		定长字符串 
-VARCHAR(M)        65535字节          	变长字符串   M代表字符数
-TINYBLOB          255字节        		变长二进制字符串 
-TINYTEXT     	  255字节        		变长文本字符串 
-BLOB[(M)]         65535字节      		变长二进制字符串
-TEXT[(M)]         65535字节      		变长长文字符串 
-MEDIUMBLOB   	  16 777 215字节 		变长二进制字符串
-MEDIUMTEXT   	  16 777 215字节 		变长文本字符串
-LOGNGBLOB    	  4 294 967 295字节 	变长二进制字符串
-LONGTEXT     	  4 294 967 295字节 	变长文本字符串
+CHAR[(M)]         255字符                定长字符串 
+VARCHAR(M)        65535字节              变长字符串   M代表字符数
+TINYBLOB          255字节                变长二进制字符串 
+TINYTEXT          255字节                变长文本字符串 
+BLOB[(M)]         65535字节              变长二进制字符串
+TEXT[(M)]         65535字节              变长长文字符串 
+MEDIUMBLOB        16 777 215字节         变长二进制字符串
+MEDIUMTEXT        16 777 215字节         变长文本字符串
+LOGNGBLOB         4 294 967 295字节      变长二进制字符串
+LONGTEXT          4 294 967 295字节      变长文本字符串
 
-VARBINARY(M) 	  65535字节				变长二进制字符串
-BINARY(M)    	  255字节				定长二进制字符串
+VARBINARY(M)      65535字节              变长二进制字符串
+BINARY(M)         255字节                定长二进制字符串
 
-DATE       4  1000-01-01/9999-12-31 					YYYY-MM-DD     日期值 
-TIME       3  '-838:59:59'/'838:59:59'  				HH:MM:SS    时间值或持续时间 
-YEAR       1  1901/2155                 				YYYY         年份值 
-DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59 	YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化 DATETIME[(N)]  N为0到6，表示获取时间的秒的小数点后多少位
-TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时 			YYYYMMDD HHMMSS 混合日期和时间值，时间戳，当设置时区变化时，查询的结果也跟着变化
+DATE       4  1000-01-01/9999-12-31                       YYYY-MM-DD   日期值 
+TIME       3  '-838:59:59'/'838:59:59'                    HH:MM:SS     时间值或持续时间 
+YEAR       1  1901/2155                                   YYYY         年份值 
+DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59     YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化 DATETIME[(N)]  N为0到6，表示获取时间的秒的小数点后多少位
+TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时             YYYYMMDD HHMMSS 混合日期和时间值，时间戳，当设置时区变化时，查询的结果也跟着变化
 
 
 BIT[(M)]   M=(1,64)            二进制格式 M为多少位
@@ -63,8 +63,8 @@ InnoDB has a limit of 1017 columns per table, 64 secondary indexes, 16 columns f
 insert into tb_name(column_name) values(b'101');
            
 查看格式 
-	hex(column_name)   转成十六进制
-	select conv(hex(column_name),16,2) from tb_name   以二进制格式查询
+    hex(column_name)   转成十六进制
+    select conv(hex(column_name),16,2) from tb_name   以二进制格式查询
     select bin(column_name) from tb_name;
 
 select 0x21;
@@ -218,20 +218,20 @@ end;
 explain select * from test1 where id=1
 
 
-prepare prod from "insert into example values(?,?)";	---创建预定义语句,可以使用 create table、delete、insert、replace、select、set、update、show
+prepare prod from "insert into example values(?,?)";    ---创建预定义语句,可以使用 create table、delete、insert、replace、select、set、update、show
 set @a='xxx'
 set @b='yyy'
-execute prod using @a,@b;								---使用预定义
-deallocate prepare prod;								---释放预定义语句
+execute prod using @a,@b;                                ---使用预定义
+deallocate prepare prod;                                ---释放预定义语句
 
-					    
+                        
 SET @c1 = "XYZ";
 set @c2 ="abc";
 SET @strsql = concat("select ",@c1," from t where column2=",@c2);           --实现拼接sql，之后再执行
 PREPARE stmt FROM @strsql;
-EXECUTE stmt;					    
-					    
-					    				    
+EXECUTE stmt;                        
+                        
+                                            
 create function func_name(arg1 int,arg2 varchar(10)...)
 returns varchar(10)
 begin
@@ -280,7 +280,7 @@ ALTER TABLE table_name MODIFY column_name data_type;
 
 
 -- 正则表达式
-select * from table_name where column_name regexp 'regular_expression';		
+select * from table_name where column_name regexp 'regular_expression';        
 
 select * from mysql.user\G   -----查询结果按列打印
 
@@ -544,14 +544,14 @@ select .. from a where c1,c2 in ( select a1.c1,a1.c2 from a1 ... )         #mysq
 
 
 分区表
-SELECT * FROM p1 PARTITION (p0[,p1]);     							#从指定分区查询
-EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10;			#查看从分区表的执行信息
-ALTER TABLE tr DROP PARTITION p2;	                              	#删除分区，针对RANGE/LIST分区
-ALTER TABLE tr ADD PARTITION (PARTITION p_name …);   				#增加分区，针对RANGE/LIST分区
+SELECT * FROM p1 PARTITION (p0[,p1]);                                 #从指定分区查询
+EXPLAIN PARTITIONS SELECT * FROM p1 WHERE column_name=10;            #查看从分区表的执行信息
+ALTER TABLE tr DROP PARTITION p2;                                      #删除分区，针对RANGE/LIST分区
+ALTER TABLE tr ADD PARTITION (PARTITION p_name …);                   #增加分区，针对RANGE/LIST分区
 ALTER TABLE members REORGANIZE PARTITION p0,p1,p2,p3 INTO (
-    	PARTITION m0 …,
-   	PARTITION m1 …);       						#调整RANGE/LIST分区
-ALTER TABLE tr COALESCE PARTITION 4;   			#减小HASH/KEY分区
+        PARTITION m0 …,
+       PARTITION m1 …);                               #调整RANGE/LIST分区
+ALTER TABLE tr COALESCE PARTITION 4;               #减小HASH/KEY分区
 ALTER TABLE tr ADD PARTITION PARTITIONS 6;      #增多HASH/KEY分区
 
 
@@ -675,3 +675,12 @@ HANDLER tbl_name READ { FIRST | NEXT }
     [ WHERE where_condition ] [LIMIT ... ];
 
 HANDLER tbl_name CLOSE;
+
+
+创表时指定存储引擎
+create table table_name() engine=myisam;
+
+CREATE TABLE t1 (c1 INT PRIMARY KEY) DATA DIRECTORY = '/alternative/directory';   --创建表时指定数据文件路径
+
+ln -s existingfile newfile            ---使用连接重定向数据文件，系统命令，只能对MyISAM的数据文件使用（数据文件[.myd]和索引文件[.myi]，格式文件[.fem]不能使用连接）
+
