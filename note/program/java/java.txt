@@ -195,6 +195,14 @@ Class.forName("com.mysql.jdbc.Driver");      // 数据库连接驱动加载  如
 
 
 
-jps -v     # 查看jvm启动的参数
+jps -v                                         # 查看jvm启动的参数
+jmap $pid                                      #
+jmap -heap $pid                                # 打印堆概要信息
+jmap -histo $pid                               # 列出class对象数目、使用内存情况
+jmap -histo:live $pid                          # 只统计活着的对象
+jmap -dump:format=b,file=./app.dump  $pid      # 设置发生oom时自动进行dump -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app.dump
+jhat app.dump                                  # 查看导出的dump文件
 
+jstack $pid                                    # 堆栈跟踪
+jstat -gccause $pid                            # GC相关信息
 

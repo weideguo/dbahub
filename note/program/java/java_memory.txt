@@ -9,16 +9,23 @@ JVM参数
 堆内存=年轻代 + 年老代
 栈内存=Java虚拟机栈 + 本地方法栈
 
--Xms1024m                //堆初始内存
--Xmx1024m                //堆最大内存
--Xss1M                   //每个线程的堆栈大小
--Xmn512m                 //年轻代大小 (1.4 or lator)  
--XX:NewSize=512m         //年轻代初始大小(for 1.3/1.4)
--XX:MaxNewSize=512m      //年轻代最大值(for 1.3/1.4)
--XX:PermSize=512M        //持久代初始参数
--XX:MaxPermSize=512m     //设置持久代大小
--XX:NewRatio=4           //设置年轻代与年老代的比值。设置为4，则年轻代与年老代所占比值为1：4，年轻代占整个堆栈的1/5
-
+-Xms1024m                           //堆初始内存
+-Xmx1024m                           //堆最大内存
+-Xss1M                              //每个线程的堆栈大小
+                                    
+-Xmn512m                            //年轻代大小 >=1.4
+-XX:NewRatio=4                      //设置年轻代与年老代的比值。设置为4，则年轻代与年老代所占比值为1:4，年轻代占整个堆栈的1/5
+-XX:MetaspaceSize=512M              // >=1.8 代替持久代
+-XX:MaxMetaspaceSize=512M           // 
+                                    
+-XX:PermSize=512M                   //持久代初始参数 <=1.7 
+-XX:MaxPermSize=512m                //设置持久代大小 <=1.7
+-XX:NewSize=512m                    //年轻代初始大小(for 1.3/1.4)
+-XX:MaxNewSize=512m                 //年轻代最大值(for 1.3/1.4)
+                                    
+                                    
+-XX:+UseG1GC                        // >=9 不再单独管理年轻代、年老代、持久代
+-XX:MaxDirectMemorySize=512m        // 直接内存/堆外内存最大值
 
 ```
 import sun.nio.ch.DirectBuffer;
