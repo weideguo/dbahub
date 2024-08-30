@@ -221,7 +221,9 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 --partial
 --partial-dir=DIR         #指定一个目录缓存传到一半的文件
 -P
+--dry-run                 #验证实际传输哪些文件
 
+默认多次执行时只传输变化的文件
 
 
 rsync

@@ -1,11 +1,24 @@
+fe
+配置查看
+SHOW FRONTEND CONFIG;
+ADMIN SHOW FRONTEND CONFIG like '%update%'; 
+
+
 动态修改配置
 ADMIN SET FRONTEND CONFIG ("fe_config_name" = "fe_config_value");
 
 ADMIN SET FRONTEND CONFIG ("enable_concurrent_update" = "true");
 
 
-配置查看
-ADMIN SHOW FRONTEND CONFIG like '%update%'; 
 
+
+
+be
+查看当前配置项
+http://{be_ip}:{be_http_port}/varz
+
+动态修改配置 默认端口8040
+curl -X POST http://{be_ip}:{be_http_port}/api/update_config?streaming_load_max_mb=1024
+curl -X POST http://{be_ip}:{be_http_port}/api/update_config?streaming_load_max_mb=1024&persist=true      # 修改并持久化
 
 

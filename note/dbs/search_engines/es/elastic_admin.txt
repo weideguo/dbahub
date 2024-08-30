@@ -1,5 +1,8 @@
 es使用全文索引
 
+存储数据的最小单位为segment
+默认情况下写入的数据会存在于内存缓冲区中，此时并没有落入segment，而是等待index.refresh_interval的时间间隔后，数据会落入到segment中，此时才可以被检索
+
 get /_cat                            #列出_cat下所有操作
 
 GET /_cluster/health                 #查看集群状态

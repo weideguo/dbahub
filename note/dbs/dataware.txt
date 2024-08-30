@@ -14,3 +14,9 @@ dwd  data warehouse detail
 
 ods  operational data store 原始数据层
 
+
+
+拉链表 zipper table
+包含历史数据、最新数据
+增加字段 START_DATE、END_DATE 存储记录的变化
+

@@ -1,0 +1,6 @@
+# 关闭均衡和副本修复逻辑，be调整时需要
+admin set frontend config("disable_balance" = "true");
+admin set frontend config("disable_colocate_balance" = "true");
+admin set frontend config("disable_tablet_scheduler" = "true");
+
+

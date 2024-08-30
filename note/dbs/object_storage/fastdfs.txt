@@ -30,3 +30,24 @@ store_path0=/var/fdfs
 
 因为存在多个storage，可以用另外的nginx进行聚合，从而实现统一入口下载
 
+
+
+# 上传文件
+# 配置文件需要有 base_path、tracker_server
+fdfs_upload_file /etc/fdfs/client.conf /data/abc.tar.gz
+# group1/M00/00/00/CccccccccccccAAAAAAAAAAA.tar.gz         #上传返回样例
+
+
+# 下载文件
+fdfs_download_file /etc/fdfs/client.conf group1/M00/00/00/CccccccccccccAAAAAAAAAAA.tar.gz
+
+
+# 查看集群信息
+# 配置文件只要有tracker的信息即可
+fdfs_monitor /etc/fdfs/storage.conf list | grep tracker
+fdfs_monitor /etc/fdfs/storage.conf list | grep ip_addr
+
+
+# 删除节点，状态变为deleted，该节点即使重启也不会再加入集群
+fdfs_monitor /etc/fdfs/storage.conf delete group1 10.0.0.1
+

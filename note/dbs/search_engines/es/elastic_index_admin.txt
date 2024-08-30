@@ -164,4 +164,73 @@ properties 这是最重要的步骤，主要针对索引结构和字段级别上
 
 
 
+# 创建别名
+POST /_aliases
+{
+  "actions": [{
+    "add": {
+      "index": "origin_index_name",
+      "alias": "alias_index_name"
+    }
+  }]
+}
 
+
+# 从一个索引复制数据到另一个索引，通过这种方式实现mapping更改
+POST _reindex
+{
+  "source": {
+    "index": "old_index_name"
+  },
+  "dest": {
+    "index": "new_index_name",
+    "op_type": "create"
+  }
+}
+
+
+# 关闭索引，不删除，只是不允许对索引进行操作
+POST /tes_index_name/_close?pretty
+# 开启索引
+POST /tes_index_name/_open?pretty
+
+
+# 确保原来只保留在事务日志（transaction log）中的数据，得以真正的保存到Lucene索引中
+GET /tes_index_name/_flush
+
+GET /_flush
+
+# 清除缓存
+POST /tes_index_name/_cache/clear
+# 整个集群清除缓存
+POST /_cache/clear
+
+# 将内存缓冲区的数据刷入segement中，使其可以被索引
+GET /tes_index_name/_refresh
+GET /_refresh
+
+
+Index Lifecycle Management (ILM) 索引生命周期管理 >=6.6
+索引应用ILM后自动进入以下阶段 
+Hot Phase：
+    Rollover 
+Warm Phase：
+    Allocate 设定副本数
+    Read-Onlly 设定当前索引为只读状态
+    Force Merge 合并 segment 操作
+    Shrink 缩小shard分片数
+Cold Phase：
+    Allocate 设定副本数，可以相对于Warm副本数更少
+Delete Phase：
+    Delete 删除索引
+
+
+# 设置默认ILM，可以先用kibana创建Index lifecycle policies
+PUT _cluster/settings
+{
+  "persistent": {
+    "cluster.index.lifecycle.default_policy": "my_default_policy"
+  }
+}
+
+    

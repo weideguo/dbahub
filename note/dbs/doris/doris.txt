@@ -30,7 +30,7 @@ SHOW BACKENDS\G
 -- 多个fe
 show frontends;
 
-# fe启动
+# fe启动 9010
 ./bin/start_fe.sh --helper leader_fe_host:edit_log_port --daemon
 
 

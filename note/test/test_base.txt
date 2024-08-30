@@ -10,3 +10,12 @@ sit System Integration Test
 uat User Acceptance Test
 pre 预发布环境
 prd 生产环境
+
+
+回归测试 Regression Testing
+    修改了旧代码后，重新进行测试以确认修改没有引入新的错误或导致其他代码产生错误
+
+冒烟测试 Smoke Testing
+    新版本的基本功能确认的测试
+    
+    

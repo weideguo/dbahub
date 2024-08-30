@@ -21,7 +21,8 @@ usermod    ##修改用户的信息，如修改所属组、home文件、密码、
 usermod -a -G new_group username  #添加从组
 usermod -G "" username            #移除所有从组
 usermod -g primary_group username #修改主组
-usermod -e '2023-05-15'           #过期时间 该时间的零点过期
+usermod -e '2023-05-15'  username #过期时间 该时间的零点过期
+usermod -s /sbin/nologin username #修改shell使得用户不能登录，允许则设置/bin/bash，为/etc/passwd最后一个字段，也可以直接修改这个文件
 
 userdel user_name ##删除用户   (加 -r 删除用户目录）
 /etc/passwd  ##保存用户信息  LOGNAME:PASSWORD:UID:GID:USERINFO:HOME:SHELL UID为0则为root账号同一用户级别

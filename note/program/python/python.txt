@@ -14,13 +14,13 @@ easy_install mysql-connector-python
 pip install SomePackage            # latest version
 pip install SomePackage==1.0.4     # specific version
 pip install 'SomePackage>=1.0.4'   # minimum version
-pip install -U PackageName	###更新
-pip uninstall PackageName	###移除
+pip install -U PackageName         # 更新
+pip uninstall PackageName          # 移除
 pip install -I pyparsing==2.2.0    # Ignore the installed packages (reinstalling instead).
 pip install -t /usr/local/lib/python3.5/site-package/ MySQL-python        #安装到指定路径
 pip show MySQL-python                                                     #查看模块的安装路径
-pip search PackageName		###搜索
-pip help 					###帮助
+pip search PackageName             ###搜索
+pip help                           ###帮助
 
 pip freeze > requirement.txt     #导出当前python环境所需要包的清单
 pip install -r requirement.txt   #由清单安装

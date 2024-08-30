@@ -19,3 +19,6 @@
 ---------------------------------------------------
 LoRA: Low-rank Adaptation of Large Language Models
 
+RAG 检索增强生成 Retrieval-augmented Generation
+当模型需要生成文本或者回答问题时，先从一个庞大的文档集合中检索出相关的信息，然后利用这些检索到的信息来指导文本的生成，从而提高预测的质量和准确性
+
