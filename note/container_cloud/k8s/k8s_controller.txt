@@ -14,7 +14,14 @@ kubectl rollout restart statefulset <pod-name>
 ####################
 configmap  存放配置文件的具体内容，其他controller通过引用configmap实现配置加载（如deploy控制器可以使用configmap实现启动时修改配置文件）
 
+kubectl get cm
+kubectl describe cm <cm-name>
+kubectl edit cm <cm-name>
 
+
+#secret
+kubectl get secret
+kubectl describe secret <secret-name>
 
 ####################
 deployment 更好的部署pod，如可以控制pod的副本数
@@ -43,3 +50,9 @@ service / svc
 对pod进行网络绑定，使得可以通过固定name访问pod，或者通过endpoint访问pod
 
 
+####################pv 
+kubectl get pv
+kubectl get pvc
+
+#修改指定容器的磁盘容量
+kubectl edit  pvc <pvc-name>      

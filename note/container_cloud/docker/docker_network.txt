@@ -87,6 +87,8 @@ docker run -d --name db training/postgres
 docker run -d -P --name web --link db:webdb webapp python app.py         #--link <name or id>:alias  连接时使用别名即可连接 不用指定ip
 
 
+# 使用宿主机的网络
+docker run --network host ...   
 
 
 route -n    ##查看静态路由

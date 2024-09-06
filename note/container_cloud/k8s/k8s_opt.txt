@@ -2,8 +2,11 @@ kubectl apply -f my-deployment.yaml            # 对docker镜像的部署，即�
 
 kubectl create -f my-deployment.yaml           # 不存在则创建；已经存在则报错
 
-kubectl delete -f my-deployment.yaml           # 删除pod  `restartPolicy: Always`时则重新拉起pod
-kubectl delete deployment <deployment-name>
+kubectl delete -f my-deployment.yaml
+kubectl delete deployment <deployment-name>           
+
+kubectl delete pod <pod-name>                 # 删除pod  `restartPolicy: Always`时则重新拉起pod
+
 
 kubectl scale --replicas=0 -n $namespace deployment/$deploymentname   # 一种关闭pod的方法，关闭应用进程
 

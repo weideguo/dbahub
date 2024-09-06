@@ -76,24 +76,4 @@ kubectl exec (POD | TYPE/NAME) [-c CONTAINER] [flags] -- COMMAND [args...] [opti
 #列出当前pod使用的镜像
 kubectl get pods -o=custom-columns=NAME:.metadata.name,IMAGE:.spec.containers[*].image -A
 
-#################################################################
-
-#secret
-kubectl get secret
-kubectl describe secret <secret-name>
-
-#configmaps
-kubectl get cm
-kubectl describe cm <cm-name>
-kubectl edit cm <cm-name>
-
-
-#pv 
-kubectl get pv
-kubectl get pvc
-
-#修改指定容器的磁盘容量
-kubectl edit  pvc <pvc-name>      
-
-
 

@@ -18,10 +18,12 @@ docker run -it centos7 /bin/sh                                                  
     -v <conteiner path>              #挂载容器指定目录，可以使用 docker inpect <container id> 查看挂载目录对应主机的路径
     -v <host path>:<container pth>   #将主机的目录挂载到容器的目录
     --env XXX=YYY                    #可以有多个--env
-        --restart                     
-            no                       #不自动启动容器
+    --restart                     
+         no                          #不自动启动容器
         always                       #一直尝试启动直到成功
         on-failure:10                #尝试10次都失败后不再启动
+    
+    --privileged                     #赋予容器几乎与主机相同的权限
         
 #容器内服务自自动  
 通过linux的服务自启动方式实现，即写入/etc/rc.local或者相关文件？    
