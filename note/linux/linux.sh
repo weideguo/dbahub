@@ -180,6 +180,14 @@ cat /dev/urandom | head -1 | md5sum
 
 openssl rand -base64 10
 
+# 获取15个0-100的数
+shuf -i 0-100 -n 15
+
+# 随机排序
+for i in a b c d e; do echo $i; done | shuf
+
+echo $RANDOM
+
 
 动态链接库
 /etc/ld.so.conf

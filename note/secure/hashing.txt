@@ -9,5 +9,5 @@ MD5
 SHA
 SHA-0  不再使用
 SHA-1  大规模使用
-SHA-2  变种 SHA-224, SHA-256, SHA-384, SHA-512
+SHA-2  更为安全，变种 SHA-224, SHA-256, SHA-384, SHA-512
 

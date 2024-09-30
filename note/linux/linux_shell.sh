@@ -42,6 +42,13 @@ echo ${a%%.*}     # /abc/def         右边算起最后一个.以及之后的字
 
 ＊  表示要删除的内容，它位于指定的字符的左边还是右边
 
+echo ${var,,}     # 全部转成小写
+echo ${var:0:2}   # 从第0个字符开始，获取2个字符
+echo ${var:0:-2}  # 从第0个字符开始，获取长度-2个字符，即截去尾部2个字符
+echo ${var/e/x}   # 将字符e替换成x，只替换一个
+echo ${var//e/x}  # 将字符e替换成x，全部替换
+
+
 basename $path/filename                        # 从全录路径中提取文件名
 basename $path/filename.txt    .txt            # 从全录路径中提取文件名并去掉后缀
 dirname  $path/filename.txt                    # 显示文件的目录 

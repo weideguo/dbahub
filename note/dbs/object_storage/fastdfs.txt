@@ -5,6 +5,9 @@ tracker 提供tcp接口，应用通过此接口上传文件 / 也可以直接通
 tracker  # 对应一个进程，通过tracker上传
 storage  # 对应一个进程，文件实际存储，对应一个storage处于一个group。额外启动nginx获取storage存储的文件。
 
+fdfs_trackerd /etc/fdfs/tracker.conf start
+
+fdfs_storaged /etc/fdfs/storage.conf start
 
 
 
@@ -17,7 +20,17 @@ group    # 每个group可以有一个或多个storage服务，相同group的文�
 location ~/group1/ {                    # 对应这个storage的group名字，通过storage处于不同或相同group，实现分片以及冗余备份
     alias   /var/fdfs/data/;            #          
     ngx_fastdfs_module;                 # 可以重定向文件连接到原服务器读取文件，避免错误。同一个group会有多台storage服务器之间需要进行文件复制，有同步延迟的问题。
-}	
+}
+
+	
+#nginx模块
+https://github.com/happyfish100/fastdfs-nginx-module
+
+cd /usr/local/src/nginx-1.6.2
+#./configure 拼接新的模块 --add-module=/usr/local/src/fastdfs-nginx-module/src/
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.35 --add-module=/usr/local/src/fastdfs-nginx-module/src/
+make
+
 
 真正的请求路径为
 http://<my-example-host>/group1/M00/00/E3/aaaaaaaaaaabbbbbbbbbcccccccc.txt
@@ -31,6 +44,10 @@ store_path0=/var/fdfs
 因为存在多个storage，可以用另外的nginx进行聚合，从而实现统一入口下载
 
 
+vim /etc/fdfs/client.conf
+#需要修改的内容如下
+base_path=/home/dfs
+tracker_server=192.168.52.1:22122    #tracker服务器IP和端口
 
 # 上传文件
 # 配置文件需要有 base_path、tracker_server
@@ -46,6 +63,7 @@ fdfs_download_file /etc/fdfs/client.conf group1/M00/00/00/CccccccccccccAAAAAAAAA
 # 配置文件只要有tracker的信息即可
 fdfs_monitor /etc/fdfs/storage.conf list | grep tracker
 fdfs_monitor /etc/fdfs/storage.conf list | grep ip_addr
+fdfs_monitor /etc/fdfs/storage.conf list | grep -E "(group|ip_addr|last_synced_timestamp)"
 
 
 # 删除节点，状态变为deleted，该节点即使重启也不会再加入集群

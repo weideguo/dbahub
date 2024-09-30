@@ -163,6 +163,7 @@ umount /data                   # 卸载  或者运行 umount /dev/sdc1
 parted /dev/sdc                #
     resizepart 1 100%          # 扩容第一个分区
 
+xfs_growfs /dev/sdc1           # xfs文件系统运行扩容
 mount -a                       # 重新挂载
 
 ############################################################################################

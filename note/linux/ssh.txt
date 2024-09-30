@@ -126,6 +126,7 @@ PubkeyAuthentication yes                     ##启用RSA公钥
 AuthorizedKeysFile .ssh/authorized_keys      ###文件名称对应.ssh下的公钥
 PasswordAuthentication no                    ###禁用密码登陆
 
+ForceCommand internal-sftp                   ###只允许用户以sftp连接，可以通过匹配组实现细粒度控制
 
 
 root@notty            #scp sftp连接时的标识

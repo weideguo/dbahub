@@ -127,11 +127,10 @@ sysctl -p                                 ##使修改生效
 sysctl vm.overcommit_memory=1             ##直接使内核参数生效
 sysctl -a                                 ##列出所有内核参数值
 
-echo 0 > /proc/sys/vm/swapping            ##禁用所有进程使用swap 直接生效 重启失效
-vm.swapping=0                             ###/etc/sysctl.conf中修改禁用swap
 
-cat /proc/sys/vm/swappiness               ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
-vm.swappiness=10                          ##修改swap的使用权重
+
+echo 0 > /proc/sys/vm/swappiness          ##100-60=40%的时候，就开始出现有交换分区的使用 swappiness=0的时候表示最大限度使用物理内存
+vm.swappiness=10                          ##修改/etc/sysctl.conf实现修改wap的使用权重
 
 swapoff -a  #临时关闭swap 会将swap加载到物理内存
 ##编辑/etc/fstab实现固定设置

@@ -131,7 +131,7 @@ filter:
   | REPLICATE_WILD_IGNORE_TABLE = (wild_tbl_list)
   | REPLICATE_REWRITE_DB = (db_pair_list)                      
                       
-
+replicate-wild-do-table=foo%.bar%
     
 使用 master_log_file/master_log_pos复制跳过
 --slave_skip_errors                                              ----on/off或者其他 必须在启动时设置

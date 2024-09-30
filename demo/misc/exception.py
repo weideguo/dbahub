@@ -82,11 +82,27 @@ def f():
         raise KeyboardInterrupt
         #print("nothing wrong")
     except:
-        print("something wrong happen")     # 出现或者不出现异常都运行这里
+        print("something wrong happen")     
     finally:
-        print('Goodbye, world!')
+        print('Goodbye, world!')             # 出现或者不出现异常都运行这里
     
     print(111)                               # 有正确的异常处理，则会运行这里以及之后的
+
+
+
+def f():
+    try:
+        raise KeyboardInterrupt
+        #print("nothing wrong")
+    except KeyboardInterrupt as e:         # 如果匹配这个错误捕获，则下面的错误捕获不再匹配
+        print("KeyboardInterrupt")
+        print(str(e))
+    except:                                # 不匹配上面的错误捕获时匹配这个捕获
+        print("something wrong happen")  
+    finally:
+        print('Goodbye, world!')         
+    
+    print(111)                           
     
 
 def f():

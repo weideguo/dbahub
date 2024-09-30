@@ -4,3 +4,8 @@ bin/elasticsearch -d        # 后台启动
 启动时jvm的内存参数不要超过总机器内存的一半，也不要超过32G。因为使用的依赖的lucene使用堆外内存。
 https://www.elastic.co/guide/en/elasticsearch/reference/6.6/heap-size.html
 
+
+# 集群
+# 生成config/elasticsearch.keystore
+bin/elasticsearch-keystore create
+

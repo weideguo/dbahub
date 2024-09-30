@@ -1,2 +1,3 @@
 ETL
 
+java 可以在windows下图形操作，也可以以job方式运行
