@@ -1,0 +1,55 @@
+一个pod可以包含多个容器，共享物理资源
+pod是最小调度单元，因此只能对整个pod进行统一操作，如重启
+
+
+#创建pod 
+kubectl apply -f my-pod.yaml
+
+
+#获取pod的信息
+kubectl get pods -A
+
+#持续输出pod信息
+kubectl get pods -o wide -w
+
+#列出指定命名空间的容器
+kubectl -n test get pods
+kubectl -n test get pods -o wide
+
+
+#获取pod的详细信息
+kubectl describe pod <pod-name>
+
+#删除pod
+kubectl delete pod <pod-name>
+
+
+#查看 stdout 日志
+kubectl logs <pod-name>
+
+#类似tail -f
+kubectl logs -f <pod-name>
+
+
+#文件复制 可以复制出或者复制入
+kubectl cp <pod-name>:/bitnami/mysql/x.sql ./
+kubectl cp <pod-name>:$pwd $dir
+
+
+#进入pod命令行
+kubectl -n test exec -it <pod-name> -- bash
+
+-c <container-name>   # 如果省略，则默认为第一个容器，当一个pod有多个容器时应该指定这个值
+
+
+kubectl exec (POD | TYPE/NAME) [-c CONTAINER] [flags] -- COMMAND [args...] [options]
+
+
+#列出当前pod使用的镜像
+kubectl get pods -o=custom-columns=NAME:.metadata.name,IMAGE:.spec.containers[*].image -A
+
+
+
+sidecar
+pod中运行多个容器，除主容器其他容器提供辅助功能，如日志收集、提供统一的数据库访问
+
