@@ -19,3 +19,5 @@ select concat(round(sum(data_length/1024/1024),2),'MB') data_size from informati
 
 
 
+use performance_schema;
+show tables like 'setup%';   -- 查看可以进行动作控制的表

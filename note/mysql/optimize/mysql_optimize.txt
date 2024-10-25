@@ -13,18 +13,68 @@ rows * filtered/100 = 结果集
 
 
 
-profile            --显示当前会话执行的资源占用，使information_schema库代替
+profile            --显示当前会话执行的资源占用
 
 --信息存储于information_schema.profiling
 
-set profiling=1    --启用profile
-show profiles;     --查看记录的语句
-show profile all;  --查看所有的语句的执行性能分析
+set profiling=1                      --启用profile
+show profiles;                       --查看记录的语句
+show profile all;                    --查看所有的语句的执行性能分析
 show profile for query <query_id>;   --查看指定语句的执行性能分析
     
-    
-    
+5.7已经提示为过期，之后使用performance_schema下的表查看
 
+-- 设置开启
+
+-- 只对指定用户收集执行历史事件，也可以只update，收集所有用户的（生产不用这样用）     
+UPDATE performance_schema.setup_actors SET ENABLED = 'NO', HISTORY = 'NO' WHERE HOST = '%' AND USER = '%';
+INSERT INTO performance_schema.setup_actors (HOST,USER,ROLE,ENABLED,HISTORY) VALUES('localhost','root','%','YES','YES');
+
+-- 
+UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES' WHERE NAME LIKE '%statement/%';    
+UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES' WHERE NAME LIKE '%stage/%';      
+
+-- 
+UPDATE performance_schema.setup_consumers SET ENABLED = 'YES' WHERE NAME LIKE '%events_statements_%';
+UPDATE performance_schema.setup_consumers SET ENABLED = 'YES' WHERE NAME LIKE '%events_stages_%';
+ 
+ 
+-- 执行业务SQL 
+
+ 
+-- 确认语句的 EVENT_ID
+SELECT EVENT_ID, TRUNCATE(TIMER_WAIT/1000000000000,6) as Duration, SQL_TEXT
+FROM performance_schema.events_statements_history_long WHERE SQL_TEXT like '%xxx%';
+
+
+-- 查询语句的执行事件
+SELECT event_name AS Stage, TRUNCATE(TIMER_WAIT/1000000000000,6) AS Duration
+FROM performance_schema.events_stages_history_long WHERE NESTING_EVENT_ID=31;
+
+结果样例
++--------------------------------+----------+
+| Stage                          | Duration |
++--------------------------------+----------+
+| stage/sql/starting             | 0.000061 |
+| stage/sql/checking permissions | 0.000005 |
+| stage/sql/Opening tables       | 0.000016 |
+| stage/sql/init                 | 0.000012 |
+| stage/sql/System lock          | 0.000006 |
+| stage/sql/optimizing           | 0.000002 |
+| stage/sql/statistics           | 0.000010 |
+| stage/sql/preparing            | 0.000007 |
+| stage/sql/executing            | 0.000000 |
+| stage/sql/Sending data         | 6.758696 |
+| stage/sql/end                  | 0.000003 |
+| stage/sql/query end            | 0.000011 |
+| stage/sql/closing tables       | 0.000009 |
+| stage/sql/freeing items        | 0.000023 |
+| stage/sql/logging slow query   | 0.000056 |
+| stage/sql/cleaning up          | 0.000005 |
++--------------------------------+----------+
+
+
+-- performance_schema_events_statements_history_long_size 这个参数控制存储的语句执行事件的数量
 
 
 --分页优化

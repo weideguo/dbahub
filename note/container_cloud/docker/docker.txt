@@ -123,4 +123,6 @@ nsenter --target $PID --mount --uts --ipc --net --pid
 runlike -p  <container>                      #查看容器的启动参数 docker inspect的封装
 
 
-
+dind
+docker in docker 在docker容器中运行docker
+在容器中安装docker，然后使用shell命令进行一些cgroup目录操作，然后在容器中运行dockerd进程

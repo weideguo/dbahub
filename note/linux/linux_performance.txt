@@ -55,6 +55,9 @@ free -m             ##内存与swap查看   ###SWAP用作虚存分区
 
 lsmem          #查看内存的在线情况
 
+# 刷新内存到磁盘（只是文件系统的缓存）
+sync && echo 3 > /proc/sys/vm/drop_caches
+
 
 top                    ###查看系统运行状态   AIX使用topas
 ###top的内部命令 在执行top后输入

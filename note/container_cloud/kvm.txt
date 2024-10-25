@@ -21,3 +21,12 @@ virsh undefine [虚拟机名]       #取消定义虚拟机
 virsh define [虚拟机配置文件]   #定义虚拟机(修改配置时使用)
 
 
+# openstack场景
+# 获取实例的id（为对应的xml文件名）、名字、创建时间、数据文件
+grep -r -e "<name>" -e "nova:name" -e "nova:creationTime"  -e "source file"  /etc/libvirt/qemu/
+
+# 扩容虚拟的磁盘（之后还需要在虚拟机中运行磁盘扩容才能实际生效）
+# instance_id   instance-00000xxx
+# path2disk     /data/instances/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/disk
+virsh blockresize --path $path2disk --size $bllock_size $instance_id
+

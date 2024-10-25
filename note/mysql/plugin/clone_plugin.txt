@@ -1,0 +1,30 @@
+mysql8.0引入，mysql实例复制数据
+对innodb表进行物理快照备份
+
+
+# 配置文件
+plugin-load-add=mysql_clone.so
+
+
+# 动态加载
+INSTALL PLUGIN clone SONAME 'mysql_clone.so';
+
+
+
+
+-- 使用
+
+-- 权限
+GRANT BACKUP_ADMIN ON *.* TO 'clone_user';  
+
+
+-- 对当前实例复制数据，复制成的目录无需其他更改即可使用mysql启动使用
+CLONE LOCAL DATA DIRECTORY = '/path/to/clone_dir';
+
+
+-- 复制远端实例的数据到本地目录
+CLONE INSTANCE FROM 'user'@'host':port
+IDENTIFIED BY 'password'
+[DATA DIRECTORY [=] 'clone_dir']
+[REQUIRE [NO] SSL];
+

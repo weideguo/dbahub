@@ -9,6 +9,25 @@ kubectl delete pod <pod-name>                 # 删除pod  `restartPolicy: Alway
 
 
 kubectl scale --replicas=0 -n $namespace deployment/$deploymentname   # 一种关闭pod的方法，关闭应用进程
+kubectl scale --replicas=0 -n $namespace deploy $deployname
+
+
+kubectl top pod
+kubectl top pod -n $namespace
+kubectl top pod -n $namespace $podname                                # 查看指定pod的物理资源使用情况，即对pod执行top命令
+
+kubectl top node
+
+# 回滚                                                                               # 
+kubectl rollout history -n $namespace deploy $deployname                       # 查看以前上线的修订版本
+kubectl rollout history -n $namespace deploy $deployname  --revision=1         # 
+                                                                               # 
+kubectl rollout undo -n $namespace deploy $deployname                          # 回滚到先前的版本
+kubectl rollout undo -n $namespace deploy $deployname --to-revision=2          # 默认to-revision=0
+                                                                               #
+kubectl rollout status -n $namespace deploy $deployname                        # 检查滚动更新状态
+                                                                               #
+kubectl rollout restart -n $namespace deploy $deployname                       # 重启
 
 
 kubectl api-resources 可以查看 kind 字段

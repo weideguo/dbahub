@@ -5,8 +5,10 @@ INSTALL PLUGIN archive SONAME 'ha_archive.so';  ---安装存储引擎 【ha_arch
 UNINSTALL PLUGIN archive;                       ---卸载存储引擎 【show plugins】
 
 select * from mysql.plugin;
+select * from information_schema.plugins;
 
 
-#在启动中安装
-plugin_load=xxxx.so     ##指定加载动态库
-
+#在配置文件、启动命令行参数中设置加载插件。多个so文件用“;”分隔。
+plugin-load=xxxx.so                # 出现多个plugin-load时只有最后一个生效
+plugin-load-add=xxxx.so            # 出现多个plugin-load-add时都生效
+early-plugin-load=xxxx.so          # 在存储已经初始化之前加载的插件

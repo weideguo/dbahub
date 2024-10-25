@@ -166,6 +166,12 @@ parted /dev/sdc                #
 xfs_growfs /dev/sdc1           # xfs文件系统运行扩容
 mount -a                       # 重新挂载
 
+
+##############热扩容
+# yum install -y cloud-utils-growpart
+growpart /dev/sdc 1                        # 热扩容第一个分区
+xfs_growfs /dev/sdc1 
+
 ############################################################################################
 虚拟文件系统
 #可用于对指定目录进行容量限制
@@ -182,3 +188,6 @@ echo 1 > /sys/block/sdb/device/rescan
 
 ##查看物理盘情况
 fdisk -l
+
+
+mountpoint /data       #查看目录是否是挂载点

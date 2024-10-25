@@ -156,6 +156,7 @@ arping -c 4 -s ${vip} -I ${netword_card} ${gateway}              ###向网关通
 #静态域名解析
 /etc/hosts
 
+nslookup a.com                # 查看域名解析信息
 
 
 netstat -nlap |grep .21|more  ##查看端口21 ftp服务器启动不得时可能时端口被占用的问题

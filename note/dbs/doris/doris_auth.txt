@@ -11,4 +11,4 @@ CREATE USER test_user IDENTIFIED BY 'abc1111111';
 # 全局权限
 GRANT SELECT_PRIV ON *.*.* TO test_user;
 # 库级别权限
-GRANT SELECT_PRIV ON default_cluster.db1.* TO test_user;
+GRANT SELECT_PRIV ON internal.db1.* TO test_user;

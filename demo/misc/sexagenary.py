@@ -53,5 +53,5 @@ def complete_sexagenary(year, month, day, hour):
     return year_sexagenary_result, month_stem_result + month_branch_result, day_sexagenary_result, hour_stem_result + hour_branch_result
 
 if __name__ == "__main__":
-    complete_sexagenary(1990, 1, 1, 0)
+    print(complete_sexagenary(1990, 1, 1, 0))
 

@@ -47,3 +47,9 @@ Megacli -AdpBbuCmd -GetBbuDesignInfo -aALL                             显示BBU
 Megacli -AdpBbuCmd -GetBbuProperties -aALL                             显示当前BBU属性                                                                   
 Megacli -cfgdsply -aALL                                                显示Raid卡型号，Raid设置，Disk相关信息
 
+
+raid 0   条带化，没有数据冗余
+raid 1   镜像冗余 
+raid 10  1+0 先镜像冗余，再条带化
+raid 01  0+1 先条带化，再镜像冗余
+raid 5   存在奇偶校验，可坏一块盘

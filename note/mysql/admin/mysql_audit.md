@@ -94,3 +94,9 @@ retcode         Return code of the logged operation.
 ## 6.企业版（自带审计插件）
 需要付费，且版本要升级。
 
+
+## 7.商业解决方案
+通过解析流量实现审计  
+1、agent，安装在所有应用的服务器、安装在mysql的服务器  
+2、路由器流量复制    
+
