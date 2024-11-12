@@ -1,3 +1,6 @@
+
+SHOW PROC '/
+
 # 查看表的表的健康状态
 SHOW PROC '/cluster_health/tablet_health'\G
 

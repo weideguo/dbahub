@@ -1,0 +1,15 @@
+dd 
+用于简单的磁盘io测试
+dd if=/dev/zero of=/data/data1 bs=1024 count=10485760      # 随机写
+dd if=/data/data1 of=/data/data2 bs=1024 count=10485760    # 随机读写
+dd if=/data/data1 of=/dev/null bs=1024 count=10485760      # 随机读
+
+dd if=/dev/zero of=/data/data1 bs=1G count=1               # 顺序写
+
+
+
+
+fio
+磁盘io测试
+
+

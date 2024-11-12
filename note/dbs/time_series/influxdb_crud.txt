@@ -86,7 +86,7 @@ CQ的执行间隔跟GROUP BY time()一样，如GROUP BY time(1h)，时间范围�
 SELECT 
 count(tag1) AS tag2 
 INTO "db1"."db1_90d"."measurement_name1" 
-ROM  "db1"."db1_90d"."measurement_name1" 
+FROM "db2"."db1_90d"."measurement_name1" 
 GROUP BY time(1h) 
 
 

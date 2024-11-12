@@ -1,0 +1,12 @@
+Gremlin 查询语言 
+源图计算框架TinkerPop3实现的图查询语言
+
+
+
+g.V()
+# Vertex 查询所有顶点
+
+
+g.E()
+# Edge 查询所有边
+

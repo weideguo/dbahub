@@ -1,0 +1,9 @@
+DMA
+Direct Memory Access
+
+
+RDMA
+Remote Direct Memory Access
+通过网络访问另一台主机的内存
+使用RoCEv2（RDMA over Converged Ethernet）协议，基于UDP
+

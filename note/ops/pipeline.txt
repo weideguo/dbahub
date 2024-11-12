@@ -1,5 +1,14 @@
 CI/CD
 
+持续集成（Continuous Integration）
+构建
+测试
+合并
 
+持续交付（Continuous Delivery）
+自动发布到仓库
+
+持续部署（Continuous Deployment）
+自动部署
 
 

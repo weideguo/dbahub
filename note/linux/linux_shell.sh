@@ -154,6 +154,7 @@ done
 
 shift 参数移动，用于逐个获取参数
 
+set -Eeuo pipefail             ##脚本头部使用 当运行出现错误时结束脚本（默认会继续运行）
 
 set -- v1 v2 v3     
 ##重置位置参数
@@ -358,6 +359,7 @@ date -d "1 wed"                            #
 date -d "1 thu"                            #
 date -d "1 fri"                            #
 
+date -s "2024-11-12 00:00:00"              # 修改系统时间，修改后其他进程获取的时间同时更改
 
 
 trap '' 1 2 3 15               ###忽略信号，在脚本中使用
@@ -365,9 +367,6 @@ trap '' 1 2 3 15               ###忽略信号，在脚本中使用
 trap 'commands' signals        ###接收到信号时执行commands
 
 trap "echo 'hello'" INT        ###键盘ctrl+c，执行echo hello命令
-
-
-set -Eeuo pipefail             ##脚本头部使用 当运行出现错误时结束脚本（默认会继续运行）
 
 
 trap cleanup SIGINT SIGTERM ERR EXIT        #发起ctrl+c/运行出现错误/运行结束 执行特定操作，如脚本的清理操作

@@ -82,7 +82,8 @@ adaptive hash index(自适应哈希索引)
     大量多表jion、模糊查询不建议使用AHI
 
 
-
+clustered index 聚簇索引，对于innodb为主键，innodb表根据主键创建索引组织表
+secondary index 二级索引，所有非聚簇索引的索引
 
 
 null值对索引的影响

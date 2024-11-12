@@ -1,6 +1,11 @@
 raft
 分布式一致性算法
 
+每个节点都有三种角色：
+领导者 leader
+候选者 candidate
+跟随者 follower
+
 
 leader election
     三种角色 leader candidate fellower
@@ -12,13 +17,5 @@ leader election
 log replication
     能接受到大多数fellow的响应才能提交，否则一直处于uncommited状态
     如果有更高任期的leader出现，uncommited的信息回滚，接受高任期的leader为整个集群leader（分裂处理）
-
-
-
-
-
-
-
-
 
 

@@ -1,3 +1,4 @@
+# python2
 
 import md5
 class HashRing(object):
@@ -97,10 +98,12 @@ if __name__ == "__main__":
     ring.add_node('3333')
     ring.add_node('4444')
     
+    ring.print_ring()
+    
     ring.get_node('0000')
     ring.get_node('1111')
     ring.get_node('2222')
     ring.get_node('3333')
     ring.get_node('4444')
-    
+    ring.print_ring()
 

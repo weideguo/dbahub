@@ -199,6 +199,9 @@ select p.id,p.TIME,p.command from information_schema.innodb_trx t join informati
 show status like '%innodb%lock%';
 
 
+-- 8.0以及之后查看对表的加锁情况
+select * from performance_schema.data_locks;
+
 ###############################
 ###update 加锁方式
 insert 插入操作的加锁逻辑

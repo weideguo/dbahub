@@ -20,9 +20,6 @@ Distributed file system 分布式文件系统
 
 
 应用级的分布式文件系统
-GFS
-
-HDFS
 
 Lustre 
 
@@ -32,6 +29,9 @@ GridFS
 
 mogileFS
 
-TFS
+MooseFS
 
-FastDFS
+GlusterFS
+
+juiceFS
+

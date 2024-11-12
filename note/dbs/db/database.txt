@@ -65,8 +65,6 @@ Log Structured-Merge Tree
 
 
 
-
-
 数据库中的 latch / Lock
 
 Latch是对内存数据结构提供互斥访问的一种机制，Latch的访问，包括查询也是互斥的，任何时候，只能有一个并发能pin住内存的某一块。而Lock是以不同的模式来套取共享资源对象，各个模式间存在着兼容或排斥。
@@ -78,4 +76,14 @@ Latch不存在死锁，而Lock中存在。Latch又可以分为mutex（互斥量�
 
 latch 即代码级别的锁，在代码中通过加锁，禁止其他并发进行下一步操作。
 lock  即DBMS中抽象的锁，比如对数据行的锁。
+
+
+
+火山模型/迭代模型  Volcano Model / Iterator Model
+解释计算模型，将关系代数中每一种操作（如Project、Select、Scan）抽象为一个 Operator，将整个 SQL 构建成一个 Operator 树，查询树从根节点到叶子结点自顶向下递归调用Next()接口，数据则自底向上被拉取处理。
+
+
+物化模型 Materialization Model
+
+向量化/批处理模型 Vectorized / Batch Model
 
