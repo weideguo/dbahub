@@ -109,4 +109,27 @@ undisplay                        #取消自动打印
 
 
 
+############
+# 修改coredump文件导出路径 
+sysctl -w kernel.core_pattern=/var/log/core.%e.%p
+sysctl -p
+
+echo '/var/log/core.%e.%p' > /proc/sys/kernel/core_pattern
+
+# 
+ulimit -c unlimited
+
+# 运行程序，异常退出则生成coredump，如果编译时使用 gcc -g 则能显示指定行的代码问题，否则只能显示函数名 
+
+
+使用coredump文件调试
+gdb --core=/path/to/corefile /path/to/executable
+gdb /path/to/executable /path/to/corefile
+
+# gdb命令
+backtrace
+up
+down
+
+
 

@@ -44,8 +44,18 @@ mysqldump -u root -pyy123456 -h 10.104.220.123 -P 3306 nwebauth -R > nwebauth.sq
     
     --ingore-table=dbname.tb_name  导出时排出某张表，多张表时重复使用这个参数，精确匹配
     
-    
-    
+
+-- single-transaction时执行过程
+FLUSH TABLE;
+FLUSH TABLES WITH READ LOCK;                                          -- 开通用日志没有看到执行这两个，但实际执行时processlist中看到有执行这个？
+SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */;  
+UNLOCK TABLES;                                                        -- 开启事务后就释放锁，之后在执行查询备份时不影响其他会话的使用
+
+
+
+
+  
 mysqldump -u root -p -h 127.0.0.1 -P 3306 w1 b --where="x>1"
 
 

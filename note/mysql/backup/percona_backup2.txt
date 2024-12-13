@@ -1,3 +1,7 @@
+原理
+基于innodb crash-recovery机制
+
+
 一个线程复制redo日志
 一个线程复制数据文件
 

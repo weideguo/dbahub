@@ -34,3 +34,7 @@ HEAD    只请求网页的头部信息
 404     未找到资源
 500     服务器内部错误
 
+
+
+echo -ne "GET / HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36\r\n\r\n"
+

@@ -32,5 +32,16 @@ ALTER SYSTEM DROPP BACKEND "be_host:be_heartbeat_service_port";         -- 直�
 ALTER SYSTEM DECOMMISSION BACKEND "be_host:be_heartbeat_service_port";  -- 该命令用于安全删除 BE 节点。命令下发后，Doris 会尝试将该 BE 上的数据向其他 BE 节点迁移，当所有数据都迁移完成后，Doris 会自动删除该节点
 
 
+show proc '/dbs/$DbId/$TableId/partitions/$PartitionId/$IndexId/$TabletId';
+
+一张表分为多个tablet，按照tablet进行副本复制，TabletId一样则为互为副本
 
 
+# 启动副本修复，空白副本填补缺失副本，该副本丢失？
+ADMIN SET FRONTEND CONFIG ("recover_with_empty_tablet" = "true");
+# 修复完毕后关闭
+ADMIN SET FRONTEND CONFIG ("recover_with_empty_tablet" = "false");
+
+
+#  使用固定的replica进行查询，该值表示固定使用第几小的replica
+set use_fix_replica=1;

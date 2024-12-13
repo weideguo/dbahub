@@ -103,21 +103,21 @@ FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
 
 --compress                 ##单个文件压缩  增量备份也可以使用压缩 因为只是用checkpoint对比变化的page
 
-原理
-基于innodb crash-recovery机制
-对于非事务类型的表，在备份innodb表后，使用lock tables for backup(percona特有，oracle版应该使用flush tables with read lock)，然后备份
-
-
-
-
 
 
 
 
 2.X 引入了打包与压缩
-#从文件中提取
-./xbstream -x < /path_to_file -C /path_to_dir
 
-#解压 需要先安装qpress
+# 备份时打包压缩
+--stream=xbstream  --compress --compress-threads=8  
+
+
+#从文件中提取
+xbstream -x < /path_to_file -C /path_to_dir
+
+#解压 
 xtrabackup --decompress --remove-original ...
 
+#可能要预先安装qpress
+http://repo.percona.com/tools/yum/release/7/RPMS/x86_64/

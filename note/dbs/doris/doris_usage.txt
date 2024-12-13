@@ -55,5 +55,9 @@ curl --location-trusted -u "${USER}":"${PASSWORD}" \
 show catalogs;
 # 默认使用internal，即完整的表名为 internal.db1.tb1
 
-
+# 切换catalog
+SWITCH internal;
         
+# 刷新，比如更改权限之后需要刷新才能生效        
+REFRESH CATALOG catalog_name;    
+    
