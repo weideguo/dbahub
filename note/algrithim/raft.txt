@@ -19,3 +19,4 @@ log replication
     如果有更高任期的leader出现，uncommited的信息回滚，接受高任期的leader为整个集群leader（分裂处理）
 
 
+https://raft.github.io/raft.pdf

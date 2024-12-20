@@ -206,3 +206,4 @@ jhat app.dump                                  # 查看导出的dump文件
 jstack $pid                                    # 堆栈跟踪
 jstat -gccause $pid                            # GC相关信息
 
+javap -c ClassName.class                       # 反编译

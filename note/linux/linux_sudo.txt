@@ -1,18 +1,17 @@
-添加执行sudo的权限为在sudoers文件【/etc/sudoers】中添加
-visudo                                                                        ##直接进入编辑/etc/sudoers   也可以用vi编辑，写入的时候强制写入
 sudo ${command}                                                               ##以root用户执行命令
                                                                            
-sudo -u other_user ${command}                                                 ##以指定用户执行命令
+sudo -u other_user ${command}                                                 ##以指定用户执行命令，非root用户运行该命令时需要先设置sudoers文件
+sudo -u other_user bin/mysqld_safe --defaults-file=etc/my_3306.cnf &          ##在后面的命令切换目录不生效，因此需要在sudo命令前切换，或者使用绝对路径
 
-sudo /bin/su - other_user /data/other_user/redis_6379/redis_server.sh start   ##以root用户身份执行su ...
+su - other_user -c "bin/mysqld_safe --defaults-file=etc/my_3306.cnf &"        ##以指定用户执行命令，非root用户运行该命令时需要先设置该普通账号能免密切换到用户 other_user，否则需要输入密码
+su other_user -c "bin/mysqld_safe --defaults-file=etc/my_3306.cnf &"
 
 runuser -l other_user -c "${command}"                                         ##root账号以特定用户执行
 
-chroot $NEWROOT $COMMAND                                                      ##run command or interactive shell with special root directory
 
-使用其他用户执行命令
-sudo -u other_user bin/mysqld_safe --defaults-file=etc/my_3306.cnf &
-su - other_user -c "bin/mysqld_safe --defaults-file=etc/my_3306.cnf &"
+
+添加执行sudo的权限为在sudoers文件【/etc/sudoers】中添加
+visudo                                                                        ##直接进入编辑/etc/sudoers   也可以用vi编辑，写入的时候强制写入
 
 ##/etc/sudoers或/etc/sudoers.d目录下任意文件
 #可以在任意地方以任意账号免密执行
@@ -26,3 +25,7 @@ user_name  ALL=/bin/ls
 %group_name   ALL=(root) NOPASSWD: /bin/ls,(root) NOPASSWD: /bin/ln
 user_name   ALL=(root) NOPASSWD: /bin/ls,(root) NOPASSWD: /bin/ln
 
+
+
+
+chroot $NEWROOT $COMMAND                                                      ##run command or interactive shell with special root directory

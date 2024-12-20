@@ -1,0 +1,21 @@
+日志收集、存储、展示
+
+# filebeat + elk
+filebeat  -> kakfa -> logstash -> elaticsearch + kibana
+fluentbit ->
+
+
+k8s集群中的应用按照应用名输出到不同目录，filebeat以DaemonSet方式启动，在每台服务器运行一个进程，从而统一实现日志收集
+
+
+# 其他方案
+                               -> VictoriaLogs（自带web界面） 
+
+                     
+
+
+# flume 日志传输收集
+source(源端数据采集)：Flume提供了各种各样的Source、同时还提供了自定义的Source
+Channel(临时存储聚合数据)：主要用的是memory channel和File channel
+Sink(移动数据到目标端)：如HDFS、KAFKA、DB以及自定义的sink
+

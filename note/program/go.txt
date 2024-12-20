@@ -161,3 +161,38 @@ runtime.GOMAXPROCS(3)
 Read-Eval-Print-Loop 环境
 yaegi
 gomacro
+
+
+
+# 性能分析
+# 在头部
+import _ "net/http/pprof"
+
+
+# 可以通过页面查看或者用 pprof 工具分析
+http://my_host:my_port/debug/pprof
+
+
+# 常驻内存占用情况
+go tool pprof -inuse_space http://my_host:my_port/debug/pprof/heap
+# 内存临时分配情况
+go tool pprof -alloc_objects http://my_host:my_port/debug/pprof/heap
+
+# CPU耗时分析
+go tool pprof http://my_host:my_port/debug/pprof/profile
+
+# goroutine泄露分析
+/goroutine
+
+# 锁耗时分析
+/mutex
+
+# goroutine阻塞等待分析
+/block
+
+
+# 交互命令
+top 
+traces [函数] 
+list [函数]
+

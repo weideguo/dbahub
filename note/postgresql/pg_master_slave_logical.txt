@@ -1,0 +1,44 @@
+逻辑复制
+
+#################################################### 主 publisher
+##### postgresql.conf
+# 启用逻辑日志
+wal_level = logical
+max_replication_slots = 4          # 设置支持的最大复制槽数量
+max_wal_senders = 4                # 设置允许的最大 WAL 发送者数量
+
+
+#### pg_hba.conf
+host    replication    replication_user    your_subscriber_ip/32    md5
+
+
+# 创建复制用户
+CREATE USER replication_user WITH REPLICATION PASSWORD 'your_password';
+
+# 创建发布
+CREATE PUBLICATION my_publication FOR TABLE table1, table2;    -- 部分表
+CREATE PUBLICATION my_publication FOR ALL TABLES;              -- 所有表
+
+
+SELECT * FROM pg_replication_slots;                            -- 检查复制槽的状态
+
+DROP PUBLICATION my_publication;                               -- 删除发布
+
+#################################################### 从 subscriber
+
+#### pg_hba.conf
+host    replication    replication_user    your_publisher_ip/32    md5
+
+
+# 创建订阅、连接
+CREATE SUBSCRIPTION my_subscription
+CONNECTION 'host=your_publisher_ip port=5432 dbname=your_db user=replication_user password=your_password'
+PUBLICATION my_publication
+
+
+
+SELECT * FROM pg_stat_subscription;        -- 查看订阅的状态
+
+DROP SUBSCRIPTION my_subscription;         -- 删除订阅
+
+
