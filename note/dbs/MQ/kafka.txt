@@ -53,6 +53,8 @@ log.retention.check.interval.ms=1000
 # 启动
 bin/kafka-server-start.sh -daemon config/server.properties
 
+# 关闭
+bin/kafka-server-stop.sh
 
 
 # 列出所有topic

@@ -16,6 +16,8 @@ openssl s_client -connect www.python.com:443 -tls1
 openssl s_client -connect www.python.com:443 -tls1_1
 openssl s_client -connect www.python.com:443 -tls1_2
 
+# 获取ssl证书的信息，如有效期
+openssl s_client -connect python.com:443 -servername python.com </dev/null 2>/dev/null | openssl x509 -noout -text 
 
 
 SSL

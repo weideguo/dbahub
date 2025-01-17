@@ -79,10 +79,11 @@ Ctrl+g 列出光标所在行的行号。
 显示行号
 :set number
 关闭行号
-：set nonu
-/string        向前搜索指定的字符
-?string        向后收索指定的字符
-n            收索下一个字符串
+:set nonu
+/string        向后搜索指定的字符
+?string        向前搜索指定的字符
+n              搜索下一个字符串
+N              搜索前一个字符串
 
 :set ff?        #查看文件的格式
 :set ff=dos     #设置文件格式

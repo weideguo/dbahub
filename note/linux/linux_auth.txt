@@ -29,6 +29,9 @@ userdel user_name ##删除用户   (加 -r 删除用户目录）
 /etc/shadow  ##保存用户密码
 /etc/group   ##保存组信息
 
+chage -l username                  # 查看过期时间
+chage -M 99999 username            # 设置过期时间
+
 
 /etc/shadow 文件字段说明
 帐号名称 ：root 

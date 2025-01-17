@@ -1,65 +1,18 @@
-iostat -d -x -k 1 10    ##查看io信息间隔一秒查询，查10次
+############# CPU
+sar                 
+# cpu历史活动信息
+/etc/sysconfig/sysstat     # 配置文件，控制存储时长
+/var/log/sa/sar*           # centos7存储位置
 
--d #只显示disk的信息
--c #只显示cpu的信息
-
-    %util  #在统计时间内（所有处理io的时间/总时间）
-
-cat /proc/$pid/io      #查看进程的io的情况
-
-/proc/diskstats                   # 磁盘io信息
-/sys/block/${device_name}/stat    # 磁盘io信息
-
-https://www.kernel.org/doc/Documentation/iostats.txt    
-
-iotop        
-badblocks -s -v sdb1   ##坏道检测
-hdparm sdb1            ##磁盘信息获取
-fio                    ##磁盘读写性能测试
-
-
-sar                 ###系统活动信息
-
+mpstat  查看cpu的统计信息
 
 /proc/meminfo       ##内存信息
 /proc/cpuinfo       ##查看CPU信息
 /proc/interrupts    ##中断信息
 
 
-pidstat -r -p PID   #查看进程的内存使用   
-prtconf -m          ##AIX查看物理内存
-prtconf             ##查看物理参数
-prtconf | more      ##分页查看                     
-free -m             ##内存与swap查看   ###SWAP用作虚存分区
-    
-    total   总内存
-    used    已经使用的内存
-    free    空闲内存
-    shared  当前废弃不用的内存
-    buffer  buffer cache内存
-    cached  page cache内存
-    available 列显示还可以被应用程序使用的物理内存大小
-    
-    
-    -buffer/cache =used-buffers-cached  程序占用的内存
-    +buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
-
-    
-    centos7
-    total = used + free + buff/cache
-    available = free + buff/cache
-
-
-
-/proc/meminfo  #free命令信息来自于此
-
-lsmem          #查看内存的在线情况
-
-# 刷新内存到磁盘（只是文件系统的缓存）
-sync && echo 3 > /proc/sys/vm/drop_caches
-
-
-top                    ###查看系统运行状态   AIX使用topas
+top                    
+###查看系统运行状态   AIX使用topas
 ###top的内部命令 在执行top后输入
 c    ##cpu使用率排序
 M    ##内存排序
@@ -120,7 +73,39 @@ CPU控制
 
 echo 0 > /sys/devices/system/cpu/cpu7/online    #禁用某个cpu
 
-mpstat  查看cpu的统计信息
+
+############# 内存
+pidstat -r -p PID   #查看进程的内存使用   
+prtconf -m          ##AIX查看物理内存
+prtconf             ##查看物理参数
+prtconf | more      ##分页查看                     
+free -m             ##内存与swap查看   ###SWAP用作虚存分区
+    
+    total   总内存
+    used    已经使用的内存
+    free    空闲内存
+    shared  当前废弃不用的内存
+    buffer  buffer cache内存
+    cached  page cache内存
+    available 列显示还可以被应用程序使用的物理内存大小
+    
+    
+    -buffer/cache =used-buffers-cached  程序占用的内存
+    +buffer/cache =free+buffers+cached  可以挪用的内存（available大概估算）
+
+    
+    centos7
+    total = used + free + buff/cache
+    available = free + buff/cache
+
+
+
+/proc/meminfo  #free命令信息来自于此
+
+lsmem          #查看内存的在线情况
+
+# 刷新内存到磁盘（只是文件系统的缓存）
+sync && echo 3 > /proc/sys/vm/drop_caches
 
 
 OOM out-of memory                         ##系统会杀掉一些进程以释放内存
@@ -143,6 +128,14 @@ swapon -a   #启用swap
 
 mkswap  在一个文件或者设备上建立交换分区，需要挂载之后swap才生效
 
+vmstat                ###查看虚拟内存swap si/so 表示与物理内存的交换
+vmstat -S m 1         ###隔1秒显示一次
+
+##增加swap分区  
+dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建一个大文件，内容全为0
+/sbin/mkswap /home/swap                               ##执行命令
+/sbin/swapon /home/swap                               ##执行命令
+/usr/swap/swapfile  /swap   swap    defaults    0 0   ##编辑/etc/fstab实现固定设置
 
 
 SWAP分区异常使用
@@ -150,10 +143,10 @@ SWAP分区异常使用
  NUMA使用不当
 处理方法 重启OS
 
-mysqld --memlock                ##内存锁定             
+mysqld --memlock                       ##内存锁定             
 
          
-/proc/$pid/smaps                    ##查看进程的swap的使用
+/proc/$pid/smaps                       ##查看进程的swap的使用
 /proc/$pid/maps
 
 cat /proc/$pid/smaps | grep "Swap"     ##查看swap，需要先相加起来
@@ -163,17 +156,16 @@ pmap -d $pid
 代码段、数据段、堆、文件映射区域、栈
 虚拟地址空间使用情况
 
-pmap pid                            ##查看指定pid使用的内存
+pmap pid                               ##查看指定pid使用的内存
 
 
 透明巨型页
-echo never > /sys/kernel/mm/transparent_hugepage/enabled    #修改巨型页的使用
-vm.nr_hugepage=hugepage_num     ##使用hugepage  巨型页
+echo never > /sys/kernel/mm/transparent_hugepage/enabled    # 修改巨型页的使用
+vm.nr_hugepage=hugepage_num                                 # 使用hugepage  巨型页
 
-透明巨型页的参数
-cat /proc/meminfo | grep Huge
+
+cat /proc/meminfo | grep Huge                               # 查看透明巨型页的参数
 需要使用swap时，内存页被分割为4kb
-
 x86的默认内存页大小是4kb，可以使用2mb或者更大的巨型页
 
 echo 2000 > /proc/sys/vm/nr_hugepages  #修改巨型页的数量
@@ -185,24 +177,40 @@ numactl --interleave=all ${command}
 #不设置时当达到cpu的分配阈值，即使系统还有空余内存，也不分配给当前cpu，而选择使用SWAP
 
 
-SMP  symmetic multi processing                对称多处理系统
+SMP  symmetic multi processing                 对称多处理系统
 MPP  massvie parallel processor                大规模并行处理
-NUMA non uniform memory access architecture        非统一内存访问
-
-
-vmstat                ###查看虚拟内存swap si/so 表示与物理内存的交换
-vmstat -S m 1        ###隔1秒显示一次
-
-##增加swap分区  重启后失效
-dd if=/dev/zero of=/home/swap bs=1024 count=512000    ##增加512000K  #创建一个大文件，内容全为0
-/sbin/mkswap /home/swap  ##执行命令
-/sbin/swapon /home/swap  ##执行命令
-/usr/swap/swapfile  /swap   swap    defaults    0 0   ##编辑/etc/fstab实现固定设置
+NUMA non uniform memory access architecture    非统一内存访问
 
 
 
+############# 磁盘
+iostat -d -x -k 1 10    ##查看io信息间隔一秒查询，查10次
 
-网络
+-d #只显示disk的信息
+-c #只显示cpu的信息
+
+    %util  #在统计时间内（所有处理io的时间/总时间）
+
+cat /proc/$pid/io      #查看进程的io的情况
+pidstat -d 1           #查看进程的io的情况
+
+/proc/diskstats                   # 磁盘io信息
+/sys/block/${device_name}/stat    # 磁盘io信息
+
+https://www.kernel.org/doc/Documentation/iostats.txt    
+
+iotop                  # io查看
+
+
+badblocks -s -v sdb1   ##坏道检测
+hdparm sdb1            ##磁盘信息获取
+fio                    ##磁盘读写性能测试
+
+
+
+
+
+############# 网络
 iperf 
 # 网络性能测试 带宽、延迟抖动和数据包丢失
 

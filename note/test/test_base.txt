@@ -18,4 +18,5 @@ prd 生产环境
 冒烟测试 Smoke Testing
     新版本的基本功能确认的测试
     
+模糊测试 Fuzz Testing
     
