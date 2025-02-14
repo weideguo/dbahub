@@ -6,7 +6,7 @@ explain select * from test1 where id=1
 
 输出集从下往上看
 
-
+rows 扫描总行数
 filtered = (实际返回行数/扫描总行数) * 100
 
 

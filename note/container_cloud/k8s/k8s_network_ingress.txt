@@ -1,5 +1,5 @@
 1、启动pod（用pod、deploy方式）
-2、设置svc绑定pod                    相当于在每个node节点开一个端口映射到应用
+2、设置svc绑定pod                    相当于在每个node节点开一个端口映射到应用（NodePort模式时）；使用ingress时则使用 ClusterIP 即可
 3、设置ingress域名绑定svc            相当于在每个node节点设置一个域名
 4、外部dns设置域名解析到任意一个node（或者再做一层nginx对多个node进行负载均衡，然后域名解析到这个nginx，通过nginx转发给node）
 5、通过域名即可访问pod的应用

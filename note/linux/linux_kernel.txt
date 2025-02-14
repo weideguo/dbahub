@@ -93,3 +93,7 @@ sysctl -a                           #查看当前生效的参数
 
 
 /proc/sys                           #内核参数运行值，可以查看、修改立即生效
+
+
+/etc/sysctl.d/
+/etc/sysctl.d/*.conf                #按字母顺序加载，因此以数字开头以控制加载顺序

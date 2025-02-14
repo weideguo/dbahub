@@ -1,3 +1,14 @@
 由java写的RDBMS
 
 主要用于内嵌数据库，数据只存于内存
+
+
+交互模式 创建数据库、或打开已有数据库文件（.mv.db .trace.db）
+java -cp h2.jar org.h2.tools.Shell
+
+
+服务器模式
+java -cp h2-2.3.232.jar org.h2.tools.Server -help                                       # 查看命令说明
+java -cp h2-2.3.232.jar org.h2.tools.Server -web -webAllowOthers                        # 启动web服务，可以使用web页面连h2数据库
+java -cp h2-2.3.232.jar org.h2.tools.Server -tcp -tcpAllowOthers -ifNotExists           # 可以通过TCP连接
+

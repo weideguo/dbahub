@@ -28,13 +28,13 @@ connect 'jdbc:derby://localhost:1527/dbname;create=true' ;
 ---权限
 
           
-connect 'jdbc:derby:testdb;create=true;user=tquist';            --初次连接
+connect 'jdbc:derby:testdb;create=true;user=testuser';            --初次连接
 
-call SYSCS_UTIL.SYSCS_CREATE_USER( 'tquist', 'tquist' );        --创建账号
+call SYSCS_UTIL.SYSCS_CREATE_USER( 'testuser', 'testpasswd' );    --创建账号
 
-connect 'jdbc:derby:testdb;user=tquist;password=tquist';        --使用账号密码连接
+connect 'jdbc:derby:testdb;user=testuser;password=testpasswd';    --使用账号密码连接
 
-grant select on tb_name to thardy;                              --授权
+grant select on tb_name to testuser;                              --授权
 
 
 

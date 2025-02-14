@@ -1,0 +1,13 @@
+服务网格
+
+istio
+边车（sidecar）通过 iptables 劫持发送到应用容器的流量，处理通信治理
+
+数据平面（Data plane）：轻量级的网络代理（如 Envoy）作为 Sidecar，网络代理负责协调和控制服务之间的通信和流量处理，解决微服务之间服务熔断、负载均衡、安全通讯等问题
+控制平面（Control plane）：配置和管理 Sidecar ，并提供服务发现（Discovery）、配置管理（Configuration）、安全控制（Certificates）等功能
+
+
+
+Ambient mesh
+数据面的代理从应用Pod中剥离出来独立部署，不再使用Sidecar模式
+

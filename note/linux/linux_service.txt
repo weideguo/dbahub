@@ -36,3 +36,4 @@ systemctl disable mysqld.service
 man systemd.kill
 
 
+/etc/ld.so.preload              # 每个进程启动时都加载该动态链接库

@@ -31,6 +31,18 @@ chmod g+s filename   # 设置SGID位
 chmod g-s filename   # 去掉SGID设置
 
 
+SUID（Set User ID） ：允许文件执行时以文件所有者的权限运行。
+SGID（Set Group ID）：对文件，执行时以文件所属组的权限运行；对目录，新文件继承目录的所属组。
+Sticky Bit（粘滞位）：对目录设置时，仅允许文件所有者或 root 删除自己的文件。
+
+4 SUID
+2 SGID
+1 Sticky Bit
+
+chmod 04777 $filename
+前导 0 的作用：显式关闭所有特殊权限，避免继承原有特殊权限。
+
+
 umask -S     ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002
              ###文件夹777-002

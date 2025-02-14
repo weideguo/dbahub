@@ -19,13 +19,16 @@ kubectl get endpoints
 
 ``` yaml
 kind: Service
+metadata:
+  name: my_svc_name
+  namespace: my_space                 # 同一集群通过域名 my_svc_name.my_space 可以访问
 spec:
   ports:
-  - name: my_svc_name
+  - name: my_svc_name                 # 端口的本地别名
     nodePort: 21234                   # 映射后的端口
-    port: 1234                        # 应用原始端口
+    port: 1234                        # Service 的入口端口，定义外部如何访问 Service
     protocol: TCP
-    targetPort: 1234
+    targetPort: 1234                  # Pod 的监听端口，定义流量如何到达 Pod
   selector:                           # 通过selector指定绑定的应用
     app: pod_or_deploy_name
   type: NodePort                      # 任意一个节点的ip:nodePort即可访问svc映射的服务

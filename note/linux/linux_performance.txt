@@ -84,10 +84,10 @@ free -m             ##内存与swap查看   ###SWAP用作虚存分区
     total   总内存
     used    已经使用的内存
     free    空闲内存
-    shared  当前废弃不用的内存
+    shared  多个进程共享的内存，进程间通信（IPC）机制显式分配的共享内存
     buffer  buffer cache内存
     cached  page cache内存
-    available 列显示还可以被应用程序使用的物理内存大小
+    available 还可以被应用程序使用的物理内存大小
     
     
     -buffer/cache =used-buffers-cached  程序占用的内存
@@ -98,6 +98,11 @@ free -m             ##内存与swap查看   ###SWAP用作虚存分区
     total = used + free + buff/cache
     available = free + buff/cache
 
+    buff/cache > available  时，可能有
+        缓存包含不可回收的内存
+        内核保留的内存
+        共享内存 shared为buff/cache的一部分，多个进程共享时无法释放
+        内存碎片化
 
 
 /proc/meminfo  #free命令信息来自于此

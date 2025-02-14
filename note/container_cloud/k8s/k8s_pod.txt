@@ -18,6 +18,7 @@ kubectl -n test get pods -o wide
 
 
 #获取pod的详细信息
+#如pod启动失败时也可使用该命令查看原因
 kubectl describe pod <pod-name>
 
 #删除pod

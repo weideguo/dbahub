@@ -8,6 +8,9 @@ ssh-keygen -t rsa -b 2048            ###生成ssh密钥对 ~/.ssh/id_rsa.pub ~/.
 #host2
 ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user_name@remote_ip        ###安装公钥到远程主机  可以直接复制host1的 ~/.ssh/id_rsa.pub 到host2的 ~/.ssh/authorized_keys
 
+#查看ssh指纹，对应不同算法使用不同公钥
+ssh-keygen -lf /etc/ssh/ssh_host_rsa_key.pub
+
 ###远程主机生成一个在~/.ssh/authorized_keys，内容与生成的公钥一致。多个公钥则在内容中累加
 ##设置完毕即可由本地使用私钥无密码登陆到远程主机 如果生成密钥对时没有设置密码
 文件权限必须设置

@@ -6,26 +6,26 @@ DTO  Data Tranfer Object
 Service
 
 J2EE
-	EJB
-		session bean
-		entity bean
-		messageDriver bean
-	jsp
-	servlet
+    EJB
+        session bean
+        entity bean
+        messageDriver bean
+    jsp
+    servlet
 
 J2SE 
-	SSH
-		Struts
-		Spring
-		Hibernate
+    SSH
+        Struts
+        Spring
+        Hibernate
 
-	
-前端		jsp+js（jQuery、Ext）
-后端		servlet
-			业务逻辑层  
-				CRUD（create、retrieve、update、delete）
-			orm
-			DB			
+    
+前端        jsp+js（jQuery、Ext）
+后端        servlet
+            业务逻辑层  
+                CRUD（create、retrieve、update、delete）
+            orm
+            DB            
 
 
 
@@ -120,13 +120,13 @@ ant -buildfile build.xml build   ///build对应xml文件中target节点的name
 
 maven
 使用pom.xml文件描述依赖的jar包，同时描述下载的源
-mvn validate	验证项目	验证项目是否正确且所有必须信息是可用的
-mvn compile	    执行编译	源代码编译在此阶段完成
-mvn test	    测试	    使用适当的单元测试框架（例如JUnit）运行测试。
-mvn package	    打包	    创建JAR/WAR包如在 pom.xml 中定义提及的包
-mvn verify	    检查	    对集成测试的结果进行检查，以保证质量达标
-mvn install	    安装	    安装打包的项目到本地仓库，以供其他项目使用
-mvn deploy	    部署	    拷贝最终的工程包到远程仓库中，以共享给其他开发人员和工程
+mvn validate       验证项目    验证项目是否正确且所有必须信息是可用的
+mvn compile        执行编译    源代码编译在此阶段完成
+mvn test           测试        使用适当的单元测试框架（例如JUnit）运行测试。
+mvn package        打包        创建JAR/WAR包如在 pom.xml 中定义提及的包
+mvn verify         检查        对集成测试的结果进行检查，以保证质量达标
+mvn install        安装        安装打包的项目到本地仓库，以供其他项目使用
+mvn deploy         部署        拷贝最终的工程包到远程仓库中，以共享给其他开发人员和工程
 
 
 #镜像源 优先级

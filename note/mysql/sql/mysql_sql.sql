@@ -32,8 +32,21 @@ BINARY(M)         255字节                定长二进制字符串
 DATE       4  1000-01-01/9999-12-31                       YYYY-MM-DD   日期值 
 TIME       3  '-838:59:59'/'838:59:59'                    HH:MM:SS     时间值或持续时间 
 YEAR       1  1901/2155                                   YYYY         年份值 
-DATETIME   8  1000-01-01 00:00:00/9999-12-31 23:59:59     YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化 DATETIME[(N)]  N为0到6，表示获取时间的秒的小数点后多少位
-TIMESTAMP  4  1970-01-01 00:00:00/2037 年某时             YYYYMMDD HHMMSS 混合日期和时间值，时间戳，当设置时区变化时，查询的结果也跟着变化
+DATETIME  5-8 1000-01-01 00:00:00/9999-12-31 23:59:59     YYYY-MM-DD HH:MM:SS 混合日期和时间值，当设置时区变化时，查询的结果不变化 DATETIME[(N)]  N为0到6，表示获取时间的秒的小数点后多少位
+TIMESTAMP  4  1970-01-01 00:00:01/2038-01-19 03:14:07     YYYY-MM-DD HH:MM:SS 混合日期和时间值，时间戳，当设置时区变化时，查询的结果也跟着变化。时间范围按照UTC+0进行限制。
+
+
+>=5.6.5 根据小数秒精度变化
+DATETIME(0)                5 字节 默认
+DATETIME(1) 、DATETIME(2)  6 字节
+DATETIME(3) 、DATETIME(4)  7 字节
+DATETIME(5) 、DATETIME(6)  8 字节
+
+>=5.6.5 
+TIMESTAMP(0)                 4 字节 默认 
+TIMESTAMP(1) 、TIMESTAMP(2)  5 字节
+TIMESTAMP(3) 、TIMESTAMP(4)  6 字节
+TIMESTAMP(5) 、TIMESTAMP(6)  7 字节
 
 
 BIT[(M)]   M=(1,64)            二进制格式 M为多少位
