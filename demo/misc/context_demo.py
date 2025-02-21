@@ -12,6 +12,16 @@ file_path="a.txt"
 with open(file_path) as f:
     f.read()
 
+##################################################
+file_path = "a.txt"
+with open(file_path,"wb") as f:
+    f.write("aaaaa")
+    
+##################################################
+file_path = "a.txt"
+f = open(file_path,"wb")
+with f:
+    f.write("aaaaa")
 
 ##################################################
 

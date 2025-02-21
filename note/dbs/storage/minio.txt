@@ -1,0 +1,10 @@
+# 单节点启动
+minio server --console-address ":9001" /data
+
+
+# 集群启动
+minio server --console-address ":9001" \
+http://node1/data                      \
+http://node2/data          
+
+

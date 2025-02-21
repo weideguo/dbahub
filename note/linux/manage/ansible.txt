@@ -3,17 +3,27 @@
 cd ansible-2.7.4
 python setup.py install
 
+/etc/ansible/ansible.cfg            # 默认配置文件
 
-cat /etc/ansible/hosts #只有加入这个文件的主机才能被操作
+cat /etc/ansible/hosts              # 默认只有加入这个文件的主机才能被操作
+
+
 
 [test1]
 #ip及ssh端口/账号/密码等参数
 192.168.59.129:22 ansible_ssh_user=root ansible_ssh_pass=root_passwd
 
 [test2]
-192.168.59.132        #也可以使用ssh免密登录
+192.168.59.132                      # 也可以使用ssh免密登录
 192.168.59.129
+                         
+[test2:vars]                          
+ansible_ssh_user=root               # 设置所有指定分组的参数   
+ansible_ssh_pass=root_passwd
 
+[all:vars]                          # 设置所有分组的参数
+ansible_ssh_user=root 
+ansible_ssh_pass=root_passwd
 
 
 #ad-hoc模式
@@ -27,6 +37,11 @@ ansible 192.168.59.129 -a "ls -l chdir=/tmp creates=kel.conf"
 #分发命令 支持管道操作
 ansible 192.168.59.129 -m shell -a "ps -ef | grep mysql"
 
+#对分组的主机执行
+ansible test2 -m shell -a "ps -ef | grep mysql"
+
+#使用自定义hosts文件
+ansible test2 -m shell -a "ps -ef | grep mysql" -i /path/to/hosts
 
 
 #playbook模式
@@ -53,3 +68,26 @@ ansible-playbook  playbook.yml
 #使用playbook执行分发文件与命令
 ansible-playbook  playbook.yml --extra-vars host=test2
 
+
+
+# 使用模板文件
+- hosts: test2
+  vars:                                # 变量值
+    var1: 1111111
+    var2: 2222222
+  tasks:
+    - name: copy
+      template:
+        src: test.conf.j2              # 模板文件中使用jinja语法使用变量 
+        dest: /etc/test.conf
+
+
+
+# 加密hosts文件
+ansible-vault encrypt  /path/to/hosts
+
+ansible 、 ansible-playbook 、ansible-vault
+  --ask-vault-pass         # 通过交互设置密码
+  --vault-password-file    # 指定存储密码的文件，可以修改ansible.cfg实现不必每次操作带上这个参数
+  
+  

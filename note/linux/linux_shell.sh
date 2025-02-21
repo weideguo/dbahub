@@ -468,3 +468,6 @@ ls -altr binlog.1282{19..32}    # 数值范围匹配
 ls -altr binlog.12821?          # 匹配任意一个字符
 ls -altr binlog.12821[2-5]      # 匹配任意一个字符范围 如 [a-f]
 ls -altr binlog.12821[^5]       # 匹配除了一个字符，也可以跟范围共用 如 [^5-8]
+
+
+watch -n 1 date                 # 按照时间间隔持续运行 在此为每隔一秒运行一次date命令

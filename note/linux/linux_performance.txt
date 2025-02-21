@@ -205,6 +205,7 @@ pidstat -d 1           #查看进程的io的情况
 https://www.kernel.org/doc/Documentation/iostats.txt    
 
 iotop                  # io查看
+iotop -o               # 只查看有io活跃的进程、线程
 
 
 badblocks -s -v sdb1   ##坏道检测
@@ -226,10 +227,12 @@ iperf -s -p 12345 -i 1 -M
 iperf -c $server_ip -p 12345 -i 1 -t 10 -w 20K
 
 
-nethogs
-#查看实时流量速度
-
 ifconfig
 RX packets   # receive 接收的包
 TX packets   # transmit 发送的包
 
+
+# 查看实时流量速度
+iftop     # 查看不同地址的网络io
+
+nethogs   # 查看进程的网络io
