@@ -1,0 +1,9 @@
+alpine                     ##简单的基础镜像
+scrach                     ##空镜像 可以跟busybox使用   
+
+#busybox
+静态编译不依赖第三方库，可以在空镜像中安装从而实现常规linux命令的使用
+在docker容器中
+cd /usr/bin
+ln -s  busybox vi          #创建链接实现命令
+
