@@ -17,8 +17,39 @@
 
 
 ---------------------------------------------------
+
+Embedding 嵌入  将文本（如单词、句子）转换为高维向量的过程，捕捉语义特征。
+Inference 推理  使用训练好的模型对输入数据进行预测或生成输出的全过程。
+
+
+
 LoRA: Low-rank Adaptation of Large Language Models
+
+# 基于llama的微调与推理
+https://github.com/tloen/alpaca-lora
+
+
 
 RAG 检索增强生成 Retrieval-augmented Generation
 当模型需要生成文本或者回答问题时，先从一个庞大的文档集合中检索出相关的信息，然后利用这些检索到的信息来指导文本的生成，从而提高预测的质量和准确性
 
+1、需要一个向量数据库
+2、需要一个大模型服务的api
+3、本地文件按照指定格式转换存储于向量数据库
+4、运行chat交互程序联合向量数据库与大模型api，实现RAG
+
+
+
+推理服务器
+vllm
+
+ollama
+
+
+
+
+AI Agent = 大模型+规划+记忆+工具
+
+
+token
+一个句子分成的多个最小部分，依赖于分词模型

@@ -1,0 +1,33 @@
+# 使用ollama部署大模型
+
+./ollama pull deepseek-r1
+
+
+# start the server:
+./ollama serve
+
+
+# run a model 再另外一个shell中运行
+./ollama run deepseek-r1
+
+
+
+
+# Generate a response
+curl http://localhost:11434/api/generate -d '{
+  "model": "llama3.2",
+  "prompt":"Why is the sky blue?"
+}'
+
+
+# Chat with a model
+curl http://localhost:11434/api/chat -d '{
+  "model": "llama3.2",
+  "messages": [
+    { "role": "user", "content": "why is the sky blue?" }
+  ]
+}'
+
+
+
+
