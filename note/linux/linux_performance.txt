@@ -95,15 +95,19 @@ free -m             ##内存与swap查看   ###SWAP用作虚存分区
 
     
     centos7
-    total = used + free + buff/cache
-    available = free + buff/cache
+    _total = used + free + buff/cache
+    _available = free + buff/cache
 
     buff/cache > available  时，可能有
         缓存包含不可回收的内存
         内核保留的内存
         共享内存 shared为buff/cache的一部分，多个进程共享时无法释放
         内存碎片化
-
+    
+    zabbix中
+    vm.memory.size[usedpercent] = (总内存 - 可用内存) / 总内存
+    可用内存=free + buffers + cached
+    总内存=vm.memory.size[total]
 
 /proc/meminfo  #free命令信息来自于此
 

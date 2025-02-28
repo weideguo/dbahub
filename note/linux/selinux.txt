@@ -6,7 +6,7 @@ selinux
 禁用（disabled）：禁用SElinux，与不带SElinux的系统一样         
 /usr/sbin/sestatus -v      ##如果SELinux status参数为enabled即为开启状态
 getenforce                 ##也可以用这个命令检查
-setenforce 0                 ##临时关闭；1 为开启
+setenforce 0               ##临时关闭；1 为开启
 
 由selinux设置问题导致启动失败
 进入kernel选择界面，编辑kernel，添加 

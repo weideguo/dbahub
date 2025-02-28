@@ -20,8 +20,16 @@ LD_PRELOAD=libc-2.5.so rm xxx
 
 
 http://www.gnu.org/software/libc/libc.html
-glibc 版本查询        glibc是linux系统中最底层的api
-ldd --version
+glibc        glibc是linux系统中最底层的api
+ldd --version                                            # 版本查询 
+strings /lib64/libc.so.6 | grep "^GLIBC" | sort | uniq
+
+glibc++
+strings /usr/lib64/libstdc++.so.6 | grep GLIBCXX         # 版本查看
+
+ubuntu时
+/usr/lib/x86_64-linux-gnu/libc.so.6
+/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
 
 编译安装时新创建单独的文件夹存放解压的源代码，而且在上一级目录编译
