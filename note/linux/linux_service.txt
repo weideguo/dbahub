@@ -6,6 +6,14 @@
 ##Linux在启动时，会自动执行/etc/rc.d目录下的初始化程序，可以把启动任务放到该目录下
 rc.local是在完成所有初始化之后执行的
 
+# 查看启动状态
+systemctl status rc-local
+
+# 可以通过重启调试
+systemctl disable rc-local
+systemctl enable rc-local
+systemctl start rc-local
+
 
 通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
 chmod +x /etc/rc.d/init.d/simpleTest    使之可直接执行

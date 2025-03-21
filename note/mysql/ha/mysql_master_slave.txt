@@ -83,7 +83,15 @@ slave节点作为下一层级slave节点的master
 ----master安装 semisync_master.so
 ----slave安装 semisync_slave.so
 rpl_semi_sync_master_enabled=on        ---master的设置
-rpl_semi_sync_slave_status=on        ---slave的设置
+rpl_semi_sync_slave_status=on          ---slave的设置
+
+
+show global status like '%semi%'; 
+rpl_semi_sync_slave_status          -- 从实例的半同步状态
+rpl_semi_sync_master_status         -- 主库的半同步复制状态，主库正在等待至少一个从库确认接收事务日志。
+rpl_semi_sync_master_clients        -- 当前连接的半同步从库数量
+rpl_semi_sync_master_yes_tx         -- 通过半同步复制成功提交的事务数
+rpl_semi_sync_master_no_tx          -- 降级为异步复制的事务数
 
                       
 设置多线程复制

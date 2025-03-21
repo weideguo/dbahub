@@ -185,9 +185,7 @@ curl -x socks5://localhost:2121 http://www.example.com           #通过访问�
 
 
 
-
-
-
-
-
-
+A连B、C通，在A运行
+ssh B 'cat /file_in_B' | ssh C 'cat > /file_to_save_in_C'
+ssh B 'tar czf - /dir_in_B' | ssh C 'tar xzf - -C /'              # C的目录跟B的一样
+scp -3 -r B:/dir_or_file_in_B C:/dir_or_file_to_save_in_C

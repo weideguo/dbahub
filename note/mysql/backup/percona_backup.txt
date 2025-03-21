@@ -97,7 +97,8 @@ FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
 --compress                 ##单个文件压缩  增量备份也可以使用压缩 因为只是用checkpoint对比变化的page
 
 
---stream=tar ./ | gzip - > backup.tar.gz    #边备份边压缩。这种形式不能使用并发，xbstream则可以。
+--stream=tar /BACKUP-ROOT-DIR | gzip - > backup.tar.gz                                                 # 边备份边压缩。这种形式不能使用并发，xbstream则可以。
+--stream=tar /BACKUP-ROOT-DIR | ssh user@remote-server 'cat > /path/on/remote_server/filename'         # 使用ssh传输到远端主机
 
 
 2.X 引入了打包与压缩

@@ -1,0 +1,3 @@
+kubectl port-forward --address 0.0.0.0 pod/mypod 8888:5000
+使用本地的ip:8888即可访问pod的5000
+可以用于 pod、deployment、service

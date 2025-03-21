@@ -32,9 +32,9 @@ def test1(username):
 
 @app.route('/get/')
 def test2():
-    print request.cookies         
-    print request.headers
-    print request.args
+    print(request.cookies)         
+    print(request.headers)
+    print(request.args)
     a=session.get('username')  
     return a
 
@@ -52,13 +52,14 @@ def test3():
     """
     curl $root_url"/post/" -d "a=aaaa&b=bbbbb"  -H "Content-Type:application"
     curl $root_url"/post/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application"
+    echo "1231123" | curl -X POST -H "Content-Type:text/plain" -d @- curl $root_url"/post/"
     content-type 不为 application/x-www-form-urlencoded 即可
     """
-    print request.method
-    print request.url
-    print request.headers
-    print request.data
-    print request.get_data()
+    print(request.method)
+    print(request.url)
+    print(request.headers)
+    print(request.data)
+    print(request.get_data())
     return "post success"
 
 @app.route('/post1/',methods=['GET','PUT','POST'])
@@ -66,9 +67,9 @@ def test31():
     """
     curl $root_url"/post1/" -d "{\"a\":\"aaaaa\"}"  -H "Content-Type:application/json"
     """
-    print request.headers
-    print request.json
-    print request.get_json()
+    print(request.headers)
+    print(request.json)
+    print(request.get_json())
     return "post success"
 
 @app.route('/post2/',methods=['GET','PUT','POST'])
@@ -78,8 +79,8 @@ def test32():
     curl $root_url"/post2/" -d "a=aaaa&b=bbbbb" 
     默认 Content-Type: application/x-www-form-urlencoded
     """
-    print request.headers
-    print request.form
+    print(request.headers)
+    print(request.form)
     return "post success"
 
 
@@ -90,7 +91,7 @@ def test4():
     curl "http://this_host/upload/" -F "filename=@/root/x.txt"  
     Content-Type: multipart/form-data; 
     """
-    print request.headers
+    print(request.headers)
     file = request.files.get('filename')
     file.save('/tmp/aaa.txt')
     return "uploal success"

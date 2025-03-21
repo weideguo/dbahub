@@ -195,6 +195,7 @@ sshpass -p my_password scp ...
 sshpass -p my_password ssh ...
 ssh [user@]hostname [command]   #远程执行
 
+echo  'abc123' | ssh user@remote-server 'cat > /path/on/remote_server/filename'          # ssh传输流
 
 压缩传输
 

@@ -1,0 +1,24 @@
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
+    age INT
+);
+INSERT INTO users (name, age) VALUES ('Alice', 25), ('Bob', 30);
+
+-- 隔离级别为REPEATABLE-READ
+-- 幻读示例
+
+
+-- 事务 A
+BEGIN;
+SELECT * FROM users WHERE age >= 25;
+---- 运行事务 B
+UPDATE users SET name = "aaa" WHERE age >= 25;       -- 虽然再次SELECT结果还是一样，但那是基于快照读的原因。实际update时还是出现幻读导致获取到的记录跟第一次SELECT时不一致。
+SELECT * FROM users WHERE age >= 25;
+
+
+-- 事务 B
+BEGIN;
+INSERT INTO users (name, age) VALUES ('Charlie', 28);
+COMMIT;
+

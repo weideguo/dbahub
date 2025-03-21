@@ -1,0 +1,24 @@
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
+    age INT
+);
+
+INSERT INTO users (name, age) VALUES ('Alice', 25), ('Bob', 30);
+
+-- 隔离级别为REPEATABLE-READ
+-- 间隙锁样例
+
+
+-- 事务 A
+BEGIN;
+SELECT * FROM users WHERE age >= 25 FOR UPDATE;        -- 第一次查询，加锁
+-- 事务 B 插入新数据并提交                             
+select * FROM users WHERE age >= 25 FOR UPDATE;        -- 第二次查询，
+COMMIT;
+
+
+-- 事务 B
+BEGIN;
+INSERT INTO users (name, age) VALUES ('Charlie', 28);  -- 尝试插入，但会被事务 A 的间隙锁阻塞
+COMMIT;
