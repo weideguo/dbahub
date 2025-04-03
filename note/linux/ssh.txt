@@ -134,9 +134,6 @@ ForceCommand internal-sftp                   ###只允许用户以sftp连接，�
 
 root@notty            #scp sftp连接时的标识
 
-#tty  teletypes、teletypewriters  终端
-#pty  pseudo tty  虚拟终端
-
 
 #压缩传输
 #本地传到远端

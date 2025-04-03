@@ -1,0 +1,61 @@
+CREATE REPOSITORY `example_repo`
+WITH S3                                                     # 支持s3 hdfs
+ON LOCATION "s3://bucket_name/minio_repo"
+PROPERTIES
+(
+    "s3.endpoint" = "yourminio.com",
+    "s3.region" = "dummy-region",
+    "s3.access_key" = "ak",
+    "s3.secret_key" = "sk",
+    "use_path_style" = "true"
+);
+
+
+-- 备份库指定库
+BACKUP SNAPSHOT destdb.`destdb_20241225`
+TO example_repo;
+
+
+-- 备份库指定表
+BACKUP SNAPSHOT exampledb_tbl_tbl1_20241225
+TO example_repo
+ON (example_tbl, example_tbl1);
+
+
+-- 查看备份
+SHOW BACKUP\G
+
+
+-- 查看现有备份
+SHOW SNAPSHOT ON example_repo;
+
+
+
+-- 从快照中恢复
+RESTORE SNAPSHOT `restore_label1`
+FROM `example_repo`
+PROPERTIES
+(
+    "backup_timestamp"="2022-04-08-15-52-29"
+);
+
+
+-- 恢复到指定库 
+RESTORE SNAPSHOT destdb.`restore_label1`
+FROM `example_repo`
+PROPERTIES
+(
+    "backup_timestamp"="2022-04-08-15-52-29"
+);
+
+
+-- 查看恢复情况
+SHOW RESTORE\G;
+
+
+
+
+CCR 跨集群数据同步
+需要启动源和目标集群的binlog
+https://doris.apache.org/zh-CN/docs/admin-manual/data-admin/ccr/overview
+

@@ -1,0 +1,9 @@
+# pg升级
+# 停止pg，使用新的二进制文件
+pg_upgrade -b /path/to/old/bin -B /path/to/new/bin -d /path/to/old/data -D /path/to/new/data
+
+# 检查服务状态
+pg_isready -U username -d dbname
+# 验证数据一致性
+pg_checksums -D /path/to/data
+

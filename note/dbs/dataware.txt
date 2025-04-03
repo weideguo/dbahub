@@ -20,3 +20,14 @@ ods  operational data store 原始数据层
 包含历史数据、最新数据
 增加字段 START_DATE、END_DATE 存储记录的变化
 
+
+lambda架构
+批处理层  Batch Layer
+速度层    Speed Layer
+服务层    Serving Layer
+
+
+存储方案
+OLTP（如MySQL）+专用AP数据库的搭积木方案
+基于多副本的方法（即同时有副本在行存储、列存储）
+一体化的行列混合存储方案

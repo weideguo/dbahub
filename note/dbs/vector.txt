@@ -1,0 +1,14 @@
+chroma
+
+
+milvus
+
+
+faiss
+
+
+weaviate
+
+
+pgvector
+

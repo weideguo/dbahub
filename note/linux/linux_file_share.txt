@@ -225,6 +225,12 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 
 默认多次执行时只传输变化的文件
 
+--size-only                # 只通过文件大小校验
+--checksum                 # 使用md5校验，否则只是快速校验（文件大小以及修改时间）
+
+
+--ignore-existing          # 目的端已经存在则不更新
+
 
 rsync
 两种模式

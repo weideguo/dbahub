@@ -37,6 +37,7 @@ curl http://${etcd_ip_address}:${etcd_port}/v2/keys/${key_name}
 
 etcdctl put /key_name "key_value"
 etcdctl get /key_name 
+etcdctl get --prefix "" --keys-only                # 查看所有key
 etcdctl mk /key_name "key_value"	
 etcdctl update /key_name "key_value"
 # 备份

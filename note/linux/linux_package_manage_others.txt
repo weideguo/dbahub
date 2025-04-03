@@ -8,3 +8,10 @@ apt-get update
 
 apt-get install nc
 
+
+
+alpine
+源的配置
+/etc/apk/repositories
+
+apk add python3

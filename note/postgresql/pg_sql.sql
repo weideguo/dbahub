@@ -82,3 +82,22 @@ id int4 not null default nextval('sequence_name'),
 name text);
 
 
+
+
+SELECT proname FROM pg_proc;      -- 存储过程查看
+
+
+CREATE OR REPLACE PROCEDURE update_salary(emp_id INT, increase_amount DECIMAL)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE employees 
+    SET salary = salary + increase_amount 
+    WHERE id = emp_id;
+    
+    COMMIT;
+END;
+$$;
+
+CALL update_salary(123, 5000);
+

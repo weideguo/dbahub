@@ -1,0 +1,16 @@
+tmux 
+terminal multiplexer
+
+
+tmux new -s $session_name                 # 创建一个会话，关闭窗口事不关闭会话，可以通过tmux attach命令重连会话
+                                          
+tmux ls                                   # 查看有哪些会话
+                                          
+tmux attach -t $session_name              # 进入会话
+
+tmux kill-session -t $session_name        # 关闭会话
+
+
+
+#tty  teletypes、teletypewriters  终端
+#pty  pseudo tty  虚拟终端
