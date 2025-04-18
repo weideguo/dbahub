@@ -1,0 +1,19 @@
+SHOW USERS
+
+# 创建用户
+CREATE USER user_name WITH PASSWORD password [ WITH ALL PRIVILEGES ] 
+
+# 重置密码
+SET PASSWORD FOR admin = 'new_password'
+
+# 授权
+GRANT ALL ON "mydb" TO "mydb_user"
+
+# 权限
+READ
+WRITE
+
+# 启用用户认证需要修改配置文件（默认不启用）
+[http]
+auth-enabled = true
+

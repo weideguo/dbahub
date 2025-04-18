@@ -193,6 +193,5 @@ curl -XGET "http://$localhost:9200/_cat/health?v"
 #列出所有索引
 curl "http://$localhost:9200/_cat/indices?v=true"
 
-# 启动账号密码时（需要安装x-pack插件）
-curl -XGET "http://$localhost:9200/_cat/health?v" -u $user:$password
+
 

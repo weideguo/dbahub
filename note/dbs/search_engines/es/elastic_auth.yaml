@@ -1,0 +1,13 @@
+
+# vim elasticsearch.yml  
+xpack.security.enabled: true     # 启用安全认证
+
+# 生成加密密钥
+bin/elasticsearch-keystore create
+
+# 设置账号密码
+bin/elasticsearch-setup-passwords interactive
+
+# 使用账号密码
+curl -XGET "http://$localhost:9200/_cat/health?v" -u $user:$password
+

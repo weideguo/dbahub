@@ -2,3 +2,22 @@ dev tools -> console  直接命令行查询es的数据
 
 Management -> Index Management  查看所有的索引列表
 
+
+账号认证依赖于elasticsearch的账号
+
+
+INDEX PATTERN
+Stack Management -> Index Patterns
+创建索引模板实现在 Discover 中对类似索引聚合查询（对于日志服务，每天一份日志对应一个索引）
+
+
+KQL
+message:"*error*"   # 字段包含
+status >= 400       # 范围匹配
+status:(404 500)    # 多值查询
+
+AND       
+OR        
+NOT       
+
+

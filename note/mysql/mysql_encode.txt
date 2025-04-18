@@ -104,4 +104,4 @@ utf8_general_mysql500_ci  backward compatibility of old tables that used the old
 utf8mb4_unicode_520_ci    as it offers the greatest number of characters that you can store, and it sorts characters in the most correct way possible
 
 
-
+utf8mb4_general_ci 会忽略字符串末尾的空格进行比较，但存储时仍会保留原始空格

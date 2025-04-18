@@ -1,0 +1,20 @@
+# 重建tsi索引
+
+#关闭influxdb
+
+
+#删除文件
+删除_series文件夹 $path2data/<dbName>/_series
+删除index文件夹   $path2data/<dbName/<rpName>/<shardID>/index
+
+#运行重建
+influx_inspect buildtsi -datadir $path2data -waldir $path2wal
+
+#启动influxdb
+
+
+### 配置文件 /etc/influxdb/influxdb.conf
+[data]                    
+                          # The type of shard index to use for new shards.
+index-version = "inmem"   # 默认 索引使用内存 但数据也记录在文件，重启不会导致数据丢失
+index-version = "tsi1"    # 索引使用磁盘

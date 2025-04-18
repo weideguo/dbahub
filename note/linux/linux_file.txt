@@ -58,8 +58,14 @@ xz
 
 ###查看
 cat
-more
 tail
+
+more
+b    往前翻一页
+
+less 
+向前搜索（?关键词）
+向后搜索（/关键词）
 
 
 head -n 1  #前一行

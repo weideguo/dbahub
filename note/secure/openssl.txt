@@ -27,6 +27,7 @@ openssl enc -des3 -d -in test.des.en -out test.des.de -pass pass:my_des_pass
 
 
 先创建密码文件 mypass.txt
+openssl rand -hex 1024 > mypass.txt
 # aes加密
 openssl aes-256-cbc -e -in test.txt -out test.txt.en -pass file:mypass.txt
 # aes解密

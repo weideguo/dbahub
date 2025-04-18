@@ -9,3 +9,9 @@ rows = cursor.fetchall()
 for row in rows:
     print(row)
     
+    
+
+# 内存数据库
+conn = sqlite3.connect(":memory:")
+
+    

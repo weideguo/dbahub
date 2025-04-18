@@ -1,0 +1,8 @@
+# 查看参数值
+PRAGMA cache_size;              # 缓存大小默认2m
+PRAGMA cache_size = -500000;    # 调整缓存，减号表示 KB
+PRAGMA mmap_size;               # 内存映射文件的大小
+
+VACUUM                          # 新组织内存结构
+
+

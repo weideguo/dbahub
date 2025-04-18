@@ -87,3 +87,8 @@ lock  即DBMS中抽象的锁，比如对数据行的锁。
 
 向量化/批处理模型 Vectorized / Batch Model
 
+
+
+Cardinality 基数                         索引或列中唯一值的估计数量
+NDV         Number of Distinct Values    列中实际存在的唯一值数量
+

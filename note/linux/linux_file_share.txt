@@ -173,7 +173,7 @@ curl -k    #忽略https未信任证书错误
 
 curl -u user:name ...
 # 等同于
-base64_str=`echo user:name | base64`
+base64_str=`echo -n user:name | base64`
 curl -H "Authorization: Basic ${base64_str}" ...
 
 

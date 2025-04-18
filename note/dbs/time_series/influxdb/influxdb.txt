@@ -24,12 +24,20 @@ influxd restore -portable -db example-db /path/to/backup-directory
 # 查看默认配置
 influxd config
 
+# 导出成csv
+influx -database 'your_database' -execute 'SELECT * FROM "your_measurement"' -format csv > output.csv
+
+
 端口
 8086 客户端连接，http
 8088 备份、恢复数据的RPC
 
 可以直接通过http访问
 query?db=my_db&q=select...
+
+curl -G "http://localhost:8086/query?db=mydb" \
+  -u my_account:my_secure_password \
+  --data-urlencode "q=SELECT * FROM my_measurement"
 
 
 show databases;
@@ -46,44 +54,5 @@ SHOW RETENTION POLICIES [ON <database_name>]
 SHOW CONTINUOUS QUERIES     
 
 show QUERIES;
-
-
-
-SHOW USERS
-
-# 创建用户
-CREATE USER user_name WITH PASSWORD password [ WITH ALL PRIVILEGES ] .
-
-# 启用用户认证需要修改配置文件
-[http]
-auth-enabled = true
-
-
-
-
-
-# 重建tsi索引
-
-#关闭influxdb
-
-
-#删除文件
-删除_series文件夹 $path2data/<dbName>/_series
-删除index文件夹   $path2data/<dbName/<rpName>/<shardID>/index
-
-#运行重建
-influx_inspect buildtsi -datadir $path2data -waldir $path2wal
-
-#启动influxdb
-
-
-### 配置文件 /etc/influxdb/influxdb.conf
-[data]                    
-                          # The type of shard index to use for new shards.
-index-version = "inmem"   # 默认 索引使用内存 但数据也记录在文件，重启不会导致数据丢失
-index-version = "tsi1"    # 索引使用磁盘
-
-
-
 
 

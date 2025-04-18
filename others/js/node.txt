@@ -38,6 +38,7 @@ npm ls -g --depth 0
 npm install -g less
 lessc xxx.less xxxcss      #将less编译成css
 
+npm ls less                #查看哪些模块使用这个库
 
 #####################################################################
 npm set registry https://registry.some_other_else       #增加镜像源

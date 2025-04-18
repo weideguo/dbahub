@@ -70,6 +70,15 @@ location /json_ip {
 ~  用于表示当前uri中包含了正则表达式，并且区分大小写 
 ~* 用于表示当前uri中包含了正则表达式，并且不区分大小写
 
+# spa应用时 
+location / {
+  try_files $uri $uri/ /index.html;
+}
+
+首先尝试查找与请求 URI 完全匹配的文件 ($uri)
+如果没找到，尝试查找以该 URI 命名的目录 ($uri/)
+如果前两者都不存在，则返回 /index.html
+
 
 #跨站点请求允许 CORS Cross-Origin Resource Sharing
 add_header Access-Control-Allow-Origin *;

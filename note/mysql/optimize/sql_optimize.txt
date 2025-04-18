@@ -7,7 +7,13 @@ SQLAdvisor -美团大众
 
 
 sql审核
-
 Inception
+
+
+
+虚拟索引技术
+github.com/bytedance/videx
+
+将表的元数据收集，空表可以依赖这些元数据使用CBO进行索引分析，如可以判断添加新的索引是否对指定语句生效。
 
 
