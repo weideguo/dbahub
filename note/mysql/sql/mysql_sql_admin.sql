@@ -96,53 +96,56 @@ show status like 'Slow_queries'
 SHOW ENGINE PERFORMANCE_SCHEMA STATUS;   -- 查看PERFORMANCE_SCHEMA库的内存使用情况
 
 
-#自动统计参数
-innodb_stats_*
-myisam_stats_*                      
+-- 索引加载到内存统计
+SELECT 
+  its.database_name as db_name,
+  its.table_name as table_name,
+  its.index_name as index_name,
+  ibp.PAGE_TYPE,
+  COALESCE(ibp.records, 0) as pool_rows,
+  its.n_rows as total_rows,
+  COALESCE(ibp.records, 0)/its.n_rows AS pct_cached,
+  COALESCE(ibp.n_pages, 0)/its.n_leaf_pages AS page_pct_cached
+FROM 
+  (
+    SELECT DISTINCT
+      database_name,
+      table_name,
+      index_name,
+      CONCAT('`', database_name, '`.`', table_name, '`') AS full_table_name, 
+      n_leaf_pages,
+      n_rows
+    FROM 
+      mysql.innodb_table_stats
+    join (
+        select database_name,table_name,index_name,
+        max(stat_value) as n_leaf_pages 
+        from mysql.innodb_index_stats 
+        where stat_name='n_leaf_pages'
+        group by database_name,table_name,index_name
+    ) t_pages
+    using (database_name, table_name)
+    WHERE 
+      database_name = 'my_test_db'                -- 库名
+  ) its
+LEFT JOIN 
+  (
+    SELECT 
+      TABLE_NAME,
+      INDEX_NAME,
+      PAGE_TYPE, 
+      SUM(NUMBER_RECORDS) AS records,
+      COUNT(PAGE_NUMBER) AS n_pages
+    FROM 
+      INFORMATION_SCHEMA.INNODB_BUFFER_PAGE
+    WHERE 
+      TABLE_NAME LIKE '%`my_test_db`%'            -- 库名
+    GROUP BY 
+      TABLE_NAME, INDEX_NAME, PAGE_TYPE
+  ) ibp 
+ON 
+  its.full_table_name = ibp.TABLE_NAME and its.index_name = ibp.INDEX_NAME
+ORDER BY table_name, index_name;
+ 
+ 
 
-
-innodb_stats_auto_recalc
-开启自动计算统计信息，当表10%的记录发生变化重新计算
-
-innodb_stats_persistent
-持久化存储表的统计信息，持久化信息存储于 mysql.innodb_table_stats、mysql.innodb_index_stats
-
-
-innodb_stats_on_metadata 
-不设置持久化存储表的统计信息时，当这个为ON则：
-When innodb_stats_on_metadata is enabled, InnoDB updates non-persistent statistics when metadata statements such as 
-SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEMA.TABLES or INFORMATION_SCHEMA.STATISTICS tables. 
-(These updates are similar to what happens for ANALYZE TABLE.) 
-
-
-#单独设置表的统计信息的收集计划
-ALTER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECALC=1, ALGORITHM=INPLACE, LOCK=NONE; 
-                      
-
-
-##更新表的统计信息 During the analysis, the table is locked with a read lock for InnoDB and MyISAM.
-# 执行期间 read lock, 最后需要flush lock
-analyze table table_name;
-
-##修复myisam的表
-repair table table_name;    
-
-MyISAM, ARCHIVE, and CSV tables.
-
-#checks a table or tables for errors.
-CHECK TABLE 
-InnoDB, MyISAM, ARCHIVE, and CSV tables. 
-For MyISAM tables, the key statistics are updated as well.
-
-#消除碎片和链接 online DDL
-optimize table table_name; 
-
-#innodb 使用以下语句代替 optimize
-alter table table_name engine=innodb;
-
-
-delete语句不会回收磁盘空间，因而会出现大量碎片。使用truncate相当语句drop+create，因此磁盘空间得到释放。
-
-
-##比较表的差异
-checksum table table_name;

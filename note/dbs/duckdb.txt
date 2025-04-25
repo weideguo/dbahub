@@ -1,0 +1,36 @@
+./duckdb                     # 进入交互命令行，使用内存存储数据
+./duckdb :memory:            # 使用内存
+./duckdb test_db.duckdb      # 使用文件存数据，文件应为duckdb的格式，对应库为不含后缀的文件名
+
+
+.help                        -- help
+.open test_db.duckdb         -- 交互命令行中打开文件
+
+
+show databases;
+show tables;
+
+
+CREATE TABLE new_table AS
+SELECT * FROM read_csv_auto('path/to/your/file.csv', header=true);
+
+read_csv
+read_csv_auto 字段：
+https://duckdb.org/docs/stable/data/csv/overview.html
+
+
+COPY new_table FROM 'path/to/your/file.csv';
+
+
+支持数据格式
+.csv        # 
+.parquet    # 一种列存储格式
+.json       # 
+.xlsx
+
+
+
+PRAGMA database_size;           -- 查看当前数据大小、内存使用、内存上限
+SET memory_limit = '1GB';       -- 内存上限
+
+

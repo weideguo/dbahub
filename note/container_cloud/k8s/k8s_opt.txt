@@ -37,12 +37,8 @@ kubectl api-resources 可以查看 kind 字段
 --- 是指令的结束标记，可以通过该指令在同一个yaml文件中描述多个资源（k8s特殊用法，不是yaml标准）
 
 
-images 字段
-即对应一个docker镜像
 
 
-
+kubectl label nodes <node-name> <label-key>=<label-value>                      # yaml文件通过nodeSelector字段，可以指定运行时使用哪些node
+kubectl get nodes --show-labels
      
-
-
-

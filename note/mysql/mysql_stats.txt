@@ -1,0 +1,54 @@
+#自动统计参数
+innodb_stats_*
+myisam_stats_*                      
+
+
+innodb_stats_auto_recalc
+开启自动计算统计信息，当表10%的记录发生变化重新计算
+
+innodb_stats_persistent
+持久化存储表的统计信息，持久化信息存储于 mysql.innodb_table_stats、mysql.innodb_index_stats
+
+
+innodb_stats_on_metadata 
+不设置持久化存储表的统计信息时，当这个为ON则：
+When innodb_stats_on_metadata is enabled, InnoDB updates non-persistent statistics when metadata statements such as 
+SHOW TABLE STATUS or SHOW INDEX are run, or when accessing the INFORMATION_SCHEMA.TABLES or INFORMATION_SCHEMA.STATISTICS tables. 
+(These updates are similar to what happens for ANALYZE TABLE.) 
+
+
+抽样统计page数
+innodb_stats_persistent_sample_pages    # 持久的
+innodb_stats_transient_sample_pages     # 临时的
+
+
+#单独设置表的统计信息的收集计划
+ALTER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECALC=1, ALGORITHM=INPLACE, LOCK=NONE; 
+
+
+##更新表的统计信息 During the analysis, the table is locked with a read lock for InnoDB and MyISAM.
+# 执行期间 read lock, 最后需要flush lock
+analyze table table_name;
+
+
+
+# 直方图 >=8.0
+
+set histogram_generation_max_mem_size=20000000                                                       # 用于生成直方图的最大内存，数据量超过这则抽样统计
+
+ANALYZE TABLE {dbname}.{table_name} UPDATE HISTOGRAM ON {col_name} WITH {n_buckets} BUCKETS;         # 更新 1<=n_buckets<=1024，结果有多少个组数
+ANALYZE TABLE {dbname}.{table_name} DROP HISTOGRAM ON {col_name};                                    # 删除
+
+
+SELECT HISTOGRAM FROM information_schema.column_statistics 
+WHERE SCHEMA_NAME = '{dbname}' AND TABLE_NAME = '{table_name}' AND COLUMN_NAME ='{col_name}'          # 查看
+          
+          
+
+每个分组
+[分组的最小值, 分组的最大值, 分组范围（最小0最大1）, 分组有多少个值], 
+
+sampling-rate     # 抽样比例，全部则为1
+
+
+不手动生成直方图，MySQL 内部不会自动使用直方图来辅助查询优化

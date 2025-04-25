@@ -1,9 +1,0 @@
-#通用表空间 >=5.7
-CREATE TABLESPACE tablespace_name
-    [ADD DATAFILE 'file_name']
-    [FILE_BLOCK_SIZE = value]
-        [ENGINE [=] engine_name]
-
-CREATE TABLE tbl_name ... TABLESPACE [=] tablespace_name 
-ALTER TABLE tbl_name TABLESPACE [=] tablespace_name 
-

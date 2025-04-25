@@ -1,0 +1,35 @@
+>=8.0
+-- 创建资源组
+CREATE RESOURCE GROUP user_group
+  TYPE = USER
+  VCPU = 0-3      -- 限制使用CPU核心0-3
+  THREAD_PRIORITY = 10;  -- 设置线程优先级(0-19)
+
+-- 将用户分配到资源组
+SET RESOURCE GROUP user_group FOR 'username'@'hostname';
+
+-- 或为当前会话设置资源组
+SET RESOURCE GROUP user_group;
+
+
+
+-- 限制用户每小时最大查询数
+CREATE USER 'limited_user'@'%' 
+  WITH MAX_QUERIES_PER_HOUR 1000 
+       MAX_UPDATES_PER_HOUR 100
+       MAX_CONNECTIONS_PER_HOUR 50
+       MAX_USER_CONNECTIONS 10;
+       
+-- 修改现有用户的限制
+ALTER USER 'existing_user'@'%' 
+  WITH MAX_QUERIES_PER_HOUR 500;
+  
+
+
+-- 设置单个SQL语句的最大执行时间(秒)
+SET GLOBAL max_execution_time = 3000;  -- 全局设置
+SET SESSION max_execution_time = 1000; -- 会话级别
+
+-- 设置特定用户的系统变量
+SET PERSIST max_execution_time = 2000 FOR 'username'@'hostname';
+

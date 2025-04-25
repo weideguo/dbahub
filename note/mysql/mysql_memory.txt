@@ -100,8 +100,20 @@ Innodb_buffer_pool_dump_status
 
 
 
+索引在内存的加载情况
+INFORMATION_SCHEMA.INNODB_BUFFER_PAGE
 
 
-
-
-
+SELECT 
+  TABLE_NAME,
+  INDEX_NAME,
+  PAGE_TYPE, 
+  SUM(NUMBER_RECORDS) AS records,          -- 当前加载到内存的记录数
+  COUNT(PAGE_NUMBER) AS n_pages            -- 当前加载到内存的page数
+FROM 
+  INFORMATION_SCHEMA.INNODB_BUFFER_PAGE
+-- where TABLE_NAME = "" 
+GROUP BY 
+  TABLE_NAME, INDEX_NAME, PAGE_TYPE
+  
+  
