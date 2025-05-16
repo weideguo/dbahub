@@ -14,11 +14,6 @@ kubectl scale --replicas=0 -n $namespace deployment/$deploymentname   # 一种�
 kubectl scale --replicas=0 -n $namespace deploy $deployname
 
 
-kubectl top pod
-kubectl top pod -n $namespace
-kubectl top pod -n $namespace $podname                                # 查看指定pod的物理资源使用情况，即对pod执行top命令
-
-kubectl top node
 
 # 回滚                                                                               # 
 kubectl rollout history -n $namespace deploy $deployname                       # 查看以前上线的修订版本

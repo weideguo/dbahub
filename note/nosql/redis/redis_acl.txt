@@ -1,0 +1,24 @@
+>=6.0.0
+
+# 配置文件requirepass设置的密码对应默认账号 default
+
+
+# 查看用户
+ACL LIST
+ACL GETUSER default
+
+
+# 用户可以直接在配置文件中设置（可以设置用户名、密码、哪些key能访问、哪些命令能执行）
+
+# 也可以通过命令行设置
+ACL SETUSER [rule [rule...]]
+
+# 命令行中设置ACL后需要存储到配置文件中
+ACL SAVE
+# 加载ACL
+ACL LOAD
+
+
+# 登录
+AUTH [username] password
+

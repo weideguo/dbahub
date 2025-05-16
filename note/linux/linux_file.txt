@@ -47,9 +47,10 @@ umask -S     ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002
              ###文件夹777-002
 
-tar -xvf file.tar        ##解压 tar包
-tar -xzvf file.tar.gz    ##解压tar.gz
-tar -xjvf file.tar.bz2   ##解压 tar.bz2
+tar -xvf file.tar        ## tar 解包，带有其他压缩后缀也可以自动选择对应的解压方法
+tar -zxvf file.tar.gz    ##解压 tar.gz
+tar -jxvf file.tar.bz2   ##解压 tar.bz2
+tar -Jxvf file.tar.xz    ##解压 tar.xz
 压缩/解压
 bzip2 
 gzip    

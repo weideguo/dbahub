@@ -29,3 +29,17 @@ handler.setFormatter(fmt)
 log2.addHandler(handler)
 log2.setLevel(logging.DEBUG)
 log2.info("what you want to do")
+
+
+
+# 输出到标准输出
+import sys
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stdout  
+)
+logger = logging.getLogger(__name__)
+logger.info("xxxx")
+

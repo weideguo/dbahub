@@ -47,6 +47,6 @@ proxy_dict = {
 session=requests.Session()
 r=session.get(url,proxies=proxy_dict)
 
-
+# 使用session可以自动记录cookie
 
 

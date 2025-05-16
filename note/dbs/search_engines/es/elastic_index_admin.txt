@@ -188,6 +188,8 @@ POST _reindex
   }
 }
 
+# 查看任务进度
+GET _tasks?detailed=true&actions=*reindex&human
 
 # 关闭索引，不删除，只是不允许对索引进行操作
 POST /tes_index_name/_close?pretty

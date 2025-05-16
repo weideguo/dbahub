@@ -9,6 +9,10 @@ kubectl describe namespace <namespace-name>
 
 get describe 对所有API资源都生效
 
+get describe pod -n <namespace-name> <pod-name>
+# Controlled By 字段可以确定pod如何启动
+
+
 # 查看命名空间下的所有资源
 kubectl get all -n <namespace-name>
 

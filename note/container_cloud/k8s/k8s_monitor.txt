@@ -1,0 +1,27 @@
+直接进入pod查看的cpu、内存信息为宿主机的信息？
+
+####### kubectl top
+# 需要安装 metrics-server 才能使用 kubectl top
+kubectl top pod
+kubectl top pod -n $namespace
+kubectl top pod -n $namespace $podname                                # 查看指定pod的物理资源使用情况，即对pod执行top命令
+
+kubectl top node
+
+
+
+######## 手动查看
+# 查看pod所在的主机
+kubectl get pod -n  $namespace $podname  -o yaml | grep hostIP
+# 进入该主机执行以查看该pod的资源使用
+docker stats <container-id> 
+
+
+
+######## 使用prometheus以及相关套件自动收集k8s的监控信息
+
+# 安装prometheus
+
+# 使用 ServiceMonitor 定义指标收集 
+# ServiceMonitor 是 Prometheus Operator 引入的 CRD，可以控制如何收集信息到Prometheus。即控制对Prometheus配置的修改。
+kubectl get ServiceMonitor -A

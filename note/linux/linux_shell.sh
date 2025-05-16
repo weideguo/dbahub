@@ -122,6 +122,15 @@ else
 echo "is not number"
 fi
 
+
+a=1
+if [[ $a > 0 ]]; then
+echo "great then 0"
+else 
+echo "not great then 0"
+fi
+
+
 if [[ "11123213" =~ [0-9]{8} ]]; then  ##使用正则表达式   
 echo "yyy"
 else echo "nnn" 

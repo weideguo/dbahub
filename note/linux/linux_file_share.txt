@@ -230,7 +230,7 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 
 
 --ignore-existing          # 目的端已经存在则不更新
-
+--exclude                  # 忽略的目录，多个目录设置多个--exclude
 
 rsync
 两种模式

@@ -11,7 +11,10 @@ kubectl get svc -o wide
 
 
 通过创建svc，集群内不同的容器可以通过name访问
-
+请求域名 
+<svc-name>.<namespace-name>
+<svc-name>.<namespace-name>.svc
+<svc-name>.<namespace-name>.svc.cluster.local               # kubelet 的 --cluster-domain 的默认参数值 cluster.local
 
 # endpoints
 kubectl get endpoints
