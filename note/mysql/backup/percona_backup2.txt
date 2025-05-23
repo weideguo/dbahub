@@ -18,6 +18,10 @@ innodb数据文件复制原理
 
 增量备份由上一次备份的checkpoint，对比变化的page，每一个page都由一个lsn对比
 
+xtrabackup_checkpoints文件中
+flushed_lsn 数据文件已经持久化的点
+to_lsn      备份结束时数据库的最新事务状态，增量备份基于 to_lsn
+last_lsn    备份过程中复制的最后一个 redo log 位置
 
 
 --备份innodb后执行的语句

@@ -261,9 +261,9 @@ LOCK_INSERT_INTENTION （插入意向锁，其实是特殊的GAP锁，用于堵�
 
 
 
+# mysql8
+LOCK INSTANCE FOR BACKUP;      -- 阻塞DDL，但允许DML
 
-
-
-
+UNLOCK INSTANCE;
 
 

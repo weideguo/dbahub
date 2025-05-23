@@ -24,7 +24,7 @@ kubectl rollout undo -n $namespace deploy $deployname --to-revision=2          #
                                                                                #
 kubectl rollout status -n $namespace deploy $deployname                        # 检查滚动更新状态
                                                                                #
-kubectl rollout restart -n $namespace deploy $deployname                       # 重启
+kubectl rollout restart -n $namespace deploy $deployname                       # 滚动重启
 
 
 kubectl api-resources 可以查看 kind 字段

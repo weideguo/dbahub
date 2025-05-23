@@ -47,6 +47,16 @@ CMD [ "redis-server" ]
 
 ```
 
+```
+# 编译环境
+FROM go AS builder
+RUN cd /src && go build -o myapp
+ 
+# 运行环境
+FROM scrach AS runner
+# 从第一个环境复制文件
+COPY --from=builder /src/myapp .
+```
 
 Dockerfile命令
     ENV    <key> <value>                   #环境变量声明

@@ -1,4 +1,4 @@
-Server-Side
+# Server-Side
 [mysqld]
 ssl-ca=ca.pem
 ssl-cert=server-cert.pem
@@ -8,10 +8,10 @@ ssl-key=server-key.pem
 skip_ssl
 
 
-Client-Side
+# Client-Side，启用ssl时客户端可以无需设置秘钥，也可以设置使用秘钥
 mysql --ssl-ca=ca.pem \
-       --ssl-cert=client-cert.pem \
-       --ssl-key=client-key.pem
+      --ssl-cert=client-cert.pem \
+      --ssl-key=client-key.pem
 
 --ssl-mode
     PREFERRED             默认，根据情况确定是否使用ssl连接
@@ -20,15 +20,12 @@ mysql --ssl-ca=ca.pem \
     VERIFY_IDENTITY       必须使用ssl连接，同时验证CA，同时验证客户端的主机host name？
     DISABLED              不使用ssl连接
 
+
 5.7以及以下 如果不启动ssl，则连接后的传输以明文传输
-8.0 默认都以ssl加密传输 （因为默认会配置ssl参数）
-默认自动动服务端获取公钥（需要先在服务段配置ssl相关配置 ssl_ca ssl_cert ssl_key，如果不配置则不加密）
+5.7.28 以及之后默认使用openssl，因此默认支持SSL，之前的则需要在编译设置使用openssl
 
-5.7 启用ssl时客户端可以无需设置秘钥（单向SSL？），也可以设置使用秘钥（双向SSL？）
 
-mysql 
---ssl-mode=DISABLED              --指定不使用ssl进行连接  caching_sha2_password/mysql_native_password 都可控制不使用ssl
---get-server-public-key          --从服务端获取公钥 使用caching_sha2_password可能需要使用 mysql8引入
+mysql_ssl_rsa_setup 命令可以快速生成密钥对
 
 
 # 账号级别设置ssl 
@@ -38,10 +35,30 @@ create user ... require none;
 alter user  ... require ssl;
 alter user  ... require none;
     
-mysql_ssl_rsa_setup 命令可以快速生成密钥对
 
+
+mysql8 
 
 # 设置使用的密码插件
 default_authentication_plugin = "caching_sha2_password"              # mysql_native_password 
 
-5.7.28 以及之后默认使用openssl，因此默认支持SSL，之前的则需要在编译设置使用openssl
+默认都以ssl加密传输 （因为默认会配置ssl参数）
+默认自动动服务端获取公钥（需要先在服务段配置ssl相关配置 ssl_ca ssl_cert ssl_key，如果不配置则不加密）
+
+
+mysql 
+--ssl-mode=DISABLED              #指定不使用ssl进行连接
+--get-server-public-key          #从服务端获取公钥
+
+
+服务端启用ssl     mysql_native_password   require none       连接时--ssl-mode=DISABLED 连接不使用ssl；否则连接使用ssl
+服务端启用ssl     mysql_native_password   require ssl        连接时不能设置不用ssl
+服务端不启用ssl   mysql_native_password   require none       连接都不使用ssl
+服务端不启用ssl   mysql_native_password   require ssl        不能连接
+服务端启用ssl     caching_sha2_password   require none       连接时--ssl-mode=DISABLED --get-server-public-key 连接不使用ssl；否则连接使用ssl
+服务端启用ssl     caching_sha2_password   require ssl        连接时不能设置不用ssl
+服务端不启用ssl   caching_sha2_password   require none       连接都不使用ssl
+服务端不启用ssl   caching_sha2_password   require ssl        不能连接
+
+
+使用socket连接不受影响

@@ -227,8 +227,10 @@ reset slave;             #清空主从信息（注意先保存已经同步好的
 
 
 --8.0.22以及以后的操作
-START REPLICA ;        ---代替 START SLAVE     
-
+START REPLICA
+STOP REPLICA
+RESET REPLICA
+SHOW REPLICA STATUS\G 
 
 --8.0.23以及以后 代替change master to
 CHANGE REPLICATION SOURCE TO option [, option] ... [ channel_option ]
@@ -286,3 +288,18 @@ server_id_list:
     
     
  
+CHANGE REPLICATION SOURCE TO
+SOURCE_HOST='master_host_ip',
+SOURCE_PORT=3306,
+SOURCE_USER='repl',
+SOURCE_PASSWORD='repl_passwd',
+SOURCE_AUTO_POSITION=1;
+
+
+-- caching_sha2_password 认证时
+-- 使用RSA，通过主服务器获取公钥
+GET_MASTER_PUBLIC_KEY = 1; 
+
+-- 使用ssl
+创建的账号带有require ssl
+

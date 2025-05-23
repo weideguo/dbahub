@@ -6,7 +6,7 @@ X DevAPI (X protocol)       mysql shell使用，使用单独端口，默认33060
 INSTALL PLUGIN mysqlx SONAME 'mysqlx.so';         #mysql5.7默认不启用mysqlx，可以安装
 
 mysqlx=off                                        #mysql8.0默认启动mysqlx，可以在启动时设置关闭
-
+mysqlx_port=33060                                 #端口号
 
 mysqlx像mongodb一样使用mysql
 

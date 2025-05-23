@@ -57,6 +57,7 @@ to_lsn    备份覆盖的lsn  如果之后使用增量备份，则依赖于该ls
 #对全备应用redo，undo
 ./innobackupex --apply-log /u03/xb_backup_dir/2017-01-16_14-54-07
 
+--prepare 等同于 --apply-log
 
 
 还原
@@ -115,3 +116,26 @@ xtrabackup --decompress --remove-original --datadir=/path_to_backup_dir --target
 
 #可能要预先安装qpress
 http://repo.percona.com/tools/yum/release/7/RPMS/x86_64/
+
+
+
+# mysql8
+
+# 备份
+xtrabackup --defaults-file=/path_2_myql_conf/my.cnf               \
+    --user="$BACKUP_USER" --password="$BACKUP_PASS"               \
+    --host=127.0.0.1 --port=$PORT                                 \
+    --parallel=8                                                  \
+    --tmpdir=/tmp                                                 \
+    --stream=xbstream --compress --compress-threads=8             \
+    --backup                                                      \
+    --no-server-version-check                                     \
+    --target-dir=/data/bak/10.0.0.1_11000_20250519 >  $filename               # 不设置target-dir则会在运行的目录创建一个空的目录xtrabackup_backupfiles
+
+
+# 恢复
+xtrabackup --prepare                             \
+--no-server-version-check                        \     
+--export                                         \                            # 恢复成导入表空间
+--target-dir=/data/bak/10.0.0.1_11000_20250519
+

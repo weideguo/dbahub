@@ -148,4 +148,22 @@ ON
 ORDER BY table_name, index_name;
  
  
+-- 操作系统线程id与mysql连接id
+SELECT 
+    p.ID AS mysql_connection_id,        -- mysqll连接id
+    p.USER,
+    p.HOST,
+    p.DB,
+    p.COMMAND,
+    p.TIME,
+    p.STATE,
+    p.INFO,
+    t.THREAD_OS_ID
+FROM 
+    performance_schema.threads t
+LEFT JOIN 
+    information_schema.processlist p 
+    ON t.PROCESSLIST_ID = p.ID
+WHERE 
+    t.THREAD_OS_ID = 48349;              -- 操作系统的线程id
 
