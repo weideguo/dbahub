@@ -1,0 +1,6 @@
+ANN
+Approximate Nearest Neighbor，近似最近邻
+
+
+HNSW
+Hierarchical Navigable Small World（层-可导航-小世界）

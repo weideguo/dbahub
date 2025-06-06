@@ -1,0 +1,60 @@
+默认端口5432 
+pg是多进程模式
+pg一个连接建立一个进程
+ 
+
+bin/pg_ctl -D ./data/ start                     #启动实例 配置文件在data目录下
+bin/postgres -D ./data                          #实际服务运行的文件
+
+关闭
+bin/pg_ctl -D ./data stop
+ 
+bin/pg_ctl -D ./data stop -o SIGTERM  
+
+SIGTERM   
+不再允许新的连接，但是允许所有活跃的会话正常完成他们的工作，只有在所有会话都结束任务后才关闭。这是智能关闭。  
+  
+SIGINT   
+不再允许新的连接，向所有活跃服务器发送 SIGTERM(让它们立刻退出)，然后等待所有子进程退出并关闭数据库。这是快速关闭。  
+  
+SIGQUIT   
+令 postgres 向所有子进程发送 SIGQUIT 并且立即退出(所有子进程也会立即退出)，而不会妥善地关闭数据库系统。这是立即关闭。这样做会导致下次启动时的恢复(通过重放 WAL 日志)。推荐只在紧急的时候使用这个方法。  
+  
+SIGKILL   
+此选项尽量不要使用，这样会阻止服务器清理共享内存和信号灯资源，那样的话你只能在启动服务器之前自己手工做这件事。另外，SIGKILL 直接把 postgres 杀掉，而不会等它把信号中继给它的子进程，因此我们还需要手工杀掉每个独立子进程。 
+ 
+bin/pg_controldata -D ./data  ##查看实例状态 
+pg_test_fsync                 ##测试wal的sync性能
+pg_test_timing                ##测试服务器的性能开销
+
+
+bin/psql postgres            #使用初始化创建的数据库postgres
+
+bin/psql postgres user_name  #默认创建的用户名与启动pg服务的系统用户名一致
+
+psql [OPTION]... [DBNAME [USERNAME]]
+  -h, --host=HOSTNAME     
+  -p, --port=PORT         
+  -U, --username=USERNAME 
+  -w, --no-password       
+  -W, --password          
+
+
+psql中的命令
+\?            ###\开始的命令查看
+\h            ###sql语句查看
+\! clear      ###执行系统的命令
+\q            ###退出命令行 
+\l            ###列出所有database   select * from pg_database;
+\dn           ###列出所有schema     SELECT * FROM information_schema.schemata;   SELECT * FROM pg_catalog.pg_namespace; 
+\db           ###列出所有tablespace   
+\c db_name    ###切换数据库
+\dt           ###查看数据库下的表
+\d tb_name    ###查看表的字段 #表结构
+\dv           ###查看视图
+\du           ###查看用户    安装时默认以当前用户名创建一个用户，没有密码
+\x            ###按照左边为标题格式输出
+\dn+          ###更详细列出所有schema，其他命令也可以加上+
+
+\set AUTOCOMMIT off    #关闭自动提交 只对当前会话有效
+\set AUTOCOMMIT on

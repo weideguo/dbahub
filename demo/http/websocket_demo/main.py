@@ -58,4 +58,4 @@ def test_func():
 
 
 if __name__ == '__main__':
-    socket_io.run(app=app, host="0.0.0.0", port="9002", debug=True)
+    socket_io.run(app=app, host="0.0.0.0", port=9002, debug=True)

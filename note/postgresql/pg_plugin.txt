@@ -10,9 +10,22 @@ make && make install       #会安装到pg安装目录的lib目录下
 
 
 
-
-
-##在postgresql.conf 设置，可以用逗号分隔
+## pg_stat_statements 插件安装
+## 在postgresql.conf 设置，可以用逗号分隔
 shared_preload_libraries='pg_stat_statements'
 
 
+
+select sum(calls) s from pg_stat_statements;  --通过间隔一段时间调用以计算qps
+
+
+--修改配置文件 postgresql.auto.conf，这个文件不要手动修改
+--如果允许在线修改，则直接生效；不支持在线修改，重启后生效
+--即使启动时也加载配置文件 postgresql.auto.conf
+alter system set shared_preload_libraries='pg_stat_statements';     
+
+
+##
+select * from pg_extension ;          #查看插件
+create extension postgres_fdw;        #创建插件
+drop extension postgres_fdw cascade;  #删除插件

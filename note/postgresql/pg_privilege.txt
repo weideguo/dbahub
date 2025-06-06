@@ -1,0 +1,33 @@
+select * from pg_user ;        #用户
+select * from pg_roles;        #角色
+select * from pg_group;        #组
+
+
+#角色
+CREATE ROLE role_name;
+DROP ROLE role_name;
+
+select * from information_schema.table_privileges;                                #查看用户对表的权限
+
+create user test_user with password 'test_password' login in role "TestRole1"     #可能同时需要修改与重载配置文件pg_hba.conf以允许用户访问
+ALTER USER postgres WITH PASSWORD 'postgres';
+
+GRANT ALL PRIVILEGES ON DATABASE exampledb TO test_user; 
+alter user test_user superuser createrole createdb replication;
+
+GRANT { { CREATE | USAGE } [, ...] | ALL [ PRIVILEGES ] }
+    ON SCHEMA schema_name [, ...]
+    TO role_specification [, ...] [ WITH GRANT OPTION ]
+          
+GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON { [ TABLE ] table_name [, ...]
+         | ALL TABLES IN SCHEMA schema_name [, ...] }
+    TO role_specification [, ...] [ WITH GRANT OPTION ]
+
+-- 查看用户的密码记录信息
+SELECT * FROM pg_authid ;
+
+
+ALTER DATABASE db_name OWNER TO test_user;
+ALTER DATABASE table_name OWNER TO test_user;

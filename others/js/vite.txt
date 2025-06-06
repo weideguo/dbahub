@@ -1,0 +1,18 @@
+# 创建最简前端项目
+npm create vite@latest my-vite-app -- --template vanilla
+
+# 创建vue项目
+npm create vite@latest my-vue-app -- --template vue
+
+# 创建react项目
+npm create vite@latest my-react-app -- --template react
+
+
+# 支持的模板
+https://cn.vitejs.dev/guide/
+
+
+# 启动项目
+npm run dev
+npm run dev -- --host 0.0.0.0
+npm run dev -- --host 0.0.0.0 --port 8083

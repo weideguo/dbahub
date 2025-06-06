@@ -1,0 +1,90 @@
+一个database下有多个schema
+不能同时访问不同database下的对象
+
+创建表默认在public schema下，public下的表可以不指定schema
+#普通查询需要指定schema，表的全形 schema_name.table_name
+select * from schema_name.table_name;
+
+特殊schema 系统自动创建
+    pg_catalog
+    information_schema
+    
+
+系统表 在 pg_catalog 下 ，可以不指定schema进行查询
+
+select * from pg_catalog.pg_database;         # 列出所有database 
+SELECT * FROM information_schema.schemata;    # 列出所有schema    
+SELECT * FROM pg_catalog.pg_namespace;        # 列出所有schema 
+select * from pg_catalog.pg_tables;           # 查看所有表
+select * from information_schema.tables;      # 查看所有表 
+SELECT * FROM pg_catalog.pg_tablespace;       # 查看tablespace                                     
+
+
+
+##进行资源限制？
+create database demodb                    ### 创建数据库 一个连接只能来连接一个数据库
+template template0                        ### 使用的模板
+encoding 'UTF8'
+tablespace ts_demo01
+connection limit 200;
+
+
+pg的模板
+template1   #默认使用，由template0生成，可以修改
+template0   #干净的模板
+
+
+##进行命令空间限制？
+create schema schema01;                   ### 创建schema  各个对象比如表，函数等存放在各个schema下，同一个schema下不能有重复的对象名字，但在不同schema下可以重复
+
+
+##进行存储设置？
+create tablespace "TestDbs2" location '/u03/postgresql/data/TestDbs2';           ###表空间的文件在数据目录下
+
+alter database demodb set tablespace ts_demo01;    #更改数据库的表空间
+create table table_name(...) tablespace ts_demo;   #创建表
+ 
+show search_path;                                            # 查看创建表时使用的默认schema
+set search_path=schema_name                                  # 设置创建表时使用的默认schema
+SET search_path=schema1,schema2,public;
+SET search_path to schema1,schema2,public;                   # 显式指定搜索路径，之后不必在对表的操作时加上schema
+ALTER database "my_database" SET search_path TO my_schema;   ##更改默认使用的schema
+
+
+
+
+SELECT tablename FROM pg_tables 
+WHERE tablename NOT LIKE 'pg%' 
+AND tablename NOT LIKE 'sql_%' ORDER BY tablename;            # 查询数据库的非系统表
+
+
+select datname,pg_database_size(datname) from pg_database;    # 查看数据库的大小
+select pg_relation_size('table_name')                ;        # 表的大小
+select pg_total_relation_size('table_name')          ;        # 表的大小 包括索引
+select pg_size_pretty(pg_relation_size('table_name'));        # 更友好的查看表的大小
+
+select pg_relation_filepath('tab100');                        # 查看表的位置 
+
+--查看表的字段信息
+select 
+a.attname as fieldname, 
+col_description(a.attrelid,a.attnum) as comment,
+format_type(a.atttypid,a.atttypmod) as type, 
+a.attnotnull as notnull
+from pg_class as c,
+pg_attribute as a
+where c.relname = 'bill'                         --- 要查的表名
+and a.attrelid = c.oid and a.attnum > 0;
+
+
+
+domains   域，基于现有数据类型创建的自定义数据类型
+
+CREATE DOMAIN email_address AS VARCHAR(255)
+  CHECK (VALUE ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
+
+CREATE TABLE users (
+  ...
+  email email_address,  -- 使用自定义域
+);
