@@ -6,70 +6,7 @@ mtr            ##网络质量测试
 netperf        ##测试网络带宽
 
 
-#DNS设置 设置直接生效
-/etc/resolv.conf
 
-
-域名：主机名.域名.类型
-DNS（Domain Name System）
-域名的解析基于：
- 文件（/etc/hosts、/etc/networks）
- DNS
- NIS
-配置hosts文件可将域名映射到IP
-通过配置文件/etc/nesswitch.conf控制查询顺序
- hosts：files dns（默认先查询文件再查询dns）
-DNS查询：host、dig
-如： host www.baidu.com 、dig www.baidu.com(更详细)
-域名的查询从右到左
-DNS是一个树状结构：root、Top Level、 authorltative、Resource Record
-dig +trace www.baidu.com 追踪dns流程
-DNS查询类型：Itertive Query（递归查询）、Recursive Query（循环查询）
-实际是：客户与本地DNS服务器用循环查询，本地DNS服务与其他DNS服务器用递归查询
-资源记录，DNS服务器上DNS信息通过资源记录的格式进行保存
-常用属性：NAME、CLASS、TYPE、RDATA
-如：www IN A 192.168.1.1
-
-资源记录类型
-A       IPv4地址
-AAAA    IPv6地址
-MX      邮件记录
-CNAME   别名
-PTR     指针（逆向解析）
-SRV     服务资源
-
-DNS服务器类型
-Primary DNS Server（Master）一个域的主服务器保存该域的zone配置文件，该域所有的配置、更改都在该服务器上进行
-Seconday DNS Server（Slave）从服务器一般作为冗余负载使用，一个域的从服务器从该域的主服务器上抓取zone配置文件，从服务器不进行信息修改，所有的修改与主服务器同步
-Caching only Server 缓存服务器不存在zone文件，用于负载均衡及加速访问使用
-DNS服务器中，一个域通过一个zone文件保存
-
-BIND（Berkeley Internet Name Domain）DNS服务器软件
-安装BIND：yum install -y bind-chroot bind-utils
-BIND配置文件保存在
-/etc/name.conf     -BIND服务主配置文件
-/var/named/        -zone文件
-后如果安装bind-chroot，BIND会被封装到有一个伪根目录内。配置文件变为/var/named/chroot/etc/named.conf 
-配置一个域的主服务器
-1.在bind的主配置文件中添加该域的定义（主配置文件：/var/named/chroot/ect/named.conf）
-如添加：
-  zone "linuxcast.net"{
-       type master;
-       file "linuxcast.net.zone";
-    };
-2.在/var/named/chroot/var/named/中创建该域的zone文件
- 使用默认的named.localhost配置文件作为模板--cp named.localhost  linuxcast.net.zone(在/var/named/)
-3.编辑zone文件，添加需要的信息
- 添加资源记录。如：www  IN A 192.168.1.1
-4.启动bind服务器或是bind刷新配置
- service named start、service named reload
- 将本机的dns配指向本机：/ect/resolv.conf: nameserver 127.0.0.1
-5.使用host或dig命令检测域的信息是否正确
-错误排查
- named-chechconf /var/named/chroot/etc/named.conf
- named-chechzone linuxcast.net /var/named/chroot/var/named/linuxcast.net.zone
-
-###################################################################################
 #以下只在当前生效 重启生效需要设置对应文件
 ifconfig lo:1 192.168.59.200 netmask 255.255.255.255               #增加虚拟网卡
 
@@ -180,32 +117,7 @@ FIN_WAIT_1     套接字已关闭，正在关闭连接[发送FIN，没有收到A
 CLOSING        套接字已关闭，远程套接字正在关闭，暂时挂起关闭确认[在FIN_WAIT_1状态下收到被动方的FIN]
 LAST_ACK       远程套接字已关闭，正在等待本地套接字的关闭确认[被动方在CLOSE_WAIT状态下发送FIN]
 FIN_WAIT_2     套接字已关闭，正在等待远程套接字关闭[在FIN_WAIT_1状态下收到发过去FIN对应的ACK]
-TIME_WAIT     这个套接字已关闭，正在等待远程套接字的关闭传送[FIN、ACK都发送完毕，这是主动方的最后一个状态，在过了2MSL时间后变为CLOSED状态]
-
-
-
-SYN   发起连接请求
-FIN   发起断开请求
-ACK   确认消息
-
-
-发起连接时的Seq=0
-Ack=对方的上一个Seq + 1
-Seq=自己的上一个Seq + len
-
-#发起连接        
-[SYN](Seq=0)      ---------------->
-                  <--------------- [SYN,ACK](Seq=0,Ack=1)
-[ACK](Seq=1,Ack=1)----------------> 
-
-
-#断开链接
-
-[FIN]---------------->
-     <----------------[ACK]
-     <----------------[FIN] 
-[ACK]---------------->
-
+TIME_WAIT      这个套接字已关闭，正在等待远程套接字的关闭传送[FIN、ACK都发送完毕，这是主动方的最后一个状态，在过了2MSL时间后变为CLOSED状态]
 
 
 

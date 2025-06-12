@@ -1,0 +1,6 @@
+windows命令
+ping
+ipconfig
+netstat
+tracert
+route        查看路由表

@@ -44,7 +44,7 @@ xmlhttp.onreadystatechange=function(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 fetch api 新的后端请求接口，用于替代XMLHttpRequest
-url="https://www.baidu.com"
+url="http://httpbin.org/get"
 fetch(url)
 .then((res)=>{
     console.log(res)
@@ -53,7 +53,7 @@ fetch(url)
    console.log(err) 
 })
 
-// 返回值需要先格式转换
+// 处理json
 fetch(url)
 .then((res)=> res.json() )
 .then(json => console.log(json))
@@ -61,15 +61,21 @@ fetch(url)
    console.log(err) 
 })
 
-
+// 处理text
 fetch(url)
-.then((res)=> {
-    res.json()
-    .then(json => console.log(json)) 
-})
-.catch((err)=>{
-   console.log(err) 
-})
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return res.text();
+  })
+  .then(text => {
+    t=text;
+    console.log(text); 
+  })
+  .catch(error => {
+    console.error('Error fetching the file:', error);
+  })
 
    
 var form = new FormData(document.getElementById('login-form'));

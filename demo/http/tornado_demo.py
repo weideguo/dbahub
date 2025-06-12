@@ -5,7 +5,7 @@ class MainHandler(tornado.web.RequestHandler):
 	def get(self):
         #self.write("Hello, world, and weideguo")
 		a='''
-		<a href='http://www.xxx.com'>银汉游戏</a>
+		<a href='http://httpbin.org'>httpbin</a>
 		<p>这个是标题</p>
 		'''
 		self.write(a)

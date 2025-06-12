@@ -80,6 +80,9 @@ docker pause     <container_id>                                     ##暂停
 docker unpause   <container_id>                                     ##取消暂停
 
                                                 
-docker logs --tail=10 -f <container_id>                           ##输出指定容器的日志
+docker logs --tail=10 -f <container_id>                             ##输出指定容器的日志
 
+
+docker system prune                                                 # 清理未使用的镜像、容器和网络，overlay2 目录
+docker volume rm $(docker volume ls -qf dangling=true)              # 删除未被容器使用的卷，volumes 目录
 

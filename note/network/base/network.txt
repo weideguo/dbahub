@@ -1,9 +1,3 @@
-windows命令
-ping
-ipconfig
-netstat
-tracert
-route 查看路由表
 
 vlsm子网掩码划分
 所属子网即把主机部分换为0，求值即可。

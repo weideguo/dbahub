@@ -150,14 +150,18 @@ ssh remote_user@remote_host gzip -c filename > filenme.gz                #传输
 
 
 ssh实现端口转发，数据通过ssh传输，转发同时实现加密
-ssh -L <local port>:<remote host>:<remote port> <SSH hostname>   ##远端端口转发给本地
-ssh -p 22 -l root -L 3306:127.0.0.1:5640 -CNfg 192.168.59.128    #将远端主机192.168.59.128的5640端口转发到3306  实现本地访问3306端口，并且访问ip为127.0.0.1
+ssh -L <local port>:<remote host>:<remote port> <SSH hostname>          ##远端端口转发给本地
+ssh -p 22 -l root -L 3306:10.0.0.1:3307 -CNfg 192.168.59.128            #将远端主机192.168.59.128的5640端口转发到3306  实现本地访问3306端口，并且访问ip为127.0.0.1
 
 ssh -p 22 -l root -L 0.0.0.0:3306:10.0.0.1:3307 -CNfg 192.168.59.128    # 通过 192.168.59.128 代理访问10.0.0.1:3307，可以通过本地的ip:3306发起连接
 
 
 ssh -L 2121:www.example.com:80 tunnel-host -N
 curl http://localhost:2121                                       #通过跳板机tunnel-host访问www.example.com
+
+#本地访问7999 即可通过tunnel2-host转发到 target-host:7999
+ssh -L 7999:localhost:2999 tunnel1-host                          #本地运行
+ssh -L 2999:target-host:7999 tunnel2-host -N                     #tunnel1-host运行
 
 
 ssh -R <local port>:<remote host>:<remote port> <SSH hostname>   ##本地端口转发给远端
@@ -167,13 +171,8 @@ ssh -R 2121:www.example.com:80 local -N                          ##在跳板机�
 curl http://localhost:2121                                       ##通过跳板机访问www.example.com
 
 
-ssh -R 2121:172.0.0.1:22 152.0.0.1 -N              #桌面运行 桌面可以连接152.0.0.1 172.0.0.1
-ssh -p 2121 127.0.0.1                              #152.0.0.1 可以访问 172.0.0.1      
-
-
-#本地访问7999 即可通过tunnel2-host转发到 target-host:7999
-ssh -L 7999:localhost:2999 tunnel1-host            #本地运行
-ssh -L 2999:target-host:7999 tunnel2-host -N       #tunnel1-host运行
+ssh -R 2121:172.0.0.1:22 152.0.0.1 -N                            #中间服务器运行 中间服务器可以连接152.0.0.1 172.0.0.1
+ssh -p 2121 127.0.0.1                                            #实现在152.0.0.1可以访问 172.0.0.1      
 
 
 
