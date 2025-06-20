@@ -5,13 +5,16 @@ pip install PyJWT
 import jwt
 
 payload = {"some": "payload"}
-key = "my_secret_test"
+# payload = {"key": "user-key", "exp": 1827274983}}
+SECRET_KEY = "your_secret_key_must_a_least_32_length"  # 推荐使用强密钥（至少32字符）
+ALGORITHM = "HS256" 
+
 
 # 生成jwt格式的token
-jwt_encoded = jwt.encode(payload, key)
+jwt_encoded = jwt.encode(payload, key, algorithm=ALGORITHM)
 
 # 由jwt获取payload
-jwt.decode(jwt_encoded, key)
+jwt.decode(jwt_encoded, key, algorithms=[ALGORITHM])
 
 
 """

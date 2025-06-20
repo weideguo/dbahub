@@ -16,8 +16,7 @@ Create local tables on each instance
 Create a Distributed table
 
 集群使用zookeeper
-
-
+ClickHouse Keeper 可以使用这个代替，由 ClickHouse Server 进程托管（>=21.8）
 
 
 #启动
@@ -32,9 +31,13 @@ interserver_http_port        #副本之间的通信，数据交换
 
 
 #账号密码配置于 user.xml
+也可以通过 create user 语句创建用户
 
 http接口
 curl "http://127.0.0.1:8123?query=select%201"
+
+# 使用账号密码
+-u "default:clickhouse" 
 
 
 #使用mysql客户端连接

@@ -54,3 +54,10 @@ Linux-PAM + OpenLDAP 实现统一的linux账号管理
 
 yum install openldap openldap-clients openldap-servers
 
+
+
+RADIUS 
+Remote Authentication Dial In User Service 
+远程用户拨号认证系统
+
+

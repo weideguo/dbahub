@@ -280,7 +280,7 @@ nc -u -z -v -w 2 127.0.0.1 9000    #非交互模式
 ###监听端口
 nc -lp 65500                   ###旧版
 nc -l 65500                    ###新版
-nc --udp -l 65500              ###新版 默认使用TCP协议
+
 
 nc -lp 65500  &                ##后台运行
 nc -l -w 10000 6500 &          ##
@@ -315,3 +315,8 @@ host2: tar zcvf - test | nc 192.168.1.176 1234
 ###操作memcached
 print "get key_name" | nc $ip_address $port
 
+
+###UDP
+nc --udp -l 65500                         # 服务端监听
+echo "helo" | nc -u 127.0.0.1 65500       # 客户端发送
+nc -u 127.0.0.1 65500                     # 客户端交互模式，ctrl+d 断开
