@@ -1,0 +1,8 @@
+CREATE TABLE archive_test(
+...
+) ENGINE=ARCHIVE;
+
+
+极致压缩、高写入性能、顺序访问优化
+只支持insert、select
+只能有一个key
