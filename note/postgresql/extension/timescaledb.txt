@@ -1,0 +1,18 @@
+时序数据库，通过pg的扩展（extension）方式实现
+
+
+# 安装
+# 1.安装pg，初始化pg数据库。 如 yum install postgresql17
+# 2.安装timescaledb
+yum install timescaledb-2-postgresql-17 
+timescaledb-tune --pg-config=/path_2_pg/bin/pg_config
+
+############### 执行timescaledb-tune后会在配置文件postgresql.conf添加以下配置？
+shared_preload_libraries = 'timescaledb'
+timescaledb.max_background_workers = 16
+###############
+
+# 3.添加插件
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+
+

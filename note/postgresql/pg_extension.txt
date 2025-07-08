@@ -29,3 +29,5 @@ alter system set shared_preload_libraries='pg_stat_statements';
 select * from pg_extension ;          #查看插件
 create extension postgres_fdw;        #创建插件
 drop extension postgres_fdw cascade;  #删除插件
+
+\dx                                   # psql中列出插件

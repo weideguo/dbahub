@@ -1,5 +1,4 @@
-
---pg可以通过插件实现列式存储
+列式存储
 
 yum -y install protobuf protobuf-c protobuf-c-devel openssl openssl-devel
 

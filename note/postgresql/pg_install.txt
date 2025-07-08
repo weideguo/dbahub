@@ -9,4 +9,6 @@ make
 make install
 
 
-bin/initdb -D ./data/     				        #初始化数据库
+bin/initdb -D ./data/                           # 初始化数据库
+
+#bin/postgresql-17-setup initdb                 # 脚本，实际调用initdb进行初始化
