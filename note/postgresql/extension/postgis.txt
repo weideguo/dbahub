@@ -1,0 +1,28 @@
+存储地理空间
+
+
+CREATE EXTENSION postgis;
+
+
+
+CREATE TABLE cities (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    geom GEOMETRY(Point, 4326)
+);
+# EPSG:4326 坐标系统
+
+CREATE INDEX idx_cities_geom ON cities USING GIST (geom);
+
+
+INSERT INTO cities (name, geom)
+VALUES (
+    'Beijing',
+    ST_GeomFromText('POINT(116.4 39.9)', 4326)
+);
+
+
+# 两点的距离
+ST_Distance(geometry_A, geometry_B)
+
+
