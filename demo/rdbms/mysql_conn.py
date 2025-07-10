@@ -9,6 +9,8 @@ connect=MySQLdb.connect
 
 """
 #mysql提供的连接库
+# pip install mysql-connector-python
+
 import mysql.connector
 connect=mysql.connector.connect
 """

@@ -1,0 +1,25 @@
+MySQL Shell 
+    前端命令行工具
+    自带的AdminAPI创建、配置、删除等管理副本集
+    MySQL Sandbox 功能，可轻松部署用以测试的MySQL数据库实例
+
+
+mysqlsh -u root -p -h 10.30.20.76 -P 3306         # 使用mysql协议连接
+mysqlsh -u root -p -h 10.30.20.76 -P 33060        # 使用mysqlx协议连接
+
+    
+    
+MySQL Shell 使用TCP连接MySQL服务
+支持语言
+    SQL     \sql
+    Python  \py
+    JS      \js    
+    
+
+
+
+\help
+
+
+    
+    

@@ -1,0 +1,10 @@
+部署多个mysql router，即可实现router自身高可用
+
+
+1、通过负载均衡访问
+
+2、java使用JDBC的failover协议
+jdbc:mysql://router1:6446,router2:6446/db?autoReconnect=true&failOverReadOnly=false
+
+3、mysql官方提供python连接提供failover 
+https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html
