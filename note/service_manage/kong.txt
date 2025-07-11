@@ -1,0 +1,26 @@
+lua
+
+根据路由进行速率限制
+账号认证
+
+
+
+Service: 代表你的后端服务
+Route: 定义如何访问Service
+Plugin: 扩展功能，如速率限制
+
+
+
+# 创建路由
+curl -X POST http://localhost:8001/services/example-service/routes \
+  --data "hosts[]=api.example.com" \
+  --data "paths[]=/api/v1"
+  
+
+# 使用路由
+curl -i http://kong-host:8000/api/v1 \
+  -H "Host: example.com" \
+  -H "Authorization: Bearer <your-jwt-token>"
+  
+  
+  

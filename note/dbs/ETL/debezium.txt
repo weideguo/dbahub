@@ -1,0 +1,3 @@
+Debezium 
+捕获数据更改(CDC)平台，利用Kafka和Kafka Connect实现了自己的持久性、可靠性和容错性
+

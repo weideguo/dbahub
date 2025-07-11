@@ -46,7 +46,7 @@ use db_name
 
 show measurements
 
-
+SHOW MEASUREMENTS WITH MEASUREMENT =~ /.*my_measurement.*/; 
 
 SHOW RETENTION POLICIES [ON <database_name>]
 

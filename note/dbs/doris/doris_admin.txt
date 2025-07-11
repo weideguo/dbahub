@@ -1,15 +1,16 @@
 
-SHOW PROC '/
+SHOW PROC '/';
 
 # 查看表的表的健康状态
 SHOW PROC '/cluster_health/tablet_health'\G
 
 
-ADMIN SHOW REPLICA STATUS FROM example_tbl;
+-- ADMIN SHOW REPLICA STATUS FROM example_tbl;
+SHOW REPLICA STATUS FROM example_tbl;
 
 # 查看表的副本信息
-ADMIN SHOW REPLICA DISTRIBUTION FROM example_tbl
-
+-- ADMIN SHOW REPLICA DISTRIBUTION FROM example_tbl;
+SHOW REPLICA DISTRIBUTION FROM example_tbl;
 
 # 修改表的副本数
 ALTER TABLE example_tbl SET ("replication_num" = "2");  
@@ -35,6 +36,22 @@ ALTER SYSTEM DECOMMISSION BACKEND "be_host:be_heartbeat_service_port";  -- 该�
 show proc '/dbs/$DbId/$TableId/partitions/$PartitionId/$IndexId/$TabletId';
 
 一张表分为多个tablet，按照tablet进行副本复制，TabletId一样则为互为副本
+相同TabletId数据量应该一样
+
+# 查看表的tablet
+show tablets from tbl_name;
+
+# 如果tablet的数据出现不一致，可以通过设置副本为bad实现自动修复
+ADMIN SET REPLICA STATUS PROPERTIES("tablet_id" = "$tablet_id", "backend_id" = "$backend_id", "status" = "bad");
+
+
+show tablet tablet_id;
+# 执行输出结果的DetailCmd，从而确认tablet的健康状态
+
+
+# 对指定的一组 tablet 进行副本数据一致性检查
+admin check tablet (tablet_id1, tablet_id2, ...) PROPERTIES("type" = "consistency");
+
 
 
 # 启动副本修复，空白副本填补缺失副本，该副本丢失？
@@ -43,5 +60,6 @@ ADMIN SET FRONTEND CONFIG ("recover_with_empty_tablet" = "true");
 ADMIN SET FRONTEND CONFIG ("recover_with_empty_tablet" = "false");
 
 
-#  使用固定的replica进行查询，该值表示固定使用第几小的replica
-set use_fix_replica=1;
+#  使用固定的replica进行查询
+set use_fix_replica=1;   -- 从0开始，只用1号副本
+

@@ -18,3 +18,6 @@ influx_inspect buildtsi -datadir $path2data -waldir $path2wal
                           # The type of shard index to use for new shards.
 index-version = "inmem"   # 默认 索引使用内存 但数据也记录在文件，重启不会导致数据丢失
 index-version = "tsi1"    # 索引使用磁盘
+
+
+cache-max-memory-size = "2GB"   # TSM引擎的最大内存占用，不是进程总内存

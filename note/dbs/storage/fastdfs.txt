@@ -46,7 +46,6 @@ store_path0=/var/fdfs
 
 vim /etc/fdfs/client.conf
 #需要修改的内容如下
-base_path=/home/dfs
 tracker_server=192.168.52.1:22122    #tracker服务器IP和端口
 
 # 上传文件
@@ -68,4 +67,10 @@ fdfs_monitor /etc/fdfs/storage.conf list | grep -E "(group|ip_addr|last_synced_t
 
 # 删除节点，状态变为deleted，该节点即使重启也不会再加入集群
 fdfs_monitor /etc/fdfs/storage.conf delete group1 10.0.0.1
+
+
+
+data/sync 目录下
+.mark文件、binlog文件
+共同确定增量数据从哪开始，即启动一个storage加入到group，只新增binlog缺失的？并不能做到只追加增量？
 

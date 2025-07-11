@@ -1,0 +1,7 @@
+MySQL Sandbox 
+快速部署测试的MySQL数据库实例
+
+MySQL  JS > dba.deploySandboxInstance(3306)
+MySQL  JS > dba.deploySandboxInstance(3307)
+MySQL  JS > dba.deploySandboxInstance(3308)
+

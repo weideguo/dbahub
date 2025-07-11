@@ -47,7 +47,7 @@ npm config list            #npm配置查看
 
 设置镜像
 ~/.npmrc
-registry = https://registry.npm.taobao.org
+registry = http://registry.npmmirror.com
 
 
 #使用nrm进行源管理

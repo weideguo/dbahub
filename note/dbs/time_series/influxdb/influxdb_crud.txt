@@ -20,7 +20,7 @@ tb_name,tag1=v11,tag2=v12,...
 "db_name".."measurement_name"
 "db_name"."schema_name"."measurement_name"
 
-SHOW RETENTION POLICIES     可以按照schema显示保留时间
+SHOW RETENTION POLICIES     可以按照schema设置保留时间，即对应schema
 
 DROP RETENTION POLICY <retention_policy_name> ON <database_name>
 
@@ -29,7 +29,14 @@ ALTER RETENTION POLICY <retention_policy_name> ON <database_name> DURATION <dura
 
 shardGroupDuration 根据这个值自动shard
 
+# 创建RP/schema
+CREATE RETENTION POLICY "my_rp" 
+ON "my_db" 
+DURATION 365d REPLICATION 1;
 
+# 修改默认的RP/schema
+ALTER RETENTION POLICY "my_rp" 
+ON "my_db" DEFAULT
 
 # 查询
 select * from tb_name order by time desc limit 10;
@@ -81,6 +88,9 @@ END
 
 语句中必须包含GROUP BY time()，一般用于 select into ，可以带有where
 CQ的执行间隔跟GROUP BY time()一样，如GROUP BY time(1h)，时间范围只为当前时间到一个时间周期之前，不是所有数据。
+
+
+WHERE time > now() - [N*interval]   # 持续查询加这样的条件过滤依旧是推荐？
 
 
 SELECT 

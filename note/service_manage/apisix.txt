@@ -1,0 +1,31 @@
+lua
+
+速率限制
+账号认证
+
+
+# 2379、2380
+docker run -d --name etcd-server \
+--network host \
+--env ALLOW_NONE_AUTHENTICATION=yes quay.io/coreos/etcd:v3.5.18
+
+
+# 9080 9443  http、https代理端口
+# 9180 admin API
+# 9090 control API
+# 9091 prometheus metrics
+docker run --name api-gateway \
+ -v /data/apisix/config.yaml:/usr/local/apisix/conf/config.yaml \
+ --network host \
+ -d apache/apisix
+
+
+# 通过etcd获取连接apisix服务的信息，web页面管理apisix
+# 9000 
+docker run -d --name dashboard \
+  -v /data/apisix/apisix-dashboard:/usr/local/apisix-dashboard/conf/conf.yaml \
+  --network host \
+  apache/apisix-dashboard 
+  
+
+

@@ -1,25 +1,26 @@
 MySQL Shell 
-    前端命令行工具
-    自带的AdminAPI创建、配置、删除等管理副本集
-    MySQL Sandbox 功能，可轻松部署用以测试的MySQL数据库实例
+命令行工具
+通过AdminAPI创建、配置、删除等
+innodb cluster
+innodb clusterset
+innodb replicaset
 
 
 mysqlsh -u root -p -h 10.30.20.76 -P 3306         # 使用mysql协议连接
 mysqlsh -u root -p -h 10.30.20.76 -P 33060        # 使用mysqlx协议连接
 
-    
-    
-MySQL Shell 使用TCP连接MySQL服务
-支持语言
-    SQL     \sql
-    Python  \py
-    JS      \js    
-    
+
+\help  查看帮助
+\quit  退出
+
+\js   JS模式，默认模式，可执行如 dba.getReplicaSet() 格式的命令
+\sql  SQL模式，可以直接执行sql命令    
+\py   Python 
 
 
 
-\help
 
 
-    
-    
+
+
+
