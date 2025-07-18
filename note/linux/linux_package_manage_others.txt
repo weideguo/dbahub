@@ -1,3 +1,4 @@
+debian / ubuntu 
 源的配置
 /etc/apt/sources.list
 /etc/apt/sources.list.d/

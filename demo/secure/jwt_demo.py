@@ -1,4 +1,8 @@
-from jot import jwt, jws
+"""
+pip install PyJWT
+"""
+
+from jwt import jwt, jws
  
 """
 jwt json web tokens
@@ -13,23 +17,23 @@ signature   #签名串
 
 """  
  
-secret_key='^z=xr3j)gipqyjsl)04+e$5zz&4d@l&+q'
+secret_key = "my-secret-key-long-long-key-name"
+
+# 不要将敏感信息存放于此
+payload = {"user": "xxx", "expire":1800000000}    
  
-payload={'user': 'xxx','expire':11111}    
- 
-#生成签名串
-signature = jwt.encode(payload, signer=jws.HmacSha(bits=128, key=secret_key))
 
+# 生成签名串
+encoded = jwt.encode(payload, secret_key, algorithm="HS256")
 
-#获取明文信息 以及校验
-jwt.decode(signature, signers=[jws.HmacSha(bits=128, key=secret_key)])
+# 获取明文信息
+jwt.decode(encoded, secret_key, algorithms=["HS256"])
 
-
-
-
-#django使用jwt
-每次链接依旧会查询数据库进行校验
-
-
-
+"""
+HS256
+RS256
+ES256
+PS256
+EdDSA
+"""
 

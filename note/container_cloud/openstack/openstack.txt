@@ -1,0 +1,18 @@
+OpenStack
+虚拟化环境的管理和控制
+
+Nova        计算服务
+Swift       存储服务
+Glance      镜像服务
+Keystone    认证服务
+Horizon     UI服务
+
+
+支持热迁移
+即包括内部应用不关闭
+
+libvirt 
+
+
+虚拟机对应进程，一个进程对应一个虚拟机
+qemu-kvm

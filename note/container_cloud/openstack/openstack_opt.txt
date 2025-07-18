@@ -1,0 +1,60 @@
+openstack server list --ip $ip                 # 由ip获取虚拟机的ID
+openstack server show $ID                      # 获取虚拟机的信息，如对应物理机的信息
+openstack server stop <server_name_or_id>      #
+openstack server start <server_name_or_id>     #
+
+# 查看可用镜像
+openstack image list
+
+# 查看可用规格（flavor）
+openstack flavor list
+
+# 查看可用网络
+openstack network list
+
+# 查看可用安全组
+openstack security group list
+
+# 查看可用密钥对
+openstack keypair list
+
+# 创建虚拟机
+openstack server create            \
+  --image <镜像名称或ID>           \
+  --flavor <规格名称或ID>          \
+  --network <网络名称或ID>         \
+  --security-group <安全组名称>    \  # 控制网络访问规则
+  --key-name <密钥对名称>          \  # 可选，用于 SSH 登录的公钥名称
+  --availability-zone <可用区>     \  # 可选
+  --user-data <cloud-init脚本路径> \  # 可选
+  --config-drive true              \  # 可选，用于传递元数据
+  --wait                           \  # 等待创建完成
+  <虚拟机名称>
+
+
+
+跨集群冷迁移
+
+# 1. 创建实例快照（源openstack上操作）
+openstack server image create --name <snapshot_name> <instance_name>
+
+# 2. 下载快照镜像
+openstack image save --file <local_file>.qcow2 <snapshot_name>
+
+# 3. 上传到目标环境（目标openstack上操作）
+openstack image create    \
+  --disk-format qcow2     \
+  --container-format bare \
+  --file <local_file>.qcow2 <new_image_name>
+
+# 格式转换 (可选) 
+qemu-img convert -f raw -O qcow2 <source_file>.raw <target_file>.qcow2
+
+# 4. 在目标环境重建实例
+openstack server create 
+  --image <new_image_name> \
+  --flavor <flavor>        \
+  --network <network>      \
+  <new_instance_name>
+  
+  

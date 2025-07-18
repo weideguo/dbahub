@@ -141,6 +141,7 @@ SCRIPT KILL
 SET key value                 ###设置key和value
 GET key                       ###由key的值获取value
 DEL key                       ###删除key
+unlike key                    # 与del类似，只是不直接从内存删除，因此操作为不阻塞
 
 哈希 hash  ###键值对的集合  字符串字段和字符串值之间的映射，所以它们用来表示对象
 HSET key field1 value1
@@ -261,3 +262,7 @@ redis通配符 keys match 可以使用
 
 #CAS(check and set)
 
+
+
+DUMP mykey
+RESTORE key ttl serialized-value

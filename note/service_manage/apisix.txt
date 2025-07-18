@@ -28,4 +28,12 @@ docker run -d --name dashboard \
   apache/apisix-dashboard 
   
 
+至少需要设置：
+路由
+消费者
 
+
+
+负载均衡
+请求频率控制
+JWT验证

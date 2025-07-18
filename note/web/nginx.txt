@@ -9,6 +9,9 @@ ps -ef | grep nginx  杀进程号关闭
 ./configure --prefix=/usr
 make && make install
 
+nginx -t            # 验证配置文件是否正确
+nginx -s reload     # 重新加载配置
+nginx -s stop       #
 
 
 在配置文件con/nginx.conf的http段中

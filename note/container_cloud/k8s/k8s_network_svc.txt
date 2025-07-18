@@ -16,6 +16,8 @@ kubectl get svc -o wide
 <svc-name>.<namespace-name>.svc
 <svc-name>.<namespace-name>.svc.cluster.local               # kubelet 的 --cluster-domain 的默认参数值 cluster.local
 
+实际的域名完整格式由容器中/etc/resolv.conf文件确定
+
 # endpoints
 kubectl get endpoints
 

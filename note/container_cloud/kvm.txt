@@ -10,7 +10,15 @@ lsmod | grep kvm                                    #看出内核是否已经安
 qemu-img create -f raw /data/centos7.raw 10G
 
 #安装虚拟机 在此启动vnc，可以通过查看母机使用的端口通过vnc连接
-virt-install --virt-type kvm --name centos7 --ram 1024 --cdrom=/data/iso/CentOS-7-x86_64-Everything-1804.iso --disk path=/data/centos7.raw --network network=default --graphics vnc,listen=0.0.0.0 --noautoconsole
+virt-install                                               \
+  --virt-type kvm                                          \
+  --name centos7                                           \
+  --ram 1024                                               \
+  --cdrom=/data/iso/CentOS-7-x86_64-Everything-1804.iso    \
+  --disk path=/data/centos7.raw                            \
+  --network network=default                                \
+  --graphics vnc,listen=0.0.0.0                            \
+  --noautoconsole
 
 #管理
 virsh list --all                #查看所有虚拟机     
