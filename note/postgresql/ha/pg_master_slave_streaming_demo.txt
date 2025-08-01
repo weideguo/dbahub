@@ -1,0 +1,51 @@
+pg12 设置主从
+流复制
+
+#########主实例
+
+# 修改postgresql.conf启用wal日志
+wal_level = replica           # 至少为replica
+max_wal_senders = 10          # 最大并发复制连接数
+wal_keep_segments = 1024      # 保留的wal
+max_replication_slots = 10    # 最大复制槽数量
+
+# 修改pg_hba.conf 
+host    replication     replicator    <从库IP>/32    md5
+
+# 创建复制用户
+CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'password';
+
+
+# 主实例重新加载配置文件。如果修改wal_level等其他不支持热加载的参数，则需要重启。
+SELECT pg_reload_conf();
+
+
+#########从实例
+
+# 克隆主库数据 可能会出现 waiting for checkpoint，可以直接在主实例运行 CHECKPOINT; 触发checkpoint以结束等待
+pg_basebackup -h <主库IP> -U replicator -D /path/to/slave/data -P -X stream -R
+
+
+# 修改从库postgresql.conf
+primary_conninfo = 'host=<主库IP> port=5432 user=replicator password=password'   # pg_basebackup -R 则不需要再设置
+hot_standby = on                                                                 # 启用热备模式。指定在恢复期间，否能够连接并运行查询
+max_standby_archive_delay = 30s                                                  # 归档延迟
+max_standby_streaming_delay = 30s                                                # 流复制延迟
+
+
+# 必须创建 recovery.signal 文件 ，也可以在运行 pg_basebackup 时加 -R 参数自动生成
+touch /path/to/slave/data/standby.signal
+chown postgres:postgres /path/to/slave/data/standby.signal
+chmod 600 /path/to/slave/data/standby.signal
+
+# 启动从实例
+pg_ctl -D /path/to/slave/data  start
+
+
+########验证
+# 主实例 查看从实例连接信息
+SELECT * FROM pg_stat_replication;
+
+# 从实例 查看正在接收 WAL 日志
+SELECT * FROM pg_stat_wal_receiver;
+

@@ -4,9 +4,11 @@
     "insecure-registries": ["registry:5000"],                    # 私有仓库
     "registry-mirrors":["https://registry.docker-cn.com"],       # 仓库的镜像
     "bip": "192.168.0.1/16",                                     # 容器使用的网段
-    "graph": "/data/docker",                                     # 镜像、容器使用的路径 默认/var/lib/docker
+    "data-root": "/data/docker",                                 # 镜像、容器使用的路径 默认/var/lib/docker，旧版本为graph
 }
 
+
+systemctl restart containerd                                # 修改配置文件后，可能需要先重启containerd，然后再启动docker 
 
 
 /etc/sysconfig/docker                                       # 配置文件

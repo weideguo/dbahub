@@ -31,7 +31,13 @@ jt -t chesterish
 docker pull jupyter/base-notebook:latest
 
 # 映射到服务器8080
-docker run -d -p 8080:8888 -v /data/work:/home/jovyan/work jupyter/base-notebook:latest
+mkdir /data/work
+chown -R 1000:100 /data/work    # jupyter docker环境默认映射到主机的账号
+docker run -d -p 8080:8888 -v /data/work:/home/jovyan jupyter/base-notebook:latest
 
 ```
 
+## 新版本
+* JupyterLab        未来趋势
+* Jupyter Notebook  简单交互
+* nbclassic         丰富的交互

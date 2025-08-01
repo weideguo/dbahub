@@ -58,10 +58,12 @@ pgsql_tmp开头的目录可以不复制
   
 修改文件recovery.conf（在data目录下，12以及之后移动到postgresql.conf ） 默认情况下，数据库将会一直恢复到 WAL 日志的末尾，应用成功后自动变成recovery.done文件
      restore_command = 'cp /mnt/server/archivedir/%f %p'      #设置从备份的归档wal进行恢复 （或者直接复制文件到pg_wal目录（10之前的旧版本为pg_xlog））
+     
+                                                              #以下选择其一
      recovery_target_timeline = 'string'                      #设置恢复到的时间线
      recovery_target_time = timestamp                         #latest 0 1423234  '2022-03-01 02:40:00+08'
      recovery_target_xid = <xid>                              #恢复到的事务 ID
-     recovery_target = 'immediate'                            #在从一个在线备份中恢复时，备份结束的那个点                         
+     recovery_target = 'immediate'                            #在从一个在线备份中恢复时，备份结束的那个点。默认latest，应用所有wal日志                       
 
 默认情况下，恢复将会一直恢复到 WAL 日志的末尾。
 

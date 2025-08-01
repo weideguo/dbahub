@@ -101,3 +101,7 @@ $$;
 
 CALL update_salary(123, 5000);
 
+
+
+SELECT pg_sleep(10);        -- 单位为秒
+

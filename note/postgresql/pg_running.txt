@@ -6,6 +6,7 @@ pg一个连接建立一个进程
 bin/pg_ctl -D ./data/ start                     #启动实例 配置文件在data目录下
 bin/postgres -D ./data                          #实际服务运行的文件
 
+
 关闭
 bin/pg_ctl -D ./data stop
  

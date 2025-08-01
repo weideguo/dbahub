@@ -10,6 +10,7 @@ awk '{sum += $1};END {print sum}'   ##计算数字总和
 ls -altr * | awk '{print $5}' | awk '{sum += $1};END {print sum/1024/1014/1014}'    #汇总计算文件大小
 
 awk '{x[$1]+=1} END{for( i in x ){print x[i]"    "i}}'                              #聚合
+awk '$2>300000 {print $1" "$2}'                                                     #大于
 
 
 

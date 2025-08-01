@@ -29,3 +29,11 @@ socks5 运行在会话层(ISO模型)
 
 TCP/IP协议栈的实现： TCP、IP 以及IP以下的协议实现在操作系统中，而TCP之上的协议实现在用户进程中（应用程序）
     
+
+###################
+运行 dante socks 代理服务
+
+
+使用
+curl --socks5 $host:$port https://www.example.com
+

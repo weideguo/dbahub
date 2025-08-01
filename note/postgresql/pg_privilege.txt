@@ -1,3 +1,6 @@
+由sql创建用户、设置权限、密码
+由pg_hba.conf控制用户运行登录的ip、认证方式
+
 select * from pg_user ;        #用户
 select * from pg_roles;        #角色
 select * from pg_group;        #组

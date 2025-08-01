@@ -39,6 +39,13 @@ curl -G "http://localhost:8086/query?db=mydb" \
   -u my_account:my_secure_password \
   --data-urlencode "q=SELECT * FROM my_measurement"
 
+# 插入多条记录
+curl -i -XPOST "http://localhost:8086/write?db=mydb20250728" \
+--data-binary '
+cpu,host=server01,region=us-west value=0.11 1500000001000000000
+cpu,host=server02,region=us-east value=0.22 1500000002000000000
+memory,host=server01 used_percent=99.0 1500000001000000000
+'
 
 show databases;
 
@@ -50,9 +57,10 @@ SHOW MEASUREMENTS WITH MEASUREMENT =~ /.*my_measurement.*/;
 
 SHOW RETENTION POLICIES [ON <database_name>]
 
-# 查看所有的CONTINUOUS QUERIES
+# 查看所有定义的CONTINUOUS QUERIES
 SHOW CONTINUOUS QUERIES     
 
+# 查看当前正在运行的任务
 show QUERIES;
 
 

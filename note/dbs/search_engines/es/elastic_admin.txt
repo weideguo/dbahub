@@ -4,68 +4,15 @@ es使用全文索引
 默认情况下写入的数据会存在于内存缓冲区中，此时并没有落入segment，而是等待index.refresh_interval的时间间隔后，数据会落入到segment中，此时才可以被检索
 
 get /_cat                            #列出_cat下所有操作
+GET /_cat/health?v                   #查看集群状态
+GET /_cat/nodes?v                    #查看节点的状态，节点即对应一个es进程
 
 GET /_cluster/health                 #查看集群状态
-GET /_cat/health?v                   #查看集群状态
+GET /_cluster/stats                  #集群的统计信息 索引、节点
 
-GET /_cat/nodes?v                    #查看节点的状态
-节点即对应一个es进程
-分片和复制（shards & replicas） 
-Elasticsearch 没有采用节点级别的主从复制，而是基于分片。只能创建索引的时候静态设置。
+GET /_node                           #查看节点信息
+GET /_settings                       #查看全部索引的状态信息
 
-
-get /_cat/shards                     #查看分片状态 为UNASSIGNED这表示为未分配
-
-绿色，表示集群所有主分片和副本分片都可用，集群处于最健康的状态。
-黄色，表示所有的主分片均可用，但存在不可用副本分片。此时，搜索结果仍然是完整的，但集群的高可用性在一定程度上受到影响，数据面临较高的丢失风险。
-红色，表示至少一个主分片以及它的全部副本分片均不可用。集群处于红色状态意味着已有部分数据不可用，搜索只能返回部分数据，而分配到丢失分片上的请求会返回异常。
-
-黄色则设置副本为0，恢复后再修改成其他值
-curl -XPUT 'http://elasticsearch_host:port/index_prefix*/_settings' -H 'Content-Type: application/json' -d'{"number_of_replicas":0}'
-
-红色修复
-
-# 查看有问题的分片
-GET /_cluster/allocation/explain?pretty
-
-# 重新设置路由
-POST /_cluster/reroute?retry_failed=true
-
-# 手动设置路由（可能存在数据丢失）
-POST _cluster/reroute
-{
-  "commands": [
-    {
-      "allocate_stale_primary": {
-        "index": "example_index",             # 有问题的索引 
-        "shard": 2,                           # 有问题的分片
-        "node": "reading_10.0.0.1_node2",     # es节点
-        "accept_data_loss": true
-      }
-    }
-  ]
-}
-
-# 强行拉起分片（存在数据丢失）
-POST _cluster/reroute?pretty
-{
-    "commands": [
-        {
-            "​​​allocate_empty_primary​​​": {
-                "index": "example_index",
-                "shard": 2,
-                "node": "reading_10.0.0.2_node2",
-                "accept_data_loss": true
-            }
-        }
-    ]
-}
-
-
-
-GET _node                            #查看节点信息
-GET _settings                        #查看全部索引的状态信息
-GET _cluster/stats                   #集群的统计信息 索引、节点
 
 
 Hot-Warm 冷热架构（高频访问索引放于热节点，低频访问索引放于冷节点）

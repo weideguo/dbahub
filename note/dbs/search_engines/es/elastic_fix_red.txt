@@ -1,0 +1,40 @@
+红色修复
+表示至少一个主分片以及它的全部副本分片均不可用。
+集群处于红色状态意味着已有部分数据不可用，搜索只能返回部分数据，而分配到丢失分片上的请求会返回异常。
+
+
+# 查看有问题的分片
+GET /_cluster/allocation/explain?pretty
+
+# 重新设置路由
+POST /_cluster/reroute?retry_failed=true
+
+# 手动设置路由（可能存在数据丢失）
+POST _cluster/reroute
+{
+    "commands": [
+        {
+            "allocate_stale_primary": {
+                "index": "example_index",             # 有问题的索引 
+                "shard": 2,                           # 有问题的分片
+                "node": "reading_10.0.0.1_node2",     # es节点
+                "accept_data_loss": true
+            }
+        }
+    ]
+}
+
+# 强行拉起分片（存在数据丢失）
+POST _cluster/reroute?pretty
+{
+    "commands": [
+        {
+            "allocate_empty_primary": {
+                "index": "example_index",
+                "shard": 2,
+                "node": "reading_10.0.0.2_node2",
+                "accept_data_loss": true
+            }
+        }
+    ]
+}

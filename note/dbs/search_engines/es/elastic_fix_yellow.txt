@@ -1,0 +1,10 @@
+绿色，表示集群所有主分片和副本分片都可用，集群处于最健康的状态。
+
+黄色，表示所有的主分片均可用，但存在不可用副本分片。
+此时，搜索结果仍然是完整的，但集群的高可用性在一定程度上受到影响，数据面临较高的丢失风险。
+
+黄色则设置副本为0，恢复后再修改成其他值
+curl -XPUT 'http://elasticsearch_host:port/index_prefix*/_settings'   \
+-H 'Content-Type: application/json'                                   \
+-d'{"number_of_replicas":0}'
+

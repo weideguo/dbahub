@@ -1,50 +1,30 @@
-#########主从###################################################################################################
-#Log-Shipping Standby Servers
-
-archive, pg_wal, streaming replication      #三步恢复方式
-
-从archive目录复制到pg_wal目录，根据pg_wal目录的日志文件恢复，然后根据streaming replication追加
-
-
-##需要复制主的归档目录到从的归档目录，如果从实例需要从归档日志开始恢复
-
-主实例账号设置
-##pg_hba.conf
-##  host    all             foo             192.168.0.0/16          md5
-
-
-从实例
-
-#####recovery.conf
-standby_mode = 'on'
-primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'     
-restore_command = 'cp /path/to/archive/%f %p'                                  ##恢复用
-archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'              ##清理日志，pg_archivecleanup主要用于standby
-
 
 #############Replication Slots
 #replication slots provide an automated way to ensure that the master does not remove WAL segments until they have been received by all standbys, and that the master does not remove rows which could cause a recovery conflict even when the standby is disconnected.
+#确保备库所需的WAL日志不丢失，即必须先被复制之后主实例才清理
 
 SELECT * FROM pg_create_physical_replication_slot('node_a_slot');
 SELECT slot_name, slot_type, active FROM pg_replication_slots;
 
 
-select * from pg_replication_slots;                      ##查看slot
-SELECT * FROM pg_drop_replication_slot('node_a_slot');   ##删除slot
+select * from pg_replication_slots;                                                                ##查看slot
+SELECT * FROM pg_drop_replication_slot('node_a_slot');                                             ##删除slot
 
-SELECT * FROM pg_create_logical_replication_slot('logical_slot_test', 'test_decoding');            #创建logical_replication_slot  需要wal_level为logical  需要编译扩展插件
+SELECT * FROM pg_create_logical_replication_slot('logical_slot_test', 'test_decoding');            #创建logical_replication_slot  需要wal_level为logical 
 SELECT * FROM pg_logical_slot_get_changes('logical_slot_test', NULL, NULL);                        #由logical_replication_slot查看操作
 
-pg_recvlogical -d postgres -h 192.168.59.130 -p 5432 -U wdg -W --file=/data/pg_test/pg_wal_logic/wal.txt -S logical_slot_test --start   ##接收wal的可读格式 需要预先创建logical slot  
+
+pg_recvlogical                                   \
+-d postgres -h 192.168.59.130 -p 5432 -U wdg -W  \
+--file=/data/pg_test/pg_wal_logic/wal.txt        \
+-S logical_slot_test --start                         #接收wal的可读格式 需要预先创建logical slot  
+                                                     
+                                                     
+pg_receivewal                        \               
+-D /data/pg_test/pg_wal_test         \               
+-h 192.168.1.128 -p 5432 -U pg_user -W               #直接接受wal文件并保存于本地 当前接收的文件以.partial结尾
 
 
-pg_receivewal -D /data/pg_test/pg_wal_test -h 192.168.1.128 -p 5432 -U pg_user -W    #直接接受wal文件并保存于本地 当前接收的文件以.partial结尾
-
-
-#####recovery.conf
-standby_mode = 'on'
-primary_conninfo = 'application_name=s1 host=192.168.1.50 port=5432 user=foo password=foopass'
-primary_slot_name = 'node_a_slot'
 
 
 ##streaming replication 默认异步复制
@@ -62,24 +42,26 @@ synchronous_commit = on                              #同步复制模式 off, lo
 ##########################################################################################################################
 
 
-select pg_current_wal_lsn();                              主 当前日志点
-select pg_walfile_name_offset(pg_current_wal_lsn());      查看当前日志点对应的文件以及偏移量
-select pg_last_wal_receive_lsn();                         从 最近接受的日志点
-select pg_is_in_recovery();                               是否进行恢复 实例复制也算一种恢复
-select pg_last_wal_replay_lsn();                          已经回放的日志点
-select pg_last_xact_replay_timestamp();                   从实例上一个回放事务的时间戳（为在主实例完成的时间戳）
+select pg_current_wal_lsn();                              # 主 当前日志点
+select pg_walfile_name_offset(pg_current_wal_lsn());      # 查看当前日志点对应的文件以及偏移量
+select pg_last_wal_receive_lsn();                         # 从 最近接受的日志点
+select pg_is_in_recovery();                               # 是否进行恢复 实例复制也算一种恢复
+select pg_last_wal_replay_lsn();                          # 已经回放的日志点
+select pg_last_xact_replay_timestamp();                   # 从实例上一个回放事务的时间戳（为在主实例完成的时间戳）
 
 
-select pg_start_backup('label_goes_here');                #开始备份
-SELECT * FROM pg_walfile_name_offset(pg_stop_backup());   #结束备份并显示备份的wal点 以便直接使用之后的wal进行恢复
+select pg_start_backup('label_goes_here');                # 开始备份
+SELECT * FROM pg_walfile_name_offset(pg_stop_backup());   # 结束备份并显示备份的wal点 以便直接使用之后的wal进行恢复
+                                                            
+select pg_switch_wal();                                   # 手动切换日志
 
-select pg_switch_wal();                                   #手动切换日志
 
-
-select * from  pg_stat_replication    ##查看复制的信息 同步方式
+select * from  pg_stat_replication;                       # 主实例中查看从实例的连接信息
 【pg_current_wal_lsn】 【sent_lsn】         indicate that the master server is under heavy load
 【sent_lsn】 【pg_last_wal_receive_lsn】    indicate network delay, or that the standby is under heavy load
 
+
+SELECT * FROM pg_stat_wal_receiver;                        # 从实例中查看正在接收的wal日志    
 
 防止脑裂
 STONITH
@@ -87,14 +69,25 @@ Shoot The Other Node In The Head
     
 
 #fail over 二选一
-pg_ctl promote                                               ##提升当前实例为主
+pg_ctl promote                                              # 提升当前实例为主
 
-#recovery.conf
-trigger_file="/path_to_trigger/my_trigger_file"              ##只要创建对应这个文件，即可提升当前实例为主  standby_mode = 'on'
+#postgresql.conf
+promote_trigger_file="/path_to_trigger/my_trigger_file"     # 只要创建对应这个文件，即可提升当前实例为主
 
 
 ##############################################################################################################################
 
-bin/pg_rewind --target-pgdata=./data --source-server="host=192.168.1.128 port=5432 user=pg_user password=pg_user_password dbname=postgres"   ##切换为新主的从 如果失败，手动从新主备份然后再设主从
+pg_rewind                     \
+--target-pgdata=./data        \
+--source-server="host=192.168.1.128 port=5432 user=pg_user password=pg_user_password dbname=postgres"   ##切换为新主的从 如果失败，手动从新主备份然后再设主从
 
 
+
+
+# 在从库停止 WAL 接收进程（会自动恢复，并不能实现长时间暂停；配合删除standby.signal实现停止自动恢复）
+SELECT pid, status FROM pg_stat_wal_receiver;
+SELECT pg_terminate_backend(1234);  -- 替换 1234 为实际 PID
+
+# 在主库断开从库连接（不推荐）
+SELECT pid, client_addr, state FROM pg_stat_replication;
+SELECT pg_terminate_backend(5678);  -- 替换 5678 为实际 PID

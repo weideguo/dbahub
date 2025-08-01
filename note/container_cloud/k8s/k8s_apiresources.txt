@@ -17,7 +17,7 @@ Deployment                # 部署一个Pod
 ReplicaSet
 Ingress                   # 使用ingress实现反向代理  需要先安装相应controller，如traefik
 ServiceAccountToken       #
-
+StorageClass              # pvc设置使用StorageClass，无需先创建pv
 
 CRD Custom Resource Definition 用户自定义资源
 crd也是通过yaml安装

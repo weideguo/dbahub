@@ -1,0 +1,5 @@
+搞可用方案
+Pgpool-II  
+
+Patroni
+

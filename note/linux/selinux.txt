@@ -1,5 +1,5 @@
 selinux
-配置文件/etc/sysconfig/selinux
+配置文件/etc/sysconfig/selinux 即对应 /etc/sysconfig/selinux
 工作模式 SElinux=permissive
 强制（enfocing）：违反策略的行动都被禁止，并作为内核信息记录
 允许（permissive）：违反策略的行动不被禁止，但会产生警告信息

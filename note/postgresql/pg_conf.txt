@@ -30,6 +30,8 @@ omicron         bryanh                  guest1
     bsd               #
        
 
+#########################postgresql.auto.conf 
+优先级比postgresql.conf高
 
 
 内存设置
@@ -57,15 +59,30 @@ show config_file;
 
 
 select * from pg_settings where name in ('allow_system_table_mods');       
+SELECT current_setting('allow_system_table_mods');
+SHOW datestyle;
 
+
+pg_settings context 字段的值
+postmaster 	       修改配置文件后需重启才生效
+sighup             修改后执行 SELECT pg_reload_conf(); 或 pg_ctl reload
+superuser          超级用户执行 SET parameter = value;
+superuser-backend  类似superuse，但只能在启动时或由超级用户在会话开始时设置。
+user               任何用户执行 SET parameter = value;
+backend            只能在会话开始时设置
+internal           只读参数，在编译时或初始化时设置，无法修改
+
+
+SELECT set_config('log_statement_stats', 'off', false);                  # set_config(setting_name, new_value, is_local)	 is_local设置为true，新值将只应用于当前事务
+SET datestyle TO postgres, dmy;                                          # 与set_config函数等效
 
 
 wal_level 由低到高
-minimal     默认值，写入从崩溃或立即关机恢复所需要的信息（不建议使用）
-archive     增加wal归档所需的日志（最常用）
-hot_standby 增加在一个后备服务器上运行只读查询所需的信息，一般实在流复制的时候使用到
+minimal     写入从崩溃或立即关机恢复所需要的信息（不建议使用）
+replica     主从流复制、常规备份恢复。默认值。archive、hot_standby为9.6之前的值，之后如果设置则被映射为为replica。
 logical     增加支持逻辑解码所需的信息
 
 
 
-
+# postgresql.conf 
+log_min_duration_statement    # 设置慢查询阈值
