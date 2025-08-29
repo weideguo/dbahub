@@ -86,3 +86,5 @@ docker logs --tail=10 -f <container_id>                             ##输出指�
 docker system prune                                                 # 清理未使用的镜像、容器和网络，overlay2 目录
 docker volume rm $(docker volume ls -qf dangling=true)              # 删除未被容器使用的卷，volumes 目录
 
+
+docker update --restart=always <container_id>                       # 修改容器的restart字段

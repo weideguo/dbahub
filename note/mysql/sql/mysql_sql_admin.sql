@@ -23,7 +23,7 @@ inner join performance_schema.events_statements_current d ON d.THREAD_ID = c.THR
 where b.command = 'Sleep' ;   -- 可以只看当前休眠的会话
 
 
--- 查询事务执行过的历史sql以及事务的运行时长
+-- 查询事务执行过的历史sql以及事务的运行时长（只能确认同一mysql内部线程执行过那些sql，可能并不是同一个事务）
 select ps.id process_id,ps.user,ps.host,ps.db,esh.event_id,trx.trx_started,esh.event_name, esh.sql_text,ps.time 
 from 
 performance_schema.events_statements_history esh 
@@ -31,6 +31,8 @@ join performance_schema.threads th on esh.thread_id = th.thread_id
 join information_schema.processlist ps on ps.id = th.processlist_id 
 left join information_schema.innodb_trx trx on trx.trx_mysql_thread_id = ps.id 
 where trx.trx_id is not null and ps.user !='SYSTEM_USER' order by esh.event_id ;
+
+-- MySQL 8.0+ 的并行查询中，一个事务可能涉及多个线程
 
 
 -- 查询事务锁详细信息

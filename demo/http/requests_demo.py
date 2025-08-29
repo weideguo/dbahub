@@ -22,6 +22,8 @@ headers={}
 r=requests.get("http://httpbin.org/get",headers=headers)
 r.text
 
+# params={}  # url中的参数
+
 #post
 #post(url, data=None, json=None, **kwargs)
 #为复合字典类型时使用json，直接使用，无须转成字符串
@@ -33,7 +35,7 @@ print(r.text)
 #put(url, data=None, **kwargs)
 requests.put(url, data=payload)
 
-
+from requests import request
 request(method, url, **kwargs)
 
 
@@ -50,3 +52,12 @@ r=session.get(url,proxies=proxy_dict)
 # 使用session可以自动记录cookie
 
 
+# 使用 data 发送表单
+r = requests.post("https://httpbin.org/post", data={"key": "value"})
+print(r.json()["headers"]["Content-Type"])  
+# application/x-www-form-urlencoded
+
+# 使用 json 发送 JSON
+r = requests.post("https://httpbin.org/post", json={"key": "value"})
+print(r.json()["headers"]["Content-Type"])  
+# application/json

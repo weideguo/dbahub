@@ -33,6 +33,9 @@ yum repolist                                         #查看repo
 yum clean all                                        #清除缓存
 yum makecache                                        #创建缓存
 
+yumdownloader --destdir=/path/to/save net-tools      # 只下载，不安装
+
+repoquery --requires --resolve net-tools             # 查看依赖包
 
 
 rpm安装
@@ -46,3 +49,9 @@ rpm -i package.src.rpm                     ##解压源码包，之后可以选�
 rpm -e package_name                        ##删除包
                                            
 rpm2cpio xxx.rpm | cpio -div               ##解压rpm包
+
+
+
+EPEL
+Extra Packages for Enterprise Linux
+

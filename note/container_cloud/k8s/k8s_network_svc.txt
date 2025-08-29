@@ -43,3 +43,15 @@ spec:
 ClusterIP         默认分配的网络
 NodePort          映射到物理机的端口 任意一个节点的ip:nodePort
 LoadBalancer      映射到LoadBalancer的端口
+
+
+
+```
+spec:
+  clusterIP: None  # 创建无头svc
+```
+查询服务名称会返回所有后端 Pod 的 IP 地址
+对于 StatefulSet，Pod 会有格式为 <pod-name>.<service-name> 的 DNS 记录
+无头服务没有负载均衡，客户端需要自己处理连接管理
+nslookup <pod-name>.<service-name>    # 返回所有 Pod IP；非无头服务时则返回一个vip
+

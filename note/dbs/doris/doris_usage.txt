@@ -61,3 +61,15 @@ SWITCH internal;
 # 刷新，比如更改权限之后需要刷新才能生效        
 REFRESH CATALOG catalog_name;    
     
+# 修改表的副本 非分区表
+ALTER TABLE example_tbl    
+SET ("replication_num" = "1");
+
+# 修改表的副本 分区表
+ALTER TABLE example_tbl
+SET ("default.replication_num" = "1");
+
+# 修改表的副本 分区表 历史
+alter table example_tbl
+modify partition(*) SET ("replication_num" = "1");
+

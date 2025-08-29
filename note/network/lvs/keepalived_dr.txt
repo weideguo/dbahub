@@ -38,6 +38,16 @@ route add -host 192.168.59.200 dev lo:1
 ##修改网卡配置文件/etc/sysconfig/network-scripts/
 
 
+RS需要设置回环地址
+cat >/etc/sysconfig/network-scripts/ifcfg-lo:01<<EOF
+DEVICE=lo:01
+ONBOOT=yes
+IPADDR=192.168.59.200               
+NETMASK=255.255.255.255
+EOF
+systemctl restart network
+
+
 ####################LB###############################################################
 
 
@@ -134,4 +144,4 @@ virtual_server 192.168.59.200 80 {
 
 
 ################################################################
-
+include /etc/keepalived/conf/*.conf        # 在keepalived配置文件引入其他配置文件，实现keepalived本身的配置与后端节点配置分离

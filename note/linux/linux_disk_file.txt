@@ -48,6 +48,7 @@ mount /dev/shm                             ##重新挂载实现修改
 fuser -m /dev/cdrom                        ##查看那个进程正在使用挂载设备
 lsof /dev/cdrom                            ##查看挂载点与正在使用的进程
 lsblk                                      ##查看块设备
+lsblk /dev/sdb
 
 磁盘引导头 
 MBR（master boot record）只支持不超过2T硬盘  
@@ -147,6 +148,9 @@ parted /dev/sdc                # 对磁盘进行分区
     print
     quit                       # 退出
 
+#   mkpart primary 1MiB 20GiB   # 创建多个分区
+#   mkpart secondary 20GiB 100% #
+
 partprobe                      # 重读分区
 fdisk -lu
 fdisk -lu /dev/sdc             # 查看分区信息
@@ -171,6 +175,11 @@ mount -a                       # 重新挂载
 # yum install -y cloud-utils-growpart
 growpart /dev/sdc 1                        # 热扩容第一个分区
 xfs_growfs /dev/sdc1 
+
+
+############## NTFS
+yum install ntfs-3g   
+mount -t ntfs-3g /dev/sdXn /mnt/ntfs -o rw,uid=0,gid=0
 
 ############################################################################################
 虚拟文件系统

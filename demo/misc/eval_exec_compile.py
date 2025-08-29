@@ -26,3 +26,11 @@ f1=eval(c)
 single_str = 'a = input("Input a number: ")'
 code_single = compile(single_str, '', 'single')   #交互式
 eval(code_single)
+
+
+python_src = """
+import time
+a = time.time()
+"""
+exec(python_src)
+print(a)

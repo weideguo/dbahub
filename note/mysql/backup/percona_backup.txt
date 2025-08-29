@@ -139,3 +139,16 @@ xtrabackup --prepare                             \
 --export                                         \                            # 恢复成导入表空间
 --target-dir=/data/bak/10.0.0.1_11000_20250519
 
+
+
+# 使用物理备份搭建从实例
+# 查看备份成功后实例处于一致状态的pos、gtid
+cat xtrabackup_info | grep -A 6 pos
+reset master;     -- 重置记录执行过的gtid的信息
+-- 使用xtrabackup_info记录的pos位点重置 gtid_purged
+set global gtid_purged='<xtrabackup_info_gtid_list>' 
+
+change master 
+...
+,master_auto_position=1;  
+

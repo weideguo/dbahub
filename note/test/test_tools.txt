@@ -65,3 +65,12 @@ iterations              #循环次数
 Average    完成一次循环的平均耗时
 Minimum    
 Maximum 
+
+
+###################################################################################
+SQLancer
+生成并执行大量的SQL查询来发现数据库管理系统中的逻辑和性能错误
+
+
+java -jar sqlancer-mysql-<version>.jar --database=test_db --user=root --password=your_password
+

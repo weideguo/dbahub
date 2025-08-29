@@ -15,7 +15,7 @@ kubectl scale --replicas=0 -n $namespace deploy $deployname
 
 
 
-# 回滚                                                                               # 
+
 kubectl rollout history -n $namespace deploy $deployname                       # 查看以前上线的修订版本
 kubectl rollout history -n $namespace deploy $deployname  --revision=1         # 
                                                                                # 
@@ -26,6 +26,9 @@ kubectl rollout status -n $namespace deploy $deployname                        #
                                                                                #
 kubectl rollout restart -n $namespace deploy $deployname                       # 滚动重启
 
+# 1.14以及之前的版本重启
+kubectl patch -n $namespace deploy $deployname   \ 
+-p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/restarted-at\":\"`date +'%Y-%m-%dT%H:%M:%S%:z'`\"}}}}}"
 
 kubectl api-resources 可以查看 kind 字段
 

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple WebRTC Text Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #messages { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; margin-bottom: 10px; }
+        #messageInput, #sendBtn { margin-top: 10px; }
+        #messageInput { width: 70%; padding: 5px; }
+        #sendBtn { padding: 5px 10px; }
+        #status { margin-top: 10px; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>Simple WebRTC Text Chat</h1>
+    <p>Enter Room Name:</p>
+    <input type="text" id="roomInput" placeholder="Enter room name">
+    <button id="joinBtn">Join Room</button>
+    <div id="chatArea" style="display: none;">
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+        <button id="sendBtn" disabled>Send</button>
+        <p id="status">Not connected</p>
+        <button id="leaveBtn">Leave Room</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io(); // 连接到 Flask-SocketIO 服务器
+
+        let roomName = '';
+        let localPeerConnection = null;
+        let dataChannel = null;
+        let isInitiator = false; // 标记是否是房间的第一个用户（发起者）
+
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const statusDiv = document.getElementById('status');
+        const chatArea = document.getElementById('chatArea');
+        const joinBtn = document.getElementById('joinBtn');
+        const leaveBtn = document.getElementById('leaveBtn');
+        const roomInput = document.getElementById('roomInput');
+
+        // STUN 服务器配置 (用于 NAT 穿透)，不是必须
+        const iceServers = {
+            iceServers: [
+                //{ urls: 'stun:stun.l.google.com:19302' }, // Google's public STUN server
+                { urls: 'stun:192.168.85.128:3478' },
+                // 可以添加 TURN 服务器用于更复杂的网络环境
+            ]
+        };
+
+        // 加入房间
+        joinBtn.addEventListener('click', () => {
+            roomName = roomInput.value.trim();
+            if (roomName) {
+                socket.emit('join', { room: roomName });
+                chatArea.style.display = 'block';
+                roomInput.disabled = true;
+                joinBtn.disabled = true;
+            }
+        });
+
+        // 离开房间
+        leaveBtn.addEventListener('click', () => {
+            socket.emit('leave', { room: roomName });
+            cleanupConnection();
+            chatArea.style.display = 'none';
+            roomInput.value = '';
+            roomInput.disabled = false;
+            joinBtn.disabled = false;
+        });
+
+        // 发送消息
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message && dataChannel && dataChannel.readyState === 'open') {
+                dataChannel.send(message);
+                addMessageToChat('You: ' + message);
+                messageInput.value = '';
+            }
+        }
+
+        function addMessageToChat(message) {
+            const p = document.createElement('p');
+            p.textContent = message;
+            messagesDiv.appendChild(p);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // ========== Socket.IO 事件处理 ==========
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        socket.on('user_joined', (data) => {
+            console.log('New user joined room:', data.room, 'User ID:', data.new_user_id);
+            // 如果是第一个用户加入，则成为发起者并创建连接
+            if (!localPeerConnection) {
+                isInitiator = true;
+                createPeerConnection();
+                // 发起者立即创建 offer
+                createOffer();
+            }
+        });
+
+        socket.on('user_left', (data) => {
+            console.log('User left room:', data.room, 'User ID:', data.user_id);
+            if (data.user_id !== socket.id) { // 不是自己离开
+                addMessageToChat('Other user has left the chat.');
+                statusDiv.textContent = 'Other user disconnected';
+                cleanupConnection();
+            }
+        });
+
+        socket.on('signal', (data) => {
+            console.log('Received signal:', data);
+            const signalData = data.signal_data;
+            const senderId = data.sender_id;
+
+            if (!localPeerConnection) {
+                // 收到信号时还没有连接，说明自己是响应者，需要创建连接
+                if (signalData.type === 'offer') {
+                    isInitiator = false;
+                    createPeerConnection();
+                } else {
+                    console.warn('Received signal before connection created, ignoring:', signalData.type);
+                    return;
+                }
+            }
+
+            // 处理 SDP offer
+            if (signalData.type === 'offer') {
+                console.log('Received offer');
+                localPeerConnection.setRemoteDescription(new RTCSessionDescription(signalData))
+                    .then(() => {
+                        // 创建 answer
+                        return localPeerConnection.createAnswer();
+                    })
+                    .then((answer) => {
+                        return localPeerConnection.setLocalDescription(answer);
+                    })
+                    .then(() => {
+                        // 发送 answer 回去
+                        socket.emit('signal', {
+                            room: roomName,
+                            signal_data: localPeerConnection.localDescription
+                        });
+                    })
+                    .catch(handleError);
+            }
+            // 处理 SDP answer
+            else if (signalData.type === 'answer') {
+                console.log('Received answer');
+                localPeerConnection.setRemoteDescription(new RTCSessionDescription(signalData))
+                    .catch(handleError);
+            }
+            // 处理 ICE candidate
+            else if (signalData.type === 'candidate') {
+                console.log('Received ICE candidate');
+                localPeerConnection.addIceCandidate(new RTCIceCandidate(signalData.candidate))
+                    .catch(handleError);
+            }
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+            cleanupConnection();
+        });
+
+        // ========== WebRTC 核心逻辑 ==========
+        function createPeerConnection() {
+            console.log('Creating PeerConnection...');
+            localPeerConnection = new RTCPeerConnection(iceServers);
+
+            // 监听 ICE candidate 事件
+            localPeerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    console.log('New ICE candidate');
+                    // 将 ICE candidate 通过信令服务器发送给对方
+                    socket.emit('signal', {
+                        room: roomName,
+                        signal_data: {
+                            type: 'candidate',
+                            candidate: event.candidate
+                        }
+                    });
+                } else {
+                    console.log('ICE gathering complete');
+                }
+            };
+
+            // 监听 DataChannel 事件 (接收方)
+            localPeerConnection.ondatachannel = (event) => {
+                console.log('DataChannel received from remote peer');
+                dataChannel = event.channel;
+                setupDataChannel(dataChannel);
+            };
+
+            // 创建 DataChannel (发起方)
+            if (isInitiator) {
+                dataChannel = localPeerConnection.createDataChannel('textChannel');
+                setupDataChannel(dataChannel);
+            }
+
+            // 连接状态变化
+            localPeerConnection.onconnectionstatechange = () => {
+                console.log('Connection state:', localPeerConnection.connectionState);
+                statusDiv.textContent = `Connection: ${localPeerConnection.connectionState}`;
+                if (localPeerConnection.connectionState === 'connected') {
+                    messageInput.disabled = false;
+                    sendBtn.disabled = false;
+                } else if (localPeerConnection.connectionState === 'disconnected' || 
+                           localPeerConnection.connectionState === 'failed' || 
+                           localPeerConnection.connectionState === 'closed') {
+                    messageInput.disabled = true;
+                    sendBtn.disabled = true;
+                    if (dataChannel) {
+                        dataChannel.close();
+                        dataChannel = null;
+                    }
+                }
+            };
+        }
+
+        function setupDataChannel(channel) {
+            channel.onopen = () => {
+                console.log('DataChannel opened');
+                statusDiv.textContent = 'Connected - You can send messages!';
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+            };
+
+            channel.onmessage = (event) => {
+                console.log('Received message:', event.data);
+                addMessageToChat('Other: ' + event.data);
+            };
+
+            channel.onclose = () => {
+                console.log('DataChannel closed');
+                statusDiv.textContent = 'DataChannel closed';
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+            };
+
+            channel.onerror = (error) => {
+                console.error('DataChannel error:', error);
+                statusDiv.textContent = 'DataChannel error';
+            };
+        }
+
+        function createOffer() {
+            if (!localPeerConnection) return;
+            localPeerConnection.createOffer()
+                .then((offer) => {
+                    console.log('Created offer');
+                    return localPeerConnection.setLocalDescription(offer);
+                })
+                .then(() => {
+                    // 发送 offer 给对方
+                    socket.emit('signal', {
+                        room: roomName,
+                        signal_data: localPeerConnection.localDescription
+                    });
+                })
+                .catch(handleError);
+        }
+
+        function cleanupConnection() {
+            if (dataChannel) {
+                dataChannel.close();
+                dataChannel = null;
+            }
+            if (localPeerConnection) {
+                localPeerConnection.close();
+                localPeerConnection = null;
+            }
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            statusDiv.textContent = 'Not connected';
+        }
+
+        function handleError(error) {
+            console.error('Error:', error);
+            statusDiv.textContent = `Error: ${error.toString()}`;
+            cleanupConnection();
+        }
+    </script>
+</body>
+</html>
