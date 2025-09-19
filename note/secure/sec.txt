@@ -84,7 +84,19 @@ http消息分析
 hydra
 密码暴力破解
 
+########################################################################################
+IDS     Intrusion Detection System             入侵检测系统
+  NIDS  Network Intrusion Detection System     网络入侵检测系统
+  HIDS  Host-based Intrusion Detection System  主机入侵检测系统
+
+
+Wazuh
+
+
+Suricata
 
 
 
+########################################################################################
+WAF  Web Application Firewall  Web应用防火墙
 

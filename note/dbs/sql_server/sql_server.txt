@@ -1,0 +1,89 @@
+
+
+文件
+.mdf primary data file
+.ndf secondary data files
+.ldf log data files
+
+每个数据库是以两个文件存放的，一个后缀名为mdf，是数据文件，另一个后缀名为ldf，为日志文件
+
+
+
+系统数据库
+master  用于记录所有SQL Server系统级别的信息，这些信息用于控制用户数据库和数据操作。
+msdb    由 Enterprise Manager和Agent使用，记录着任务计划信息、事件处理信息、数据备份及恢复信息、警告及异常信息。
+model   SQL Server为用户数据库提供的样板，新的用户数据库都以 model数据库为基础。每次创建一个新数据库时，SQL Server先制作一个model数据库的拷贝，然后再将这个拷贝扩展成要求的规模。
+tempdb  一个共享的工作空间，SQL Server中的所有数据库都可以使用它。它为临时表和其他临时工作提供了一个存储区。
+
+
+
+
+#查看所有库
+select * from sysdatabases;
+
+
+#查询用户表，属于用户的表
+select * from sysobjects where xtype='u';
+
+
+
+#系统表
+sys.server_principals
+sysaltfiles     主数据库 保存数据库的文件
+syscharsets     主数据库 字符集与排序顺序
+sysconfigures   主数据库 配置选项
+syscurconfigs   主数据库 当前配置选项
+sysdatabases    主数据库 服务器中的数据库
+syslanguages    主数据库 语言
+syslogins       主数据库 登陆帐号信息
+sysoledbusers   主数据库 链接服务器登陆信息
+sysprocesses    主数据库 进程
+sysremotelogins 主数据库 远程登录帐号
+syscolumns      每个数据库 列
+sysconstrains   每个数据库 限制
+sysfilegroups   每个数据库 文件组
+sysfiles        每个数据库 文件
+sysforeignkeys  每个数据库 外部关键字
+sysindexs       每个数据库 索引
+sysmembers      每个数据库 角色成员
+sysobjects      每个数据库 所有数据库对象
+syspermissions  每个数据库 权限
+systypes        每个数据库 用户定义数据类型
+
+
+
+CREATE TABLE 
+    [ database_name . [ schema_name ] . | schema_name . ] table_name 
+    ( { <column_definition> | <computed_column_definition> }
+        [ <table_constraint> ] [ ,...n ] ) 
+    [ ON { partition_scheme_name ( partition_column_name ) | filegroup 
+        | " DEFAULT " } ] 
+    [ { TEXTIMAGE_ON { filegroup | " DEFAULT " } ] 
+[ ; ]
+
+
+
+
+内部视图
+sys          #访问sys开头的系统表
+sys.databases
+sys.tables
+
+information_schema
+
+
+select * from DB_NAME.SHEMA_NAME.TABLE_NAME;                 -- schema_name为dbo可以不写， 如 test_db..test_tb
+select * from [DB_NAME].[SHEMA_NAME].[TABLE_NAME];           -- []如mysql的``
+
+
+
+dbo是每个数据库的默认用户，具有所有者权限，全称：datebaseOwner ，即DbOwner 。
+
+
+create table DATABASE_NAME.dbo.TABLE_NAME ....;    
+-- 创建表的schema授予给这个数据库的拥有者。否则schema为创建的账号，则其账号访问时需要指定这个账号的才能访问。
+
+
+user db_name    -- 切换数据库
+
+

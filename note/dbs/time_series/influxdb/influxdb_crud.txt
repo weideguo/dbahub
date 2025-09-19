@@ -6,7 +6,7 @@ show field keys from tb_name;
 tags   有索引
 fields 无索引
 point  记录
-series 
+series 不同的tags组合，不应该过大，过大会导致内存使用过大
 
 show series on <database> from <measurement>
 

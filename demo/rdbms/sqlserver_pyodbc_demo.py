@@ -1,3 +1,6 @@
+"""
+可能会遇到TLS问题
+"""
 import pyodbc
 
 

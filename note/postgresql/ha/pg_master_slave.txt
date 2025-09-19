@@ -68,8 +68,9 @@ STONITH
 Shoot The Other Node In The Head    
     
 
-#fail over 二选一
+#fail over 二选一，原来的主节点不会自动变为新的从节点
 pg_ctl promote                                              # 提升当前实例为主
+pg_ctl promote -D ./data/  
 
 #postgresql.conf
 promote_trigger_file="/path_to_trigger/my_trigger_file"     # 只要创建对应这个文件，即可提升当前实例为主
@@ -77,9 +78,27 @@ promote_trigger_file="/path_to_trigger/my_trigger_file"     # 只要创建对应
 
 ##############################################################################################################################
 
+# 在主从切换后，快速将原主节点重新同步为新的从节点
+
+# 新主节点允许连接
+# 启用wal_log_hints 
+
+# 1、停止原主节点
+
+# 2、在原主节点运行pg_rewind，连接到到新主节点，获取其状态，并重写原主节点的数据文件
+
 pg_rewind                     \
 --target-pgdata=./data        \
---source-server="host=192.168.1.128 port=5432 user=pg_user password=pg_user_password dbname=postgres"   ##切换为新主的从 如果失败，手动从新主备份然后再设主从
+--source-server="host=<new_master> port=5432 user=pg_user password=pg_user_password dbname=postgres"   ##切换为新主的从 如果失败，手动从新主备份然后再设主从
+
+# 3、原主节点设置相关配置文件
+touch standby.signal
+echo "primary_conninfo = 'host=<new_master> port=5432 user=pg_user password=pg_user_password dbname=postgres'" > postgresql.auto.conf
+
+# 4、启动原主节点
+
+
+
 
 
 

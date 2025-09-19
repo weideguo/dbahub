@@ -7,7 +7,7 @@
 yum install timescaledb-2-postgresql-17 
 timescaledb-tune --pg-config=/path_2_pg/bin/pg_config
 
-############### 执行timescaledb-tune后会在配置文件postgresql.conf添加以下配置？
+############### 执行timescaledb-tune后会在配置文件postgresql.conf添加以下配置
 shared_preload_libraries = 'timescaledb'
 timescaledb.max_background_workers = 16
 ###############

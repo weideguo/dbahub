@@ -1,0 +1,18 @@
+# linux下安装
+
+# 设置
+curl -o /etc/yum.repos.d/mssql-server.repo https://packages.microsoft.com/config/rhel/7/mssql-server-2019.repo
+yum install -y mssql-server
+
+# 配置 会自动启动？
+sudo /opt/mssql/bin/mssql-conf setup
+
+systemctl status mssql-server
+
+
+# sqlcmd安装
+curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/7/prod.repo
+yum install -y mssql-tools unixODBC-devel
+
+
+export PATH=$PATH:/opt/mssql/bin:/opt/mssql-tools/bin

@@ -31,6 +31,7 @@ kubectl logs <pod-name>
 #类似tail -f
 kubectl logs -f <pod-name>
 
+--tail=100
 
 #文件复制 可以复制出或者复制入
 kubectl cp <pod-name>:/bitnami/mysql/x.sql ./

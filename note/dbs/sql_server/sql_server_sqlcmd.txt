@@ -1,0 +1,25 @@
+sqlcmd    sql server命令行
+:help  #查看帮助
+:quit  #退出 
+
+GO 在批处理结束和任何缓存 Transact-SQL 语句执行时发出信号。
+
+
+#安装cygwin时在shell中命令的位置
+"/cygdrive/C/Program Files/Microsoft SQL Server/90/Tools/binn/SQLCMD.EXE" -S 127.0.0.1,1433 -E -Q "select ..." 
+
+
+#
+sqlcmd -S 127.0.0.1,1433 -E -Q "insert into ..." 
+
+sqlcmd -U da -P sa_password_word -H 127.0.0.1 
+
+-E 使用可信连接
+
+
+
+# 第三方命令行
+# 安装freetds-bin
+tsql -H 192.168.1.100 -p 1433 -U sa 
+
+

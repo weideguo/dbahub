@@ -33,3 +33,5 @@ kubectl get deploy -A
 -n          # 指定命名空间
 
 
+kubectl --kubeconfig=~/.kube/config ...
+设置集群访问信息的配置文

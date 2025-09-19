@@ -41,6 +41,18 @@ psql [OPTION]... [DBNAME [USERNAME]]
   -W, --password          
 
 
+# psql默认的配置
+psql -d postgres -U postgres -h /var/run/postgresql -p 5432 
+
+pg socket
+l路径
+/var/run/postgresql/
+/tmp
+文件名的格式
+.s.PGSQL.<port>
+
+
+
 psql中的命令
 \?            ###\开始的命令查看
 \h            ###sql语句查看

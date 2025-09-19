@@ -1,0 +1,61 @@
+# 查看支持的字符集（比较、排序使用）
+select * from ::fn_helpcollations() ;
+select * from ::fn_helpcollations() where name like 'Chines%';
+
+# 当前字符编码
+SELECT SERVERPROPERTY('Collation');
+
+# 库的字符编码
+SELECT name,collation_name FROM sys.databases;
+
+# 修改库的字符编码  
+ALTER DATABASE db_name COLLATE Chinese_PRC_CI_AS;
+
+
+
+Chinese_PRC：针对大陆简体字UNICODE的排序规则。
+CI：CaseSensitivity，指定不区分大小写。
+AS：AccentSensitivity，指定区分重音。
+英文1占字节，中文2占字节
+
+-- 2019才支持utf8？
+Chinese_PRC_CI_AS_UTF8
+
+-- 默认
+SQL_Latin1_General_CP1_CI_AS
+
+
+# 单用户模式
+ALTER DATABASE [db_name] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+# 修改字符集 collation
+ALTER DATABASE [db_name] COLLATE Chinese_PRC_CI_AS;
+
+# 多用户模式
+ALTER DATABASE [db_name] SET MULTI_USER;
+
+
+整个实例的字符编码修改需要在启动时setup设置？
+修改库的字符编码需要重新创建表才生效
+
+
+CREATE TABLE [test_20250915_0] (
+  [c] (255) COLLATE Chinese_PRC_CI_AS NULL
+)
+
+CREATE TABLE [test_20250915_1] (
+  [c] nvarchar(255) COLLATE Chinese_PRC_CI_AS NULL
+)
+
+CREATE TABLE [test_20250915_2] (
+  [f_org_name] nvarchar(255) 
+)
+
+INSERT INTO test_20250915 (c) VALUES (N'比如存在中文');
+
+字段类型
+nvarchar  变长度的unicode字符串，存在中文，应该使用这个类型。使用这个时，排序规则为默认的SQL_Latin1_General_CP1_CI_AS也可以。
+varchar   N''插入时，从 Unicode 转换为该字段的排序规则对应的编码，因此如 Chinese_PRC_CI_AS 也是没有问题
+
+-- 插入 Unicode 字符串时，应使用
+-- 使用编程语句操作时，连接驱动自动转换，因此无需在加 N 前缀

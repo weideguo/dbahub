@@ -267,6 +267,22 @@ sftp -o Port=22  root@10.10.1.10
 #实时文件同步
 inotify-tools 监听文件然后使用rsync推送文件
 
+SRC_DIR="/path/to/source/"    # 监听的目录
+# 使用 inotifywait 监听源目录的修改、创建、移动和删除事件
+inotifywait -m -r -e modify,create,move,delete --format '%w%f %e' "${SRC_DIR}" | while read file event
+do
+    echo "$event  $file"
+    # 在此进行具体的操作
+done
+
+# 监听60秒内目录的变化，最后输出统计结果
+inotifywatch -r -t 60 -e modify,create,move,delete /tmp 
+
+
+lsyncd 守护进程，监听变化后执行同步命令（如rsync）
+unison 双向同步，类似rsync，需要定时运行
+
+
 
 
 nc

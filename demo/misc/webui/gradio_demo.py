@@ -1,4 +1,7 @@
-# 一个演示页面
+"""
+一个演示页面
+python app.py
+"""
 
 import gradio as gr
 

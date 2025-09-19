@@ -1,0 +1,82 @@
+-- 创建登录名
+-- 登录名是全局账号，外部连接时，使用的用户名即对应这个
+-- 登录名可以映射到多个数据库用户，即使被多个数据库用户关联
+CREATE LOGIN username 
+WITH PASSWORD = 'my_password';
+
+-- 查看登录名
+SELECT 
+    name AS LoginName,
+    [type],
+    type_desc,
+    create_date,
+    modify_date,
+    is_disabled
+FROM sys.server_principals
+WHERE type IN ('S', 'U', 'G', 'MS', 'MX') -- S=SQL登录, U=Windows用户, G=Windows组, MS=服务器角色, MX=映射
+ORDER BY type,name;
+
+
+
+-- 创建数据库用户，关联登录名
+-- 数据库用户在库下创建，只能授权数据库下对象的权限
+CREATE USER username FOR LOGIN username;
+
+
+
+-- 查看用户名以及对应的登录名
+SELECT 
+    dp.name AS database_user_name,
+    dp.type_desc AS database_user_type,
+    sp.name AS login_name
+FROM 
+    sys.database_principals dp
+LEFT JOIN 
+    sys.server_principals sp ON dp.sid = sp.sid
+WHERE 
+    dp.type IN ('S', 'U', 'G') -- 'S' = Server login, 'U' = Database user, 'G' = Database role
+ORDER BY 
+    database_user_name;
+    
+    
+-- 对数据库用户授予表的权限
+
+-- 将用户添加到数据库角色中
+ALTER ROLE db_datareader ADD MEMBER username;
+
+-- 直接授权
+GRANT SELECT ON OBJECT::dbo.YourTable TO username;
+
+
+-- 默认不能跨库访问
+-- 可以在不同数据库下创建数据库用户，并授权，关联相同登录名，即可实现跨库操作
+
+
+默认角色
+db_owner
+db_datareader
+db_datawriter
+db_ddladmin
+
+
+权限类型
+SELECT     查询数据
+INSERT     插入数据
+UPDATE     更新数据
+DELETE     删除数据
+EXECUTE    执行存储过程或函数
+ALTER      修改对象结构
+CONTROL    完全控制（类似所有者）
+
+-- 查看实例的权限类型
+SELECT * FROM fn_my_permissions(NULL, 'DATABASE');
+
+
+安全对象类别
+OBJECT        OBJECT::dbo.Employees    表、视图、表值函数、存储过程等
+DATABASE      DATABASE::MyDB           整个数据库
+SCHEMA        SCHEMA::dbo              模式（Schema）
+SERVER        SERVER::MyServer         服务器级别对象
+LOGIN         LOGIN::MyLogin           登录名
+USER          USER::MyUser             数据库用户
+

@@ -1,0 +1,13 @@
+sql server management stutio      图形管理工具（2016以及之后单独安装）
+
+
+Windows身份验证模式 
+
+混合身份验证模式 
+    同时支持 Windows 身份验证 和 SQL Server 身份验证
+    初始化时创建一个sa账号以及添加可以登录的操作系统账号
+    
+
+ssms连接远端的sqlserver时，服务器名称格式为<ip>,<port>，即如下格式
+192.168.1.100,1433
+

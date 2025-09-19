@@ -1,7 +1,7 @@
 #k8s节点中的进程
 
 control 节点进程：
-kube-apiserver                使用etcd，提供http接口
+kube-apiserver                使用etcd，提供http接口。kubectl连接这个服务
 kube-controller-manager
 kube-scheduler
 

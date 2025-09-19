@@ -1,0 +1,88 @@
+#命令行备份
+BACKUP DATABASE database TO backup_device [ , ...n ] [ WITH with_options [ , ...o ] ] ;
+
+
+
+USE SQLTestDB;
+GO
+BACKUP DATABASE SQLTestDB
+TO DISK = 'c:\tmp\SQLTestDB.bak'
+   WITH FORMAT,
+      MEDIANAME = 'SQLServerBackups',
+      NAME = 'Full Backup of SQLTestDB';
+GO
+
+
+
+
+#还原
+RESTORE DATABASE database_name FROM backup_device [ WITH NORECOVERY ]
+
+
+
+
+
+USE master;  
+--Make sure the database is using the simple recovery model.  
+ALTER DATABASE AdventureWorks2012 SET RECOVERY SIMPLE;  
+GO  
+-- Back up the full AdventureWorks2012 database.  
+BACKUP DATABASE AdventureWorks2012   
+TO DISK = 'Z:\SQLServerBackups\AdventureWorks2012.bak'   
+  WITH FORMAT;  
+GO  
+--Create a differential database backup.  
+BACKUP DATABASE AdventureWorks2012   
+TO DISK = 'Z:\SQLServerBackups\AdventureWorks2012.bak'  
+   WITH DIFFERENTIAL;  
+GO  
+--Restore the full database backup (from backup set 1).  
+RESTORE DATABASE AdventureWorks2012   
+FROM DISK = 'Z:\SQLServerBackups\AdventureWorks2012.bak'   
+   WITH FILE=1, NORECOVERY;  
+--Restore the differential backup (from backup set 2).  
+RESTORE DATABASE AdventureWorks2012   
+FROM DISK = 'Z:\SQLServerBackups\AdventureWorks2012.bak'   
+   WITH FILE=2, RECOVERY;  
+GO  
+
+
+
+
+#备份事务日志 transaction log
+BACKUP LOG AdventureWorks2012  
+   TO MyAdvWorks_FullRM_log1;  
+GO  
+
+
+
+
+
+USE master;  
+--Create tail-log backup.  
+BACKUP LOG AdventureWorks2012   
+TO DISK = 'Z:\SQLServerBackups\AdventureWorksFullRM.bak'    
+   WITH NORECOVERY;   
+GO  
+--Restore the full database backup (from backup set 1).  
+RESTORE DATABASE AdventureWorks2012   
+  FROM DISK = 'Z:\SQLServerBackups\AdventureWorksFullRM.bak'   
+  WITH FILE=1,   
+    NORECOVERY;  
+  
+--Restore the regular log backup (from backup set 2).  
+RESTORE LOG AdventureWorks2012   
+  FROM DISK = 'Z:\SQLServerBackups\AdventureWorksFullRM.bak'   
+  WITH FILE=2,   
+    NORECOVERY;  
+  
+--Restore the tail-log backup (from backup set 3).  
+RESTORE LOG AdventureWorks2012   
+  FROM DISK = 'Z:\SQLServerBackups\AdventureWorksFullRM.bak'  
+  WITH FILE=3,   
+    NORECOVERY;  
+GO  
+--recover the database:  
+RESTORE DATABASE AdventureWorks2012 WITH RECOVERY;  
+GO  
+

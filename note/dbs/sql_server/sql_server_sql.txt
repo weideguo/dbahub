@@ -1,0 +1,3 @@
+select top 1 * from xxx;     
+select * from xxx limit 1;   
+

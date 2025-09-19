@@ -15,3 +15,11 @@ Kuboard
 
 
 OpenShift (redhat paas, 基于k8s)
+
+
+
+轻量级类k8s集群
+k3s
+minikube
+kind         kubernates in docker
+

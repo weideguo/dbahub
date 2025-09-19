@@ -1,0 +1,15 @@
+sql server configuration manager
+SQL Server 配置管理器
+
+
+可以启动、停止sqlserver
+
+
+SQL Server                               核心数据库引擎，SSMS可以连接
+SQL Full-text Filter Daemon Launcher     全文搜索支持，使用全文索引时需要启动
+SQL Server Browser                       不是必须启动，多实例环境、命名实例、客户端无法直连端口时
+SQL Server Agent                         不是必须启动，在后台自动执行数据库相关的任务，如创建数据库备份
+SQL Server Intergration Services         不是必须启动，SSMS可以连接，可单独启动，数据集成与 ETL，数据迁移、数据清洗、定时同步
+SQL Server Analysis Services             不是必须启动，SSMS可以连接，可单独启动，数据分析与 BI
+SQL Server Reporting Services            不是必须启动，SSMS可以连接，可单独启动，依赖IIS web服务，报表平台，用于创建、发布、管理和交付各种格式的数据报表
+
