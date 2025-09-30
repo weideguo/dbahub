@@ -47,6 +47,8 @@ AllowAgentForwarding yes
 
 可以实现从A登陆B之后，B可以使用A中设置的ssh-agent
 
+ssh -o Option1=Value1 -o Option2=Value2 user@hostname
+StrictHostKeyChecking=no     # 不进行主机指纹验证
 
 
 #SSH使用代理

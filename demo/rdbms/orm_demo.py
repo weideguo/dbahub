@@ -69,7 +69,11 @@ if __name__ == "__main__":
     session.commit() 
 
 
+    from sqlalchemy import inspect
 
+    inspector = inspect(engine)
 
-
-
+    # 获取所有的表名
+    table_names = inspector.get_table_names()
+    # 获取表的字段
+    inspector.get_columns(table_name)

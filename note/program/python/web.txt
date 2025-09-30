@@ -1,8 +1,3 @@
-WSGI
-web server gateway interface
-
-CGI
-common gateway interface
 
 
 #基于当前目录创建web服务

@@ -1,6 +1,7 @@
 元数据锁 meta data lock
 
 server层的锁 所有存储引擎都存在
+为表级锁
 
 
 已经存在的事务（select 以及其他DML）会导致alter表操作处于 Waiting for table metadata lock 状态
@@ -93,3 +94,18 @@ SHARED_READ_ONLY        共享锁       S    3      执行lock tables xxx read�
 4、SHARED_READ 与 SHARED_WRITE 和 SHARED_READ_ONLY 分别兼容。即如果前面的持锁类型为SHARED_WRITE，则可以获得锁。如果前面持锁类型为SHARED_READ_ONLY，也可以获得锁。
 
 5、SHARED_READ_ONLY 优先级最低，主要是因为被 SHARED_WRITE 互斥，但如果只有 SHARED_READ 则他们的优先级是兼容的。
+
+
+-- 启用MDL监控
+-- 启用 instrument
+UPDATE performance_schema.setup_instruments 
+SET ENABLED = 'YES', TIMED = 'YES' 
+WHERE NAME = 'wait/lock/metadata/sql/mdl';
+
+-- 启用相关 consumer
+UPDATE performance_schema.setup_consumers 
+SET ENABLED = 'YES' 
+WHERE NAME = 'events_waits_current';
+
+
+

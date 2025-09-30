@@ -57,3 +57,9 @@ nrm use cnpm
 nrm current
 nrm del cnpm
 nrm add cnpm http://r.cnpmjs.org/
+
+
+
+
+npx  # 包执行器
+

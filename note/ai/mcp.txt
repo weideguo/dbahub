@@ -1,0 +1,4 @@
+# mcp 调试页面
+ALLOWED_ORIGINS=http://my_host:8080  CLIENT_PORT=8080 HOST=0.0.0.0 npx @modelcontextprotocol/inspector
+
+

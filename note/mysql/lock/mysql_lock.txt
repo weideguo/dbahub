@@ -197,7 +197,7 @@ DROP TABLE innodb_tablespace_monitor;
 
 
 
-查看事务锁等待状态:
+查看事务锁等待状态，这些表的记录为行级锁的信息:
 select * from information_schema.innodb_locks;         -- 废弃
 select * from information_schema.innodb_lock_waits;    -- 废弃
 select * from information_schema.innodb_trx;

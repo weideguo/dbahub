@@ -27,7 +27,7 @@ docs = [
     "Born in Maida Vale, London, Turing was raised in southern England.",
 ]
 
-# 在此为随机构建的向量，实际使用时可以用ai模型根据内容构建
+# 在此为随机构建的向量，实际使用时可以用embeddings模型根据内容构建
 vectors = [[ np.random.uniform(-1, 1) for _ in range(384) ] for _ in range(len(docs)) ]
 data = [ {"id": i, "vector": vectors[i], "text": docs[i], "subject": "history"} for i in range(len(vectors)) ]
 
@@ -36,7 +36,7 @@ data = [ {"id": i, "vector": vectors[i], "text": docs[i], "subject": "history"} 
 res = client.insert(collection_name="demo_collection", data=data)
 
 
-# 由问题构建向量
+# 由问题构建向量，使用embeddings模型
 # 需要先定义 embedding_fn.encode_queries 实现向量构建
 query_vectors = embedding_fn.encode_queries(["Who is Alan Turing?", "What is AI?"])        
 

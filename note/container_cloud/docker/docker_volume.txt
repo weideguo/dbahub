@@ -18,5 +18,6 @@ docker volume create --name vol_name
 
 
 docker volume ls                                                    #列出所有的数据卷
+docker volume prune                                                 #删除没有使用的数据卷
 docker volume inspect vol_name                                      #以名字查看volume的信息
 docker inspect --format "{{.Volumes}}" container_id                 #查看volume

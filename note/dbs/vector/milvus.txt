@@ -1,0 +1,80 @@
+lite
+python代码中嵌入式使用，无需单独部署。
+
+
+单节点
+1、依赖etcd存储元数据信息，可以使用内嵌etcd从而不必单独启动etcd服务
+2、使用备份，则依赖etcd、minio
+
+
+集群
+etcd集群
+minio集群
+milvus集群
+  mixcoord       协调器       
+  datanode       数据节点  
+  proxy          代理
+  querynode      查询节点
+  streamingnode  流节点
+
+
+数据可以直接使用对象存储而无需本地磁盘空间
+
+
+
+export CLUSTER_ENDPOINT="http://localhost:19530"
+export TOKEN="root:Milvus"                           # 启动认证时，Milvus初始化后的默认账号密码
+
+
+# 创建用户
+curl --request POST \
+  --url "${CLUSTER_ENDPOINT}/v2/vectordb/users/create" \
+  --header "Authorization: Bearer ${TOKEN}" \
+  --header "Content-Type: application/json" \
+  -d '{
+      "userName": "myUser",
+      "password": "P@ssw0rd"
+  }'
+  
+
+# 更新用户密码
+curl --request POST \
+  --url "${CLUSTER_ENDPOINT}/v2/vectordb/users/update_password" \
+  --header "Authorization: Bearer ${TOKEN}" \
+  --header "Content-Type: application/json" \
+  -d '{
+      "newPassword": "P@ssw0rd!",
+      "userName": "myUser",
+      "password": "P@ssw0rd"
+  }'
+
+
+# 查看所有用户角色
+curl --request POST \
+  --url "${CLUSTER_ENDPOINT}/v2/vectordb/users/list" \
+  --header "Authorization: Bearer ${TOKEN}" \
+  --header "Content-Type: application/json" \
+  -d '{}'
+
+
+# 为用户分配角色
+curl --request POST \
+  --url "${CLUSTER_ENDPOINT}/v2/vectordb/users/grant_role" \
+  --header "Authorization: Bearer ${TOKEN}" \
+  --header "Content-Type: application/json" \
+  -d '{
+      "roleName": "admin",
+      "userName": "milvusAdmin"
+  }'
+  
+
+# 查看数据库下的集合
+curl --request POST \
+  --url "${CLUSTER_ENDPOINT}/v2/vectordb/collections/list" \
+  --header "Authorization: Bearer ${TOKEN}" \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  -d '{
+      "dbName": "default"
+  }'
+  
