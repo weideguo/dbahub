@@ -1,0 +1,91 @@
+docker run -id              \
+ --privileged               \
+ --name influxdb            \
+ --env INFLUXDB_NODE_ID=0   \
+ --network host             \
+ bitnami/influxdb:3.4.1
+
+
+docker run -id -p 8181:8181 \
+  --privileged               \
+  -v $PWD/data:/var/lib/influxdb3/data \
+  -v $PWD/plugins:/var/lib/influxdb3/plugins \
+  influxdb:3-core influxdb3 serve \
+    --node-id=my-node-0 \
+    --object-store=file \
+    --data-dir=/var/lib/influxdb3/data \
+    --plugin-dir=/var/lib/influxdb3/plugins
+
+
+# web管理页面（不是必须）
+docker run --detach \
+  --name influxdb3-explorer \
+  --publish 0.0.0.0:8888:80 \
+  --publish 0.0.0.0:8889:8888 \
+  influxdata/influxdb3-ui \
+  --mode=admin
+  
+
+influxdb3 serve --node-id 0 --object-store file
+# 支持存储在内存、本地文件、s3等
+
+
+8088
+8181 客户端连接，http
+
+influxdb3 默认启用token的认证方式
+
+
+# 创建token
+influxdb3 create token --admin
+
+
+# 设置token成环境变量
+export INFLUXDB3_AUTH_TOKEN=xxx
+
+
+# 创建数据库（不是必须，可以隐式创建）
+influxdb3 create database my_test
+# 创建表（不是必须，可以隐式创建）
+influxdb3 create table \
+  --tags $tag1,$tag2,$tag3 \
+  --database $DATABASE_NAME \
+  --token $AUTH_TOKEN \
+  $TABLE_NAME
+  
+
+# 进行查询
+influxdb3 query \
+  --database my_test \
+  "show tables"
+  
+
+
+export ADMIN_TOKEN=$INFLUXDB3_AUTH_TOKEN
+# http API  
+# 写
+curl "http://localhost:8181/api/v3/write_lp?db=my_test&precision=auto" \
+  --header "Authorization: Bearer $ADMIN_TOKEN" \
+  --data-raw "home,room=Kitchen temp=72.0
+ home,room=Living\ room temp=71.5"
+ 
+
+这三种格式的表名都可以。iox是默认使用的schema。
+home
+iox.home
+public.iox.home
+
+# 读
+curl -G "http://localhost:8181/api/v3/query_sql" \
+  --header "Authorization: Bearer $ADMIN_TOKEN" \
+  --data-urlencode "db=my_test" \
+  --data-urlencode "q=SELECT * FROM home" \
+  --data-urlencode "format=jsonl"
+
+
+# format
+json
+csv
+jsonl
+parquet   # 使用这个是需要如 --output x.parquet 存储到文件
+

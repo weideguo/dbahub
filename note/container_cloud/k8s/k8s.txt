@@ -6,6 +6,7 @@ kubectl api-resources
 #查看命名空间  默认命名空间的容器 default
 kubectl get namespaces   
 kubectl describe namespace <namespace-name>
+kubectl create namespace <namespace-name>
 
 get describe 对所有API资源都生效
 

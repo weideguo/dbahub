@@ -174,6 +174,10 @@ tcmalloc cache=pageheap_free_bytes + total_free_byte。
 tcmalloc cache会还回操作系统
 
 
+db.serverStatus().wiredTiger.cache
+maximum bytes configured: 配置最大值
+current bytes cached:     当前使用     bytes currently in the cache
+
 文件
 memory-mapped files
 

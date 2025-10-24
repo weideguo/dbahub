@@ -5,6 +5,7 @@
 # 1.安装pg，初始化pg数据库。 如 yum install postgresql17
 # 2.安装timescaledb
 yum install timescaledb-2-postgresql-17 
+# timescaledb-2-loader-postgresql-17 timescaledb-tools # 可能这两个也要安装
 timescaledb-tune --pg-config=/path_2_pg/bin/pg_config
 
 ############### 执行timescaledb-tune后会在配置文件postgresql.conf添加以下配置

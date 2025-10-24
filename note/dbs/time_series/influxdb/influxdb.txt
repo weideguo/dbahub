@@ -42,8 +42,8 @@ curl -G "http://localhost:8086/query?db=mydb" \
 # 插入多条记录
 curl -i -XPOST "http://localhost:8086/write?db=mydb20250728" \
 --data-binary '
-cpu,host=server01,region=us-west value=0.11 1500000001000000000
-cpu,host=server02,region=us-east value=0.22 1500000002000000000
+cpu,host=server01,region=us-west value=0.11,value1=0.12 1500000001000000000
+cpu,host=server02,region=us-east value=0.22,value1=0.23 1500000002000000000
 memory,host=server01 used_percent=99.0 1500000001000000000
 '
 

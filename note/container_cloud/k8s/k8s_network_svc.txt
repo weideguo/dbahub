@@ -1,5 +1,5 @@
 coredns    svc使用    只需要启动coredns的pod即可
-
+                      如果不安装coredns，则对于svc，不能通过名称访问pod，只能通过IP访问（ClusterIP、ip:nodePort）
 
 #网络相关 services 
 #查看网络

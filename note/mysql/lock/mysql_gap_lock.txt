@@ -24,11 +24,20 @@ Next-Key Locks
 
 
 RC/RU隔离级别
-没有gap lock，即没有范围锁，
+没有gap lock，即没有范围锁。
 
 RR隔离级别
 存在gap lock，原因为innodb依赖于索引结构加锁，目的是为实现一致性读
+通过锁定索引间的“间隙”，阻止其他事务插入新行，从而保证一个事务内多次查询结果的一致性。
+MVCC 能防止“快照读”的幻读，但不能防止“当前读”的幻读。
 
+consistent read  快照读
+    普通的查询
+
+locking reads 当前读
+    SELECT ... FOR UPDATE 
+    SELECT ... LOCK IN SHARE MODE
+    
 
 #条件列为非唯一索引
 条件列选中记录（对应的主键）
