@@ -141,22 +141,6 @@ telnet退出
 ctrl+] 
 
 
-service vsftpd start      ##启动程序
-service vsftpd stop       ##结束进程
-
-/var/log/cron            ##crontab日志
-/var/spool/cron/        ##crontab 的信息，每个账号的调度对应一个文件，文件可以热加载（因而可能会被恶意利用，如通过写文件实现反弹shell）
-
-
-##重启crond
-service syslog stop                     ##系统的日志守护进程
-service rsyslog restart                 ##sylog的增强版本，增加网络传输，远端的日志可以传输到本地
-service syslog start
-service crond restart
-
-crontab  ####任务调度   设置可执行程序的定时运行
-crontab -l   ###查看
-crontab -e   ###编辑  使用方法与vi类似
 
 stty size               #查看终端的大小
 pwd                     ###显示当前目录
@@ -187,12 +171,6 @@ shuf -i 0-100 -n 15
 for i in a b c d e; do echo $i; done | shuf
 
 echo $RANDOM
-
-
-动态链接库
-/etc/ld.so.conf
-ldconfig
-
 
 
 ###funny###

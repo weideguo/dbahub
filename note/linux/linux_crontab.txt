@@ -1,0 +1,29 @@
+crontab  # 任务调度   设置可执行程序的定时运行
+
+/var/log/cron            ##crontab日志
+/var/spool/cron/         ##crontab 的信息，每个账号的调度对应一个文件，文件可以热加载（因而可能会被恶意利用，如通过写文件实现反弹shell）
+
+
+##重启crond
+service syslog stop                     ##系统的日志守护进程
+service rsyslog restart                 ##sylog的增强版本，增加网络传输，远端的日志可以传输到本地
+service syslog start
+service crond restart
+
+
+crontab -l   ###查看
+crontab -e   ###编辑  使用方法与vi类似
+
+五个字段从左到右：
+分钟  minute
+小时  hour
+日    day
+月    month  
+星期  weekday
+
+
+日、星期 为“或”关系，只需要满足其一就执行
+
+验证
+https://crontab.guru
+

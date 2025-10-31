@@ -40,7 +40,7 @@ LD_RUN_PATH=/usr/local/lib make install
 
 
 pip安装
-#wget https://bootstrap.pypa.io/2.6/get-pip.py  
+#wget https://bootstrap.pypa.io/pip/2.6/get-pip.py  
 #wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 wget https://bootstrap.pypa.io/get-pip.py
 python get-pip.py  

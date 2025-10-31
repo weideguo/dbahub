@@ -4,10 +4,27 @@ Orchestrator
 https://github.com/openark/orchestrator
 
 
+当出现从的 Executed_Gtid_Set 多于主，orchestrator提示出现 Errant GTID found，从不能被提升为主
+
+-- 查看实例已经执行的GTID
+show master status;
+
+-- 处理方法1
+-- 在主执行空事务失败补缺失的GTID 
+-- 可能要执行多次，因为一次只能偏移1
+set sql_log_bin=off;
+SET SESSION GTID_NEXT = '缺失的从的GTID' ;  BEGIN; COMMIT; 
+
+-- 等同于直接在orchestrator页面点击 Fix -> Inject empty transactions
 
 
 
+-- 处理方法2
+-- 在从重置GTID
+reset master
+set global gtid_purged := '主的所有GTID'
 
+-- 等同于直接在orchestrator页面点击 Fix -> Reset master
 
 
 

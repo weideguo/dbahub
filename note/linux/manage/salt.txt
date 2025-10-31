@@ -6,8 +6,8 @@ yum install salt-minion
 /etc/salt/master
 
 #minion修改配置文件
-/etc/salt/minion
-/etc/salt/minion_id 
+/etc/salt/minion          #由此设置哪个ip的master可以控制
+/etc/salt/minion_id       #在master可以根据id进行选择
 
 
 #启动

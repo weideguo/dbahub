@@ -24,7 +24,7 @@ kube-proxy  网络服务的网络代理
 
 yum install -y kubelet-1.26.0 kubeadm-1.26.0 kubectl-1.26.0
 
-# master节点初始化
+# master节点初始化，会自动创建etcd，也可以先自行安装etcd
 # kubeadm init phase upload-certs --upload-certs
 kubeadm init ...
 
@@ -39,9 +39,22 @@ kubeadm join <master-ip>:6443 --token <token>
 	--discovery-token-ca-cert-hash <discovery-token-ca-cert-hash>
     --control-plane --certificate-key <certificate-key>
 
+# <master-ip>:6443  为 kube-apiserver 服务的端口，通过实现对这个实现负载均衡，实现master的高可用。可用lvs、nginx等其他组件实现负载均衡。
+
+
+# 部署CNI网络，否则集群中pod之间无法通信
+应用对应的网络插件的YAML文件
+可选：
+  Calico
+  Flannel
+  Cilium
+
+
 # 作为node加入
 kubeadm join <master-ip>:6443 --token <token> 
 	--discovery-token-ca-cert-hash <discovery-token-ca-cert-hash>
+
+
 
 
 # 删除节点

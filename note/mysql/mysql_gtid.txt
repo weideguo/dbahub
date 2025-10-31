@@ -7,7 +7,7 @@ gtid-mode={on|off}                    --设置是否启动gtid
 
 show global variables like '%gtid%';
 
-SET GLOBAL gtid_purged="...";  # 当 global.gtid_executed 为空时可以设置
+SET GLOBAL gtid_purged="...";  # 当 global.gtid_executed 为空时可以设置，因此可能需要先执行 reset master;
 
 
 对于binlog中记录

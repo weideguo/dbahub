@@ -456,6 +456,24 @@ i=33
 w="what you want to output"
 echo -e "\e[1;${i}m${w}\e[0m"  
 
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' 
+
+echo -e "${MAGENTA}helllo${NC}"
+
+echo -e "${CYAN}"
+cat << EOF
+跨行
+也可以自定义颜色颜色
+EOF
+echo -e "${NC}"
+
 #背景高亮
 i=2     #行
 j=10    #列
@@ -467,6 +485,7 @@ i=33 #前景色
 j=41 #背景色
 w="what you want to output"  
 echo -e "\0${i}[${j}m${w}\0${i}[0m"
+
 
 
 echo -en "\b\b\b\b""e"     #-n 不换行

@@ -1,18 +1,7 @@
 /etc/rc.d/init.d/service_name    ### linux服务设置；如【service xxx start】为调用脚本时传入【start】参数
 
-
-开机启动设置
-/etc/rc.d   ###/etc目录下的相关设置是链接    
-##Linux在启动时，会自动执行/etc/rc.d目录下的初始化程序，可以把启动任务放到该目录下
-rc.local是在完成所有初始化之后执行的
-
-# 查看启动状态
-systemctl status rc-local
-
-# 可以通过重启调试
-systemctl disable rc-local
-systemctl enable rc-local
-systemctl start rc-local
+service vsftpd start      ##启动程序
+service vsftpd stop       ##结束进程
 
 
 通过服务设置自启动   会修改/etc/rc.d/rcX.d 下面的链接
@@ -27,21 +16,34 @@ chkconfig --level httpd 2345 off        设置在哪些级别关闭
 /etc/rc.d/rc1.d                #运行级别为1的启动项
 
 
-#centos7 service文件位置
-systemctl
-将server放入这个目录下，如mysqld.service
+开机启动设置
+Linux在启动时，会自动执行/etc/rc.d目录下的初始化程序，可以把启动任务放到该目录下
+rc.local是在完成所有初始化之后执行的
+
+
+
+#centos7
+
+# 查看启动状态
+systemctl status rc-local
+
+# 可以通过重启调试
+systemctl disable rc-local
+systemctl enable rc-local      # 开机自启动
+systemctl start rc-local       # 启动服务
+
+
+# service文件位置
+将service放入这个目录下，如mysqld.service
 /usr/lib/systemd/system
 /etc/systemd/system
 
-#重新加载即可
-systemctl daemon-reload
-systemctl enable mysqld.service
+
+systemctl daemon-reload          # 每次更改.service 文件后应该运行
+systemctl enable mysqld
 systemctl is-enabled mysqld
+systemctl start mysqld
+systemctl status mysqld
+systemctl stop mysqld
+systemctl disable mysqld
 
-systemctl disable mysqld.service
-
-#system stop的操作，调用kill
-man systemd.kill
-
-
-/etc/ld.so.preload              # 每个进程启动时都加载该动态链接库

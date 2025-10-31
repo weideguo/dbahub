@@ -78,6 +78,13 @@ environ 进程运行时的环境变量
 fd 进程打开或使用的文件符号连接
 
 
+/etc/ld.so.preload              # 每个进程启动时都加载该动态链接库
+
+动态链接库配置
+/etc/ld.so.conf
+ldconfig
+
+
 # https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst
 cat /proc/$PID/io  # 查看进行的IO
 rchar 进行从存储读取的字节数（磁盘、磁盘缓存），可用于判断mysql的执行sql文件导入的进度
