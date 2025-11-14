@@ -122,5 +122,5 @@ NameError
 OSError 
 ConnectionError    
 ZeroDivisionError   
+ValueError
 
-   

@@ -66,6 +66,15 @@ class Student:
 """
     
 
+@dataclass
+class Student:
+    name: str 
+    age: int = 18
+    
+    # __post_init__ 是 dataclasses 模块定义的一个约定，再自动生成的 __init__ 方法执行之后被自动调用
+    def __post_init__(self):
+        if self.age > 100:
+            raise ValueError("age to large")
 
     
-    
+   

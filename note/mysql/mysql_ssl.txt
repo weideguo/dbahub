@@ -61,4 +61,8 @@ mysql
 服务端不启用ssl   caching_sha2_password   require ssl        不能连接
 
 
+SHOW STATUS LIKE 'Ssl_cipher';      -- 当前会话使用的密码套件。不加密则为空。
+SHOW STATUS LIKE 'Ssl_version%';    -- 当前会话ssl版本
+
+
 使用socket连接不受影响

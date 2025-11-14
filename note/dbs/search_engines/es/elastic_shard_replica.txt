@@ -3,7 +3,7 @@ Elasticsearch 没有采用节点级别的主从复制，而是基于分片。只
 一般通过模板设置索引的分片和副本
 
 
-GET /_cat/shards                                  #查看分片状态 为UNASSIGNED这表示为未分配
+GET /_cat/shards                                  #查看所有索引分片状态、分片数量，为UNASSIGNED这表示为未分配
 GET _cat/shards/indexName                         #查看索引的分片信息
 
 GET indexName/_settings                           #查看索引的信息 分片、副本

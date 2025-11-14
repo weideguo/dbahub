@@ -1,5 +1,6 @@
 coredns    svc使用    只需要启动coredns的pod即可
                       如果不安装coredns，则对于svc，不能通过名称访问pod，只能通过IP访问（ClusterIP、ip:nodePort）
+                      即自动修改容器/etc/resolv.conf指向coredns
 
 #网络相关 services 
 #查看网络
@@ -15,6 +16,7 @@ kubectl get svc -o wide
 <svc-name>.<namespace-name>
 <svc-name>.<namespace-name>.svc
 <svc-name>.<namespace-name>.svc.cluster.local               # kubelet 的 --cluster-domain 的默认参数值 cluster.local
+<svc-name>.<namespace-name>.svc.cluster.local.
 
 实际的域名完整格式由容器中/etc/resolv.conf文件确定
 

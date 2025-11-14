@@ -13,6 +13,8 @@ GET /_cluster/stats                  #集群的统计信息 索引、节点
 GET /_node                           #查看节点信息
 GET /_settings                       #查看全部索引的状态信息
 
+GET /_cat/recovery?v                 #查看索引的恢复状态
+GET /_cat/recovery?v&active_only     #查看正在恢复的索引
 
 
 Hot-Warm 冷热架构（高频访问索引放于热节点，低频访问索引放于冷节点）
@@ -67,8 +69,8 @@ GET _cluster/settings
 PUT _cluster/settings
 {
  "persistent":{
-   "cluster.routing.allocation.enable": "all",
-   "cluster.routing.rebalance.enable": "all",
+   "cluster.routing.allocation.enable": "all",                  # 分片分配，删除es节点时需要设置这个
+   "cluster.routing.rebalance.enable": "all",                   # 分片再平衡，自动检测到分片分布不均衡，并主动触发分片迁移，以优化资源利用
  }
 }
 
@@ -82,5 +84,13 @@ PUT _cluster/settings
 }
 
 
+# 也可以用名字删除，通过 GET /_cat/nodes?v  获取名字
+{
+  "transient": {
+    "cluster.routing.allocation.exclude._name": "node_name_to_remove"
+  }
+}
+
+# 确认迁移进度
 # 查看分配过程
 GET _cat/allocation?v

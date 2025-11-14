@@ -85,12 +85,12 @@ BIND配置文件保存在
 配置一个域的主服务器
 1.在bind的主配置文件中添加该域的定义（主配置文件：/var/named/chroot/ect/named.conf）
 如添加：
-  zone "linuxcast.net"{
-       type master;
-       file "linuxcast.net.zone";
+  zone "your-domain.abc"{
+       type master;                       # master节点可写，slave节点读。master之间需要额外设置zone文件同步以保持一致（如在其中一台更新zone文件后手动同步到另外一台master服务器）。都可以用于dns解析
+       file "your-domain.abc.zone";
     };
-2.在/var/named/chroot/var/named/中创建该域的zone文件
- 使用默认的named.localhost配置文件作为模板--cp named.localhost  linuxcast.net.zone(在/var/named/)
+2.在/var/named/chroot/var/named/中创建该域的zone文件your-domain.abc.zone
+ 使用默认的named.localhost配置文件作为模板--cp named.localhost  your-domain.abc.zone(在/var/named/)
 3.编辑zone文件，添加需要的信息
  添加资源记录。如：www  IN A 192.168.1.1
 4.启动bind服务器或是bind刷新配置
@@ -99,9 +99,11 @@ BIND配置文件保存在
 5.使用host或dig命令检测域的信息是否正确
 错误排查
  named-chechconf /var/named/chroot/etc/named.conf
- named-chechzone linuxcast.net /var/named/chroot/var/named/linuxcast.net.zone
+ named-chechzone your-domain.abc /var/named/chroot/var/named/your-domain.abc.zone
 
-
+# (Remote Name Daemon Control)
+rndc reload                              # 新增、修改域名之后需要执行。
+rndc retransfer your-domain.abc          # 主动触发slave同步
 
 相对域名（无尾部.），依次尝试拼接搜索域。
 绝对域名（有尾部.），查询该域名，不拼接任何搜索域。（Fully Qualified Domain Name, FQDN）。

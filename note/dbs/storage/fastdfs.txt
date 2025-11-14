@@ -62,7 +62,7 @@ fdfs_download_file /etc/fdfs/client.conf group1/M00/00/00/CccccccccccccAAAAAAAAA
 # 配置文件只要有tracker的信息即可
 fdfs_monitor /etc/fdfs/storage.conf list | grep tracker
 fdfs_monitor /etc/fdfs/storage.conf list | grep ip_addr
-fdfs_monitor /etc/fdfs/storage.conf list | grep -E "(group|ip_addr|last_synced_timestamp)"
+fdfs_monitor /etc/fdfs/storage.conf list | grep -E "(tracker|group|ip_addr|last_synced_timestamp)"
 
 
 # 删除节点，状态变为deleted，该节点即使重启也不会再加入集群

@@ -90,6 +90,9 @@ docker run -d -P --name web --link db:webdb webapp python app.py         #--link
 # 使用宿主机的网络
 docker run --network host ...   
 
+docker run
+ --add-host other-app:10.0.0.1                  # 设置域名解析，即启动时往/etc/hosts添加一条记录
+ 
 
 route -n    ##查看静态路由
 brctl show  ##查看网桥
@@ -98,14 +101,14 @@ brctl show  ##查看网桥
 linux network namespace
 
 ip netns add nstest;                            #创建network namespace
-ip netns list;                                    #增加
-ip netns delete nstest;                            #删除
+ip netns list;                                  #增加
+ip netns delete nstest;                         #删除
                                                 
 ip netns exec nstest ip addr                    #显示nstest namespace中的网卡信息；格式 ip netns exec <network namespace name> <command>
 ip netns exec nstest bash                       #启动一个shell
 
 
-ip netns exec nstest ip link set dev lop up        #启动环回设备lo
+ip netns exec nstest ip link set dev lop up     #启动环回设备lo
 ip link add veth-a type veth peer name veth-b   #添加虚拟网卡veth-a veth-b
 ip link set veth-b netns nstest                 #将veth-b网卡添加到nstest
 
@@ -113,15 +116,15 @@ ip link set veth-b netns nstest                 #将veth-b网卡添加到nstest
 ip netns exec nstest ip link                    #查看nstest命令空间的网卡
                                                 
 ip addr add 10.0.0.1/24  dev veth-a             #veth-a网卡没有分配，是主机的网卡
-ip link set dev veth-a up                        #启动网卡veth-a
+ip link set dev veth-a up                       #启动网卡veth-a
                                                 
 ip addr add 10.0.0.2/24  dev veth-b             #veth-b网卡是nstest命名空间下的网卡
-ip link set dev veth-b up                        #启动网卡veth-b
+ip link set dev veth-b up                       #启动网卡veth-b
                                                 
 ip route                                        #生成路由，在主机中
-ip netns exec netns ip route                     #生成路由，在nstest中
+ip netns exec netns ip route                    #生成路由，在nstest中
                                                 
-ping 10.0.0.2                                    #ping,在主机中
+ping 10.0.0.2                                   #ping,在主机中
 ip netns exec nstest ping 10.0.0.1              #ping,在nstest中
 
 
