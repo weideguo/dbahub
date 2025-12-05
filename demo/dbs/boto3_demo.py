@@ -44,6 +44,19 @@ s3.upload_file(
     s3_key
 )
 
+
+import io
+data = b"Hello"
+# 流对象需要有 read() 方法
+stream = io.BytesIO(data) 
+
+# 上传流式数据
+s3_client.upload_fileobj(
+    Fileobj=stream,
+    Bucket='your-bucket-name',
+    Key='path/to/your_file.txt'
+)
+
 # 生成临时上传信息
 expires_in = 3600
 presigned_post = s3.generate_presigned_post(

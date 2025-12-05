@@ -6,6 +6,7 @@ es使用全文索引
 get /_cat                            #列出_cat下所有操作
 GET /_cat/health?v                   #查看集群状态
 GET /_cat/nodes?v                    #查看节点的状态，节点即对应一个es进程
+GET /_cat/nodes?v&h=name,ip,port,transport
 
 GET /_cluster/health                 #查看集群状态
 GET /_cluster/stats                  #集群的统计信息 索引、节点
@@ -83,6 +84,9 @@ PUT _cluster/settings
    }
 }
 
+# 查看设置值，即剔除的节点
+GET _cluster/settings
+
 
 # 也可以用名字删除，通过 GET /_cat/nodes?v  获取名字
 {
@@ -92,5 +96,5 @@ PUT _cluster/settings
 }
 
 # 确认迁移进度
-# 查看分配过程
+# 查看分配过程，即要shards减少为0
 GET _cat/allocation?v

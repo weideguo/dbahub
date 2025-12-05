@@ -230,6 +230,13 @@ rpl_semi_sync_master_wait_for_slave_count       至少等待多少个slave确认
 rpl_semi_sync_master_wait_no_slave              出现退化到异步复制
 
 
+自动恢复到半同步复制模式：
+至少有一个半同步从库重新连接并处于活跃状态（即 IO 线程和 SQL 线程正常运行，并且启用了半同步插件）；
+该从库已经追赶到主库的 binlog 位置（即没有严重延迟，能够及时响应主库的 ACK）；
+主库仍然启用了半同步复制（即 rpl_semi_sync_master_enabled = ON）；
+主库在写入新事务时检测到有符合条件的半同步从库在线。
+
+
 mysql8 undo
 # 查看undo表空间
 select * from information_schema.INNODB_TABLESPACES where  name like '%undo%';

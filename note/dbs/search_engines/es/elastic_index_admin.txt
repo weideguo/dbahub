@@ -133,12 +133,23 @@ PUT /_template/template_2
 } 
 
 
+#  7.8+ 
+PUT _index_template/my-template
+{
+  "index_patterns": ["logs-*"],
+  "template": {
+    "settings": { ... },
+    "mappings": { ... }
+  }
+}
+
 mapping的字段
 _all       主要指的是AllField字段，我们可以将一个或多个都包含进来，在进行检索时无需指定字段的情况下检索多个字段。
 _source    主要指的是SourceField字段。_source字段在我们进行检索时相当重要，如果在{"enabled" : false}情况下默认检索只会返回ID， 你需要通过Fields字段去到索引中去取数据，效率不是很高。但是enabled设置为true时，索引会比较大，这时可以通过Compress进行压缩和inclueds、excludes来在字段级别上进行一些限制，自定义哪些字段允许存储。
 properties 这是最重要的步骤，主要针对索引结构和字段级别上的一些设置。 
 
 
+# filebeat时，可以由filebeat设置模板，无需手动创建
 
 
 # 创建别名

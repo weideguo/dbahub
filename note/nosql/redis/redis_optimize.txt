@@ -11,14 +11,16 @@ redis-cli --i 0.1 --hotkeys
 
 big keys
 
-抽样获取大key
+抽样获取元素较多的key
 redis-cli --bigkeys 
+
+
 
 cluster集群只能对部分节点运行，有些key有特殊字符导致的
 
 
 
-抽样获取消耗内存最多的key
+抽样获取消耗内存较多的key
 redis-cli --memkeys
 
 

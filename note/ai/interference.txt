@@ -1,0 +1,8 @@
+ONNXRuntime     微软跨平台推理               
+TensorRT        NVIDIA GPU 高性能推理        
+OpenVINO        Intel CPU/GPU 优化           
+MNN             阿里推出的移动端推理引擎     
+TNN             腾讯推出的移动端推理引擎     
+ncnn            腾讯推出的移动端推理引擎     
+CoreML          iOS/macOS 原生加速           
+TVM             apache深度学习编译栈         

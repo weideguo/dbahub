@@ -7,16 +7,24 @@ raft
 跟随者 follower
 
 
-leader election
+领导者选举 leader election
     三种角色 leader candidate fellower
     心跳机制 leader发出心跳
     未接收到心跳/接受到投票但未达到大多数 过一段时间后再发起投票（选举时间，接受到心跳则重置）
     获得大多数投票当选
 
 
-log replication
+日志复制 log replication
     能接受到大多数fellow的响应才能提交，否则一直处于uncommited状态
     如果有更高任期的leader出现，uncommited的信息回滚，接受高任期的leader为整个集群leader（分裂处理）
 
 
+安全性 Safety
+    选举限制
+    已提交日志不可覆盖
+    状态机按序应用
+    
+
 https://raft.github.io/raft.pdf
+
+

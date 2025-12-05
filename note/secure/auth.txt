@@ -24,7 +24,7 @@ CAS  Central Authentication Service. WEB单点登陆
 
 
 
-LDAP Lightweight Directory Access Protocol (AD Active Directory  windows的实现)  
+LDAP Lightweight Directory Access Protocol 
 CS模式
 LDAP树形数据库如下：
 dn ：一条记录的详细位置
@@ -54,6 +54,26 @@ Linux-PAM + OpenLDAP 实现统一的linux账号管理
 
 yum install openldap openldap-clients openldap-servers
 
+
+# 登录并获取详细信息
+ldapsearch -x -H ldap://ldap.my_domain.abc:389    \
+  -D "uid=my_account,ou=people,dc=a,dc=com"       \
+  -b "dc=a,dc=com"                                \
+  "(uid=my_account)" -w 'my_password'
+
+
+# 简单登录验证
+ldapwhoami  -x -H ldap://ldap.my_domain.abc:389   \
+  -D "uid=my_account,ou=people,dc=a,dc=com"       \
+  -w 'aaabbb123'
+
+
+
+AD 
+Active Directory  windows，支持LDAP协议
+
+可以通过代理实现 OpenLDAP 使用AD的密码
+ 
 
 
 RADIUS 

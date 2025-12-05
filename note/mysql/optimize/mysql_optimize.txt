@@ -9,6 +9,10 @@ explain select * from test1 where id=1
 rows 扫描总行数
 filtered = (实际返回行数/扫描总行数) * 100
 
+key_len
+    varchar 需要额外的字节来记录字符串的实际长度。字段最大长度≤255字节，则用1字节记录长度；>255字节，用2字节。
+            对于utf8mb4，对于varchar(64)，则为 64 × 4 + 2 =258。
+    
 
 
 profile            --显示当前会话执行的资源占用

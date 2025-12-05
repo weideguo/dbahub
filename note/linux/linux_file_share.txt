@@ -307,6 +307,13 @@ nc -l -w 10000 6500 &          ##
 nc -lp 22000 -c "nc 10.0.0.1 3066"  --keep-open                   # 转口转发  本地端口22000 转发到 10.0.0.1:3066
 socat TCP-LISTEN:22000,reuseaddr,fork TCP:10.0.0.1:3066           # 转口转发，跟nc实现类似
 
+socat TCP-LISTEN:12345,fork -                                     # 创建TCP监听
+
+socat UNIX-LISTEN:/tmp/mysocket,fork -                            # 创建一个本地 Unix socket 并监听
+
+socat - UNIX-CONNECT:/tmp/mysocket                                # 连接Unix socket
+
+
 #使用不同网卡/ip监听  同一主机中相同端口不同ip之间不互相冲突，即可以同时监听  ipA:portX ipB:portX
 nc -l 192.168.253.128  12345
 nc -lv 192.168.253.128  12345

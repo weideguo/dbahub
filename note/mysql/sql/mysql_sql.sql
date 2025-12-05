@@ -93,7 +93,8 @@ insert into c values(1,x'e4b8ade69687');
 select CONVERT(data using utf8mb4) from c;
 
 
-SELECT col->"$.json_filed_name" FROM t_name;    #查询json的制订字段
+SELECT col->"$.json_filed_name" FROM t_name;                              #查询json的字段
+SELECT col->>"$.json_filed_name" FROM t_name;                             #查询json的字段
 UPDATE t_name SET col = json_set(col,'$.json_filed_name','xxyy1') ...     #增加/修改json中字段
 json_remove(col,'$.json_filed_name')                                      #删除json中字段
 JSON_EXTRACT(col,'$.json_filed_name')                                     #提取字段
