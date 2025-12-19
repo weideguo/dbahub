@@ -80,8 +80,13 @@ emcc --bind -o test.js test.cpp
 wasm2wat test.wasm
 
 
+#######################################################################
 
-
-
+WebAssembly.instantiateStreaming(fetch('https://example.com/module.wasm'))
+  .then(result => {
+    console.log('Wasm 实例:', result.instance);
+    // 调用导出的函数
+    // result.instance.exports.myFunction();
+  });
 
 

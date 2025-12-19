@@ -1,0 +1,9 @@
+docker run -ti --name local-ai -p 8080:8080 localai/localai:latest
+
+
+# https://localai.io/gallery.html
+local-ai run llama-3.2-1b-instruct:q4_k_m
+
+# huggingface
+local-ai run huggingface://TheBloke/phi-2-GGUF/phi-2.Q8_0.gguf
+

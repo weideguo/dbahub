@@ -227,6 +227,7 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 --dry-run                 #验证实际传输哪些文件
 
 默认多次执行时只传输变化的文件
+默认对比文件大小、修改时间，任意一个不一样则传输覆盖
 
 --size-only                # 只通过文件大小校验
 --checksum                 # 使用md5校验，否则只是快速校验（文件大小以及修改时间）
@@ -234,6 +235,17 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 
 --ignore-existing          # 目的端已经存在则不更新
 --exclude                  # 忽略的目录，多个目录设置多个--exclude
+
+
+--itemize-changes          # 输出变化项标记，11个字符，每个位置代表一种属性是否发生变化
+
+
+对于传输目录时，源目录结尾为“/”，则表示传输目录下的内容
+源目录结尾不为“/”，则表示传输目录本身
+
+rsync -av /data/bak/20251216/ 10.0.0.1:/data/bak/20251216       # 则会导致目标目录出现 /data/bak/20251216/20251216
+rsync -av /data/bak/20251216  10.0.0.1:/data/bak/20251216       # 
+
 
 rsync
 两种模式

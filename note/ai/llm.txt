@@ -40,13 +40,6 @@ RAG 检索增强生成 Retrieval-augmented Generation
 
 
 
-推理服务器
-vllm
-
-ollama
-
-
-
 
 AI Agent = 大模型+规划+记忆+工具
 

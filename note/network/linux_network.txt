@@ -124,7 +124,6 @@ FIN_WAIT_2     套接字已关闭，正在等待远程套接字关闭[在FIN_WAI
 TIME_WAIT      这个套接字已关闭，正在等待远程套接字的关闭传送[FIN、ACK都发送完毕，这是主动方的最后一个状态，在过了2MSL时间后变为CLOSED状态]
 
 
-ss
 
 
 关闭ICMP回应(不能使用ping命令连接)
@@ -150,6 +149,8 @@ sysctl -w net.ipv4.ip_forward=1
 
 
 tcpdump 导出后的文件可以使用wireshark打开
+tcpdump -i eth1 -w test1.dump               # 监听网卡eth1并导出文件 
+
 
 #traffic control 流量控制
 tc

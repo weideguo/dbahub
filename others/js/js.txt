@@ -155,12 +155,6 @@ Connection: keep-alive       #请求网页一次之后tcp连接没有关闭 连�
 
 
 
-//在js中实现js脚本加载 可用于chrome console的调试
-var script = document.createElement('script');
-script.src = "https://cdn.bootcss.com/jquery/2.1.2/jquery.min.js";
-document.getElementsByTagName('head')[0].appendChild(script)
-
-
 // 查看当前页的对象 可用通过 window.xxx 调用
 (function(){
     const keys=[]

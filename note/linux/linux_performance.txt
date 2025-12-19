@@ -85,8 +85,8 @@ free -m             ##内存与swap查看   ###SWAP用作虚存分区
     used    已经使用的内存
     free    空闲内存
     shared  多个进程共享的内存，进程间通信（IPC）机制显式分配的共享内存
-    buffer  buffer cache内存
-    cached  page cache内存
+    buffer  buffer内存，用于块设备（如磁盘）的元数据缓存（例如 inode、目录结构等）
+    cached  page cache内存，也叫 Filesystem Cache，缓存实际的文件内容
     available 还可以被应用程序使用的物理内存大小
     
     

@@ -76,7 +76,7 @@ bin/kafka-server-stop.sh
     --partitions <number of partitions> \
     --topic <topic name>
 
-./bin/kafka-afka-topics.sh --create \
+./bin/kafka-topics.sh --create \
     --bootstrap-server localhost:9092 \
     --topic <topic_name> \
     --partitions 3 \

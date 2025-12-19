@@ -14,6 +14,27 @@ openssl rsautl -encrypt -in test.txt -inkey rsa_public_key.pem -pubin -out test.
 openssl rsautl -decrypt -in test.rsa.en -inkey rsa_private_key.pem -out test.rsa.de
 
 
+###RSA签名、验证
+
+# 生成私钥
+openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:4096
+
+# 从私钥导出公钥
+openssl pkey -in private.pem -pubout -out public.pem
+
+
+echo '{"user":"Alice","expire":"2026-12-31","features":["A","B"]}' > license.json
+
+# 签名（PSS 填充）
+openssl dgst -sha256 -sigopt rsa_padding_mode:pss \
+             -sigopt rsa_pss_saltlen:-1 \
+             -sign private.pem -out license_pss.sig license.json
+
+# 验证 PSS 签名
+openssl dgst -sha256 -sigopt rsa_padding_mode:pss \
+             -sigopt rsa_pss_saltlen:-1 \
+             -verify public.pem -signature license_pss.sig license.json
+             
 
 
 
