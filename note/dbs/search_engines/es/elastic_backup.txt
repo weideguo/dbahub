@@ -9,3 +9,36 @@ put /_reindex
 ...
 }
 
+
+
+# 快照备份
+# 创建仓库
+PUT _snapshot/my_backup_repo
+{
+  "type": "fs",                               # 同时支持s3等
+  "settings": {                               #
+    "location": "/mnt/es_backups",            # 需要预先在elasticsearch.yml设置 path.repo: ["/mnt/es_backups"]
+    "compress": true
+  }
+}
+
+# 执行快照备份
+
+PUT _snapshot/my_backup_repo/my_snapshot_20260105
+
+
+?wait_for_completion=true
+
+
+# 获取快照状态
+GET _snapshot/my_repository/_current
+GET _snapshot/_status
+
+
+# 从快照恢复数据
+POST _snapshot/my_backup_repo/my_snapshot_20260105/_restore
+{
+  "indices": "my-index1,my-index2"                                  # 要恢复的索引
+}
+
+

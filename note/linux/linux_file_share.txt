@@ -62,22 +62,13 @@ systemctl start nfs
 systemctl enable nfs
 
 
-NFS使用5个端口，其中4个是动态的及rpc服务的端口，动态端口无法通过防火墙，需要配置NFS使用指定的静态端口
-配置文件/etc/sysconfig/nfs,添加静态端口设置：
-MOUNT_PORT="4001"       挂载使用端口     
-STATD_PORT="4002"       状态使用端口
-LOCKD_TCPPORT="4003"    TCP使用端口
-LOCKD_UDPPORT="4004"    UDP使用端口
-NFS协议2049，RPC为111端口，才能正常使用NFS
+
+NFS协议2049，RPC为111端口
+
 NFS服务的共享配置文件/etc/exports
 每个共享占用一行，格式：共享目录     允许的各户主机(选项)
-如：/demo-nfs    192.168.1.1（ro,async）
-配置好共享后，使用以下命令使配置生效：
-exportfs -r
-查看共享详细信息
-showmount -e
-客户端可以通过mount命令挂载NFS共享：
-mount -t nfs 192.168.1.1:/path-in-nfs-server /path-in-mount-2-server
+如：
+/demo-nfs    192.168.1.1(rw,async,no_subtree_check,no_root_squash)
 
 常用NFS共享参数：
 ro（只读）
@@ -88,9 +79,20 @@ wdelay（延迟写操作，等待更多的写操作一起执行）
 no_wdelay（关闭写延迟，需要与sync同时使用）
 root_squash（防止远程root用户使用root权限对共享进行访问）
 no_root_squash（关闭root_aquash）
-挂载使用-o指定挂载选项
-启动时自动挂载，修改配置文件/etc/fstab
-如：192.168.1.1:/demo-nfs /mnt nfs default 0 0
+
+# 使共享配置生效
+exportfs -r
+
+# 查看共享详细信息
+showmount -e
+
+# 客户端挂载NFS共享
+mount -t nfs 192.168.1.1:/path-in-nfs-server /path-in-mount-2-server
+
+
+启动时自动挂载，修改配置文件 /etc/fstab ，mount -a 使配置立即生效
+如：
+192.168.1.1:/demo-nfs /mnt nfs default 0 0
 
 
 

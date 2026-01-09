@@ -179,8 +179,8 @@ CHANGE MASTER TO ... master_auto_position=1;
 start slave;
 
 
-
-
+# 在从实例查看复制报错的具体信息
+SELECT * FROM performance_schema.replication_applier_status_by_worker\G
 
 
 mysql> show slave status\G

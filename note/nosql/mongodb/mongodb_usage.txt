@@ -71,6 +71,8 @@ db.counters.update({...},1})   //upset操作，不存在则插入
 { $bit : { field : {and : 5}}}                         //位操作
 
 
+updateOne
+updateMany
 
 //通过传入更新文档
 db.col.save({

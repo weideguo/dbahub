@@ -110,6 +110,9 @@ netstat -nulpa                ##查看udp端口
 ss                            ##类似于netstat
 
 
+/proc/net/tcp                 # netstat的tcp的信息从此获取，为16进制
+/proc/net/dev                 # 网络收发统计
+
 
 CLOSED         没有使用这个套接字[netstat 无法显示closed状态]
 LISTEN         套接字正在监听连接[调用listen后]

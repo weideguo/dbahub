@@ -16,3 +16,9 @@ alpine
 /etc/apk/repositories
 
 apk add python3
+
+
+rocky linux
+dnf 
+yum的代替，兼容yum命令
+

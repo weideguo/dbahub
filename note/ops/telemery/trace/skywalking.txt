@@ -1,2 +1,13 @@
-jvm（agent） -> es -> 展示应用
+jvm（agent） -> OAP -> es/pg 
 
+
+docker run --name oap -d -p 11800:11800 -p 12800:12800 apache/skywalking-oap-server     # 配置zookeeper、存储（es、pg等）
+docker run --name ui -d -p 8080:8080 --link oap apache/skywalking-ui                    # 配置连接oap
+
+
+java -javaagent:/path/to/skywalking-agent/skywalking-agent.jar \
+     -Dskywalking.agent.service_name=my-java-service \
+     -Dskywalking.collector.backend_service=$oap_host:11800 \
+     -jar your-app.jar
+     
+     
