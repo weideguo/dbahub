@@ -1,0 +1,7 @@
+# 角色的权限
+p, role1, data, read
+p, role1, data, write
+p, role2, data, read
+# 用户的角色
+g, user1, role1
+g, user2, role2

@@ -1,0 +1,16 @@
+//go:build wireinject
+// +build wireinject
+
+// The build tag makes sure the stub is not built in the final build.
+package main
+
+import "github.com/google/wire"
+
+// InitializeEvent creates an Event. It will error if the Event is staffed with
+// a grumpy greeter.
+func InitializeEvent(phrase string) (Event, error) {
+    wire.Build(NewEvent, NewGreeter, NewMessage)
+    return Event{}, nil
+}
+
+// wire gen   # 运行这个命令后生成wire_gen.go文件，之后这个文件不参与编译

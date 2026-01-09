@@ -1,0 +1,6 @@
+*.exe
+logs/
+*.bak
+.vscode/
+*.wasm
+wasm_exec.js
