@@ -18,6 +18,9 @@ _source     文档实际值
 #列出所有索引
 GET _cat/indices
 
+# 使用通配符列出部分索引的状态信息
+GET /_cat/indices/*AAA*?v
+
 #查看indices的信息
 GET ${indice}
 

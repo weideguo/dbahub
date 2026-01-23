@@ -21,10 +21,36 @@ mkdocs build
 [material](https://github.com/squidfunk/mkdocs-material)  
 ``` shell
 pip install mkdocs-material
+```
 
+``` yaml
 # mkdocs.yml
 theme:
   name: material
   language: zh
   
 ```  
+
+``` yaml
+# 自带可用主题
+theme: readthedocs
+
+# 其他字段
+theme:
+    name: "material"
+    logo:
+        icon: "mkdocs"
+    palette:
+        primary: "black"
+        accent: "deep orange"
+    language: "zh"
+
+    logo: "images/logo.svg"
+
+# 友情链接
+extra:
+  social:
+    - type: "github"
+      link: "https://github.com/weideguo"
+
+```

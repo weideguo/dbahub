@@ -9,6 +9,17 @@ JVM参数
 堆内存=年轻代 + 年老代
 栈内存=Java虚拟机栈 + 本地方法栈
 
+年轻代（Young Generation）
+    新创建的对象首先分配在这里
+    包含：Eden 区 + 两个 Survivor 区（S0, S1）
+    垃圾回收频繁发生（Minor GC）
+老年代（Old Generation / Tenured Generation）
+    存活时间较长的对象会被晋升到这里
+    回收频率较低（Major GC / Full GC）
+持久代
+    保存描述类和方法的数据
+    
+
 -Xms1024m                           //堆初始内存
 -Xmx1024m                           //堆最大内存
 -Xss1M                              //每个线程的堆栈大小

@@ -92,6 +92,10 @@ create table c(id int,data longblob);
 insert into c values(1,x'e4b8ade69687');
 select CONVERT(data using utf8mb4) from c;
 
+-- 直接将blob格式数据存储成文件
+SELECT data
+from c limit 1
+INTO DUMPFILE '<secure_file_priv>/test_20260112.bin';
 
 SELECT col->"$.json_filed_name" FROM t_name;                              #查询json的字段
 SELECT col->>"$.json_filed_name" FROM t_name;                             #查询json的字段

@@ -17,9 +17,23 @@ influxd run -config <path>
 
 # 备份
 influxd backup -portable -db example-db  /path/to/backup-directory
-
 # 还原
 influxd restore -portable -db example-db /path/to/backup-directory
+
+# 操作完毕后不需要重启
+# 可能出现error updating meta？
+
+
+# 备份
+influxd backup -db example-db  /path/to/backup-directory
+# 还原
+# 导入时库需要存在，且设置RETENTION POLICY跟备份的一致，influxdb需要处于关闭状态
+influxd restore                       \
+-db example-db -newdb example-db      \    # 即使同一个也有设置？
+-datadir /path/to/influxdb-data-dir   \
+-metadir /path/to/influxdb-meta-dir   \    # 这个会导致其他的库都不可见！
+/path/to/backup-directory
+
 
 # 查看默认配置
 influxd config
@@ -47,6 +61,9 @@ cpu,host=server02,region=us-east value=0.22,value1=0.23 1500000002000000000
 memory,host=server01 used_percent=99.0 1500000001000000000
 '
 
+# curl直接读取文件
+--data-binary @data.lp
+
 show databases;
 
 use db_name
@@ -57,10 +74,11 @@ SHOW MEASUREMENTS WITH MEASUREMENT =~ /.*my_measurement.*/;
 
 SHOW RETENTION POLICIES [ON <database_name>]
 
+ALTER RETENTION POLICY "<database_name>_90d" ON "<database_name>" DEFAULT
+
 # 查看所有定义的CONTINUOUS QUERIES
 SHOW CONTINUOUS QUERIES     
 
 # 查看当前正在运行的任务
 show QUERIES;
-
 

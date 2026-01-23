@@ -25,38 +25,37 @@ gitbook build   #构建_book（即只是转成html）
 
 
 
-#######################mkdocs################################
+###############################################################
+pandoc
 
-mkdocs new my_docs    #初始化新项目
-
-mkdocs serve          #直接运行成web服务
-
-mkdocs build          #构建成html
-
-
-
-##自带可用主题
-theme: readthedocs
-
-##使用其他主题
-pip install mkdocs-material
+各种格式转换
+txt->html 
+md->html
+示例
+https://www.pandoc.org/demos.html
 
 
+pandoc -s --mathml -i -t dzslides SLIDES -o example16a.html
+pandoc -s --webtex -i -t slidy SLIDES -o example16b.html
+pandoc -s --mathjax -i -t revealjs SLIDES -o example16d.html
 
-theme:
-    name: "material"
-    logo:
-        icon: "mkdocs"
-    palette:
-        primary: "black"
-        accent: "deep orange"
-    language: "zh"
 
-    logo: "images/logo.svg"
+###############################################################
+reveal.js
 
-# 友情链接
-extra:
-  social:
-    - type: "github"
-      link: "https://github.com/weideguo"
+web格式展示，使用特定格式html格式
+可以先写成pandoc格式的slider，然后再转换成html
+
+
+# 下载reveal.js源码
+# 安装依赖包
+npm install
+
+# 自定义编写html文件
+
+# 运行
+npm start -- --host 0.0.0.0 --port=8003
+
+
+# 也可以本地直接打开
 

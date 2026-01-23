@@ -63,7 +63,9 @@ android模拟器sdcard为read only file system 解决方法：
 
 在cmd中使用telnet可以远程登录android模拟器（如：telnet localhost 5554）
 
-
+# USB调试
+# 检查已连接的设备
+adb devices
 	
 
 	

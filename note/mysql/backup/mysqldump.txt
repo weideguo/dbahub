@@ -73,6 +73,8 @@ optionally enclosed by '"'
 escaped by '"' 
 lines terminated by "\r\n";
 
+... INTO OUTFILE ...         --文本格式导出
+... INTO DUMPFILE ...        --二进制格式导出，导出blob格式字段使用
 
 
 -- 导入  

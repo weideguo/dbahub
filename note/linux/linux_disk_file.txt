@@ -67,6 +67,8 @@ MBR主分区:最多只能创建4个主分区
 扩展分区本身并不能直接用来存放数据，必须先划分成若干逻辑分区，逻辑分区是扩展分区进一步分割出来的区块，通常用来存储数据。
 所有的逻辑分区都是扩展分区的一部分。 硬盘的容量=主分区的容量+扩展分区的容量（各个逻辑分区的容量之和）。
 
+创建分区->创建文件系统->挂载文件系统
+
 #################################################################################################################
 LVM (Logical Volume Manager)               
 ##lv可以按磁盘分区的形式使用，安装文件系统后挂载
@@ -176,6 +178,17 @@ mount -a                       # 重新挂载
 growpart /dev/sdc 1                        # 热扩容第一个分区
 xfs_growfs /dev/sdc1 
 
+##############LVM下热扩容
+# lsblk查看
+# sda             
+# └─sda2          
+#   └─centos-data  /data
+  
+growpart /dev/sda 2                        
+pvresize /dev/sda2
+vgdisplay centos
+lvextend -l +100%FREE /dev/centos/data
+xfs_growfs /data
 
 ############## NTFS
 yum install ntfs-3g   

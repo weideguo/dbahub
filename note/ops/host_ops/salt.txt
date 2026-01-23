@@ -104,6 +104,8 @@ install_network_packages:        ###唯一即可
 #########################################################
 salt 'minion1' state.apply nettools   
 
+# 多级目录时 /srv/salt/a/b/c.sls
+salt 'minion1' state.apply a.b.c 
 
 ##################################
 include:                ##实现引用

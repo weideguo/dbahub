@@ -27,6 +27,10 @@ DROP RETENTION POLICY <retention_policy_name> ON <database_name>
 ALTER RETENTION POLICY <retention_policy_name> ON <database_name> DURATION <duration> REPLICATION <n> [SHARD DURATION <duration>] [DEFAULT]
 
 
+# 查看 autogen 这个RETENTION POLICY下所有的表的一条记录
+SELECT * FROM "autogen"./.*/ LIMIT 1
+
+
 shardGroupDuration 根据这个值自动shard
 
 # 创建RP/schema
