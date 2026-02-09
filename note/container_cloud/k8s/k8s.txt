@@ -34,5 +34,7 @@ kubectl get deploy -A
 -n          # 指定命名空间
 
 
-kubectl --kubeconfig=~/.kube/config ...
-设置集群访问信息的配置文
+kubectl explain deploy      # 粗略解释各个字段的作用
+
+kubectl --kubeconfig=~/.kube/config ...      # 设置集群访问信息的配置文
+kubectl config view --raw                    # 查看生效的配置，即输出--kubeconfig的内容

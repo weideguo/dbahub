@@ -53,3 +53,7 @@ raid 1   镜像冗余
 raid 10  1+0 先镜像冗余，再条带化
 raid 01  0+1 先条带化，再镜像冗余
 raid 5   存在奇偶校验，可坏一块盘
+
+
+lspci | grep -i raid        # 有输出则存在RAID控制器
+

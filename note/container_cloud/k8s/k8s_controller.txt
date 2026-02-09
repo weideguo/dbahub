@@ -6,14 +6,15 @@
 #####################
 statefulset 用于有状态服务，更方便使用pv、pvc
 
-kubectl -n uat get sts
+kubectl get sts
 
 kubectl rollout restart statefulset <pod-name>
 
 
 ####################
 configmap  存放配置文件的具体内容，其他controller通过引用configmap实现配置加载（如deploy控制器可以使用configmap实现启动时修改配置文件）
-
+           可以当成文件挂载到应用的目录中，也可以在启动应用前设置成环境变量
+ 
 kubectl get cm
 kubectl describe cm <cm-name>
 kubectl edit cm <cm-name>
@@ -38,6 +39,7 @@ replicaset 可以控制副本集
 #####################
 Job  运行一次性任务
 
+CronJob  crontab表达式的定时任务
 
 ####################
 ingress  网络相关，提供代理、负载均衡。
