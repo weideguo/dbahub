@@ -84,7 +84,7 @@ def f():
     except:
         print("something wrong happen")     
     finally:
-        print('Goodbye, world!')             # 出现或者不出现异常都运行这里
+        print("Goodbye, world!")             # 出现或者不出现异常都运行这里
     
     print(111)                               # 有正确的异常处理，则会运行这里以及之后的
 
@@ -100,7 +100,7 @@ def f():
     except:                                # 不匹配上面的错误捕获时匹配这个捕获
         print("something wrong happen")  
     finally:
-        print('Goodbye, world!')         
+        print("Goodbye, world!")         
     
     print(111)                           
     
@@ -109,11 +109,13 @@ def f():
     try:
         raise KeyboardInterrupt
     finally:
-        print('Goodbye, world!')
+        print("Goodbye, world!")
     
     print(111)                             # 没有的异常处理，则不会运行这里以及之后的
     
     
+    
+
 # 内置异常类型    
 Exception
 RuntimeError
@@ -123,4 +125,64 @@ OSError
 ConnectionError    
 ZeroDivisionError   
 ValueError
+
+# 异常结构体系
+BaseException
+ +-- SystemExit                              # 请求退出 (sys.exit())
+ +-- KeyboardInterrupt                       # 用户中断 (Ctrl+C)
+ +-- GeneratorExit                           # 生成器退出
+ +-- Exception                               # 【所有常规错误的基类】
+      +-- StopIteration                      # 迭代结束
+      +-- StopAsyncIteration                 # 异步迭代结束
+      +-- ArithmeticError                    # 算术错误基类
+      |    +-- ZeroDivisionError
+      |    +-- FloatingPointError
+      |    +-- OverflowError                 
+      +-- AssertionError                     # 断言失败
+      +-- AttributeError                     # 属性引用或赋值失败
+      +-- EOFError                           # 读到文件末尾 (input())
+      +-- ImportError                        # 导入失败基类
+      |    +-- ModuleNotFoundError
+      +-- LookupError                        # 查找失败基类
+      |    +-- IndexError                    # 序列索引越界
+      |    +-- KeyError                      # 字典键不存在
+      +-- MemoryError                        # 内存不足
+      +-- NameError                          # 变量未定义
+      +-- OSError                            # 操作系统相关错误基类
+      |    +-- BlockingIOError               
+      |    +-- ChildProcessError
+      |    +-- ConnectionError               # (及其子类: BrokenPipeError, etc.)
+      |    +-- FileExistsError               
+      |    +-- FileNotFoundError
+      |    +-- InterruptedError              
+      |    +-- IsADirectoryError
+      |    +-- NotADirectoryError
+      |    +-- PermissionError               
+      |    +-- ProcessLookupError
+      |    +-- TimeoutError                  
+      +-- ReferenceError                     # 弱引用失效
+      +-- RuntimeError                       # 运行时错误基类
+      |    +-- NotImplementedError
+      |    +-- RecursionError                # 递归超限 (Python 3.5+)
+      +-- SyntaxError                        # 语法错误
+      |    +-- IndentationError              
+      |         +-- TabError                 
+      +-- SystemError                        # 解释器内部错误
+      +-- TypeError                          # 类型错误
+      +-- ValueError                         # 值错误
+      |    +-- UnicodeError
+      |         +-- UnicodeDecodeError
+      |         +-- UnicodeEncodeError
+      |         +-- UnicodeTranslateError
+      +-- Warning                            # 警告基类
+           +-- DeprecationWarning
+           +-- PendingDeprecationWarning
+           +-- RuntimeWarning
+           +-- SyntaxWarning
+           +-- UserWarning
+           +-- FutureWarning
+           +-- ImportWarning
+           +-- UnicodeWarning
+           +-- BytesWarning
+           +-- ResourceWarning
 

@@ -245,8 +245,8 @@ rsync -av dirname --rsh='sshpass -p ssh_password ssh -oStrictHostKeyChecking=no 
 对于传输目录时，源目录结尾为“/”，则表示传输目录下的内容
 源目录结尾不为“/”，则表示传输目录本身
 
-rsync -av /data/bak/20251216/ 10.0.0.1:/data/bak/20251216       # 则会导致目标目录出现 /data/bak/20251216/20251216
-rsync -av /data/bak/20251216  10.0.0.1:/data/bak/20251216       # 
+rsync -av /data/bak/20251216  10.0.0.1:/data/bak/20251216       # 则会导致目标目录出现 /data/bak/20251216/20251216
+rsync -av /data/bak/20251216/  10.0.0.1:/data/bak/20251216      # 
 
 
 rsync

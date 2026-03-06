@@ -25,3 +25,14 @@ Message发送至Exchange
 Exchange将Message发送给Queue
 
 通过镜像队列实现集群高可用（管理界面、命令行、http api均可设置）
+
+
+Channel   TCP之上的虚拟连接
+Exchange  接收消息，根据Routing Key（地址标签）和Binding Key（分拣规则），决定把消息投递给哪个队列
+Queue     实际存储消息的地方。消息在这里等待被消费者取走。
+
+
+生产者 Exchange 名 == 消费者绑定 Exchange 名
+存在 Binding 关系
+生产者 Routing Key 匹配 消费者Binding Key
+

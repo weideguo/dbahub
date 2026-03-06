@@ -7,15 +7,15 @@ logging.basicConfig(
 
 log=logging
 
-log.info('this is info')
-log.debug('this is info')
-log.warn('this is warn')
-log.warning('this is warn')
-log.critical('this is info')
-log.fatal('this is info')
-log.error('this is info')
-log.exception('this is info')
-log.log('this is info')
+log.info("this is info")
+log.debug("this is info")
+log.warn("this is warn")
+log.warning("this is warn")
+log.critical("this is info")
+log.fatal("this is info")
+log.error("this is info")
+log.exception("this is info")
+log.log("this is info")
 
 
 
@@ -24,7 +24,7 @@ log2 = logging.getLogger()
 handler = handlers.TimedRotatingFileHandler(filename="./mylog.log",
 	when="D",
 	interval=1)
-fmt = logging.Formatter('%(asctime)s|%(message)s', '%Y-%m-%d %H:%M:%S')
+fmt = logging.Formatter("%(asctime)s|%(message)s", "%Y-%m-%d %H:%M:%S")
 handler.setFormatter(fmt)
 log2.addHandler(handler)
 log2.setLevel(logging.DEBUG)
@@ -37,9 +37,25 @@ import sys
 import logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     stream=sys.stdout  
 )
 logger = logging.getLogger(__name__)
 logger.info("xxxx")
+
+
+# 输出到文件
+import sys
+import logging
+logging.basicConfig(
+    filename="app.log", 
+    level=logging.INFO, 
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+logger.info("xxxx")
+
+# 日志包含堆栈信息
+logger.info("xxxx", exc_info=True)
+logging.exception("xxxx")              # 与上面一行等价
 

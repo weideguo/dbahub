@@ -21,3 +21,10 @@ OR
 NOT       
 
 
+读取于elasticsearch的内容
+"_source": {
+...
+}
+
+Index Patterns 创建这个时指定使用哪个字段当成时间
+

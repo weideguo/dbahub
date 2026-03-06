@@ -8,7 +8,7 @@ BIND_USER = "cn=admin,dc=example,dc=com"    # 绑定用户 DN
 #BIND_USER = "uid=john,dc=example,dc=com"   # 普通用户
 BIND_PASSWORD = "your_password"             # 绑定密码
 SEARCH_BASE = "dc=example,dc=com"           # 搜索起点
-SEARCH_FILTER = "(uid=john)"                # 搜索过滤器（ uid 为 john 的用户）
+SEARCH_FILTER = "(uid=john)"                # 搜索过滤器（ uid 为 john 的用户，可为 * ）
 SEARCH_ATTRIBUTES = ["cn", "mail", "uid"]   # 获取这些字段的值
 
 

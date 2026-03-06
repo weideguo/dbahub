@@ -1,0 +1,32 @@
+
+控制平面组件证书
+根证书 CA
+apiserver.crt / apiserver.key: apiserver 的服务端证书
+
+控制平面组件证书更新：
+（集群使用kubeadm部署时）
+kubeadm certs renew all 
+重启静态 Pod（即重启apiserver）
+kubeadm init phase kubeconfig ...
+
+（二进制部署时）
+使用 cfssl, cfssljson, cfssl-certinfo 实现更新，通过配置json文件控制
+
+
+
+节点与工作负载证书
+kubelet.crt / kubelet.key: 每个node上的 kubelet 服务使用
+
+node节点证书更新：
+node节点删除所有证书
+node节点重启kubelet服务（不影响pod的使用）
+master节点执行（集群是二进制手动部署，且 kube-controller-manager 没有启用 CSR 自动签名功能时才需要）
+csr_id=$(kubectl get csr | grep -v NAME | grep Pending | sed -n 1p | awk '{print $1}')
+kubectl certificate approve $csr_id
+
+
+# 查看证书的过期时间
+openssl x509 -in kubelet-client-current.pem -noout -dates
+
+
+

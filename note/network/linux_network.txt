@@ -76,7 +76,8 @@ ip addr del 192.168.10.100 dev eth0:1                         ###删除
 ip link delete eth0:1
 
 
-ifconfig eth0:1 192.168.10.100/24 up 
+ifconfig eth0:1 192.168.10.100/24 up
+ifconfig eth0:1 down  
 
 ip [ OPTIONS ] OBJECT { COMMAND | help }
 

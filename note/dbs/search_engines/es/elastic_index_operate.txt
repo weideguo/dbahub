@@ -146,6 +146,18 @@ GET ${indice}/_search
 }
 
 
+# 排序
+{
+  "size": 10,                      # 只要10个文档
+  "from": 0,                       # 
+  "sort": [
+    {
+      "field_name": {              # 需要排序的字段名
+        "order": "asc"             # desc 倒序
+      }
+    }
+  ]
+}
 
 ########创建
 #创建一篇文档，同时指定_id
