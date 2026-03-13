@@ -118,6 +118,16 @@ xtrabackup --decompress --remove-original --datadir=/path_to_backup_dir --target
 http://repo.percona.com/tools/yum/release/7/RPMS/x86_64/
 
 
+这三个等同，应用redo + undo日志
+innobackupex --apply-log 
+innobackupex --prepare   
+xtrabackup --prepare
+
+
+这两个等同，应用redo日志
+innobackupex --apply-log-only
+xtrabackup --prepare --apply-log-only
+
 
 # mysql8
 

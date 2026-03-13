@@ -61,6 +61,8 @@ kill -SIGUSR1 ${pid}
                         ## kill默认用TERM
 kill -l                 ##列出所有信号名称
 
+https://www.man7.org/linux/man-pages/man7/signal.7.html     # 信号描述
+
 AIX  显示10个消耗cpu最多的进程
 ps aux |head -1 ;ps aux |sort -rn +2 |head -10   ###修改【sort -rn +x】指定由第x+1列排序
 

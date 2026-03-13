@@ -15,6 +15,14 @@ data:image/png;base64,<base64编码的png图片数据>
 data:image/jpeg;base64,<base64编码的jpeg图片数据>
 data:image/x-icon;base64,<base64编码的icon图片数据>
 
+//data路径可以直接在chrome浏览器地址栏中打开
+
+//javascript可以设置为书签地址，通过打开书签运行
+javascript:(
+  function(){
+    alert('hello');
+  }
+)();
 
 
 可以当成url使用

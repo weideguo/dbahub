@@ -1,0 +1,8 @@
+jmeter
+
+
+k6   压测http请求 https://github.com/grafana/k6
+k6 new test.js      # 生成压测脚本，修改脚本的配置自定义压测
+k6 run test.js      # 执行压测
+
+

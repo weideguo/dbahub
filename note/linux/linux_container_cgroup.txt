@@ -1,0 +1,45 @@
+表现为一个文件系统,挂载后可以看到自系统 
+    mkdir -p /sys/fs/cgroup
+    mount -t cgroup /sys/fs/cgroup
+
+在/sys/fs/cgroup/XXX(XXX: cpu | ...)下，创建目录，目录下自动生成文件，在文件中写入信息(进程号、cpu使用率)达到限制进程使用资源的目的
+
+
+stat -fc %T /sys/fs/cgroup/
+# "cgroup2fs" 表示 v2
+# "tmpfs" 通常表示 v1
+
+
+
+docker
+/sys/fs/cgroup/memory/docker/${container_id}*/
+/sys/fs/cgroup/cpu/docker/${container_id}*/
+
+
+
+k8s
+# cgroup v1
+# cpu
+/sys/fs/cgroup/cpu/kubepods/<QoS-Class>/<Pod-UID>/<Container-ID>/
+cgroup.procs           # pod内容器的进程pid，即控制这些进程使用的cpu  
+cpu.cfs_quota_us       # 表示在一个周期内，该 cgroup 可以使用的 CPU 时间总和（微秒）
+cpu.cfs_period_us      # 表示统计周期的长度（微秒）
+
+# 内存
+/sys/fs/cgroup/memory/kubepods/<QoS-Class>/<Pod-UID>/<Container-ID>/
+cgroup.procs           # pod内容器的进程id，即控制这些进程使用的内存    
+memory.limit_in_bytes  # 最大内存使用
+
+# 块io（硬盘）
+blkio
+
+
+# cgroup v2
+/sys/fs/cgroup/kubepods/<QoS-Class>/<Pod-UID>/<Container-ID>/
+    
+
+QoS-Class：
+besteffort 未设置 requests 和 limits。
+burstable  设置了 requests 但 limits 不同，或未设置 limits。
+guaranteed requests 等于 limits。
+

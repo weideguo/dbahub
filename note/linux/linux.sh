@@ -184,3 +184,8 @@ nice #调整进程优先级别
 ##linux与window的文件传输 使用ZModem协议
 sz  将选定的文件发送到本地
 rz  交互窗口 rz -bey
+
+
+mktemp      # 在/tmp创建一个随机文件
+mktemp -d   # 在/tmp创建一个随机文件夹
+

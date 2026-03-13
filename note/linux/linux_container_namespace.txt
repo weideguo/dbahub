@@ -1,0 +1,23 @@
+namespace
+
+PID     pid       进程 ID 隔离          容器内看到 PID 为 1 的进程是入口程序，看不到宿主机的其他进程。
+Net     net       网络设备隔离          独立的网卡、IP 地址、路由表、端口号、防火墙规则。
+Mount   mnt       文件系统挂载点隔离    独立的目录树视图，容器内的挂载不会影响宿主机。
+UTS     uts       主机名和域名隔离      容器可以有独立的主机名（Hostname）和 NIS 域名。
+IPC     ipc       进程间通信隔离        独立的信号量、消息队列、共享内存。
+User    user      用户和用户组隔离      容器内的 root (UID 0) 可以是宿主机上的普通用户，实现权限映射。
+Cgroup  cgroup    Cgroup 根目录隔离     容器只能看到自己的 cgroup 层级，看不到宿主机的完整结构。
+Time    time      时钟隔离              允许不同的 namespace 拥有不同的系统时间（内核 5.6+）。
+
+
+# 创建一个独立的 PID 和 Mount 命名空间，并运行 bash。（docker run ... /bin/bash）
+unshare --pid --mount --fork --mount-proc /bin/bash
+
+
+# 实现文件隔离
+chroot $NEWROOT $COMMAND                                            # 
+                                                                    # 
+chroot /tmp/mychroot /bin/bash                                      # /bin/bash 这个文件需要在 /tmp/mychroot/bin/bash
+                                                                    # ls /  等同于未运行chroot前执行 ls /tmp/mychroot
+chroot <docker_data_dir>/overlay2/<layer_id>/merged /bin/bash       # 容器镜像生成根目录，choot使用这个根目录当成/
+
