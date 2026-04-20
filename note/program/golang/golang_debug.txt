@@ -1,0 +1,52 @@
+# 性能分析
+# 在头部
+import _ "net/http/pprof"
+
+
+# 可以通过页面查看或者用 pprof 工具分析
+http://my_host:my_port/debug/pprof
+
+
+# 常驻内存占用情况
+go tool pprof -inuse_space http://my_host:my_port/debug/pprof/heap
+# 内存临时分配情况
+go tool pprof -alloc_objects http://my_host:my_port/debug/pprof/heap
+
+# CPU耗时分析
+go tool pprof http://my_host:my_port/debug/pprof/profile
+
+# goroutine泄露分析
+/goroutine
+
+# 锁耗时分析
+/mutex
+
+# goroutine阻塞等待分析
+/block
+
+
+# 交互命令
+top 
+traces [函数] 
+list [函数]
+
+
+
+dlv
+
+dlv debug                 # 调试源码‌
+dlv exec ./your-binary    # 调试已编译二进制
+dlv attach <PID>          # ‌附加到运行中的进程
+
+(dlv) b main.main         # 在 main 函数入口设断点
+(dlv) b utils.go:15       # 在指定文件第 15 行设断点
+(dlv) c                   # continue：继续执行到下一个断点
+(dlv) n                   # next：单步执行（不进入函数）
+(dlv) s                   # step：步入函数内部
+(dlv) so                  # stepout：跳出当前函数
+(dlv) p variableName      # 打印变量值
+(dlv) locals              # 查看局部变量
+(dlv) vars                # 查看包级变量
+(dlv) stack               # 打印调用栈
+(dlv) goroutines          # 列出所有 goroutine
+

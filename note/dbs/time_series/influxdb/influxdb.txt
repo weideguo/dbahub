@@ -21,7 +21,7 @@ influxd backup -portable -db example-db  /path/to/backup-directory
 influxd restore -portable -db example-db /path/to/backup-directory
 
 # 操作完毕后不需要重启
-# 可能出现error updating meta？
+# 可能出现error updating meta？文件损坏？但还是可以使用非portable备份还原
 
 
 # 备份

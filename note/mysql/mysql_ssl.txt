@@ -55,7 +55,7 @@ mysql
 服务端启用ssl     mysql_native_password   require ssl        连接时不能设置不用ssl
 服务端不启用ssl   mysql_native_password   require none       连接都不使用ssl
 服务端不启用ssl   mysql_native_password   require ssl        不能连接
-服务端启用ssl     caching_sha2_password   require none       连接时--ssl-mode=DISABLED --get-server-public-key 连接不使用ssl；否则连接使用ssl
+服务端启用ssl     caching_sha2_password   require none       连接时--ssl-mode=DISABLED 连接不使用ssl；否则连接使用ssl
 服务端启用ssl     caching_sha2_password   require ssl        连接时不能设置不用ssl
 服务端不启用ssl   caching_sha2_password   require none       连接都不使用ssl
 服务端不启用ssl   caching_sha2_password   require ssl        不能连接

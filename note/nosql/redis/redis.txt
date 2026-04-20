@@ -2,9 +2,11 @@
 make                                    ####编译
 make  PREFIX=$prefix_path install       ####安装，如不使用PREFIX参数，默认安装在/usr/local/bin下
 
-参数文件的设置
-requirepass my_poassword                ##使用密码
-dir data_path                           ##设置数据文件的路径，只指定目录 
+# redis8
+export BUILD_TLS=yes BUILD_WITH_MODULES=yes INSTALL_RUST_TOOLCHAIN=yes DISABLE_WERRORS=yes      # 根据实际需要更改编译选项 
+make -j "$(nproc)" all                                                                          # 根据实际需要更改编译并发数
+make install PREFIX=/usr/local/redis-8.4.2
+
 
 
 redis-server redis.conf                 ###启动服务端

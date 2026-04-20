@@ -7,6 +7,8 @@ go build file1.go file2.go……
 编译目录下所有文件
 go build
 
+-trimpath  # 报错信息不包含开发时的绝对路径，只输出相对路径
+
 编译并运行
 go run my_go_program.go
 
@@ -28,6 +30,9 @@ go test -v ./...
 
 #测试代码覆盖率 当前文件夹
 go test -v -coverprofile cover.out
+
+#测试内存使用
+go test -bench=. -benchmem -benchtime 30s
 
 格式化代码文件，统一风格
 go fmt
@@ -163,36 +168,4 @@ yaegi
 gomacro
 
 
-
-# 性能分析
-# 在头部
-import _ "net/http/pprof"
-
-
-# 可以通过页面查看或者用 pprof 工具分析
-http://my_host:my_port/debug/pprof
-
-
-# 常驻内存占用情况
-go tool pprof -inuse_space http://my_host:my_port/debug/pprof/heap
-# 内存临时分配情况
-go tool pprof -alloc_objects http://my_host:my_port/debug/pprof/heap
-
-# CPU耗时分析
-go tool pprof http://my_host:my_port/debug/pprof/profile
-
-# goroutine泄露分析
-/goroutine
-
-# 锁耗时分析
-/mutex
-
-# goroutine阻塞等待分析
-/block
-
-
-# 交互命令
-top 
-traces [函数] 
-list [函数]
 

@@ -11,6 +11,27 @@ pg_restore -d dbname filename
 
 
 
+-- 在其中一个会话
+BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT pg_export_snapshot();                                        # snap_id
+
+-- 在其他会话，实现多个会话看到完全相同的数据状态，如用于并行导出
+BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SET TRANSACTION SNAPSHOT '000003a1-1';                              # 为 pg_export_snapshot()的结果
+SELECT * FROM table_name;
+
+# pg_dump 使用 snap_id
+pg_dump --snapshot="$snap_id" ...
+
+
+# 导出成csv
+psql ... -c "COPY table_name TO STDOUT WITH (FORMAT csv, HEADER true);" > output.csv
+
+# FORMAT  csv, text, binary
+
+# 实现数据复制
+psql ... -c "COPY my_table TO  STDOUT WITH (FORMAT binary);"  | \
+psql ... -c "COPY my_table FROM STDIN WITH (FORMAT binary);"
 
 ################################物理备份
 归档WAL write ahead log

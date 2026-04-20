@@ -48,3 +48,24 @@ set time zone "Asia/Shanghai";
 # 动态修改需要运行 pg_ctl reload
 log_timezone = 'PRC'
 timezone = 'PRC'
+
+
+# 查看隔离级别，当前事务生效
+SHOW transaction_isolation;
+SELECT current_setting('transaction_isolation');
+SELECT name, setting FROM pg_settings WHERE name LIKE 'transaction%';
+
+# 查看隔离级别，全局默认
+SELECT name, setting FROM pg_settings WHERE name LIKE 'default_transaction%';
+
+
+# 设置隔离级别，事务级别生效，commit后恢复为实例设置的值
+BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+# 可选值
+read committed
+repeatable read
+serializable
+read uncommitted
+
+

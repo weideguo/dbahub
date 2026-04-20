@@ -11,3 +11,6 @@ yum install podman
 
 podman pull registry.fedoraproject.org/f31/redis
 
+配置文件
+/etc/containers/registries.conf
+

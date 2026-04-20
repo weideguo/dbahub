@@ -20,7 +20,7 @@ def generate_stream():
         
         time.sleep(1)
 
-    # 无需显示结束
+    # 无需显式结束
     
 
 @app.route("/stream")

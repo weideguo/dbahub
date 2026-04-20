@@ -1,0 +1,7 @@
+使用tls/ssl时
+
+# dsn参数中设置使用tls/ssl，但不进行CA校验
+tls=skip-verify    
+
+
+

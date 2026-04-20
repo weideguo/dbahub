@@ -38,6 +38,9 @@ git status
 #查看跟踪文件的与上次提交的不同
 git diff
 
+# 查看已经add了的文件有哪些更改
+git diff --staged
+
 #进入项目的目录 
 #.gitignore 设置要忽视的文件，对所有命令都生效  格式模板https://github.com/github/gitignore 
 

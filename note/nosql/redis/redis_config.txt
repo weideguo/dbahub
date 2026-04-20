@@ -1,3 +1,6 @@
+requirepass my_poassword                ##使用密码
+dir data_path                           ##设置数据文件的路径，只指定目录 
+
 ##慢查询配置设置
 slowlog-log-slower-than     #慢查询时间，microseconds
 slowlog-max-len             #慢查询日志长度，存储多少条慢查询日志

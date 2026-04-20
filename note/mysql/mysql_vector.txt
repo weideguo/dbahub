@@ -1,0 +1,26 @@
+# mysql 9.6（不是LTS版本）支持
+
+CREATE TABLE embeddings (
+id INT, 
+vec VECTOR(384)
+);
+
+
+STRING_TO_VECTOR("[1,2,3]")        # 将字符串格式转换成向量，然后用于insert、select等
+
+
+SELECT id FROM embeddings 
+ORDER BY DISTANCE(vec, '[...]', 'COSINE') LIMIT 5;
+
+
+COSINE
+衡量两个向量在方向上相似程度的常用方法
+
+
+DOT （Dot Product 点积 / 内积）
+反映了两个向量在方向上的相似程度或投影关系
+
+
+EUCLIDEAN
+两点之间的直线距离，向量语境下，通常指两个向量终点之间的距离
+

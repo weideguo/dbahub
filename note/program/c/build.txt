@@ -12,7 +12,7 @@ cmake
 ###有些程序使用如configure的脚本配置makefile文件
 make  			###默认由Makefile文件执行相应操作，可用于编译，可以由【-f make_filename】指定规则文件
 make install  	###默认由Makefile文件执行install操作(以【install:】开头的块)
-
+make install PREFIX=/usr/local/ABC
 
 
 #预加载so包并执行命令

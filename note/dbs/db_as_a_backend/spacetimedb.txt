@@ -1,0 +1,37 @@
+
+docker run -d --privileged --network host clockworklabs/spacetime start --listen-addr 0.0.0.0:3001
+
+
+spacetime server add --url http://127.0.0.1:3001 local
+
+
+spacetime dev --template chat-react-ts -s local
+
+
+
+
+
+
+#############
+# 登录spacetime
+spacetime login
+
+# 初始化项目
+spacetime init ...
+# 编写代码
+
+# 使用代码的设置更新spacetime数据库
+spacetime publish my-database --server maincloud
+
+
+
+
+#############
+# 查看有哪些spacetime
+spacetime server list 
+
+
+
+
+
+

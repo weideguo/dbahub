@@ -3,6 +3,7 @@
 
 运行
 streamlit run streamlit_demo.py 
+streamlit run streamlit_demo.py  --server.port=8502 --server.address=0.0.0.0
 
 api参考文档
 https://docs.streamlit.io/library/api-reference
