@@ -114,6 +114,8 @@ redo log 与 binlog 的一致性
   写 binlog
   提交事务 进入 commit 状态
 
+每次发起commit之后，事务才从最初的位置写入binlog（根据sync_binlog值控制是否要求刷新到磁盘，或者只是写入到缓存即可），binlog写入后才确认commit完成。
+
 
 Undo logs exist within undo log segments, which are contained within rollback segments. 
 Rollback segments reside in undo tablespaces and in the global temporary tablespace.

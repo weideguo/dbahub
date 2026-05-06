@@ -72,3 +72,5 @@ Dockerfile命令
 
 
 CMD ./hello 替换为 CMD ["./hello"]，Docker 就会直接运行程序，不会把它放到 shell 中运行。即不需要shell环境，可以用于scrach镜像。
+
+大部分指令会创建镜像层如RUN，合理调整指令的顺序可以在多次build中利用上一次的缓存镜像层

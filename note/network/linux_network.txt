@@ -163,3 +163,8 @@ tc
 tcpkill
 
 tcpkill -9 -i ens33 host 192.168.85.1 and port 49627
+
+
+conntrack 在内核中维护一张连接跟踪表
+net.netfilter.nf_conntrack_max  连接跟踪表容量对应内核参数
+conntrack -L  # 查看连接
