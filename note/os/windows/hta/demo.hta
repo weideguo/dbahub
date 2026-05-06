@@ -31,10 +31,10 @@ function setColor(){
 }
 function getRandomColor()  
 {  
-    var r = Math.floor(Math.random() * 255).toString(16);  //获取十六进制
+    var r = Math.floor(Math.random() * 255).toString(16);  //鑾峰彇鍗佸叚杩涘埗
     var g = Math.floor(Math.random() * 255).toString(16);  
     var b = Math.floor(Math.random() * 255).toString(16);  
-    r = r.length == 1 ? "0" + r : r;  ////补全为两位十进制
+    r = r.length == 1 ? "0" + r : r;  ////琛ュ叏涓轰袱浣嶅崄杩涘埗
     g = g.length == 1 ? "0" + g : g;  
     b = b.length == 1 ? "0" + b : b;  
     return "#" + r + g + b;  
