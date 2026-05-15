@@ -12,4 +12,33 @@ dd if=/dev/zero of=/data/data1 bs=1G count=1               # 顺序写
 fio
 磁盘io测试
 
+fio                         \        
+-filename=/dev/sda1         \  支持文件系统或者裸设备
+-direct=1                   \  测试过程绕过机器自带的buffer，使测试结果更真实
+-allow_mounted_write=1      \
+-iodepth 1                  \
+-thread                     \
+-rw=randrw                  \
+-rwmixread=70               \  
+-ioengine=psync             \  io引擎使用pync方式，如果要使用libaio引擎，需要yum install libaio-devel包
+-bs=4k                      \  单次io的块文件大小为4k
+-size=10G                   \  本次的测试文件大小为10g，以每次4k的io进行测试
+-numjobs=30                 \  本次的测试线程为30
+-runtime=100                \  测试时间为1000秒，如果不写则一直将10g文件分4k每次写完为止
+-group_reporting            \  关于显示结果的，汇总每个进程的信息
+-name=mytest                \
+-ioscheduler=noop
+
+
+
+rw=randwread             测试随机读的I/O
+rw=randwrite             测试随机写的I/O
+rw=randrw                测试随机混合写和读的I/O
+rw=read                  测试顺序读的I/O
+rw=write                 测试顺序写的I/O
+rw=rw                    测试顺序混合写和读的I/O      
+rwmixwrite=30            在混合读写的模式下，写占30%   
+lockmem=1g               只使用1g内存进行测试
+zero_buffers             用0初始化系统buffer
+
 

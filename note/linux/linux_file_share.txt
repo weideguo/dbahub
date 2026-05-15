@@ -318,7 +318,7 @@ nc -l 65500                    ###新版
 nc -lp 65500  &                ##后台运行
 nc -l -w 10000 6500 &          ##
 
-nc -lp 22000 -c "nc 10.0.0.1 3066"  --keep-open                   # 转口转发  本地端口22000 转发到 10.0.0.1:3066
+nc -lp 22000 -c "nc 10.0.0.1 3066"  --keep-open                   # 转口转发  本地端口22000 转发到 10.0.0.1:3066，使用nc只能存在一个连接，socat则可以多个
 socat TCP-LISTEN:22000,reuseaddr,fork TCP:10.0.0.1:3066           # 转口转发，跟nc实现类似
 
 socat TCP-LISTEN:12345,fork -                                     # 创建TCP监听

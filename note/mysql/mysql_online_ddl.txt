@@ -43,6 +43,10 @@ alter table add key(c) ,ALGORITHM=copy,lock=exclusive;
 #lock只能选择shared(默认)、exclusive
 
 
+mysql 8.0.12 DDL引入instant算法
+ALGORITHM=INSTANT
+
+
 ALTER TABLE tbl_name FORCE    
     
     

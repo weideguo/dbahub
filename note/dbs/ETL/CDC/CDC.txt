@@ -1,0 +1,13 @@
+基于查询：
+Sqoop
+Datax 
+Kettle
+
+基于日志：
+Canal
+Maxwell
+Debezium
+Databus
+Apache SeaTunnel
+Chunjun
+Flink CDC

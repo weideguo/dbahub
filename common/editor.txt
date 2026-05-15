@@ -84,9 +84,8 @@ ctrl+shift+n
 全局搜索
 ctrl+shif+f
 
-Remote - SSH
-
-
+sftp实现文件同步
+SFTP/FTP sync
 
 
 
