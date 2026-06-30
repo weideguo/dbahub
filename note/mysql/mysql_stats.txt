@@ -27,9 +27,8 @@ ALTER TABLE tbl_name STATS_PERSISTENT=0, STATS_SAMPLE_PAGES=20, STATS_AUTO_RECAL
 
 
 ##更新表的统计信息 During the analysis, the table is locked with a read lock for InnoDB and MyISAM.
-# 执行期间 read lock, 最后需要flush lock
+# 执行期间 read lock（允许DML，元数据读锁 (MDL shared read)）, 最后需要flush lock（时间比较短暂）
 analyze table table_name;
-
 
 
 # 直方图 >=8.0

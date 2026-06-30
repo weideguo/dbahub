@@ -107,6 +107,7 @@ FLUSH TABLES tbl_name [, tbl_name] ... FOR EXPORT;
 # 备份时打包压缩
 --stream=xbstream  --compress --compress-threads=8  
 
+可以不使用stream打包，而只使用compress进行压缩，以便进行增量备份
 
 #从文件中提取
 xbstream -x < /path_to_file -C /path_to_dir

@@ -11,7 +11,7 @@ GET /_cat/nodes?v&h=name,ip,port,transport
 GET /_cluster/health                 #查看集群状态
 GET /_cluster/stats                  #集群的统计信息 索引、节点
 
-GET /_node                           #查看节点信息
+GET /_nodes                          #查看节点信息
 GET /_settings                       #查看全部索引的状态信息
 
 GET /_cat/recovery?v                 #查看索引的恢复状态

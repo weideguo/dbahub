@@ -1,0 +1,11 @@
+ntp 服务器
+systemctl status ntpd
+配置文件 /etc/ntp.conf  
+
+ntp客户端
+ntpdate ${ntp_server}    # 这种方式可能出现时间跳跃
+
+
+chrony 代替ntpd、ntp
+systemctl status chronyd
+配置文件 /etc/chrony.conf

@@ -70,7 +70,8 @@ git commit -m "new commit test"
     
 #覆盖之前的提交，确保只提交一次，如提交后发现有文件没有提交，需要再次提交    
 git commit --amend    
-    
+#更改最新的提交为当前时间
+git commit --amend --date="now" --no-edit    
     
 #推到github    
 git push    
@@ -244,7 +245,7 @@ git rebase -i 7f4dc225818e94b37d6f2da3285ef6c096eb1f68
 
 # 运行后设置并退出
 pick 2f1a707 sysbench压测支持
-s e6667f0 syebench配置设置   
+s e6667f0 sysbench配置设置   
 s d0b3bdd update
 s 5de57da update
 s e37cedb update

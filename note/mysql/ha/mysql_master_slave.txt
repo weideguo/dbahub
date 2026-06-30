@@ -125,6 +125,7 @@ change master to master_host='127.0.0.1'
 ,master_auto_position=1     --也可以使用传统的指定binlog文件名及position确定复制点
 for channel 'master_2';
 
+stop slave for channel 'master_2';
 
 --mysql5.7
 --可以实现不重启设置过滤以及库名转换

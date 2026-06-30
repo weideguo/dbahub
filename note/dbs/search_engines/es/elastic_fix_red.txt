@@ -6,10 +6,20 @@
 # 查看有问题的分片
 GET /_cluster/allocation/explain?pretty
 
+
+# 获取未分配的详细原因
+GET _cluster/allocation/explain
+{
+  "index": "example_index",              # 有问题的索引
+  "shard": 0,                            # 有问题的索引的shard
+  "primary": true
+}
+
+
 # 重新设置路由
 POST /_cluster/reroute?retry_failed=true
 
-# 手动设置路由（可能存在数据丢失）
+# 手动设置路由（可能存在数据丢失，将过期的分片副本提升为主分片，存在副本才生效）
 POST _cluster/reroute
 {
     "commands": [
@@ -24,7 +34,7 @@ POST _cluster/reroute
     ]
 }
 
-# 强行拉起分片（存在数据丢失）
+# 强行拉起分片（存在数据丢失，将分片设置为空）
 POST _cluster/reroute?pretty
 {
     "commands": [
@@ -38,3 +48,4 @@ POST _cluster/reroute?pretty
         }
     ]
 }
+
