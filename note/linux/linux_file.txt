@@ -42,6 +42,11 @@ Sticky Bit（粘滞位）：对目录设置时，仅允许文件所有者或 roo
 chmod 04777 $filename
 前导 0 的作用：显式关闭所有特殊权限，避免继承原有特殊权限。
 
+x 执行权限 
+S SUID或SGID
+s x+S
+T Sticky Bit
+t x+T
 
 umask -S     ###查看用户创建文件时文件的默认权限
 umask 002    ###修改文件的默认权限，为 666-002

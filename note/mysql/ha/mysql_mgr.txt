@@ -63,3 +63,9 @@ Single-Primary Mode   --默认模式，只能在一个实例进行写操作
 
 Multi-Primary Mode    --可以对多个实例进行些操作
     group_replication_single_primary_mode=off   --所有实例设置
+
+
+使用 Paxos 协议
+1. 事务提交的共识
+2. 保证数据顺序一致性
+3. 集群成员与元数据管理
