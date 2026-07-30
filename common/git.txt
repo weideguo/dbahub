@@ -53,6 +53,8 @@ git update-index --assume-unchanged $file          #pull时候忽略这个文件
 git update-index --no-assume-unchanged $file       #pull时候取消忽略这个文件
 
 
+本地专属忽视，实现忽视特定文件同时push时不提交该文件
+.git/info/exclude
 
 
 #跟踪新文件 文件依然保存在本地仓库 文件每次要commit前都要执行

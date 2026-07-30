@@ -94,5 +94,6 @@ show status like '%handle%'
 (%Handler_read_rnd_next% + %Handler_read_rnd% + %Handler_read_first% + %Handler_read_next% + %Handler_read_key% + %Handler_read_prev% + %Handler_read_last%)
 
 
-
-
+SET optimizer_trace="enabled=on";
+-- 执行SQL语句
+SELECT * FROM information_schema.optimizer_trace;    -- 查看对应SQL语句的成本估算细节
